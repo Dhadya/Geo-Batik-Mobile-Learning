@@ -598,7 +598,7 @@ src/
 
 - **Font:** Space Grotesk (weights 300–900)
 - **Icons:** Google Material Symbols Outlined
-- **Labels:** `text-xs font-black uppercase tracking-widest`
+- **Labels:** `text-xs font-black uppercase tracking-wide`
 - **Headings:** `font-black uppercase`
 - **Body:** `text-sm font-bold`
 
