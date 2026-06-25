@@ -104,7 +104,7 @@ const DialogContent = (inputProps: IDialogContentProps & { ref?: React.Ref<HTMLD
   );
 };
 
-interface IDialogDescriptionProps extends HTMLAttributes<HTMLDivElement> {}
+type IDialogDescriptionProps = HTMLAttributes<HTMLDivElement>;
 const DialogDescription = ({
   children,
   className,
