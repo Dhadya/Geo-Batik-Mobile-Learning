@@ -8,7 +8,7 @@ export function LandingFooter({ className = "" }: { className?: string }) {
         <span className="text-foreground">TRANSFORMASI GEOMETRI</span>
       </div>
       <div className="text-xs font-bold uppercase flex flex-col items-end gap-1 text-right">
-        <span className="text-foreground">v2.4.0</span>
+        <span className="text-foreground">v1.0.0</span>
         <span className="bg-secondary-container border-2 border-black px-2 text-foreground">SIAP BELAJAR</span>
       </div>
     </footer>

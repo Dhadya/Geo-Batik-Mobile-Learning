@@ -1,3 +1,4 @@
+/* RetroUI - Styled text input */
 import React, { InputHTMLAttributes } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

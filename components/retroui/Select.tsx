@@ -1,4 +1,5 @@
 "use client";
+/* RetroUI - Select/dropdown component */
 
 import * as React from "react";
 import { Select as SelectPrimitive } from "@base-ui/react/select";

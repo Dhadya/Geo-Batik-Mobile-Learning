@@ -1,3 +1,4 @@
+/* RetroUI - Multi-line text input */
 import { cn } from "@/lib/utils";
 
 export function Textarea({
