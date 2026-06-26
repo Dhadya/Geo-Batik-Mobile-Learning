@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-/* Space Grotesk — single font for the entire app (300-900 via variable font) */
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "GEMATRI - Gemakan Mahir Transformasi Geometri",
-  description: "Belajar Transformasi Geometri melalui Batik",
+  title: "Batik Geometry",
+  description: "Belajar Geometri Transformasi melalui Batik",
 };
 
 export default function RootLayout({
