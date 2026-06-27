@@ -1,14 +1,25 @@
+import { notFound } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { Card } from "@/components/retroui/Card"
 import { Progress } from "@/components/retroui/Progress"
-import Link from "next/link"
 
-/* Translasi quiz — multiple-choice questions with progress bar. */
-export default function TranslasiKuisPage() {
+const MODULE_LABELS: Record<string, string> = {
+  translasi: "Translasi",
+  refleksi: "Refleksi",
+}
+
+export default async function KuisIntroPage(props: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await props.params
+  const label = MODULE_LABELS[slug]
+  if (!label) notFound()
+
   return (
     <div className="max-w-3xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-      <Text as="h1" className="text-2xl font-black uppercase">Kuis Translasi</Text>
+      <Text as="h1" className="text-2xl font-black uppercase">Kuis {label}</Text>
       <Progress value={25} className="w-full" />
       <Card className="w-full">
         <Card.Content className="space-y-4">
@@ -24,10 +35,12 @@ export default function TranslasiKuisPage() {
         </Card.Content>
       </Card>
       <div className="flex justify-between">
-        <Link href="/translasi/titik">
+        <Link href={`/modul/${slug}`}>
           <Button variant="outline" size="md">KEMBALI</Button>
         </Link>
-        <Button variant="default" size="md">SELANJUTNYA</Button>
+        <Link href={`/modul/${slug}/kuis/1`}>
+          <Button variant="default" size="md">SELANJUTNYA</Button>
+        </Link>
       </div>
     </div>
   )

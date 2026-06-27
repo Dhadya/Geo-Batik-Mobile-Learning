@@ -20,7 +20,7 @@ export default function PrasyaratPage() {
         <Link href="/menu">
           <Button variant="outline" size="md">KEMBALI</Button>
         </Link>
-        <Link href="/translasi">
+        <Link href="/apersepsi/translasi">
           <Button variant="default" size="md">LANJUT</Button>
         </Link>
       </div>
