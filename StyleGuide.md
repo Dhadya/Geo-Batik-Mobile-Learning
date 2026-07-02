@@ -6,7 +6,7 @@
 
 ## Design Philosophy
 
-**Nusantara Rebel** — The Academic Rebel: Indonesian heritage meets NeoBrutalism. Structured Batik geometry (Kawung, Parang) meets raw, unapologetic high-contrast modernism.
+**Nusantara Rebel** — The Academic Rebel: Indonesian heritage meets NeoBrutalism. Structured Gematri (Kawung, Parang) meets raw, unapologetic high-contrast modernism.
 
 Key principles:
 

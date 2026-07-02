@@ -136,7 +136,7 @@ To become the definitive interactive learning media for geometric transformation
 | F9  | AI Scaffolding (Chatbot)                 | P1       |
 | F10 | AI Answer Checking & Feedback            | P1       |
 | F11 | Student Progress Tracking                | P1       |
-| F12 | Student Dashboard & Analytics            | P2       |
+| F12 | Teacher Dashboard                        | P2       |
 
 ### 5.2 Feature Details
 
@@ -414,22 +414,24 @@ To become the definitive interactive learning media for geometric transformation
 
 ---
 
-#### F12: Student Dashboard & Analytics
+#### F12: Teacher Dashboard
 
 **Priority:** P2
 
 **Requirements:**
 
-- View own progress across all modules
-- View quiz score history
-- Identify strengths and weaknesses
-- Export progress report
+- View all students' progress
+- View class average scores
+- Identify struggling students
+- Export progress reports
+- View common mistakes across class
 
 **Acceptance Criteria:**
 
-- [ ] Student progress overview dashboard
-- [ ] Per-module completion status and scores
-- [ ] Quiz history with dates and scores
+- [ ] Teacher login role
+- [ ] Student list with progress overview
+- [ ] Class analytics (average scores, completion rates)
+- [ ] Export to CSV/PDF
 
 ---
 
@@ -613,7 +615,7 @@ types/
 
 ### 7.1 Design Language
 
-**Nusantara Rebel** — The Academic Rebel: Indonesian heritage meets NeoBrutalism. Structured Batik geometry (Kawung, Parang) meets high-contrast modernism. Thick 4px black borders, hard offset shadows (no blur), square elements, uppercase bold typography.
+**Nusantara Rebel** — The Academic Rebel: Indonesian heritage meets NeoBrutalism. Structured Gematri (Kawung, Parang) meets high-contrast modernism. Thick 4px black borders, hard offset shadows (no blur), square elements, uppercase bold typography.
 
 ### 7.2 Color Palette
 
@@ -659,7 +661,7 @@ All colors are defined as CSS custom properties in `app/globals.css` and mapped 
 
 ---
 
-## 8. Data Model
+## 8. Data Model1
 
 ### 8.1 Database Schema (Supabase + Drizzle)
 
@@ -669,29 +671,22 @@ CREATE TABLE users (
   id            TEXT PRIMARY KEY,       -- Clerk user ID
   username      TEXT NOT NULL,
   email         TEXT,
-  avatar_url    TEXT,
+  role          TEXT DEFAULT 'student', -- 'student' | 'teacher'
   created_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Subtopic progress — tracks student advancement through a PageContent module
+-- Subtopic progress
 CREATE TABLE subtopic_progress (
-  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id          TEXT REFERENCES users(id),
-  module           TEXT NOT NULL,          -- 'translasi' | 'refleksi'
-  subtopic         TEXT NOT NULL,          -- PageContent.id: 'titik', 'garis', 'bidang', 'sumbu-x', 'sumbu-y', 'titik-asal', 'garis-y-x', 'garis-y-neg-x', 'garis-x-h', 'garis-y-k'
-
-  -- Pencapaian tahapan Inkuiri: menyimpan id langkah yang sudah dikerjakan oleh siswa, misal ["step1","step2","step3","step4"]
-  steps_completed  JSONB DEFAULT '[]',
-
-  -- Indeks pengamatan yang sudah diceklis oleh siswa, misal [0,1,2]
-  observations     JSONB DEFAULT '[]',
-
-  -- Catatan kesimpulan siswa berupa teks bebas
-  conclusion       TEXT,
-
-  completed        BOOLEAN DEFAULT FALSE,
-  time_spent_ms    INTEGER DEFAULT 0,
-  updated_at       TIMESTAMPTZ DEFAULT NOW(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id       TEXT REFERENCES users(id),
+  module        TEXT NOT NULL,          -- 'translasi' | 'refleksi'
+  subtopic      TEXT NOT NULL,          -- 'titik', 'sumbu-x', etc.
+  steps_completed JSONB DEFAULT '[]',   -- inquiry step indices
+  observations   JSONB DEFAULT '[]',    -- completed observation indices
+  conclusion     TEXT,                  -- student-written conclusion
+  completed      BOOLEAN DEFAULT FALSE,
+  time_spent_ms  INTEGER DEFAULT 0,
+  updated_at     TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(user_id, module, subtopic)
 );
 
@@ -747,7 +742,7 @@ export const users = pgTable("users", {
   id: text("id").primaryKey(), // Clerk user ID
   username: text("username").notNull(),
   email: text("email"),
-  avatarUrl: text("avatar_url"),
+  role: text("role").default("student"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -756,11 +751,11 @@ export const subtopicProgress = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     userId: text("user_id").references(() => users.id),
-    module: text("module").notNull(), // 'translasi' | 'refleksi'
-    subtopic: text("subtopic").notNull(), // PageContent.id — 'titik', 'garis', 'bidang', 'sumbu-x', dll.
-    stepsCompleted: jsonb("steps_completed").default([]), // string[] — id langkah inkuiri, misal ["step1","step2"]
-    observations: jsonb("observations").default([]), // number[] — indeks pengamatan, misal [0,1]
-    conclusion: text("conclusion"), // catatan kesimpulan siswa
+    module: text("module").notNull(),
+    subtopic: text("subtopic").notNull(),
+    stepsCompleted: jsonb("steps_completed").default([]),
+    observations: jsonb("observations").default([]),
+    conclusion: text("conclusion"),
     completed: boolean("completed").default(false),
     timeSpentMs: integer("time_spent_ms").default(0),
     updatedAt: timestamp("updated_at").defaultNow(),
@@ -848,44 +843,11 @@ export const quizAnswerSchema = z.object({
   timeSpentMs: z.number().int().nonnegative(),
 });
 
-/* Subtopic slugs for each module */
-const TRANSLASI_SUBTOPICS = ["titik", "garis", "bidang"] as const;
-const REFLEKSI_SUBTOPICS = [
-  "sumbu-x",
-  "sumbu-y",
-  "titik-asal",
-  "garis-y-x",
-  "garis-y-neg-x",
-  "garis-x-h",
-  "garis-y-k",
-] as const;
-
-/* PageContent — the static curriculum data for a single subtopic page */
-export const pageContentSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  batikConcept: z.string(),
-  batikDescription: z.string(),
-  interactiveTitle: z.string(),
-  instructions: z.array(z.string()),
-  geogebraUrl: z.string().optional(),
-  inquirySteps: z.array(
-    z.object({
-      id: z.string(),
-      text: z.string(),
-      completed: z.boolean().optional(),
-    }),
-  ),
-  observations: z.array(z.string()),
-  matrixFormula: z.string(),
-  matrixExplanation: z.string(),
-});
-
 export const progressUpdateSchema = z.object({
   module: z.enum(["translasi", "refleksi"]),
   subtopic: z.string().min(1),
-  stepsCompleted: z.array(z.string()), // InquiryStep.id[] — misal ["step1","step2"]
-  observations: z.array(z.number()), // observation indices confirmed
+  stepsCompleted: z.array(z.number()),
+  observations: z.array(z.number()),
   conclusion: z.string().optional(),
   completed: z.boolean(),
   timeSpentMs: z.number().int().nonnegative(),
@@ -944,17 +906,22 @@ Student on Learning Page
         └──→ Feedback displayed to student
 ```
 
-### 9.3 Student Progress Flow
+### 9.3 Teacher Monitoring Flow
 
 ```
-Student Login → Menu
+Teacher Login → Teacher Dashboard
   │
-  ├──→ View Progress Dashboard
-  │     ├──→ Translasi: 80% complete, quiz score 85
-  │     ├──→ Refleksi: 45% complete, quiz score 62
-  │     └──→ Continue from last subtopic
+  ├──→ View Class List
+  │     ├──→ Student A: 80% complete, avg quiz 85
+  │     ├──→ Student B: 45% complete, avg quiz 62
+  │     └──→ ...
   │
-  └──→ Resume Learning → Active module
+  ├──→ View Analytics
+  │     ├──→ Class average per subtopic
+  │     ├──→ Common mistakes
+  │     └──→ Time spent distribution
+  │
+  └──→ Export Report → PDF/CSV
 ```
 
 ---

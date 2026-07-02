@@ -1,10 +1,11 @@
-import Link from "next/link"
-import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/retroui/Button"
-import { KawungStamp } from "@/components/batik/KawungStamp"
-import { BatikWatermark } from "@/components/batik/BatikWatermark"
-import { LandingFooter } from "@/components/batik/LandingFooter"
-import { AmbientCircles } from "@/components/common/AmbientCircles"
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/retroui/Button";
+import { KawungStamp } from "@/components/batik/KawungStamp";
+import { BatikWatermark } from "@/components/batik/BatikWatermark";
+import { LandingFooter } from "@/components/batik/LandingFooter";
+import { AmbientCircles } from "@/components/common/AmbientCircles";
+import { SignedIn, SignedOut } from "@/components/auth";
 
 /* Landing page — hero with Kawung stamp, GEMATRI branding, and MASUK CTA */
 export default function LandingPage() {
@@ -43,16 +44,30 @@ export default function LandingPage() {
         </div>
 
         <div className="mt-12 w-full flex justify-center">
-          <Link href="/login">
-            <Button
-              variant="default"
-              size="lg"
-              className="!px-16 !py-4 !text-3xl font-bold neubrutal-shadow hover-shift active-shift flex items-center gap-6 !rounded-none"
-            >
-              MASUK
-              <ArrowRight className="!size-10 group-hover:translate-x-3 transition-transform" />
-            </Button>
-          </Link>
+          <SignedOut>
+            <Link href="/login">
+              <Button
+                variant="default"
+                size="lg"
+                className="!px-16 !py-4 !text-3xl font-bold neubrutal-shadow hover-shift active-shift flex items-center gap-6 !rounded-none"
+              >
+                MASUK
+                <ArrowRight className="!size-10 group-hover:translate-x-3 transition-transform" />
+              </Button>
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <Link href="/menu">
+              <Button
+                variant="default"
+                size="lg"
+                className="!px-16 !py-4 !text-3xl font-bold neubrutal-shadow hover-shift active-shift flex items-center gap-6 !rounded-none"
+              >
+                MENU
+                <ArrowRight className="!size-10 group-hover:translate-x-3 transition-transform" />
+              </Button>
+            </Link>
+          </SignedIn>
         </div>
 
         <div className="mt-16 flex gap-6 opacity-40">
@@ -64,5 +79,5 @@ export default function LandingPage() {
 
       <LandingFooter />
     </div>
-  )
+  );
 }

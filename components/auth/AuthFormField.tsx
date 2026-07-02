@@ -5,11 +5,8 @@ import { type LucideIcon, Eye, EyeOff } from "lucide-react"
 import { Input } from "@/components/retroui/Input"
 import { Button } from "@/components/retroui/Button"
 
-/* Reusable auth form field — label + styled Input with optional trailing icon or password toggle. */
-interface AuthFormFieldProps {
+interface AuthFormFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string
-  type?: string
-  placeholder: string
   icon?: LucideIcon
   showPasswordToggle?: boolean
 }
@@ -20,6 +17,7 @@ export function AuthFormField({
   placeholder,
   icon: Icon,
   showPasswordToggle,
+  ...props
 }: AuthFormFieldProps) {
   const [showPassword, setShowPassword] = useState(false)
   const inputType = showPasswordToggle && showPassword ? "text" : type
@@ -32,6 +30,7 @@ export function AuthFormField({
           type={inputType}
           placeholder={placeholder}
           className="w-full h-14 bg-white border-4 border-black !rounded-none text-base px-4"
+          {...props}
         />
         <div className="absolute inset-y-0 right-0 flex items-center pr-4">
           {showPasswordToggle ? (
