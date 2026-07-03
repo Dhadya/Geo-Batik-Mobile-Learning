@@ -25,6 +25,9 @@ export default function RootLayout({
         <ClerkProvider
           signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/login"}
           signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/register"}
+          appearance={{
+            cssLayerName: "clerk",
+          }}
         >
           {children}
         </ClerkProvider>

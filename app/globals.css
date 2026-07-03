@@ -2,6 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Clerk component styles go in the `clerk` layer via cssLayerName.
+   Tailwind utilities in later layers override them automatically. */
+@layer theme, base, clerk, components, utilities;
+
 /* ── Theme tokens ────────────────────────────────────────────
    Tailwind v4 @theme blocks. Maps CSS vars to Tailwind
    utility classes (bg-primary, text-foreground, etc.)
@@ -221,4 +225,10 @@ body {
     transform: translate(8px, 8px);
     box-shadow: 0 0 0 0 #000;
   }
+}
+
+/* ── Hide "Secured by Clerk" branding badge ──────────── */
+/* CardClerkAndPagesTag is always the last child of cl-footer */
+.cl-footer > div:last-child {
+  display: none;
 }
