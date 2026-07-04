@@ -149,16 +149,18 @@ To become the definitive interactive learning media for geometric transformation
 **Requirements:**
 
 - Students authenticate before accessing learning content
-- Authentication provider: **Clerk**
-- Fields: username/email, password
-- Session persistence across browser sessions
+- Authentication provider: **BetterAuth** (self-hosted, stores users in Supabase)
+- Fields: email, password
+- Google OAuth sign-in
+- Session persistence across browser sessions (cookie-based)
 - Route protection: unauthenticated users cannot access `/menu`, `/prasyarat`, `/apersepsi/*`, `/modul/*`, `/lab`
 - Logout functionality
-- "Remember me" checkbox functionality
 
 **Acceptance Criteria:**
 
-- [ ] Clerk integration with sign-in/sign-up flows
+- [ ] BetterAuth integration with email/password sign-in/sign-up
+- [ ] Google OAuth sign-in working
+- [ ] User data stored in Supabase `users` table
 - [ ] Protected routes redirect to `/login` when unauthenticated
 - [ ] Session persists on page refresh
 - [ ] Logout clears session and redirects to `/`
@@ -447,7 +449,7 @@ To become the definitive interactive learning media for geometric transformation
 | **State Mgmt**    | Zustand                    | Client-side state management                    |
 | **Data Fetching** | TanStack Query             | Server state, caching, optimistic updates       |
 | **Validation**    | Zod                        | Schema validation (forms, API, DB)              |
-| **Auth**          | Clerk                      | Authentication & user management                |
+| **Auth**          | BetterAuth                 | Authentication & session management             |
 | **Visualization** | GeoGebra (Web API)         | Interactive geometry applets                    |
 | **AI**            | Gemini API (@google/genai) | Chatbot, answer checking, feedback              |
 | **Hosting**       | Vercel                     | Deployment & hosting                            |
@@ -470,7 +472,7 @@ To become the definitive interactive learning media for geometric transformation
 │  │  │ Modules  │ │  System  │ │  (Sandbox)    │  │   │
 │  │  └──────────┘ └──────────┘ └───────────────┘  │   │
 │  │  ┌──────────┐ ┌──────────┐ ┌───────────────┐  │   │
-│  │  │ GeoGebra │ │  Gemini  │ │   Clerk Auth  │  │   │
+│  │  │ GeoGebra │ │  Gemini  │ │  BetterAuth   │  │   │
 │  │  │  Embed   │ │   Chat   │ │   Provider    │  │   │
 │  │  └──────────┘ └──────────┘ └───────────────┘  │   │
 │  └────────────────────────────────────────────────┘   │
@@ -485,8 +487,8 @@ To become the definitive interactive learning media for geometric transformation
 │  └─────────┬──────────┬──────────┬────────┬───────┘   │
 │            │          │          │        │            │
 │  ┌─────────┴──┐ ┌─────┴────┐ ┌──┴───┐ ┌──┴────────┐  │
-│  │   Clerk    │ │ Supabase │ │Drizzle│ │  Gemini   │  │
-│  │   Auth     │ │    DB    │ │  ORM  │ │    API    │  │
+│  │ BetterAuth │ │ Supabase │ │Drizzle│ │  Gemini   │  │
+│  │    Auth    │ │    DB    │ │  ORM  │ │    API    │  │
 │  └────────────┘ └──────────┘ └───────┘ └───────────┘  │
 └──────────────────────────────────────────────────────┘
 ```
@@ -517,6 +519,7 @@ app/
 ├── (landing)/
 │   └── page.tsx                 # Landing page — full brand hero
 ├── api/
+│   ├── auth/[...all]/route.ts   # BetterAuth API handler
 │   ├── quiz/route.ts
 │   ├── progress/route.ts
 │   ├── ai/chat/route.ts
@@ -570,10 +573,10 @@ lib/
 │   ├── schema.ts
 │   ├── migrations/
 │   └── index.ts
-├── gemini/
-│   └── client.ts
-└── clerk/
-    └── middleware.ts
+├── auth.ts              # BetterAuth server config
+├── auth-client.ts       # BetterAuth browser client
+└── gemini/
+    └── client.ts
 
 stores/
 ├── useAuthStore.ts
@@ -655,7 +658,7 @@ All colors are defined as CSS custom properties in `app/globals.css` and mapped 
 | Inputs     | Use `<AuthFormField>` for auth forms or plain `<input>` with `border-2 border-border p-2.5 text-xs font-bold rounded`                 | `@/components/auth/AuthFormField` |
 | Tabs       | RetroUI `<Tabs>` — `Tabs.List`, `Tabs.Trigger`, `Tabs.Content`. Labels uppercase via className                                        | `@/components/retroui/Tab`        |
 | Shadows    | Hard offset — `shadow-sm` through `shadow-2xl` in `globals.css`. CTAs use `.neubrutal-shadow` + `.hover-shift` + `.active-shift`      | Defined in `globals.css`          |
-| Auth shell | `<AuthLayout>` with branding, watermark, footer. `<AuthFormField>` for each form field.                                               | `@/components/auth/AuthLayout`    |
+| Auth shell | `<AuthLayout>` with branding, watermark, footer. `<AuthFormField>` for each form field. Custom forms using BetterAuth client.         | `@/components/auth/AuthLayout`    |
 
 ---
 
@@ -664,13 +667,53 @@ All colors are defined as CSS custom properties in `app/globals.css` and mapped 
 ### 8.1 Database Schema (Supabase + Drizzle)
 
 ```sql
--- Users (managed by Clerk, extended in Supabase)
+-- Users (managed by BetterAuth, stored in Supabase)
 CREATE TABLE users (
-  id            TEXT PRIMARY KEY,       -- Clerk user ID
-  username      TEXT NOT NULL,
-  email         TEXT,
-  avatar_url    TEXT,
-  created_at    TIMESTAMPTZ DEFAULT NOW()
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name          TEXT,
+  email         TEXT UNIQUE,
+  email_verified BOOLEAN DEFAULT FALSE,
+  image         TEXT,
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- BetterAuth session table
+CREATE TABLE session (
+  id            TEXT PRIMARY KEY,
+  user_id       UUID REFERENCES users(id) ON DELETE CASCADE,
+  expires_at    TIMESTAMPTZ NOT NULL,
+  token         TEXT UNIQUE NOT NULL,
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- BetterAuth account table (OAuth providers)
+CREATE TABLE account (
+  id            TEXT PRIMARY KEY,
+  user_id       UUID REFERENCES users(id) ON DELETE CASCADE,
+  account_id    TEXT NOT NULL,
+  provider_id   TEXT NOT NULL,
+  provider_user_id TEXT,
+  access_token  TEXT,
+  refresh_token TEXT,
+  access_token_expires_at TIMESTAMPTZ,
+  refresh_token_expires_at TIMESTAMPTZ,
+  scope         TEXT,
+  id_token      TEXT,
+  password      TEXT,
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- BetterAuth verification table (email OTP, etc.)
+CREATE TABLE verification (
+  id            TEXT PRIMARY KEY,
+  identifier    TEXT NOT NULL,
+  value         TEXT NOT NULL,
+  expires_at    TIMESTAMPTZ NOT NULL,
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Subtopic progress — tracks student advancement through a PageContent module
@@ -743,12 +786,50 @@ import {
   unique,
 } from "drizzle-orm/pg-core";
 
+// BetterAuth tables
 export const users = pgTable("users", {
-  id: text("id").primaryKey(), // Clerk user ID
-  username: text("username").notNull(),
-  email: text("email"),
-  avatarUrl: text("avatar_url"),
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name"),
+  email: text("email").unique(),
+  emailVerified: boolean("email_verified").default(false),
+  image: text("image"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const session = pgTable("session", {
+  id: text("id").primaryKey(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+  expiresAt: timestamp("expires_at").notNull(),
+  token: text("token").unique().notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const account = pgTable("account", {
+  id: text("id").primaryKey(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  providerUserId: text("provider_user_id"),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  accessTokenExpiresAt: timestamp("access_token_expires_at"),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+  scope: text("scope"),
+  idToken: text("id_token"),
+  password: text("password"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const subtopicProgress = pgTable(
@@ -839,7 +920,7 @@ import { z } from "zod";
 
 export const loginSchema = z.object({
   email: z.string().email("Email tidak valid"),
-  password: z.string().min(6, "Password minimal 6 karakter"),
+  password: z.string().min(8, "Password minimal 8 karakter"),
 });
 
 export const quizAnswerSchema = z.object({
@@ -904,7 +985,7 @@ export const chatMessageSchema = z.object({
 ### 9.1 Student Learning Flow
 
 ```
-/ (Landing) → /login (Clerk) → /menu
+/ (Landing) → /login (BetterAuth) → /menu
   │
   ├──→ /prasyarat → Self-check → /menu
   │
@@ -1000,7 +1081,8 @@ Student Login → Menu
 
 ### 10.5 Security
 
-- Clerk handles authentication (no custom password storage)
+- BetterAuth handles authentication (session-based, cookie-based)
+- Passwords hashed with bcrypt by BetterAuth
 - Supabase Row Level Security (RLS) on all tables
 - Users can only read/write their own data
 - API routes protected with authentication middleware
@@ -1063,7 +1145,7 @@ Student Login → Menu
 **Goal:** Project scaffolded with core dependencies and design system
 
 - [ ] Next.js project with App Router, TypeScript strict, Tailwind CSS v4
-- [ ] Clerk authentication setup
+- [ ] BetterAuth authentication setup (email/password + Google OAuth)
 - [ ] Supabase project + Drizzle schema + initial migrations
 - [ ] Zustand store scaffolding
 - [ ] TanStack Query provider setup

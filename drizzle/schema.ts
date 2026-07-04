@@ -9,14 +9,71 @@ import {
   index,
 } from "drizzle-orm/pg-core"
 
-export const users = pgTable("users", {
+// ─── BetterAuth Tables ────────────────────────────────────────────────
+
+// User account — stores auth credentials and profile info
+export const user = pgTable("user", {
   id: text("id").primaryKey(),
-  username: text("username").notNull(),
-  email: text("email"),
-  avatarUrl: text("avatar_url"),
+  name: text("name"),
+  email: text("email").unique(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  image: text("image"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
+// Session — tracks active user sessions with token-based auth
+export const session = pgTable("session", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  token: text("token").notNull().unique(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index("idx_session_user").on(table.userId),
+  index("idx_session_token").on(table.token),
+])
+
+// Account — links user to OAuth providers (Google, etc.)
+export const account = pgTable("account", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  providerUserId: text("provider_user_id"),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  accessTokenExpiresAt: timestamp("access_token_expires_at", { withTimezone: true }),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { withTimezone: true }),
+  scope: text("scope"),
+  idToken: text("id_token"),
+  password: text("password"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index("idx_account_user").on(table.userId),
+])
+
+// Verification — stores email verification and password reset tokens
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+})
+
+// ─── App Tables ────────────────────────────────────────────────────────
+
+// Subtopic progress — tracks student progress per module/subtopic
 export const subtopicProgress = pgTable(
   "subtopic_progress",
   {
@@ -25,7 +82,7 @@ export const subtopicProgress = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     module: text("module", { enum: ["translasi", "refleksi"] }).notNull(),
     subtopic: text("subtopic").notNull(),
     stepsCompleted: jsonb("steps_completed").notNull().default([]),
@@ -42,6 +99,7 @@ export const subtopicProgress = pgTable(
   ],
 )
 
+// Quiz results — stores completed quiz scores and AI feedback
 export const quizResults = pgTable(
   "quiz_results",
   {
@@ -50,7 +108,7 @@ export const quizResults = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     module: text("module", { enum: ["translasi", "refleksi"] }).notNull(),
     score: integer("score").notNull(),
     totalQuestions: integer("total_questions").notNull(),
@@ -65,6 +123,7 @@ export const quizResults = pgTable(
   ],
 )
 
+// Batik creations — stores student's batik design canvas data
 export const batikCreations = pgTable(
   "batik_creations",
   {
@@ -73,7 +132,7 @@ export const batikCreations = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     name: text("name"),
     canvasData: jsonb("canvas_data").notNull(),
     thumbnailUrl: text("thumbnail_url"),
@@ -83,6 +142,7 @@ export const batikCreations = pgTable(
   (table) => [index("idx_batik_creations_user").on(table.userId)],
 )
 
+// Chat messages — stores AI tutor conversation history
 export const chatMessages = pgTable(
   "chat_messages",
   {
@@ -91,7 +151,7 @@ export const chatMessages = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     sessionId: text("session_id").notNull(),
     role: text("role", { enum: ["user", "assistant", "system"] }).notNull(),
     content: text("content").notNull(),
@@ -106,6 +166,7 @@ export const chatMessages = pgTable(
   ],
 )
 
+// Page content — stores curriculum module content for each tab
 export const pageContent = pgTable(
   "page_content",
   {

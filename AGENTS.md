@@ -21,7 +21,7 @@ Indonesian heritage meets NeoBrutalism.
 | UI Primitives | RetroUI (`@/components/retroui/`) — custom set  |
 | Icons         | `lucide-react`                                  |
 | Font          | Space Grotesk (variable via `next/font/google`) |
-| Auth          | Clerk                                           |
+| Auth          | BetterAuth                                      |
 | Database      | Supabase (PostgreSQL)                           |
 | AI            | Gemini API                                      |
 | Hosting       | Vercel                                          |
@@ -101,7 +101,7 @@ npm start            # Start production server
 │   ├── batik/        # KawungStamp, BatikWatermark, LandingFooter
 │   └── common/       # AmbientCircles
 ├── data/             # Static curriculum data (future)
-├── lib/              # Supabase, Drizzle, Gemini clients (future)
+├── lib/              # Supabase, Drizzle, BetterAuth, Gemini clients
 ├── stores/           # Zustand stores (future)
 ├── hooks/            # Custom hooks (future)
 ├── types/            # TypeScript types
