@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
+import { ProfileDropdown } from "@/components/layout/ProfileDropdown"
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
@@ -9,9 +10,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <Link href="/" className="font-black text-lg uppercase tracking-tight">
             GEMATRI
           </Link>
-          <nav className="flex gap-6 text-sm font-bold uppercase">
+          <nav className="flex items-center gap-6 text-sm font-bold uppercase">
             <Link href="/menu">Menu</Link>
             <Link href="/lab">Lab</Link>
+            <ProfileDropdown />
           </nav>
         </div>
       </header>

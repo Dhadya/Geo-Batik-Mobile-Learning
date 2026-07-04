@@ -124,6 +124,9 @@ export function useRegisterForm() {
       await signIn.social({
         provider: "google",
         callbackURL: "/menu",
+        errorCallbackURL: "/register",
+        newUserCallbackURL: "/menu",
+        requestSignUp: true,
       })
     } catch {
       setError("Gagal menghubungi Google. Silakan coba lagi.")

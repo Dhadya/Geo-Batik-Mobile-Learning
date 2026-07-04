@@ -1,62 +1,64 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { toast } from "sonner"
 import { signIn } from "@/lib/auth-client"
+import { validateEmail, validatePassword, mapLoginError } from "@/lib/validators"
+import { validateRedirect } from "@/lib/validate-redirect"
 
-// Email validation — checks empty and format
-function validateEmail(email: string): string | null {
-  if (!email.trim()) return "Email wajib diisi"
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) return "Format email tidak valid (misal: nama@email.com)"
-  return null
-}
-
-// Password validation — checks empty and minimum length
-function validatePassword(password: string): string | null {
-  if (!password) return "Password wajib diisi"
-  if (password.length < 8) return "Password minimal 8 karakter"
-  return null
-}
-
-// Maps BetterAuth error messages to user-friendly Indonesian text
-function mapAuthError(message: string): string {
-  const lower = message.toLowerCase()
-  if (lower.includes("invalid") || lower.includes("credentials") || lower.includes("password")) {
-    return "Email atau password salah"
-  }
-  if (lower.includes("not found") || lower.includes("user")) {
-    return "Akun tidak ditemukan. Silakan daftar terlebih dahulu."
-  }
-  if (lower.includes("too many") || lower.includes("rate")) {
-    return "Terlalu banyak percobaan. Coba lagi dalam beberapa menit."
-  }
-  return message || "Gagal masuk. Silakan coba lagi."
+// OAuth error codes from BetterAuth — exhaustive list
+const OAUTH_ERRORS: Record<string, string> = {
+  oauth_callback: "Gagal masuk dengan Google. Silakan coba lagi.",
+  session_expired: "Sesi Anda telah berakhir. Silakan masuk kembali.",
+  access_denied: "Akses ditolak oleh Google. Silakan coba lagi.",
+  invalid_grant: "Kode autentikasi tidak valid. Silakan coba lagi.",
+  server_error: "Terjadi kesalahan server. Silakan coba lagi nanti.",
+  temporarily_unavailable: "Layanan sedang tidak tersedia. Silakan coba lagi nanti.",
+  // disableImplicitSignUp error — user not registered
+  signup_disabled: "Akun belum terdaftar. Silakan daftar terlebih dahulu.",
 }
 
 /* Login form hook — manages form state, validation, and auth API calls. */
 export function useLoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  // Redirect URL after successful login (default: /menu)
-  const redirectTo = searchParams.get("redirect") || "/menu"
+  // Sanitized redirect URL after successful login
+  const redirectTo = validateRedirect(searchParams.get("redirect"))
   // Pre-fill error from OAuth callback failure
   const authError = searchParams.get("error")
+  const oauthSuccess = searchParams.get("registered") === "true"
 
   // Form fields
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   // Error state — initialized from OAuth error query param
   const [error, setError] = useState(
-    authError === "oauth_callback"
-      ? "Gagal masuk dengan Google. Silakan coba lagi."
-      : authError === "session_expired"
-        ? "Sesi Anda telah berakhir. Silakan masuk kembali."
-        : ""
+    authError ? OAUTH_ERRORS[authError] || "Terjadi kesalahan. Silakan coba lagi." : ""
   )
-  // Loading states — separate for email and Google sign-in
+  // Loading states
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
+
+  // Show toast if redirected from successful registration
+  const oauthHandled = useRef(false)
+
+  useEffect(() => {
+    if (oauthHandled.current) return
+
+    if (oauthSuccess) {
+      oauthHandled.current = true
+      toast.success("Berhasil daftar!", {
+        description: "Silakan masuk dengan akun yang sudah dibuat.",
+      })
+    } else if (authError) {
+      oauthHandled.current = true
+      const msg = OAUTH_ERRORS[authError]
+      if (msg) {
+        toast.error(msg)
+      }
+    }
+  }, [authError, oauthSuccess])
 
   // Clear error message on user input
   function clearError() {
@@ -91,7 +93,7 @@ export function useLoginForm() {
       })
 
       if (error) {
-        setError(mapAuthError(error.message || ""))
+        setError(mapLoginError(error.message || ""))
       } else {
         router.push(redirectTo)
       }
@@ -111,6 +113,8 @@ export function useLoginForm() {
       await signIn.social({
         provider: "google",
         callbackURL: redirectTo,
+        errorCallbackURL: "/login",
+        requestSignUp: false,  // Don't allow sign-up from login page
       })
     } catch {
       setError("Gagal menghubungi Google. Silakan coba lagi.")
