@@ -1,6 +1,7 @@
 "use client"
 
-import { User, ArrowRight, Loader2 } from "lucide-react"
+import { User, ArrowRight } from "lucide-react"
+import { Loader } from "@/components/retroui/Loader"
 import { Button } from "@/components/retroui/Button"
 import Link from "next/link"
 import { AuthFormField } from "./AuthFormField"
@@ -89,7 +90,7 @@ export function RegisterForm() {
           className="w-full !h-16 !text-xl font-black uppercase neubrutal-shadow hover-shift active-shift !rounded-none flex items-center justify-center gap-3"
         >
           {loading ? (
-            <Loader2 className="size-6 animate-spin" />
+            <Loader variant="secondary" size="lg" />
           ) : (
             <>
               DAFTAR
@@ -119,7 +120,7 @@ export function RegisterForm() {
           className="w-full !h-14 mt-6 border-4 border-black !rounded-none font-bold uppercase flex items-center justify-center gap-3"
         >
           {googleLoading ? (
-            <Loader2 className="size-5 animate-spin" />
+            <Loader size="md" />
           ) : (
             <>
               <img src="/icons/google.svg" alt="" className="size-5" />
@@ -135,7 +136,7 @@ export function RegisterForm() {
         <Link href="/login">
           <Button
             variant="default"
-            className="w-full !h-12 bg-white border-4 border-black !rounded-none text-xs font-bold uppercase hover:bg-secondary-container transition-all"
+            className="w-full !h-12 bg-card border-4 border-black !rounded-none text-xs font-bold uppercase hover:bg-secondary-container transition-all"
           >
             Masuk Sekarang
           </Button>

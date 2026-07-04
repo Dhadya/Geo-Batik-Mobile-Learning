@@ -52,6 +52,8 @@
   --color-surface-container: var(--surface-container);
   --color-surface-container-low: var(--surface-container-low);
   --color-surface-container-high: var(--surface-container-high);
+  --color-module-translasi: var(--module-translasi);
+  --color-module-refleksi: var(--module-refleksi);
 }
 
 /* ── Nusantara Rebel palette ─────────────────────────────────
@@ -93,6 +95,10 @@
   --surface-container: #f5eddd;
   --surface-container-low: #fbf3e2;
   --surface-container-high: #efe7d7;
+
+  /* Module-specific accent colors (not part of Material theme) */
+  --module-translasi: #00ffff;
+  --module-refleksi: #ff00ff;
 }
 
 /* Dark mode — inverted surface with bright accent glow */
@@ -125,6 +131,8 @@
   --surface-dim: #121212;
   --surface-bright: #2e2e2e;
   --surface-container: #1e1e1e;
+  --module-translasi: #00cccc;
+  --module-refleksi: #cc00cc;
 }
 
 body {
@@ -140,6 +148,14 @@ body {
   }
   html {
     @apply font-sans;
+  }
+  /* Material Symbols font settings — default to outline style */
+  .material-symbols-outlined {
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
   }
 }
 
@@ -200,6 +216,11 @@ body {
   .batik-watermark {
     opacity: 0.05;
     pointer-events: none;
+  }
+
+  /* Kawung motif pattern overlay — subtle curved lines at 5% opacity */
+  .kawung-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.569 13.431-30 30-30M30 30c0 16.569-13.431 30-30 30M30 30c16.569 0 30 13.431 30 30M30 30c-16.569 0-30-13.431-30-30' fill='none' stroke='%23000' stroke-width='1' stroke-opacity='0.05'/%3E%3C/svg%3E");
   }
 
   /* Hard offset shadows */

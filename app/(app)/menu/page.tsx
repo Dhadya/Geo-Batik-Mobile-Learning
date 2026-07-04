@@ -1,39 +1,63 @@
-import { Button } from "@/components/retroui/Button"
-import { Text } from "@/components/retroui/Text"
-import { Card } from "@/components/retroui/Card"
 import Link from "next/link"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
+import { Text } from "@/components/retroui/Text"
+import { ModuleCard } from "@/components/menu/ModuleCard"
+import { LabCard } from "@/components/menu/LabCard"
+import { menuModules } from "@/data/menuModules"
 
-/* Main menu — 3-card navigation grid: Translasi, Refleksi, Lab Batik. */
+/* Main menu — bento grid of module cards + Lab Batik + back navigation. */
 export default function MenuPage() {
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-6 lg:p-8 space-y-8">
-      <Text as="h1" className="text-3xl font-black uppercase text-center">Menu Utama</Text>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link href="/apersepsi/translasi">
-          <Card className="w-full text-center cursor-pointer hover:translate-y-1 transition-all">
-            <Card.Content className="py-8">
-              <Text as="h2" className="text-lg font-black uppercase">TRANSLASI</Text>
-            </Card.Content>
-          </Card>
-        </Link>
-        <Link href="/apersepsi/refleksi">
-          <Card className="w-full text-center cursor-pointer hover:translate-y-1 transition-all">
-            <Card.Content className="py-8">
-              <Text as="h2" className="text-lg font-black uppercase">REFLEKSI</Text>
-            </Card.Content>
-          </Card>
-        </Link>
-        <Link href="/lab">
-          <Card className="w-full text-center cursor-pointer hover:translate-y-1 transition-all">
-            <Card.Content className="py-8">
-              <Text as="h2" className="text-lg font-black uppercase">LAB BATIK</Text>
-            </Card.Content>
-          </Card>
-        </Link>
+    <div className="max-w-7xl mx-auto px-4 md:px-12 py-12 space-y-12">
+      {/* Header — title + description */}
+      <div className="text-center md:text-left">
+        <Text
+          as="h1"
+          className="!text-5xl lg:!text-6xl !font-black uppercase inline-block border-b-8 border-black mb-4"
+        >
+          Menu Utama
+        </Text>
+        <p className="text-lg max-w-2xl">
+          Selamat datang di GEMATRI! Jelajahi transformasi geometri melalui lensa budaya batik.
+          Pilih modul di bawah ini untuk memulai pembelajaran.
+        </p>
       </div>
-      <div className="flex justify-center">
-        <Link href="/prasyarat">
-          <Button variant="outline" size="md">KEMBALI KE APERSEPSI</Button>
+
+      {/* Bento grid — module cards (Translasi + Refleksi) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        {menuModules.map((mod) => (
+          <ModuleCard
+            key={mod.slug}
+            label={mod.label}
+            title={mod.title}
+            description={mod.description}
+            icon={<MaterialIcon name={mod.icon} className="!text-3xl" />}
+            bgColor={mod.bgColor}
+            imageSrc={mod.imageSrc}
+            imageAlt={mod.imageAlt}
+            ctaText={mod.ctaText}
+            ctaBgColor={mod.ctaBgColor}
+            href={`/apersepsi/${mod.slug}`}
+          />
+        ))}
+      </div>
+
+      {/* Lab Batik — horizontal entry card */}
+      <LabCard
+        title="LAB BATIK"
+        description="Eksperimen membuat motif batik dengan transformasi geometri."
+        icon={<MaterialIcon name="draw" className="!text-5xl" />}
+        href="/lab"
+      />
+
+      {/* Back link — return to prasyarat */}
+      <div className="flex justify-center pb-12">
+        <Link
+          href="/prasyarat"
+          className="inline-flex items-center gap-4 bg-tertiary-container text-foreground border-4 border-black px-12 py-4 font-black text-2xl shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all uppercase !rounded-none"
+        >
+          <MaterialIcon name="arrow_back" className="!text-3xl" />
+          KEMBALI KE APERSEPSI
         </Link>
       </div>
     </div>

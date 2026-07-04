@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { Loader2 } from "lucide-react"
+import { Loader } from "@/components/retroui/Loader"
 import { AuthLayout } from "@/components/layout/AuthLayout"
 import { LoginForm } from "@/features/auth/components/LoginForm"
 
@@ -10,7 +10,7 @@ export default function LoginPage() {
       {/* Suspense boundary required for useSearchParams in LoginForm */}
       <Suspense fallback={
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="size-8 animate-spin" />
+          <Loader size="lg" />
         </div>
       }>
         <LoginForm />
