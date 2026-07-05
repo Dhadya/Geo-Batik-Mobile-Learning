@@ -13,7 +13,7 @@ export default function MenuPage() {
       <div className="text-center md:text-left">
         <Text
           as="h1"
-          className="!text-5xl lg:!text-6xl !font-black uppercase inline-block border-b-8 border-black mb-4"
+          className="!text-5xl lg:!text-6xl !font-black uppercase inline-block mb-4"
         >
           Menu Utama
         </Text>
@@ -57,7 +57,7 @@ export default function MenuPage() {
           className="inline-flex items-center gap-4 bg-tertiary-container text-foreground border-4 border-black px-12 py-4 font-black text-2xl shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all uppercase !rounded-none"
         >
           <MaterialIcon name="arrow_back" className="!text-3xl" />
-          KEMBALI KE APERSEPSI
+          KEMBALI KE PRASYARAT
         </Link>
       </div>
     </div>

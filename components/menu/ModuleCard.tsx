@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { Badge } from "@/components/retroui/Badge"
 import { Text } from "@/components/retroui/Text"
@@ -72,10 +73,11 @@ export function ModuleCard({
         {/* Image preview strip — shows batik pattern fallback if no image */}
         <div className="h-40 w-full border-4 border-black bg-card relative overflow-hidden shadow-md">
           {imageSrc ? (
-            <img
+            <Image
               src={imageSrc}
               alt={imageAlt || ""}
-              className="w-full h-full object-cover grayscale brightness-110 hover:grayscale-0 transition-all duration-500"
+              fill
+              className="object-cover grayscale brightness-110 hover:grayscale-0 transition-all duration-500"
             />
           ) : (
             <div className="w-full h-full kawung-pattern bg-muted flex items-center justify-center">

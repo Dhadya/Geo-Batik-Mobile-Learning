@@ -1,12 +1,8 @@
 import { notFound } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { Card } from "@/components/retroui/Card"
 import { Tabs } from "@/components/retroui/Tab"
 import type { ReactNode } from "react"
-
-type TabContent = Record<string, ReactNode>
 
 const MODULE_CONTENT: Record<string, Record<string, ReactNode>> = {
   translasi: {

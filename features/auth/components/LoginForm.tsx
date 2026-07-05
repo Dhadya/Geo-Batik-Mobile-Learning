@@ -1,6 +1,7 @@
 "use client"
 
 import { User, ArrowRight } from "lucide-react"
+import Image from "next/image"
 import { Loader } from "@/components/retroui/Loader"
 import { Button } from "@/components/retroui/Button"
 import { Checkbox } from "@/components/retroui/Checkbox"
@@ -111,7 +112,7 @@ export function LoginForm() {
             <Loader size="md" />
           ) : (
             <>
-              <img src="/icons/google.svg" alt="" className="size-5" />
+              <Image src="/icons/google.svg" alt="" width={20} height={20} />
               MASUK DENGAN GOOGLE
             </>
           )}

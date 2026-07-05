@@ -25,6 +25,8 @@ export const menuModules: MenuModule[] = [
     bgColor: "bg-module-translasi",
     ctaText: "MULAI BELAJAR",
     ctaBgColor: "bg-primary",
+    imageSrc: "/images/menu-translasi.webp",
+    imageAlt: "Preview Translasi",
   },
   {
     slug: "refleksi",
@@ -36,5 +38,7 @@ export const menuModules: MenuModule[] = [
     bgColor: "bg-module-refleksi",
     ctaText: "MULAI BELAJAR",
     ctaBgColor: "bg-secondary-container",
+    imageSrc: "/images/menu-refleksi.webp",
+    imageAlt: "Preview Refleksi",
   },
 ]

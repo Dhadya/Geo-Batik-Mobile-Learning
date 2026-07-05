@@ -13,7 +13,7 @@ export default function LandingPage() {
       <BatikWatermark />
       <AmbientCircles />
 
-      <main className="relative z-10 w-full max-w-4xl flex flex-col items-center text-center">
+      <main className="relative z-10 w-full max-w-5xl flex flex-col items-center text-center">
         <div className="mb-12 animate-float">
           <KawungStamp />
         </div>
