@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { LogOut, ChevronDown } from "lucide-react"
+import { Button } from "@/components/retroui/Button"
 import { authClient, signOut } from "@/lib/auth-client"
 
 /* Profile dropdown — shows user name/email avatar button, expands to reveal sign-out. */
@@ -10,6 +11,7 @@ export function ProfileDropdown() {
   const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
   const [open, setOpen] = useState(false)
+  const [imgFailed, setImgFailed] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Close dropdown on outside click
@@ -43,20 +45,32 @@ export function ProfileDropdown() {
   const initials = user.name
     ? user.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
     : "??"
+  const avatarUrl = user.image || null
+  const showAvatar = avatarUrl && !imgFailed
 
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Trigger button — avatar initials + chevron */}
-      <button
-        type="button"
+      <Button
+        variant="outline"
+        size="sm"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-2 border-2 border-black bg-primary-foreground/10 px-3 py-1.5 font-bold uppercase text-sm hover:bg-primary-foreground/20 transition-colors !rounded-none"
+        className="!rounded-none flex items-center gap-2 border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
       >
-        <span className="flex items-center justify-center size-7 bg-primary-foreground text-primary font-black text-xs !rounded-none">
-          {initials}
-        </span>
+        {showAvatar ? (
+          <img
+            src={avatarUrl}
+            alt=""
+            className="size-7 object-cover !rounded-none border-2 border-black"
+            onError={() => setImgFailed(true)}
+          />
+        ) : (
+          <span className="flex items-center justify-center size-7 bg-black text-primary-foreground font-black text-xs !rounded-none">
+            {initials}
+          </span>
+        )}
         <ChevronDown className={`size-4 transition-transform ${open ? "rotate-180" : ""}`} />
-      </button>
+      </Button>
 
       {/* Dropdown panel */}
       {open && (
@@ -69,14 +83,14 @@ export function ProfileDropdown() {
 
           {/* Menu items */}
           <div className="py-1">
-            <button
-              type="button"
+            <Button
+              variant="ghost"
               onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold uppercase text-destructive hover:bg-destructive/10 transition-colors"
+              className="!rounded-none w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold uppercase text-destructive hover:bg-destructive/10"
             >
               <LogOut className="size-4" />
               Keluar
-            </button>
+            </Button>
           </div>
         </div>
       )}

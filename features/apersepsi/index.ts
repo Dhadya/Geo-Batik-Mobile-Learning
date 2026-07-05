@@ -1,6 +1,4 @@
 export { ApersepsiHeader } from "./components/ApersepsiHeader"
-export { ApersepsiContentSection } from "./components/ApersepsiContent"
-export { ApersepsiExplanation } from "./components/ApersepsiExplanation"
-export { ApersepsiCTA } from "./components/ApersepsiCTA"
+export { RichParagraph, ShapeStamps } from "./components/ApersepsiContent"
 export { apersepsiData } from "./data"
 export type { ApersepsiContent, ApersepsiSlug } from "./types"

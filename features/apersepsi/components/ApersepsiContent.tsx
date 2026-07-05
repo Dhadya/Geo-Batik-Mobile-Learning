@@ -1,24 +1,35 @@
-"use client"
+import type { ReactNode } from "react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 
-interface ApersepsiContentProps {
-  hook: string
-  explanation: string
+/** Parse **bold** markers into <strong> elements */
+export function parseBold(text: string): ReactNode[] {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
+    i % 2 === 1 ? <strong key={i} className="font-black">{part}</strong> : part
+  )
 }
 
-/** Apersepsi content section with hook and explanation text. */
-export function ApersepsiContentSection({ hook, explanation }: ApersepsiContentProps) {
+/** Render a paragraph with bold markup support */
+export function RichParagraph({ text }: { text: string }) {
   return (
-    <section className="space-y-6 md:space-y-8">
-      <div className="bg-card border-4 border-black shadow-lg p-6 md:p-8 space-y-4 md:space-y-6">
-        <p className="text-base md:text-lg font-semibold leading-relaxed">
-          {hook}
-        </p>
+    <p className="text-lg md:text-xl leading-relaxed text-foreground text-justify">
+      {parseBold(text)}
+    </p>
+  )
+}
+
+/** Three decorative shape stamps at the bottom of the content card */
+export function ShapeStamps() {
+  return (
+    <div className="flex justify-center gap-4 pt-4">
+      <div className="size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <MaterialIcon name="grid_view" className="!text-2xl text-secondary" />
       </div>
-      <div className="bg-card border-4 border-black shadow-lg p-6 md:p-8 space-y-4 md:space-y-6">
-        <p className="text-base md:text-lg leading-relaxed">
-          {explanation}
-        </p>
+      <div className="size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <MaterialIcon name="change_history" className="!text-2xl text-tertiary" />
       </div>
-    </section>
+      <div className="size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <MaterialIcon name="circle" className="!text-2xl text-primary" />
+      </div>
+    </div>
   )
 }

@@ -1,7 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/retroui/Button"
@@ -9,19 +7,9 @@ import { KawungStamp } from "@/components/batik/KawungStamp"
 import { BatikWatermark } from "@/components/batik/BatikWatermark"
 import { LandingFooter } from "@/components/layout/LandingFooter"
 import { AmbientCircles } from "@/components/common/AmbientCircles"
-import { authClient } from "@/lib/auth-client"
 
 /* Landing page — hero with Kawung stamp, GEMATRI branding, and MASUK CTA */
 export default function LandingPage() {
-  const router = useRouter()
-  const { data: session } = authClient.useSession()
-
-  useEffect(() => {
-    // Redirect to menu if already logged in
-    if (session) {
-      router.replace("/menu")
-    }
-  }, [session, router])
 
   return (
     <div className="relative min-h-full flex items-center justify-center p-16 overflow-hidden bg-background">

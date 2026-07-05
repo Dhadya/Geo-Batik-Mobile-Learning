@@ -3,7 +3,7 @@
 /** Apersepsi module slug identifiers */
 export type ApersepsiSlug = "translasi" | "refleksi"
 
-/** Content block types for apersepsi sections */
+/** Content block for apersepsi page */
 export interface ApersepsiContent {
   /** Module slug (translasi | refleksi) */
   slug: ApersepsiSlug
@@ -11,20 +11,14 @@ export interface ApersepsiContent {
   label: string
   /** Module title, e.g. "TRANSLASI" */
   title: string
-  /** Opening question/hook text */
-  hook: string
-  /** Main explanation text */
-  explanation: string
-  /** Visual explanation title, e.g. "Apa itu Translasi?" */
-  visualTitle: string
-  /** Visual explanation description */
-  visualDescription: string
-  /** CTA button text */
-  ctaText: string
-  /** First tab to navigate to after apersepsi */
-  firstTab: string
-  /** Material Symbol icon for the module */
+  /** Material Symbol icon name */
   icon: string
   /** Background color class */
   bgColor: string
+  /** Content text before the image (paragraphs separated by \n\n) */
+  contentBeforeImage: string
+  /** Content text after the image (paragraphs separated by \n\n) */
+  contentAfterImage: string
+  /** Batik motif image path */
+  image: string
 }
