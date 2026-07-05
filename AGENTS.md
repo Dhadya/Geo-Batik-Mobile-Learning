@@ -93,26 +93,67 @@ npm start            # Start production server
 ```
 ├── app/              # Next.js App Router pages
 │   ├── (app)/        # App shell (header + nav)
-│   ├── (auth)/       # Auth pages
-│   └── (landing)/    # Landing page
-├── components/       # React components
-│   ├── retroui/      # NeoBrutalism primitives
-│   ├── auth/         # AuthLayout, AuthFormField
-│   ├── batik/        # KawungStamp, BatikWatermark, LandingFooter
-│   └── common/       # AmbientCircles
-├── data/             # Static curriculum data (future)
-├── lib/              # Supabase, Drizzle, BetterAuth, Gemini clients
-├── stores/           # Zustand stores (future)
-├── hooks/            # Custom hooks (future)
-├── types/            # TypeScript types
+│   │   ├── apersepsi/[slug]/   # Module intro (translasi | refleksi)
+│   │   ├── lab/                # Lab Batik creative sandbox
+│   │   ├── menu/               # Main menu — 3-card nav grid
+│   │   ├── modul/[slug]/       # Learning modules
+│   │   │   ├── [tab]/page.tsx  # Tab content (titik|garis|bangun|sumbu-x|...)
+│   │   │   ├── kuis/           # Quiz intro
+│   │   │   │   ├── [nomor]/    # Per-question (1–5) with prev/next
+│   │   │   │   └── hasil/      # Score + pembahasan
+│   │   │   ├── layout.tsx      # Tab navigation + footer
+│   │   │   └── page.tsx        # Redirects to first tab
+│   │   ├── prasyarat/          # Prerequisite material
+│   │   └── layout.tsx          # App shell layout
+│   ├── (auth)/       # Auth pages (no app shell)
+│   │   ├── login/
+│   │   └── register/
+│   ├── (landing)/    # Landing page (no app shell)
+│   ├── api/auth/[...all]/  # BetterAuth API handler
+│   ├── layout.tsx    # Root layout — font + globals
+│   └── globals.css   # Nusantara Rebel palette + utilities
+├── components/       # Shared React components
+│   ├── retroui/      # NeoBrutalism primitives (Button, Card, Toggle, Accordion, etc.)
+│   ├── batik/        # KawungStamp, BatikWatermark
+│   ├── common/       # AmbientCircles, MaterialIcon
+│   └── layout/       # AuthLayout, LandingFooter, ProfileDropdown
+├── features/         # Feature-based modular architecture
+│   ├── auth/         # Authentication feature
+│   │   ├── components/  # LoginForm, RegisterForm, AuthFormField
+│   │   └── hooks/       # useLoginForm, useRegisterForm
+│   ├── menu/         # Menu page feature
+│   │   ├── components/  # ModuleCard, LabCard, MenuHeader, ModuleGrid, BackLink
+│   │   ├── data.ts      # Menu module data
+│   │   └── index.ts     # Barrel exports
+│   └── prasyarat/    # Prerequisite material feature
+│       ├── components/  # InteractiveCanvas, GeoGebraCanvas, ControlPanel, ConceptCard, VideoEmbed
+│       ├── hooks/       # useGeoGebra, useToggleControls
+│       ├── data.ts      # Prerequisite concept data
+│       ├── toggles.ts   # Toggle config and accordion groups
+│       ├── types.ts     # GGBApplet, GGBWindow, GeoGebraToggle types
+│       └── index.ts     # Barrel exports
+├── lib/              # Utilities and clients
+│   ├── supabase/     # Supabase client (client, server, middleware)
+│   ├── auth.ts       # BetterAuth server config
+│   ├── auth-client.ts # BetterAuth browser client
+│   ├── db.ts         # Drizzle database instance
+│   ├── utils.ts      # Utility functions
+│   ├── validate-redirect.ts # Redirect URL validation
+│   └── validators.ts # Form validation (email, password, error mapping)
+├── drizzle/          # Drizzle ORM schema
+│   └── schema.ts
 ├── supabase/         # Database migrations & schema
+│   ├── migrations/
+│   ── schema.sql
+├── public/           # Static assets
+│   ├── icons/        # SVG icons (google.svg)
+│   └── images/       # Module preview images
 ├── AGENTS.md         # This file
 ├── CLAUDE.md         # Claude import of AGENTS.md
 ├── SKILL.md          # Agent skill definition
 ├── DESIGN.md         # Nusantara Rebel color palette
 ├── StyleGuide.md     # Component pattern reference
-├── PRD.md            # Product requirements
-└── DESIGN.md         # Full design system
+└── PRD.md            # Product requirements
 ```
 
 <!-- BEGIN:nextjs-agent-rules -->

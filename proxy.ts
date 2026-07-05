@@ -9,14 +9,23 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Public routes that don't require authentication
-  const publicRoutes = ["/", "/login", "/register", "/api/auth"];
-  if (publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
+  // Check for BetterAuth session cookie
+  const sessionCookie = request.cookies.get("better-auth.session_token");
+
+  // Redirect logged-in users from auth pages to menu
+  const authRoutes = ["/login", "/register"];
+  if (authRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
+    if (sessionCookie) {
+      return NextResponse.redirect(new URL("/menu", request.url));
+    }
     return NextResponse.next();
   }
 
-  // Check for BetterAuth session cookie
-  const sessionCookie = request.cookies.get("better-auth.session_token");
+  // Public routes that don't require authentication (homepage, API auth)
+  const publicRoutes = ["/", "/api/auth"];
+  if (publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
+    return NextResponse.next();
+  }
 
   // Protected routes require session
   const protectedRoutes = ["/menu", "/prasyarat", "/apersepsi", "/modul", "/lab"];

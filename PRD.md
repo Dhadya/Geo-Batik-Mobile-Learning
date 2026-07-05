@@ -460,10 +460,10 @@ To become the definitive interactive learning media for geometric transformation
 ┌─────────────────────────────────────────────────────┐
 │                    CLIENT (Browser)                   │
 │                                                       │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐   │
+│  ┌──────────┐  ┌──────────┐  ──────────────────┐   │
 │  │  Next.js  │  │ Zustand  │  │  TanStack Query  │   │
 │  │  Router   │  │  Store   │  │   Data Fetching  │   │
-│  └─────┬─────┘  └─────┬────┘  └────────┬─────────┘   │
+│  ─────┬─────┘  └─────┬────┘  └─────────────────┘   │
 │        │              │                 │              │
 │  ┌─────┴──────────────┴─────────────────┴─────────┐   │
 │  │              React Components                   │   │
@@ -481,16 +481,16 @@ To become the definitive interactive learning media for geometric transformation
 ┌──────────────────────┴──────────────────────────────┐
 │                    SERVER (Vercel)                     │
 │                                                       │
-│  ┌────────────────────────────────────────────────┐   │
+│  ┌────────────────────────────────────────────────   │
 │  │              Next.js API Routes                 │   │
 │  │  /api/quiz  /api/progress  /api/ai  /api/lab   │   │
 │  └─────────┬──────────┬──────────┬────────┬───────┘   │
 │            │          │          │        │            │
-│  ┌─────────┴──┐ ┌─────┴────┐ ┌──┴───┐ ┌──┴────────┐  │
+│  ┌─────────┴──┐ ┌─────┴────┐ ┌──┴───┐ ──┴────────┐  │
 │  │ BetterAuth │ │ Supabase │ │Drizzle│ │  Gemini   │  │
 │  │    Auth    │ │    DB    │ │  ORM  │ │    API    │  │
-│  └────────────┘ └──────────┘ └───────┘ └───────────┘  │
-└──────────────────────────────────────────────────────┘
+│  └────────────┘ ──────────┘ └───────┘ └───────────┘  │
+└──────────────────────────────────────────────────────
 ```
 
 ### 6.3 Project Structure
@@ -512,90 +512,108 @@ app/
 │           ├── layout.tsx       # Tab navigation + footer (Kembali / Kuis)
 │           ├── page.tsx         # Redirects to first tab
 │           ├── [tab]/page.tsx   # Tab content rendered by slug+tab
-│           ├── kuis/
-│           │   ├── page.tsx     # Quiz intro/question
-│           │   ├── [nomor]/page.tsx  # Per-question (1–5) with prev/next
-│           │   └── hasil/page.tsx    # Score + pembahasan
+│           └── kuis/
+│               ├── page.tsx     # Quiz intro
+│               ├── [nomor]/page.tsx  # Per-question (1–5) with prev/next
+│               └── hasil/page.tsx    # Score + pembahasan
 ├── (landing)/
 │   └── page.tsx                 # Landing page — full brand hero
 ├── api/
-│   ├── auth/[...all]/route.ts   # BetterAuth API handler
-│   ├── quiz/route.ts
-│   ├── progress/route.ts
-│   ├── ai/chat/route.ts
-│   ├── ai/evaluate/route.ts
-│   └── lab/route.ts
+│   └── auth/[...all]/route.ts   # BetterAuth API handler
 ├── layout.tsx                   # Root layout — Space Grotesk + globals
-└── globals.css                  # Nusantara Rebel palette + utilities
+── globals.css                  # Nusantara Rebel palette + utilities
 
 components/
 ├── retroui/                     # NeoBrutalism RetroUI primitives
+│   ├── Accordion.tsx
+│   ├── Alert.tsx
+│   ├── Badge.tsx
 │   ├── Button.tsx
 │   ├── Card.tsx
-│   ├── Text.tsx
-│   ├── Input.tsx
-│   ├── Tab.tsx
-│   ├── Progress.tsx
-│   ├── Alert.tsx
+│   ├── Checkbox.tsx
 │   ├── Dialog.tsx
-│   └── Textarea.tsx
-├── auth/
-│   ├── AuthLayout.tsx           # Branded auth shell
-│   └── AuthFormField.tsx        # Label+input+icon/toggle
+│   ├── Input.tsx
+│   ├── Label.tsx
+│   ├── Loader.tsx
+│   ├── Progress.tsx
+│   ├── Radio.tsx
+│   ├── Select.tsx
+│   ├── Tab.tsx
+│   ├── Text.tsx
+│   ├── Textarea.tsx
+│   ├── Toggle.tsx
+│   ── Tooltip.tsx
 ├── batik/
 │   ├── KawungStamp.tsx
-│   ├── BatikWatermark.tsx
-│   └── LandingFooter.tsx
+│   ── BatikWatermark.tsx
 ├── common/
-│   └── AmbientCircles.tsx
-├── canvas/
-│   ├── InteractiveCoordinateGrid.tsx
-│   ├── LabBatikCanvas.tsx
-│   └── BatikMotifs.ts
-├── geogebra/
-│   └── GeoGebraEmbed.tsx
-├── learning/
-│   ├── InquirySteps.tsx
-│   ├── Observations.tsx
-│   ├── ConclusionNotepad.tsx
-│   └── CulturalContext.tsx
-└── quiz/
-    ├── QuestionCard.tsx
-    ├── MultipleChoice.tsx
-    ├── CoordinateInput.tsx
-    └── QuizResults.tsx
+│   ├── AmbientCircles.tsx
+│   └── MaterialIcon.tsx
+└── layout/
+    ├── AuthLayout.tsx
+    ├── LandingFooter.tsx
+    └── ProfileDropdown.tsx
+
+features/                        # Feature-based modular architecture
+├── auth/
+│   ├── components/
+│   │   ├── AuthFormField.tsx
+│   │   ├── LoginForm.tsx
+│   │   ── RegisterForm.tsx
+│   └── hooks/
+│       ├── useLoginForm.ts
+│       └── useRegisterForm.ts
+├── menu/
+│   ├── components/
+│   │   ├── BackLink.tsx
+│   │   ├── LabCard.tsx
+│   │   ├── MenuHeader.tsx
+│   │   ├── ModuleCard.tsx
+│   │   └── ModuleGrid.tsx
+│   ├── data.ts
+│   └── index.ts
+└── prasyarat/
+    ├── components/
+    │   ├── ConceptCard.tsx
+    │   ├── ControlPanel.tsx
+    │   ├── GeoGebraCanvas.tsx
+    │   ├── InteractiveCanvas.tsx
+    │   └── VideoEmbed.tsx
+    ├── hooks/
+    │   ├── useGeoGebra.ts
+    │   └── useToggleControls.ts
+    ├── data.ts
+    ├── toggles.ts
+    ├── types.ts
+    ── index.ts
 
 lib/
 ├── supabase/
 │   ├── client.ts
+│   ├── middleware.ts
 │   └── server.ts
-├── drizzle/
-│   ├── schema.ts
-│   ├── migrations/
-│   └── index.ts
-├── auth.ts              # BetterAuth server config
-├── auth-client.ts       # BetterAuth browser client
-└── gemini/
-    └── client.ts
+── auth.ts              # BetterAuth server config
+── auth-client.ts       # BetterAuth browser client
+├── db.ts                # Drizzle database instance
+├── utils.ts             # Utility functions
+├── validate-redirect.ts # Redirect URL validation
+└── validators.ts        # Form validation (email, password, error mapping)
 
-stores/
-├── useAuthStore.ts
-├── useProgressStore.ts
-├── useQuizStore.ts
-└── useChatStore.ts
+drizzle/
+└── schema.ts            # Drizzle ORM schema
 
-data/
-├── curriculumData.ts
-├── quizQuestions.ts
-└── moduleConfig.ts              # Slug→tab mappings & metadata
+supabase/
+├── migrations/
+│   ├── meta/
+│   │   ├── 0000_snapshot.json
+│   │   └── _journal.json
+│   └── 0000_grey_taskmaster.sql
+└── schema.sql
 
-hooks/
-├── useCanvas.ts
-├── useGeoGebra.ts
-└── useTimer.ts
-
-types/
-└── index.ts
+public/
+├── icons/
+│   └── google.svg
+└── images/              # Module preview images
 ```
 
 ### 6.4 GeoGebra Integration
@@ -721,7 +739,7 @@ CREATE TABLE subtopic_progress (
   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id          TEXT REFERENCES users(id),
   module           TEXT NOT NULL,          -- 'translasi' | 'refleksi'
-  subtopic         TEXT NOT NULL,          -- PageContent.id: 'titik', 'garis', 'bidang', 'sumbu-x', 'sumbu-y', 'titik-asal', 'garis-y-x', 'garis-y-neg-x', 'garis-x-h', 'garis-y-k'
+  subtopic         TEXT NOT NULL,          -- PageContent.id: 'titik', 'garis', 'bangun', 'sumbu-x', 'sumbu-y', 'titik-asal', 'garis-y-x', 'garis-y-neg-x', 'garis-x-h', 'garis-y-k'
 
   -- Pencapaian tahapan Inkuiri: menyimpan id langkah yang sudah dikerjakan oleh siswa, misal ["step1","step2","step3","step4"]
   steps_completed  JSONB DEFAULT '[]',
