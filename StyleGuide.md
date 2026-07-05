@@ -128,7 +128,7 @@ import { Eye, EyeOff, ArrowRight, Check, X, Menu } from "lucide-react";
 ### Page Layout
 
 ```
-max-w-7xl mx-auto                    // Centered container, max 1280px
+max-w-8xlxl mx-auto                    // Centered container, max 1280px
 p-4 md:p-6 lg:p-8                    // Responsive page padding
 space-y-6                             // Vertical spacing between children
 gap-6                                 // Grid/card gaps

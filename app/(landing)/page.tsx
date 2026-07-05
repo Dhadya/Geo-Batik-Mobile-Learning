@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/retroui/Button"
 import { KawungStamp } from "@/components/batik/KawungStamp"
 import { BatikWatermark } from "@/components/batik/BatikWatermark"
-import { LandingFooter } from "@/components/batik/LandingFooter"
+import { LandingFooter } from "@/components/layout/LandingFooter"
 import { AmbientCircles } from "@/components/common/AmbientCircles"
 
 /* Landing page — hero with Kawung stamp, GEMATRI branding, and MASUK CTA */
@@ -13,7 +13,7 @@ export default function LandingPage() {
       <BatikWatermark />
       <AmbientCircles />
 
-      <main className="relative z-10 w-full max-w-5xl flex flex-col items-center text-center">
+      <main className="relative z-10 w-full max-w-[96rem] flex flex-col items-center text-center">
         <div className="mb-12 animate-float">
           <KawungStamp />
         </div>

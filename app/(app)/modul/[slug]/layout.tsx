@@ -28,7 +28,7 @@ export default async function ModulLayout(props: {
   if (!tabs) notFound()
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="max-w-8xlxl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
       <div className="flex flex-wrap gap-2 border-b-4 border-black pb-2">
         {tabs.map((t) => (
           <Link

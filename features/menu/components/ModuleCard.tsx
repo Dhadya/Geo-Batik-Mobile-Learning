@@ -44,10 +44,10 @@ export function ModuleCard({
 }: ModuleCardProps) {
   return (
     <div
-      className={`group relative border-4 border-black p-8 shadow-lg transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-md kawung-pattern min-h-[550px] flex flex-col justify-between overflow-hidden ${bgColor}`}
+      className={`group relative border-4 border-black p-6 md:p-8 shadow-lg transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-md kawung-pattern min-h-[450px] md:min-h-[550px] flex flex-col justify-between overflow-hidden ${bgColor}`}
     >
       {/* Icon badge — top-right corner */}
-      <div className="absolute top-4 right-4 size-12 border-4 border-black flex items-center justify-center bg-card shadow-md">
+      <div className="absolute top-3 right-3 md:top-4 md:right-4 size-10 md:size-12 border-4 border-black flex items-center justify-center bg-card shadow-md">
         {icon}
       </div>
 
@@ -55,29 +55,30 @@ export function ModuleCard({
       <div>
         <Badge
           variant="surface"
-          className="border-4 border-black bg-card shadow-md font-black uppercase text-xs mb-6 !rounded-none"
+          className="border-4 border-black bg-card shadow-md font-black uppercase text-xs md:text-sm mb-4 md:mb-6 !rounded-none"
         >
           {label}
         </Badge>
         <Text
           as="h2"
-          className="!text-5xl lg:!text-6xl !font-black leading-none tracking-tighter uppercase mb-4"
+          className="!text-4xl md:!text-5xl lg:!text-6xl !font-black leading-none tracking-tighter uppercase mb-3 md:mb-4"
         >
           {title}
         </Text>
-        <p className="text-base font-semibold max-w-sm mb-4">{description}</p>
+        <p className="text-sm md:text-base font-semibold max-w-sm mb-3 md:mb-4">{description}</p>
       </div>
 
       {/* Footer — preview image + CTA button */}
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {/* Image preview strip — shows batik pattern fallback if no image */}
-        <div className="h-40 w-full border-4 border-black bg-card relative overflow-hidden shadow-md">
+        <div className="h-36 md:h-48 w-full border-4 border-black bg-card relative overflow-hidden shadow-md">
           {imageSrc ? (
             <Image
               src={imageSrc}
               alt={imageAlt || ""}
               fill
-              className="object-cover grayscale brightness-110 hover:grayscale-0 transition-all duration-500"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover brightness-110 transition-all duration-500"
             />
           ) : (
             <div className="w-full h-full kawung-pattern bg-muted flex items-center justify-center">
@@ -89,10 +90,10 @@ export function ModuleCard({
         {/* CTA button — navigates to module apersepsi */}
         <Link
           href={href}
-          className={`w-full border-4 border-black py-6 shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all flex items-center justify-center gap-4 uppercase font-black text-xl !rounded-none ${ctaBgColor}`}
+          className={`w-full border-4 border-black py-4 md:py-6 shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all flex items-center justify-center gap-3 md:gap-4 uppercase font-black text-lg md:text-xl !rounded-none ${ctaBgColor}`}
         >
           {ctaText}
-          <MaterialIcon name="arrow_forward" className="!text-3xl" />
+          <MaterialIcon name="arrow_forward" className="!text-2xl md:!text-3xl" />
         </Link>
       </div>
     </div>

@@ -24,7 +24,7 @@ export default async function KuisSoalPage(props: {
   const progress = Math.min((nomorNum / 5) * 100, 100)
 
   return (
-    <div className="max-w-3xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="max-w-[96rem] mx-auto p-4 md:p-6 lg:p-8 space-y-6">
       <Text as="h1" className="text-2xl font-black uppercase">Kuis {label}</Text>
       <Text as="p" className="text-sm font-medium">Soal {nomorNum} dari 5</Text>
       <Progress value={progress} className="w-full" />

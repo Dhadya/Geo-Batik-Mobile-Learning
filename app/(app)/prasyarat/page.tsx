@@ -1,15 +1,12 @@
 import Link from "next/link"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { Text } from "@/components/retroui/Text"
-import { ConceptCard } from "@/components/prasyarat/ConceptCard"
-import { VideoEmbed } from "@/components/prasyarat/VideoEmbed"
-import { InteractiveCanvas } from "@/components/prasyarat/InteractiveCanvas"
-import { prerequisiteConcepts } from "@/data/prerequisiteConcepts"
+import { ConceptCard, VideoEmbed, InteractiveCanvas, prerequisiteConcepts } from "@/features/prasyarat"
 
 /* Prasyarat (prerequisites) — Cartesian coordinate recap before module lessons. */
 export default function PrasyaratPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-9 md:py-12 space-y-9 md:space-y-12">
+    <div className="max-w-[96rem] mx-auto px-4 md:px-8 py-9 md:py-12 space-y-9 md:space-y-12">
       {/* Header — badge + title + description */}
       <header className="space-y-3 md:space-y-4">
         <div className="inline-block bg-primary border-4 border-black p-2 shadow-md">
@@ -64,14 +61,14 @@ export default function PrasyaratPage() {
       </section>
 
       {/* CTA section */}
-      <section className="pt-9 pb-4 md:pt-12 md:pb-6 flex flex-col items-center gap-6 md:gap-8">
+      <section className="py-4 md:py-6 flex flex-col items-center gap-6 md:gap-8">
         <div className="w-full border-t-4 border-black" />
 
         <div className="w-full flex flex-col items-center gap-4 md:gap-6">
           {/* LANJUT — links to menu */}
           <Link
             href="/menu"
-            className="group relative w-full md:w-3/4 bg-secondary-container border-4 border-black py-7 px-9 md:py-10 md:px-12 shadow-xl hover:translate-x-2 hover:translate-y-2 hover:shadow-lg active:translate-x-4 active:translate-y-4 active:shadow-none transition-all"
+            className="group relative w-full md:w-3/4 bg-secondary-container border-4 border-black py-4 px-8 md:py-8 md:px-12 shadow-xl hover:translate-x-2 hover:translate-y-2 hover:shadow-lg active:translate-x-4 active:translate-y-4 active:shadow-none transition-all"
           >
             <span className="flex items-center justify-center gap-4 md:gap-8 text-xl md:text-3xl lg:text-4xl font-black uppercase">
               LANJUT KE MENU

@@ -18,7 +18,7 @@ export default async function KuisIntroPage(props: {
   if (!label) notFound()
 
   return (
-    <div className="max-w-3xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="max-w-[96rem] mx-auto p-4 md:p-6 lg:p-8 space-y-6">
       <Text as="h1" className="text-2xl font-black uppercase">Kuis {label}</Text>
       <Progress value={25} className="w-full" />
       <Card className="w-full">

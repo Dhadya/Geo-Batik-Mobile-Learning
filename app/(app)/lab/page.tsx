@@ -6,7 +6,7 @@ import Link from "next/link"
 /* Lab Batik workspace — 4-column layout: motif selection, canvas, transform tools, export. */
 export default function LabBatikPage() {
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="max-w-[96rem] mx-auto p-4 md:p-6 lg:p-8 space-y-6">
       <div className="flex items-center justify-between">
         <Text as="h1" className="text-2xl font-black uppercase">Lab Batik</Text>
         <Link href="/menu">
