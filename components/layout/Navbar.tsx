@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
@@ -111,11 +111,27 @@ function MobileNavDropdown({
 export function Navbar() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [navKey, setNavKey] = useState(0)
+  const lastScrollY = useRef(0)
 
   const isMenuActive = pathname === "/menu"
   const isTranslasiActive = pathname.startsWith("/apersepsi/translasi") || pathname.startsWith("/modul/translasi")
   const isRefleksiActive = pathname.startsWith("/apersepsi/refleksi") || pathname.startsWith("/modul/refleksi")
   const isLabActive = pathname === "/lab"
+
+  // Close dropdowns on scroll to prevent positioner drift
+  useEffect(() => {
+    function handleScroll() {
+      const currentScrollY = window.scrollY
+      if (Math.abs(currentScrollY - lastScrollY.current) > 5) {
+        setMobileOpen(false)
+        setNavKey((k) => k + 1)
+        lastScrollY.current = currentScrollY
+      }
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
     <header className="border-b-4 border-black bg-primary text-primary-foreground sticky top-0 z-40">
@@ -133,7 +149,7 @@ export function Navbar() {
           </Link>
 
           {/* Center — Desktop nav */}
-          <NavigationMenu className="hidden md:flex">
+          <NavigationMenu key={navKey} className="hidden md:flex">
             <NavigationMenuList className="gap-8">
               <NavigationMenuItem>
                 <NavigationMenuLink
@@ -195,7 +211,7 @@ export function Navbar() {
 
       {/* Mobile menu panel */}
       {mobileOpen && (
-        <div className="md:hidden relative z-50 border-t-4 border-black bg-primary">
+        <div className="md:hidden absolute top-full left-0 right-0 z-50 border-t-4 border-black bg-primary">
           <div className="max-w-[96rem] mx-auto px-4 py-4 space-y-3">
             <Link
               href="/menu"

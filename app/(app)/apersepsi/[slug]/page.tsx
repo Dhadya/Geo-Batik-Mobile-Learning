@@ -15,7 +15,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
   const firstTab = data.slug === "translasi" ? "titik" : "sumbu-x"
 
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-8 py-9 md:py-12 space-y-9 md:space-y-12">
+    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-8 md:py-12 space-y-8 md:space-y-12">
       <ApersepsiHeader
         label={data.label}
         title={data.title}
@@ -25,7 +25,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
 
       {/* Content card */}
       <div className="border-4 border-black bg-card shadow-lg transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-md">
-        <div className="p-6 md:p-10 space-y-6 md:space-y-8">
+        <div className="p-6 md:p-8 space-y-4 md:space-y-6">
           {beforeParagraphs.map((paragraph, i) => (
             <RichParagraph key={`before-${i}`} text={paragraph} />
           ))}
@@ -53,10 +53,10 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
       <div className="flex justify-center">
         <Link
           href={`/modul/${data.slug}/${firstTab}`}
-          className="group bg-primary border-8 border-black px-12 md:px-16 py-5 md:py-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-2 hover:translate-y-2 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[8px] active:translate-y-[8px] active:shadow-none transition-all flex items-center gap-4 md:gap-6 uppercase font-black text-xl md:text-2xl !rounded-none"
+          className="group bg-primary border-8 border-black px-8 md:px-12 py-4 md:py-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-2 hover:translate-y-2 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all flex items-center gap-3 md:gap-4 uppercase font-black text-lg md:text-xl !rounded-none"
         >
           BAIK, AYO BELAJAR
-          <MaterialIcon name="arrow_forward" className="!text-3xl md:!text-4xl group-hover:translate-x-2 transition-transform" />
+          <MaterialIcon name="arrow_forward" className="!text-2xl md:!text-3xl group-hover:translate-x-2 transition-transform" />
         </Link>
       </div>
     </div>

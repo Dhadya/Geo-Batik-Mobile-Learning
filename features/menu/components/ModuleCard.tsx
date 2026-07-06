@@ -79,6 +79,7 @@ export function ModuleCard({
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover brightness-110 transition-all duration-500"
+              priority
             />
           ) : (
             <div className="w-full h-full kawung-pattern bg-muted flex items-center justify-center">

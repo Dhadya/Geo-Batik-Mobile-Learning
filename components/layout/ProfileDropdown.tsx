@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { LogOut, ChevronDown } from "lucide-react"
 import { Button } from "@/components/retroui/Button"
@@ -58,9 +59,11 @@ export function ProfileDropdown() {
         className="!rounded-none flex items-center gap-2 border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
       >
         {showAvatar ? (
-          <img
+          <Image
             src={avatarUrl}
             alt=""
+            width={28}
+            height={28}
             className="size-7 object-cover !rounded-none border-2 border-black"
             onError={() => setImgFailed(true)}
           />

@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Toggle } from "@/components/retroui/Toggle"
 import {
   Accordion,
@@ -9,7 +10,10 @@ import {
 } from "@/components/retroui/Accordion"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { toggles, accordionGroups, accordionItemLabels } from "../toggles"
+import { prerequisiteConcepts } from "../data"
+import { ConceptSheet } from "./ConceptSheet"
 import type { GeoGebraToggle } from "../types"
+import type { PrerequisiteConcept } from "../data"
 
 interface ControlPanelProps {
   activeToggles: Record<string, boolean>
@@ -21,12 +25,30 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
   const standaloneToggles = toggles.filter(t => !accordionItemLabels.includes(t.label))
   const getToggle = (label: string) => toggles.find(t => t.label === label)
 
+  const [sheetConcept, setSheetConcept] = useState<PrerequisiteConcept | null>(null)
+  const [sheetOpen, setSheetOpen] = useState(false)
+
+  function handleToggleClick(toggle: GeoGebraToggle, pressed: boolean) {
+    onToggle(toggle)
+    if (toggle.conceptKey) {
+      const concept = prerequisiteConcepts.find(c => c.title === toggle.conceptKey)
+      if (concept) {
+        if (pressed) {
+          setSheetConcept(concept)
+          setSheetOpen(true)
+        } else {
+          setSheetOpen(false)
+        }
+      }
+    }
+  }
+
   return (
     <div className="xl:col-span-1 space-y-4 md:space-y-6">
       {/* Guide text */}
       <h3 className="font-black uppercase text-base md:text-lg">Eksplorasi Konsep</h3>
       <p className="text-sm md:text-base text-muted-foreground">
-        Gunakan tombol di bawah untuk menampilkan atau menyembunyikan elemen geometri pada kanvas. Klik untuk mengaktifkan, klik lagi untuk menonaktifkan.
+        Tekan tombol berikut untuk menampilkan objek geometri
       </p>
 
       {/* Standalone toggles */}
@@ -36,7 +58,7 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
             key={toggle.label}
             toggle={toggle}
             isActive={activeToggles[toggle.label] ?? true}
-            onToggle={onToggle}
+            onToggle={handleToggleClick}
           />
         ))}
       </div>
@@ -50,6 +72,9 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
               <span className="flex-1 text-left">{group.label}</span>
             </AccordionTrigger>
             <AccordionContent>
+              {group.description && (
+                <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">{group.description}</p>
+              )}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 md:gap-3">
                 {group.items.map(itemLabel => {
                   const toggle = getToggle(itemLabel)
@@ -58,7 +83,7 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
                       key={itemLabel}
                       toggle={toggle}
                       isActive={activeToggles[toggle.label] ?? false}
-                      onToggle={onToggle}
+                      onToggle={handleToggleClick}
                     />
                   ) : null
                 })}
@@ -67,6 +92,12 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
           </AccordionItem>
         ))}
       </Accordion>
+
+      <ConceptSheet
+        concept={sheetConcept}
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+      />
     </div>
   )
 }
@@ -74,12 +105,12 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
 function ToggleButton({ toggle, isActive, onToggle }: {
   toggle: GeoGebraToggle
   isActive: boolean
-  onToggle: (toggle: GeoGebraToggle) => void
+  onToggle: (toggle: GeoGebraToggle, pressed: boolean) => void
 }) {
   return (
     <Toggle
       pressed={isActive}
-      onPressedChange={() => onToggle(toggle)}
+      onPressedChange={(pressed) => onToggle(toggle, pressed)}
       variant="outlined"
       size="sm"
       className="border-2 border-black font-bold text-xs md:text-sm shadow-sm hover:shadow justify-start px-2 md:px-2.5"

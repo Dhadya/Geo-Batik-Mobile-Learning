@@ -45,6 +45,26 @@ export const prerequisiteConcepts: PrerequisiteConcept[] = [
     icon: "grid_4x4",
   },
   {
+    title: "K1",
+    description: "Kuadran I terletak di absis x > 0 dan ordinat y > 0.",
+    icon: "grid_view",
+  },
+  {
+    title: "K2",
+    description: "Kuadran II terletak di absis x < 0 dan ordinat y > 0.",
+    icon: "grid_view",
+  },
+  {
+    title: "K3",
+    description: "Kuadran III terletak di absis x < 0 dan ordinat y < 0.",
+    icon: "grid_view",
+  },
+  {
+    title: "K4",
+    description: "Kuadran IV terletak di absis x > 0 dan ordinat y < 0.",
+    icon: "grid_view",
+  },
+  {
     title: "Ruas Garis",
     description:
       "Ruas garis didefinisikan sebagai bagian dari suatu garis lurus yang dibatasi oleh dua titik ujung.",

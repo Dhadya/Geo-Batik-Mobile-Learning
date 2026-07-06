@@ -21,4 +21,6 @@ export interface GeoGebraToggle {
   icon: string
   /** GeoGebra object name(s) to toggle visibility */
   objects: string[]
+  /** Key to look up concept description in prerequisiteConcepts */
+  conceptKey?: string
 }
