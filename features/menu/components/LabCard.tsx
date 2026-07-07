@@ -39,7 +39,7 @@ export function LabCard({
           <h3 className="text-2xl md:text-3xl lg:text-5xl font-black uppercase leading-none mb-1 md:mb-2">
             {title}
           </h3>
-          <p className="text-xs md:text-lg">{description}</p>
+          <p className="text-base md:text-lg">{description}</p>
         </div>
       </div>
 

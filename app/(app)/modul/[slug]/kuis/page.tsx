@@ -16,6 +16,11 @@ const MODULE_ICONS: Record<string, string> = {
   refleksi: "flip",
 }
 
+const MODULE_BG: Record<string, string> = {
+  translasi: "bg-module-translasi",
+  refleksi: "bg-module-refleksi",
+}
+
 export default async function KuisIntroPage(props: {
   params: Promise<{ slug: string }>
 }) {
@@ -29,7 +34,7 @@ export default async function KuisIntroPage(props: {
     <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
       <QuizBreadcrumb slug={slug} label={label} />
 
-      <QuizHeader title={quiz.title} badge={quiz.badge} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="!text-2xl md:!text-3xl" />} />
+      <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="!text-2xl md:!text-3xl" />} />
 
       <section className="border-4 border-black bg-white shadow-lg p-6 md:p-8 space-y-4">
         <Text as="h2" className="text-xl md:text-2xl font-black uppercase">

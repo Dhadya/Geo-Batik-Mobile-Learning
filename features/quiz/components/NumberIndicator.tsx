@@ -25,7 +25,7 @@ export function NumberIndicator({
             <Button
               key={n}
               size="sm"
-              className={`!rounded-none w-10 h-10 md:w-11 md:h-11 p-0 font-bold text-sm border-2 border-black ${
+              className={`!rounded-none w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 p-0 font-bold text-xs md:text-sm border-2 border-black ${
                 isCurrent
                   ? "bg-primary text-primary-foreground"
                   : isAnswered
@@ -39,7 +39,7 @@ export function NumberIndicator({
           )
         })}
       </div>
-      <Text as="p" className="font-black text-xl md:text-2xl uppercase whitespace-nowrap">
+      <Text as="p" className="font-black text-base md:text-xl lg:text-2xl uppercase whitespace-nowrap">
         Soal {current} Dari {total}
       </Text>
     </div>

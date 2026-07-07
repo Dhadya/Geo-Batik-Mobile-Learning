@@ -20,7 +20,7 @@ export default function PrasyaratPage() {
         >
           Elemen Dasar Geometri
         </Text>
-        <p className="text-sm md:text-lg max-w-3xl">
+        <p className="text-base md:text-lg max-w-3xl">
           Sebelum lebih dalam memasuki media GEMATRI, mari kita ingat kembali
           tentang sistem koordinat kartesius.
         </p>

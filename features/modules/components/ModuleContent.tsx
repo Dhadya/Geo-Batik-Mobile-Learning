@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 import { QuizBreadcrumb } from "@/features/quiz"
 import { InteractiveWorkspace } from "./InteractiveWorkspace"
 import { ObservationPanel } from "./ObservationPanel"
@@ -47,16 +47,17 @@ export function ModuleContent({
 
       <AssessmentSection questions={tabConfig.assessment} />
 
-      <div className="flex justify-between pt-4 border-t-2 border-black">
+      <div className="flex justify-center gap-4 pt-4">
         <Link href={`/apersepsi/${slug}`}>
-          <Button variant="outline" size="md" className="gap-2">
-            <ArrowLeft className="size-4" />
+          <Button variant="outline" size="lg" className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2">
+            <ArrowLeft className="size-6" />
             KEMBALI
           </Button>
         </Link>
         <Link href={`/modul/${slug}/kuis`}>
-          <Button variant="default" size="md">
-            KUIS
+          <Button variant="default" size="lg" className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2">
+            KERJAKAN KUIS
+            <ArrowRight className="size-6" />
           </Button>
         </Link>
       </div>

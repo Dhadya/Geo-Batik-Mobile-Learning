@@ -22,7 +22,7 @@ export function QuizBreadcrumb({
 }) {
   return (
     <Breadcrumb>
-      <BreadcrumbList className="text-base md:text-lg font-semibold text-black/70 gap-2">
+      <BreadcrumbList className="text-xs md:text-lg font-semibold text-black/70 gap-1 md:gap-2">
         <BreadcrumbItem>
           <BreadcrumbLink render={<Link href="/menu" />}>
             Menu

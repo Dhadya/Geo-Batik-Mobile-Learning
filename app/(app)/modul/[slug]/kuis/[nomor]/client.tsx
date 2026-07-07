@@ -13,6 +13,7 @@ import {
   QuizArrowNav,
   QuizArrowNext,
   useQuiz,
+  useQuizStore,
 } from "@/features/quiz"
 
 const MODULE_LABELS: Record<string, string> = {
@@ -108,7 +109,7 @@ export function KuisSoalClient({
           </div>
         </div>
 
-        <div className="flex md:hidden justify-between items-center mx-3 md:mx-4 p-4 border-t-2 border-black">
+        <div className="flex md:hidden justify-between items-center mx-3 md:mx-4 p-4">
           <QuizArrowNav slug={slug} isFirst={isFirst} current={nomor} />
           <QuizArrowNext
             slug={slug}
@@ -120,16 +121,18 @@ export function KuisSoalClient({
 
       <div className="flex justify-center pt-4 md:pt-6">
         {allAnswered ? (
-          <Link href={`/modul/${slug}/kuis/hasil`}>
-            <Button
-              variant="default"
-              size="lg"
-              className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
-            >
-              Selesai
-              <CheckCircle className="size-6" />
-            </Button>
-          </Link>
+          <Button
+            variant="default"
+            size="lg"
+            className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
+            onClick={() => {
+              useQuizStore.getState().submitAnswers()
+              router.push(`/modul/${slug}/kuis/hasil`)
+            }}
+          >
+            Selesai
+            <CheckCircle className="size-6" />
+          </Button>
         ) : isFirst ? (
           <Link href={`/modul/${slug}/kuis`}>
             <Button

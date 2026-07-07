@@ -22,11 +22,13 @@ function NavDropdownItem({
   isActive,
   apersepsiHref,
   modulHref,
+  kuisHref,
 }: {
   label: string
   isActive: boolean
   apersepsiHref: string
   modulHref: string
+  kuisHref: string
 }) {
   return (
     <NavigationMenuItem>
@@ -48,9 +50,15 @@ function NavDropdownItem({
         </NavigationMenuLink>
         <NavigationMenuLink
           render={<Link href={modulHref} />}
-          className="!rounded-none block px-4 py-3 text-sm font-black uppercase hover:!bg-secondary-container focus:!bg-secondary-container data-active:!bg-secondary-container"
+          className="!rounded-none block px-4 py-3 text-sm font-black uppercase border-b-2 border-black hover:!bg-secondary-container focus:!bg-secondary-container data-active:!bg-secondary-container"
         >
           Modul
+        </NavigationMenuLink>
+        <NavigationMenuLink
+          render={<Link href={kuisHref} />}
+          className="!rounded-none block px-4 py-3 text-sm font-black uppercase hover:!bg-secondary-container focus:!bg-secondary-container data-active:!bg-secondary-container"
+        >
+          Kuis
         </NavigationMenuLink>
       </NavigationMenuContent>
     </NavigationMenuItem>
@@ -62,10 +70,12 @@ function MobileNavDropdown({
   label,
   apersepsiHref,
   modulHref,
+  kuisHref,
 }: {
   label: string
   apersepsiHref: string
   modulHref: string
+  kuisHref: string
 }) {
   const [open, setOpen] = useState(false)
 
@@ -101,6 +111,13 @@ function MobileNavDropdown({
             className="block px-4 py-2 text-sm font-bold uppercase hover:bg-secondary-container transition-colors border-t-2 border-black"
           >
             Modul
+          </Link>
+          <Link
+            href={kuisHref}
+            onClick={() => setOpen(false)}
+            className="block px-4 py-2 text-sm font-bold uppercase hover:bg-secondary-container transition-colors border-t-2 border-black"
+          >
+            Kuis
           </Link>
         </div>
       )}
@@ -167,6 +184,7 @@ export function Navbar() {
                 isActive={isTranslasiActive}
                 apersepsiHref="/apersepsi/translasi"
                 modulHref="/modul/translasi"
+                kuisHref="/modul/translasi/kuis"
               />
 
               <NavDropdownItem
@@ -174,6 +192,7 @@ export function Navbar() {
                 isActive={isRefleksiActive}
                 apersepsiHref="/apersepsi/refleksi"
                 modulHref="/modul/refleksi"
+                kuisHref="/modul/refleksi/kuis"
               />
 
               <NavigationMenuItem>
@@ -225,12 +244,14 @@ export function Navbar() {
               label="Translasi"
               apersepsiHref="/apersepsi/translasi"
               modulHref="/modul/translasi"
+              kuisHref="/modul/translasi/kuis"
             />
 
             <MobileNavDropdown
               label="Refleksi"
               apersepsiHref="/apersepsi/refleksi"
               modulHref="/modul/refleksi"
+              kuisHref="/modul/refleksi/kuis"
             />
 
             <Link
