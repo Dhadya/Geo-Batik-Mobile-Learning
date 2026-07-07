@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/retroui/Button"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { ApersepsiHeader, RichParagraph, ShapeStamps, apersepsiData } from "@/features/apersepsi"
 import { QuizBreadcrumb } from "@/features/quiz"
 import type { ApersepsiSlug } from "@/features/apersepsi"
@@ -18,7 +18,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
   const label = data.slug === "translasi" ? "Translasi" : "Refleksi"
 
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
+    <div className="max-w-[96rem] mx-auto px-4 md:px-12 pt-4 md:pt-6 pb-8 md:pb-12 space-y-6 md:space-y-8">
       <QuizBreadcrumb slug={data.slug} label={label} path="apersepsi" />
 
       <ApersepsiHeader
@@ -63,19 +63,6 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
             <ArrowRight className="size-7 md:size-8" />
           </Button>
         </Link>
-
-        {data.slug === "translasi" && (
-          <Link href="/prasyarat">
-            <Button
-              variant="default"
-              size="lg"
-              className="!rounded-none px-10 md:px-16 py-5 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
-            >
-              <ArrowLeft className="size-7 md:size-8" />
-              Kembali ke Prasyarat
-            </Button>
-          </Link>
-        )}
       </div>
     </div>
   )

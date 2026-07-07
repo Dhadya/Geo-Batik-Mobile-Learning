@@ -16,7 +16,7 @@ export function NumberIndicator({
   onSelect: (n: number) => void
 }) {
   return (
-    <div className="bg-secondary-container border-4 border-black shadow-md mx-2 md:mx-3 mt-2 md:mt-3 mb-0 p-4 md:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+    <div className="bg-secondary-container border-4 border-black shadow-md mx-3 md:mx-4 mt-3 md:mt-4 mb-0 p-4 md:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
       <div className="flex flex-wrap gap-2">
         {Array.from({ length: total }, (_, i) => i + 1).map((n) => {
           const isCurrent = n === current

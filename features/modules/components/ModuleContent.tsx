@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
+import { ArrowLeft } from "lucide-react"
 import { QuizBreadcrumb } from "@/features/quiz"
 import { InteractiveWorkspace } from "./InteractiveWorkspace"
 import { ObservationPanel } from "./ObservationPanel"
@@ -48,7 +49,8 @@ export function ModuleContent({
 
       <div className="flex justify-between pt-4 border-t-2 border-black">
         <Link href={`/apersepsi/${slug}`}>
-          <Button variant="outline" size="md">
+          <Button variant="outline" size="md" className="gap-2">
+            <ArrowLeft className="size-4" />
             KEMBALI
           </Button>
         </Link>

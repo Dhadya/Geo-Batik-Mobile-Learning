@@ -4,7 +4,7 @@ import { ModuleGrid, MenuHeader, BackLink, LabCard } from "@/features/menu"
 /* Main menu — bento grid of module cards + Lab Batik + back navigation. */
 export default function MenuPage() {
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-8 md:py-12 space-y-8 md:space-y-12">
+    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
       <MenuHeader />
       <ModuleGrid />
 

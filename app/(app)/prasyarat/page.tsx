@@ -6,7 +6,7 @@ import { ConceptCard, VideoEmbed, InteractiveCanvas, prerequisiteConcepts } from
 /* Prasyarat (prerequisites) — Cartesian coordinate recap before module lessons. */
 export default function PrasyaratPage() {
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-8 py-9 md:py-12 space-y-9 md:space-y-12">
+    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
       {/* Header — badge + title + description */}
       <header className="space-y-3 md:space-y-4">
         <div className="inline-block bg-primary border-4 border-black p-2 shadow-md">

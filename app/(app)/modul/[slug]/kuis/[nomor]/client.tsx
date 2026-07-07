@@ -62,7 +62,7 @@ export function KuisSoalClient({
   )
 
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-6 pb-4 md:pb-6 pt-2 md:pt-3 space-y-4 md:space-y-6">
+    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
       <QuizBreadcrumb slug={slug} label={label} />
 
       <div className="bg-surface-container-high border-4 border-black shadow-lg">
@@ -74,7 +74,7 @@ export function KuisSoalClient({
         />
 
         <div className="flex flex-col md:flex-row items-stretch">
-          <div className="hidden md:flex items-center justify-center px-2">
+          <div className="hidden md:flex items-center justify-center mx-3 md:mx-4">
             <QuizArrowNav slug={slug} isFirst={isFirst} current={nomor} />
           </div>
 
@@ -98,7 +98,7 @@ export function KuisSoalClient({
             </Card>
           </div>
 
-          <div className="hidden md:flex items-center justify-center px-2">
+          <div className="hidden md:flex items-center justify-center mx-3 md:mx-4">
             <QuizArrowNext
               slug={slug}
               isLast={isLast}
@@ -107,7 +107,7 @@ export function KuisSoalClient({
           </div>
         </div>
 
-        <div className="flex md:hidden justify-between items-center p-4 border-t-2 border-black">
+        <div className="flex md:hidden justify-between items-center mx-3 md:mx-4 p-4 border-t-2 border-black">
           <QuizArrowNav slug={slug} isFirst={isFirst} current={nomor} />
           <QuizArrowNext
             slug={slug}
@@ -118,17 +118,7 @@ export function KuisSoalClient({
       </div>
 
       <div className="flex justify-center pt-4 md:pt-6">
-        {isFirst ? (
-          <Link href={`/modul/${slug}/kuis`}>
-            <Button
-              variant="default"
-              size="lg"
-              className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
-            >
-              Kembali
-            </Button>
-          </Link>
-        ) : isLast && allAnswered ? (
+        {allAnswered ? (
           <Link href={`/modul/${slug}/kuis/hasil`}>
             <Button
               variant="default"
@@ -136,6 +126,16 @@ export function KuisSoalClient({
               className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
             >
               Selesai
+            </Button>
+          </Link>
+        ) : isFirst ? (
+          <Link href={`/modul/${slug}/kuis`}>
+            <Button
+              variant="default"
+              size="lg"
+              className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
+            >
+              Kembali
             </Button>
           </Link>
         ) : (
