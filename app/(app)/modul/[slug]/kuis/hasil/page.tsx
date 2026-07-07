@@ -21,7 +21,7 @@ export default async function KuisHasilPage(props: {
   const label = MODULE_LABELS[slug] ?? slug
 
   return (
-    <div className="max-w-[96rem] mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8">
+    <div className="max-w-[96rem] mx-auto px-4 md:px-6 pb-4 md:pb-6 pt-2 md:pt-3 space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={slug} label={label} />
 
       <QuizHeader title={quiz.title} badge={quiz.badge} />

@@ -4,7 +4,7 @@ export { QuizHeader } from "./components/QuizHeader"
 export { NumberIndicator } from "./components/NumberIndicator"
 export { QuestionBox } from "./components/QuestionBox"
 export { AnswerButton } from "./components/AnswerButton"
-export { QuizNavigation } from "./components/QuizNavigation"
+export { QuizArrowNav, QuizArrowNext } from "./components/QuizNavigation"
 
 // Hooks
 export { useQuiz } from "./hooks/useQuiz"

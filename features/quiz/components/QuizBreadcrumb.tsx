@@ -8,34 +8,80 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/retroui/Breadcrumb"
 
-/** Breadcrumb navigation for quiz pages. */
+/** Breadcrumb navigation — bigger, bold, primary-dark for active page. */
 export function QuizBreadcrumb({
   slug,
   label,
+  path = "kuis",
 }: {
   slug: string
   label: string
+  path?: "apersepsi" | "modul" | "kuis"
 }) {
   return (
     <Breadcrumb>
-      <BreadcrumbList className="text-sm font-bold text-muted-foreground">
+      <BreadcrumbList className="text-base md:text-lg font-bold text-muted-foreground gap-2">
         <BreadcrumbItem>
           <BreadcrumbLink render={<Link href="/menu" />}>
-            Menu Utama
+            Menu
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink render={<Link href={`/modul/${slug}`} />}>
+          <BreadcrumbLink
+            render={
+              <Link href={path === "apersepsi" ? "#" : `/apersepsi/${slug}`}>
+                {label}
+              </Link>
+            }
+          >
             {label}
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage className="text-primary">Quiz</BreadcrumbPage>
-        </BreadcrumbItem>
+        {path === "apersepsi" ? (
+          <BreadcrumbItem>
+            <BreadcrumbPage className="text-primary-dark font-black">
+              Apersepsi
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        ) : path === "modul" ? (
+          <>
+            <BreadcrumbItem>
+              <BreadcrumbLink render={<Link href={`/apersepsi/${slug}`} />}>
+                Apersepsi
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-primary-dark font-black">
+                Modul
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </>
+        ) : (
+          <>
+            <BreadcrumbItem>
+              <BreadcrumbLink render={<Link href={`/apersepsi/${slug}`} />}>
+                Apersepsi
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink render={<Link href={`/modul/${slug}`} />}>
+                Modul
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-primary-dark font-black">
+                Kuis
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </>
+        )}
       </BreadcrumbList>
     </Breadcrumb>
   )

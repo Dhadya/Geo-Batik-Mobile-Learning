@@ -4,59 +4,74 @@ import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-/** Quiz navigation — arrow buttons + KEMBALI/SELESAI. */
-export function QuizNavigation({
+/** Arrow navigation buttons — white bg with border and shadow for back/next. */
+export function QuizArrowNav({
   slug,
   isFirst,
-  isLast,
-  allAnswered,
   current,
 }: {
   slug: string
   isFirst: boolean
-  isLast: boolean
-  allAnswered: boolean
   current: number
 }) {
+  if (isFirst) {
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        className="w-12 h-12 md:w-14 md:h-14 bg-white"
+        disabled
+      >
+        <ChevronLeft className="size-6 md:size-7" />
+      </Button>
+    )
+  }
+
   return (
-    <div className="flex flex-col items-center gap-4 mt-6">
-      <div className="flex items-center gap-4">
-        {isFirst ? (
-          <Link href={`/modul/${slug}/kuis`}>
-            <Button variant="outline" size="lg" className="!rounded-none gap-2">
-              <ChevronLeft className="size-5" />
-              Kembali
-            </Button>
-          </Link>
-        ) : (
-          <Link href={`/modul/${slug}/kuis/${current - 1}`}>
-            <Button variant="outline" size="lg" className="!rounded-none gap-2">
-              <ChevronLeft className="size-5" />
-            </Button>
-          </Link>
-        )}
+    <Link href={`/modul/${slug}/kuis/${current - 1}`}>
+      <Button
+        variant="outline"
+        size="icon"
+        className="w-12 h-12 md:w-14 md:h-14 bg-white"
+      >
+        <ChevronLeft className="size-6 md:size-7" />
+      </Button>
+    </Link>
+  )
+}
 
-        {isLast && allAnswered ? (
-          <Link href={`/modul/${slug}/kuis/hasil`}>
-            <Button variant="default" size="lg" className="!rounded-none gap-2">
-              Selesai
-              <ChevronRight className="size-5" />
-            </Button>
-          </Link>
-        ) : !isLast ? (
-          <Link href={`/modul/${slug}/kuis/${current + 1}`}>
-            <Button variant="default" size="lg" className="!rounded-none gap-2">
-              <ChevronRight className="size-5" />
-            </Button>
-          </Link>
-        ) : null}
-      </div>
+/** Arrow navigation button — white bg with border and shadow for next/finish. */
+export function QuizArrowNext({
+  slug,
+  isLast,
+  current,
+}: {
+  slug: string
+  isLast: boolean
+  current: number
+}) {
+  if (isLast) {
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        className="w-12 h-12 md:w-14 md:h-14 bg-white"
+        disabled
+      >
+        <ChevronRight className="size-6 md:size-7" />
+      </Button>
+    )
+  }
 
-      {!allAnswered && isLast && (
-        <Button variant="outline" size="md" className="!rounded-none" disabled>
-          Jawab semua soal terlebih dahulu
-        </Button>
-      )}
-    </div>
+  return (
+    <Link href={`/modul/${slug}/kuis/${current + 1}`}>
+      <Button
+        variant="outline"
+        size="icon"
+        className="w-12 h-12 md:w-14 md:h-14 bg-white"
+      >
+        <ChevronRight className="size-6 md:size-7" />
+      </Button>
+    </Link>
   )
 }

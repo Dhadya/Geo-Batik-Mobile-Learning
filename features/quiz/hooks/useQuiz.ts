@@ -9,19 +9,19 @@ export function useQuiz(slug: string, nomor: number) {
   const quiz = getQuizModule(slug)
   const total = quiz?.questions.length ?? 0
   const question: QuizQuestion | undefined = quiz?.questions[nomor - 1]
-  const answers = useQuizStore((s) => s.answers)
+  const storeAnswers = useQuizStore((s) => s.answers)
   const selectAnswer = useQuizStore((s) => s.selectAnswer)
   const resetAnswers = useQuizStore((s) => s.resetAnswers)
 
-  const selectedOption = question ? answers[question.id] : undefined
-  const answeredCount = Object.keys(answers).length
+  const selectedOption = question ? storeAnswers[question.id] : undefined
+  const answeredCount = Object.keys(storeAnswers).length
   const allAnswered = total > 0 && answeredCount === total
   const isLast = nomor === total
   const isFirst = nomor === 1
 
   const score = quiz
     ? quiz.questions.reduce((acc, q) => {
-        if (answers[q.id] === q.correctIndex) return acc + 1
+        if (storeAnswers[q.id] === q.correctIndex) return acc + 1
         return acc
       }, 0)
     : 0
@@ -36,6 +36,7 @@ export function useQuiz(slug: string, nomor: number) {
     isLast,
     isFirst,
     score,
+    answers: storeAnswers,
     selectAnswer,
     resetAnswers,
   }

@@ -2,8 +2,8 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
-import { QuizBreadcrumb, QuizHeader } from "@/features/quiz"
-import { getQuizModule } from "@/features/quiz"
+import { ArrowRight } from "lucide-react"
+import { QuizBreadcrumb, QuizHeader, getQuizModule } from "@/features/quiz"
 
 const MODULE_LABELS: Record<string, string> = {
   translasi: "Translasi",
@@ -20,7 +20,7 @@ export default async function KuisIntroPage(props: {
   const label = MODULE_LABELS[slug] ?? slug
 
   return (
-    <div className="max-w-[96rem] mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8">
+    <div className="max-w-[96rem] mx-auto px-4 md:px-6 pb-4 md:pb-6 pt-2 md:pt-3 space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={slug} label={label} />
 
       <QuizHeader title={quiz.title} badge={quiz.badge} />
@@ -45,15 +45,15 @@ export default async function KuisIntroPage(props: {
         </div>
       </section>
 
-      <div className="flex justify-between">
-        <Link href={`/modul/${slug}`}>
-          <Button variant="outline" size="lg" className="!rounded-none">
-            Kembali
-          </Button>
-        </Link>
+      <div className="flex justify-center pt-4 md:pt-6">
         <Link href={`/modul/${slug}/kuis/1`}>
-          <Button variant="default" size="lg" className="!rounded-none">
+          <Button
+            variant="default"
+            size="lg"
+            className="!rounded-none px-10 md:px-16 py-5 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
+          >
             Mulai Kuis
+            <ArrowRight className="size-7 md:size-8" />
           </Button>
         </Link>
       </div>

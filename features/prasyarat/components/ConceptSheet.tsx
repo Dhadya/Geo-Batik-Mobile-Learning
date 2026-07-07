@@ -6,7 +6,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet"
+} from "@/components/retroui/Sheet"
 import type { PrerequisiteConcept } from "../data"
 
 interface ConceptSheetProps {

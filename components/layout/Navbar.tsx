@@ -14,7 +14,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
+} from "@/components/retroui/NavigationMenu"
 
 /** Desktop nav dropdown using RetroUI NavigationMenu. */
 function NavDropdownItem({

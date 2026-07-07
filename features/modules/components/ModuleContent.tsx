@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
-import { ModuleTabNav } from "./ModuleTabNav"
+import { QuizBreadcrumb } from "@/features/quiz"
 import { InteractiveWorkspace } from "./InteractiveWorkspace"
 import { ObservationPanel } from "./ObservationPanel"
 import { ConclusionArea } from "./ConclusionArea"
@@ -21,9 +23,11 @@ export function ModuleContent({
   const tabConfig = getModuleTab(slug, tab)
   if (!tabConfig) notFound()
 
+  const label = slug === "translasi" ? "Translasi" : "Refleksi"
+
   return (
-    <div className="space-y-6">
-      <ModuleTabNav slug={slug} tabs={tabs} currentTab={tab} />
+    <div className="space-y-4 md:space-y-6">
+      <QuizBreadcrumb slug={slug} label={label} path="modul" />
 
       <Text as="h1" className="text-2xl md:text-3xl font-black uppercase">
         {tabConfig.title}
@@ -41,6 +45,19 @@ export function ModuleContent({
       <ConclusionArea formula={tabConfig.formula} />
 
       <AssessmentSection questions={tabConfig.assessment} />
+
+      <div className="flex justify-between pt-4 border-t-2 border-black">
+        <Link href={`/apersepsi/${slug}`}>
+          <Button variant="outline" size="md">
+            KEMBALI
+          </Button>
+        </Link>
+        <Link href={`/modul/${slug}/kuis`}>
+          <Button variant="default" size="md">
+            KUIS
+          </Button>
+        </Link>
+      </div>
     </div>
   )
 }
