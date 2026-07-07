@@ -223,6 +223,17 @@ body {
     background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.569 13.431-30 30-30M30 30c0 16.569-13.431 30-30 30M30 30c16.569 0 30 13.431 30 30M30 30c-16.569 0-30-13.431-30-30' fill='none' stroke='%23000' stroke-width='1' stroke-opacity='0.05'/%3E%3C/svg%3E");
   }
 
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #000;
+    border-radius: 4px;
+  }
+
   /* Hard offset shadows */
   .neubrutal-shadow {
     box-shadow: 12px 12px 0 0 #000;
