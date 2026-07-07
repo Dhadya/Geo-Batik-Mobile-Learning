@@ -3,6 +3,8 @@ import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { Card } from "@/components/retroui/Card"
+import { Progress } from "@/components/retroui/Progress"
+import { QuizBreadcrumb, QuizHeader, getQuizModule } from "@/features/quiz"
 
 const MODULE_LABELS: Record<string, string> = {
   translasi: "Translasi",
@@ -13,27 +15,42 @@ export default async function KuisHasilPage(props: {
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await props.params
-  const label = MODULE_LABELS[slug]
-  if (!label) notFound()
+  const quiz = getQuizModule(slug)
+  if (!quiz) notFound()
+
+  const label = MODULE_LABELS[slug] ?? slug
 
   return (
-    <div className="max-w-[96rem] mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-      <Text as="h1" className="text-2xl font-black uppercase">Hasil Kuis {label}</Text>
-      <Card className="w-full">
-        <Card.Header>
-          <Card.Title>SKOR ANDA</Card.Title>
+    <div className="max-w-[96rem] mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8">
+      <QuizBreadcrumb slug={slug} label={label} />
+
+      <QuizHeader title={quiz.title} badge={quiz.badge} />
+
+      <Card className="w-full border-4 border-black shadow-lg">
+        <Card.Header className="bg-primary-container border-b-4 border-black">
+          <Card.Title>Skor Anda</Card.Title>
         </Card.Header>
-        <Card.Content className="space-y-4">
-          <Text as="p" className="text-sm">Skor akan ditampilkan di sini.</Text>
-          <Text as="p" className="text-xs text-muted-foreground">Pembahasan setiap soal akan tersedia.</Text>
+        <Card.Content className="space-y-4 p-6">
+          <Progress value={0} className="w-full" />
+          <Text as="p" className="text-sm md:text-base font-medium">
+            Skor akan ditampilkan setelah kuis diselesaikan.
+          </Text>
+          <Text as="p" className="text-xs md:text-sm text-muted-foreground">
+            Pembahasan setiap soal akan tersedia di sini.
+          </Text>
         </Card.Content>
       </Card>
+
       <div className="flex justify-between">
         <Link href={`/modul/${slug}/kuis/1`}>
-          <Button variant="outline" size="md">ULANGI</Button>
+          <Button variant="outline" size="lg" className="!rounded-none">
+            Ulangi
+          </Button>
         </Link>
         <Link href="/menu">
-          <Button variant="default" size="md">KEMBALI KE MENU</Button>
+          <Button variant="default" size="lg" className="!rounded-none">
+            Kembali ke Menu
+          </Button>
         </Link>
       </div>
     </div>
