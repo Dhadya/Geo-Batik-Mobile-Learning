@@ -1,30 +1,15 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
+import { MODULE_TABS } from "@/features/modules"
 import type { ReactNode } from "react"
-
-type TabDef = { label: string; value: string }
-
-const MODULE_TABS: Record<string, TabDef[]> = {
-  translasi: [
-    { label: "TITIK", value: "titik" },
-    { label: "GARIS", value: "garis" },
-    { label: "BANGUN", value: "bangun" },
-  ],
-  refleksi: [
-    { label: "SUMBU X", value: "sumbu-x" },
-    { label: "SUMBU Y", value: "sumbu-y" },
-    { label: "GARIS", value: "garis" },
-    { label: "BANGUN", value: "bangun" },
-  ],
-}
 
 export default async function ModulLayout(props: {
   params: Promise<{ slug: string }>
   children: ReactNode
 }) {
   const { slug } = await props.params
-  const tabs = MODULE_TABS[slug]
+  const tabs = MODULE_TABS[slug as keyof typeof MODULE_TABS]
   if (!tabs) notFound()
 
   return (
@@ -43,10 +28,14 @@ export default async function ModulLayout(props: {
       {props.children}
       <div className="flex justify-between pt-4 border-t-2 border-black">
         <Link href={`/apersepsi/${slug}`}>
-          <Button variant="outline" size="md">KEMBALI</Button>
+          <Button variant="outline" size="md">
+            KEMBALI
+          </Button>
         </Link>
         <Link href={`/modul/${slug}/kuis`}>
-          <Button variant="default" size="md">KUIS</Button>
+          <Button variant="default" size="md">
+            KUIS
+          </Button>
         </Link>
       </div>
     </div>
