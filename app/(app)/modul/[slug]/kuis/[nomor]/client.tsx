@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Card } from "@/components/retroui/Card"
+import { CheckCircle } from "lucide-react"
 import {
   QuizBreadcrumb,
   NumberIndicator,
@@ -126,6 +127,7 @@ export function KuisSoalClient({
               className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
             >
               Selesai
+              <CheckCircle className="size-6" />
             </Button>
           </Link>
         ) : isFirst ? (
