@@ -1,4 +1,5 @@
 "use client";
+/* RetroUI - Dialog with overlay/content/footer/header */
 
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { cn } from "@/lib/utils";

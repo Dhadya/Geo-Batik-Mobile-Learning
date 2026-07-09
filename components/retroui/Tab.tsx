@@ -1,3 +1,4 @@
+/* RetroUI - Tabs with list/trigger/content */
 import { cn } from "@/lib/utils";
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
 

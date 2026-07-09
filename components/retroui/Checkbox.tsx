@@ -1,3 +1,4 @@
+/* RetroUI - Checkbox with base-ui */
 import { cn } from "@/lib/utils";
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { cva, VariantProps } from "class-variance-authority";

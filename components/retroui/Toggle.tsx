@@ -1,4 +1,5 @@
 "use client";
+/* RetroUI - Toggle/switch component */
 
 import { Toggle as TogglePrimitive } from "@base-ui/react/toggle";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -6,14 +7,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const toggleVariants = cva(
-  "inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 gap-2",
+  "inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-all duration-200 cursor-pointer hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 gap-2 hover:translate-y-0.5 active:translate-y-1 active:translate-x-0.5 active:shadow-none",
   {
     variants: {
       variant: {
         default:
           "bg-transparent hover:bg-muted/70 hover:text-muted-foreground aria-pressed:bg-muted",
         outlined:
-          "border-2 border-input bg-transparent hover:bg-accent hover:text-accent-foreground/80 aria-pressed:bg-accent aria-pressed:text-accent-foreground",
+          "border-2 border-black bg-white hover:bg-accent hover:text-accent-foreground aria-pressed:bg-primary aria-pressed:text-primary-foreground",
         solid: "border-2 border-input bg-transparent hover:bg-secondary hover:text-secondary-foreground hover:border-secondary aria-pressed:bg-secondary aria-pressed:text-secondary-foreground aria-pressed:border-secondary",
         "outline-muted":
           "border-2 border-input bg-transparent hover:bg-muted/70 hover:text-muted-foreground aria-pressed:bg-muted",

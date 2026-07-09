@@ -43,17 +43,28 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-outline: var(--outline);
+  --color-error: var(--error);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-module-translasi: var(--module-translasi);
+  --color-module-refleksi: var(--module-refleksi);
 }
 
-/* ── Design system colors ────────────────────────────────────
-   M3-inspired palette for GEMATRI (Transformasi Geometri).
-   Gold primary for CTAs, green secondary for success,
-   red tertiary for reflection module.
+/* ── Nusantara Rebel palette ─────────────────────────────────
+   The Academic Rebel: Indonesian heritage meets NeoBrutalism.
+   Canary Yellow = primary action, Vibrant Green = secondary,
+   Electric Pink-Red = tertiary/emphasis, Deep Blue = info.
    ────────────────────────────────────────────────────────── */
 :root {
   --background: #fff8ef;
   --foreground: #1f1b12;
-  --card: #fff;
+  --card: #ffffff;
   --card-foreground: #1f1b12;
   --primary: #ffd93d;
   --primary-foreground: #000;
@@ -71,21 +82,57 @@
   --destructive: #ba1a1a;
   --destructive-foreground: #fff;
   --border: #000;
-  --input: #fff;
-  --popover: #fff;
+  --input: #ffffff;
+  --popover: #ffffff;
   --popover-foreground: #1f1b12;
   --ring: #000;
+  --outline: #7e7761;
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+  --surface-dim: #e1d9c9;
+  --surface-bright: #fff8ef;
+  --surface-container: #f5eddd;
+  --surface-container-low: #fbf3e2;
+  --surface-container-high: #efe7d7;
+
+  /* Module-specific accent colors (not part of Material theme) */
+  --module-translasi: #00ffff;
+  --module-refleksi: #ff00ff;
 }
 
-/* Minimal dark mode overrides */
+/* Dark mode — inverted surface with bright accent glow */
 .dark {
   --background: #1a1a1a;
-  --foreground: #f5f5f5;
+  --foreground: #f8f0df;
   --card: #242424;
-  --card-foreground: #f5f5f5;
+  --card-foreground: #f8f0df;
   --primary: #ffd93d;
   --primary-foreground: #000;
+  --primary-dark: #e8c426;
+  --secondary: #7bdb85;
+  --secondary-foreground: #002107;
+  --tertiary: #ffb3b0;
+  --tertiary-foreground: #410006;
+  --muted: #2e2e2e;
+  --muted-foreground: #b0a898;
+  --accent: #705d00;
+  --accent-foreground: #ffe173;
+  --destructive: #ffb4ab;
+  --destructive-foreground: #690005;
   --border: #5c5c5c;
+  --input: #1a1a1a;
+  --popover: #242424;
+  --popover-foreground: #f8f0df;
+  --ring: #5c5c5c;
+  --outline: #8f8872;
+  --error-container: #93000a;
+  --on-error-container: #ffdad6;
+  --surface-dim: #121212;
+  --surface-bright: #2e2e2e;
+  --surface-container: #1e1e1e;
+  --module-translasi: #00cccc;
+  --module-refleksi: #cc00cc;
 }
 
 body {
@@ -102,13 +149,27 @@ body {
   html {
     @apply font-sans;
   }
+  /* Material Symbols font settings — default to outline style */
+  .material-symbols-outlined {
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
 }
 
 /* ── Custom animations ───────────────────────────────────── */
 @keyframes float {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
 }
 
 /* ── Decoratives & NeoBrutalism utilities ─────────────────── */
@@ -134,15 +195,43 @@ body {
   }
 
   /* Corner positions for the 4 circles */
-  .c1 { top: 0; left: 0; }
-  .c2 { top: 0; right: 0; }
-  .c3 { bottom: 0; left: 0; }
-  .c4 { bottom: 0; right: 0; }
+  .c1 {
+    top: 0;
+    left: 0;
+  }
+  .c2 {
+    top: 0;
+    right: 0;
+  }
+  .c3 {
+    bottom: 0;
+    left: 0;
+  }
+  .c4 {
+    bottom: 0;
+    right: 0;
+  }
 
   /* Subtle decorative watermark */
   .batik-watermark {
     opacity: 0.05;
     pointer-events: none;
+  }
+
+  /* Kawung motif pattern overlay — subtle curved lines at 5% opacity */
+  .kawung-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.569 13.431-30 30-30M30 30c0 16.569-13.431 30-30 30M30 30c16.569 0 30 13.431 30 30M30 30c-16.569 0-30-13.431-30-30' fill='none' stroke='%23000' stroke-width='1' stroke-opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #000;
+    border-radius: 4px;
   }
 
   /* Hard offset shadows */

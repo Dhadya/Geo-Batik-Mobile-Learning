@@ -1,4 +1,5 @@
 "use client";
+/* RetroUI - Tooltip popover */
 
 import * as React from "react";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";

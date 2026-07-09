@@ -1,4 +1,4 @@
-# GEO-BATIK Style Guide
+# GEMATRI Style Guide
 
 > Design system reference for agents. Follow these rules exactly when modifying or creating UI.
 
@@ -6,73 +6,78 @@
 
 ## Design Philosophy
 
-**Neubrutalism** — bold, unapologetic, high-contrast. Think thick black borders, hard solid shadows, square buttons, and uppercase text. Combined with **Indonesian Batik cultural motifs** as subtle background textures.
+**Nusantara Rebel** — The Academic Rebel: Indonesian heritage meets NeoBrutalism. Structured Batik geometry (Kawung, Parang) meets raw, unapologetic high-contrast modernism.
 
 Key principles:
-- Thick black borders on EVERYTHING
-- Hard drop shadows (no blur, no fade)
-- Square/rectangular elements (no rounded buttons)
-- Uppercase labels and headings
-- Heavy font weights (800-900)
-- High contrast, vibrant flat colors
-- Interactive press effect (element shifts + shadow shrinks on click)
+
+- **4px solid black borders** on EVERYTHING interactive or containing
+- **Hard drop shadows** (no blur, no fade) — `8px 8px 0 0 #000`
+- **Square/rectangular** elements (0px border-radius on cards and buttons)
+- **Uppercase** labels and headings (`font-black uppercase`)
+- **Space Grotesk** for all text (weights 400–900)
+- **High contrast** — almost all text is `#000` on warm paper
+- **Interactive press** — element shifts into its shadow on click
 
 ---
 
 ## Color Palette
 
-### Brand Colors
+All colors are defined as CSS custom properties in `app/globals.css` and mapped to Tailwind utilities via `@theme inline`. **Never use raw hex values** — always use Tailwind semantic classes (e.g. `bg-primary`, `text-foreground`, `border-border`).
 
-| Token | Hex | Name | Usage |
-|---|---|---|---|
-| `brand-primary` | `#705d00` | Sogan Kuning | Primary headings, accents, scrollbar thumb |
-| `brand-secondary` | `#006e29` | Pesisir Hijau | Translation module, success states |
-| `brand-tertiary` | `#ae2f34` | Merah Gentongan | Reflection module, error states |
+### Theme Tokens (Light — `:root`)
 
-### Surfaces
+| Token                   | Hex       | Tailwind Utility          | Usage                                  |
+| ----------------------- | --------- | ------------------------- | -------------------------------------- |
+| `--background`          | `#fff8ef` | `bg-background`           | Page background (warm paper)           |
+| `--foreground`          | `#1f1b12` | `text-foreground`         | All body text                          |
+| `--card`                | `#ffffff` | `bg-card`                 | Card, popover, input backgrounds       |
+| `--card-foreground`     | `#1f1b12` | `text-card-foreground`    | Text on cards                          |
+| `--primary`             | `#ffd93d` | `bg-primary`              | CTA buttons, primary actions           |
+| `--primary-foreground`  | `#000`    | `text-primary-foreground` | Text on primary bg                     |
+| `--primary-dark`        | `#705d00` | `text-primary-dark`       | Dark gold for headings, accents        |
+| `--secondary`           | `#006e29` | `bg-secondary`            | Success states, translation module     |
+| `--secondary-container` | `#93f59c` | `bg-secondary-container`  | Active tabs, success indicators        |
+| `--tertiary`            | `#ae2f34` | `bg-tertiary`             | Errors, reflection module              |
+| `--tertiary-container`  | `#ffd1ce` | `bg-tertiary-container`   | Reflection headers, decorative accents |
+| `--muted`               | `#eae2d2` | `bg-muted`                | Secondary surface, inactive areas      |
+| `--muted-foreground`    | `#4d4633` | `text-muted-foreground`   | Secondary text, labels                 |
+| `--accent`              | `#ffe173` | `bg-accent`               | Highlight, badge backgrounds           |
+| `--border`              | `#000`    | `border-border`           | All borders (always black)             |
+| `--outline`             | `#7e7761` | `border-outline`          | Secondary borders, dividers            |
+| `--error`               | `#ba1a1a` | `bg-error`                | Destructive actions                    |
+| `--error-container`     | `#ffdad6` | `bg-error-container`      | Error toast backgrounds                |
+| `--surface-dim`         | `#e1d9c9` | `bg-surface-dim`          | Dimmed surface areas                   |
+| `--surface-container`   | `#f5eddd` | `bg-surface-container`    | Container backgrounds                  |
 
-| Token | Hex | Usage |
-|---|---|---|
-| `brand-bg` / `brand-surface` | `#fff8ef` | Page background (warm off-white) |
-| `brand-surface-variant` | `#eae2d2` | Secondary surface, inactive areas |
-| `brand-surface-container` | `#f5eddd` | Card backgrounds, containers |
-| `brand-surface-container-high` | `#efe7d7` | Elevated containers |
-| `brand-surface-container-highest` | `#eae2d2` | Highest elevation surface |
+### Dark Mode (`.dark`)
 
-### Container Colors (Vibrant Accents)
+Inverted surface with bright accent glow. Applied via the `.dark` class on `<html>`.
 
-| Token | Hex | Usage |
-|---|---|---|
-| `brand-primary-container` | `#ffd93d` | CTA buttons, badges, highlights, play button |
-| `brand-secondary-container` | `#93f59c` | Success indicators, active tab states |
-| `brand-tertiary-container` | `#ffd1ce` | Reflection headers, decorative accents |
+| Token          | Hex       | Tailwind Utility  |
+| -------------- | --------- | ----------------- |
+| `--background` | `#1a1a1a` | `bg-background`   |
+| `--foreground` | `#f8f0df` | `text-foreground` |
+| `--card`       | `#242424` | `bg-card`         |
+| `--primary`    | `#ffd93d` | `bg-primary`      |
+| `--border`     | `#5c5c5c` | `border-border`   |
+| `--secondary`  | `#7bdb85` | `bg-secondary`    |
+| `--tertiary`   | `#ffb3b0` | `bg-tertiary`     |
 
-### Text Colors
+### Module-Specific Accents
 
-| Color | Hex | Usage |
-|---|---|---|
-| Body text | `#1f1b12` | All body copy (dark near-black) |
-| Headings | `#705d00` | Primary heading color |
-| Uppercase labels | `#1f1b12` | Always black, font-weight 900 |
-| Muted labels | `#8a7b66` / `#a89882` | Grid labels, secondary info |
+| Module     | Primary Button      | Container                        | Heading Accent      |
+| ---------- | ------------------- | -------------------------------- | ------------------- |
+| Translasi  | `bg-primary` (gold) | `bg-secondary-container` (green) | `text-primary-dark` |
+| Refleksi   | `bg-primary` (gold) | `bg-tertiary-container` (coral)  | `text-tertiary`     |
+| Login/Auth | `bg-primary` (gold) | `bg-background`                  | `text-primary-dark` |
 
-### Module-Specific Palettes
+### Canvas/Grid Colors (not tokenised — use raw hex in canvas components)
 
-| Module | Header BG | Button BG | Container |
-|---|---|---|---|
-| Translation | `#ffe3ab` (warm cream) | `#ffd93d` (gold) | `#93f59c` (green) |
-| Reflection | `#ffd1ce` (coral) | `#ffd1ce` (coral) | `#ffd1ce` (pink) |
-| Login | `#fff8ef` (surface) | `#93f59c` (green) | — |
-| Welcome CTA | `#ffd93d` (gold) | `#ffd93d` (gold) | — |
-
-### Canvas/Grid Colors
-
-| Element | Hex |
-|---|---|
-| Grid lines | `#e5ddcc` / `#e8dfce` |
-| Grid labels | `#8a7b66` / `#a89882` |
-| Canvas background | `#fdf3e4` / `#fffbf0` |
-| Scrollbar track | `#fbf3e2` |
+| Element           | Hex       |
+| ----------------- | --------- |
+| Grid lines        | `#e5ddcc` |
+| Grid labels       | `#8a7b66` |
+| Canvas background | `#fdf3e4` |
 
 ---
 
@@ -80,42 +85,41 @@ Key principles:
 
 ### Font Family
 
-**Space Grotesk** — single font for everything. Loaded via Google Fonts.
+**Space Grotesk** — single font for everything. Loaded via `next/font/google` in `app/layout.tsx` with variable `--font-sans`.
 
 ```
-font-family: "Space Grotesk", sans-serif;
+--font-sans: "Space Grotesk", sans-serif;
 ```
 
-Weights available: 300, 400, 500, 600, 700, 800, 900
+Weights available: 300, 400, 500, 600, 700
 
-### Icon Font
+### Icons
 
-**Google Material Symbols Outlined** — used for all UI icons.
+**lucide-react** — used for all UI icons. Import from `lucide-react`.
 
-```html
-<span class="material-symbols-outlined">icon_name</span>
+```tsx
+import { Eye, EyeOff, ArrowRight, Check, X, Menu } from "lucide-react";
 ```
 
 ### Type Scale
 
-| Element | Tailwind Classes | Usage |
-|---|---|---|
-| Page title | `text-3xl md:text-4xl font-black uppercase` | Welcome page hero |
-| Section heading | `text-xl md:text-2xl font-black uppercase` | Module titles |
-| Card heading | `text-lg font-extrabold` | Panel titles |
-| Label (uppercase) | `text-xs font-black uppercase tracking-wide` | All labels, tab text |
-| Body text | `text-sm font-bold` | Paragraphs, descriptions |
-| Small text | `text-xs font-bold` | Captions, hints |
-| Micro text | `text-[9px] font-bold` | Coordinate readouts, tiny labels |
-| Button text | `text-xs font-extrabold uppercase` | All buttons |
+| Element           | Classes                                     | Usage                        |
+| ----------------- | ------------------------------------------- | ---------------------------- |
+| Hero title        | `text-[84px] font-black uppercase`          | Landing page GEMATRI         |
+| Page title        | `text-2xl md:text-3xl font-black uppercase` | Module/quiz page titles      |
+| Section heading   | `text-xl font-black uppercase`              | Card titles, section headers |
+| Card heading      | `text-lg font-black uppercase`              | Card.Title                   |
+| Label (uppercase) | `text-xs font-black uppercase`              | Tab labels, form labels      |
+| Body text         | `text-sm font-medium`                       | Paragraphs, descriptions     |
+| Small text        | `text-xs`                                   | Captions, hints              |
+| Button text       | implicit in `<Button>` variant              | All buttons                  |
 
 ### Rules
 
-- **ALL labels are uppercase** — `text-xs font-black uppercase`
-- **ALL headings are uppercase** — `font-black uppercase`
-- **Body text is NEVER uppercase** — `text-sm font-bold`
-- **Never use font-weight below 400** for UI text
-- **Icons are inline** with text: `flex items-center gap-1.5`
+- **ALL labels and headings are uppercase** — `font-black uppercase`
+- **Body text is NEVER uppercase** — `font-medium` or `font-bold`
+- **Never use `font-weight` below 400** for UI text
+- **Icons are inline** with text: `flex items-center gap-2`
 
 ---
 
@@ -124,301 +128,237 @@ Weights available: 300, 400, 500, 600, 700, 800, 900
 ### Page Layout
 
 ```
-max-w-7xl mx-auto                    // Centered container, max 1280px
+max-w-8xlxl mx-auto                    // Centered container, max 1280px
 p-4 md:p-6 lg:p-8                    // Responsive page padding
-grid grid-cols-1 lg:grid-cols-12     // 12-column grid on desktop
-gap-6                                 // Section gap
+space-y-6                             // Vertical spacing between children
+gap-6                                 // Grid/card gaps
 ```
 
-### Standard Spacing Scale
+### Standard Spacing
 
-| Value | Tailwind | Usage |
-|---|---|---|
-| 2px | `p-0.5` | Icon padding |
-| 4px | `p-1` / `gap-1` | Inline element gaps |
-| 6px | `p-1.5` / `gap-1.5` | Icon + text gaps |
-| 8px | `p-2` / `gap-2` | Compact element gaps, small button padding |
-| 10px | `p-2.5` | Input padding, checkbox padding |
-| 12px | `p-3` / `gap-3` | Standard card padding, list item gaps |
-| 16px | `p-4` / `gap-4` | Card padding, medium gaps |
-| 20px | `p-5` / `gap-5` | Large card padding |
-| 24px | `p-6` / `gap-6` | Section gaps, large card padding |
-| 32px | `p-8` | Hero padding, large section spacing |
-
-### Vertical Rhythm
-
-| Spacing | Tailwind | Usage |
-|---|---|---|
-| 8px | `mb-2` | Space below small elements |
-| 16px | `mb-4` | Space below paragraphs |
-| 24px | `mb-6` | Space below section headers |
-| 32px | `mb-8` | Space between major sections |
-
-### Component Dimensions
-
-| Element | Size |
-|---|---|
-| Button height | `py-2` (8px top/bottom) |
-| Input height | `p-2.5` (10px) |
-| Tab bar height | `p-1` container + button padding |
-| Section banner | `p-4 sm:p-5` |
+| Tailwind    | Usage                            |
+| ----------- | -------------------------------- |
+| `gap-2`     | Compact element gaps             |
+| `gap-3`     | Icon + text gaps                 |
+| `p-4`       | Card padding, mobile page edges  |
+| `p-6`       | Large card padding, section gaps |
+| `p-8`       | Hero padding                     |
+| `space-y-6` | Vertical rhythm between sections |
 
 ---
 
 ## Border Radius
 
-The design system is intentionally **square**. Use minimal rounding.
+The design system is intentionally **square** (`--radius: 0`).
 
-| Element | Border Radius | Tailwind |
-|---|---|---|
-| Buttons | 0 (square) | `rounded-none` (default) |
-| Cards/Panels | 0 (square) | `rounded-none` (default) |
-| Inputs | 4px | `rounded` |
-| Checkboxes | 4px | `rounded` |
-| Labels/Badges | 4px | `rounded` |
-| Slider tracks | 8px | `rounded-lg` |
-| Circular elements | 9999px | `rounded-full` |
+| Element       | Radius | Tailwind        |
+| ------------- | ------ | --------------- |
+| Buttons       | 0      | `!rounded-none` |
+| Cards         | 0      | (default)       |
+| Inputs        | 4px    | `rounded`       |
+| Checkboxes    | 4px    | `rounded`       |
+| Labels/Badges | 4px    | `rounded`       |
+| Decor circles | 9999px | `rounded-full`  |
 
 ### Rules
 
-- **Buttons are ALWAYS square** — never use `rounded` on buttons
-- **Cards are ALWAYS square** — never use `rounded` on panels
-- **Only inputs and small interactive elements** get `rounded` (4px)
-- **`rounded-full`** ONLY for circular decorative elements (back buttons, color swatches, circles)
+- **Buttons are ALWAYS square** — add `!rounded-none` if the component defaults include rounding
+- **Cards are ALWAYS square**
 
 ---
 
 ## Borders
 
-All borders are **solid black** (`border-black`). No gradients, no colors on borders.
+All borders use `--border` which is always `#000` in light mode.
 
-| Element | Border Width | Tailwind |
-|---|---|---|
-| Major cards, panels, headers | 4px | `border-4 border-black` |
-| Sub-components, inputs, small buttons | 2px | `border-2 border-black` |
-| Minor elements, checkboxes | 1px | `border border-black` |
-| Tabs (inactive) | 2px | `border-2 border-transparent` |
+| Element                    | Width | Classes                  |
+| -------------------------- | ----- | ------------------------ |
+| Major cards, panels        | 4px   | `border-4 border-border` |
+| Sub-components, inputs     | 2px   | `border-2 border-border` |
+| Minor elements, checkboxes | 2px   | `border-2 border-border` |
 
 ---
 
-## Shadows (Neubrutalism)
+## Shadows (NeoBrutalism)
 
-Hard, solid black offset shadows. **No blur, no opacity fade.**
+Hard offset shadows defined in `globals.css`. **No blur, no opacity fade.**
 
-| Shadow | CSS | Tailwind Class |
-|---|---|---|
-| Small | `4px 4px 0px 0px rgba(0,0,0,1)` | `neubrutalism-shadow-sm` |
-| Default | `8px 8px 0px 0px rgba(0,0,0,1)` | `neubrutalism-shadow` |
-| Large | `12px 12px 0px 0px rgba(0,0,0,1)` | `neubrutalism-shadow-lg` |
+| Shadow  | Box-shadow                            | Tailwind Class |
+| ------- | ------------------------------------- | -------------- |
+| Small   | `2px 2px 0 0 var(--color-border)`     | `shadow-sm`    |
+| Default | `3px 3px 0 0 var(--color-border)`     | `shadow`       |
+| Large   | `6px 6px 0 0 var(--color-border)`     | `shadow-lg`    |
+| XLarge  | `10px 10px 0 1px var(--color-border)` | `shadow-xl`    |
+| 2XLarge | `16px 16px 0 1px var(--color-border)` | `shadow-2xl`   |
 
-### Interactive Shadow (Press Effect)
+Custom `.neubrutal-shadow` and `.hover-shift` / `.active-shift` utilities are available for CTA buttons:
 
 ```css
-.interactive-card:hover  { transform: translate(2px, 2px); box-shadow: 6px 6px 0px 0px rgba(0,0,0,1); }
-.interactive-card:active { transform: translate(8px, 8px); box-shadow: 0px 0px 0px 0px rgba(0,0,0,1); }
-```
-
-### Button Press Effect
-
-```
-hover:translate-x-[2px] hover:translate-y-[2px]
-hover:shadow-none
-active:translate-x-[4px] active:translate-y-[4px]
+.neubrutal-shadow {
+  box-shadow: 12px 12px 0 0 #000;
+}
+.hover-shift:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 16px 16px 0 0 #000;
+}
+.active-shift:active {
+  transform: translate(8px, 8px);
+  box-shadow: 0 0 0 0 #000;
+}
 ```
 
 ---
 
 ## Component Rules
 
-### Buttons
+### Buttons — ALWAYS use RetroUI `<Button>`
 
-```jsx
-// Primary CTA
-<button className="bg-[#ffd93d] hover:bg-[#e6c335] text-black
-  border-2 border-black font-extrabold text-xs py-2 px-4 uppercase
-  cursor-pointer neubrutalism-shadow-sm
-  hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none
-  active:translate-x-[4px] active:translate-y-[4px]">
-  LABEL
-</button>
+**Never use a plain `<button>` element.** Always import from `@/components/retroui/Button`.
 
-// Success action
-<button className="bg-[#93f59c] hover:bg-[#7dd685] text-black
-  border-2 border-black font-extrabold text-xs py-2 px-4 uppercase
-  cursor-pointer ...">
-</button>
+```tsx
+import { Button } from "@/components/retroui/Button"
+
+// Primary CTA (gold bg, thick shadow, press effect)
+<Button variant="default" size="lg"
+  className="neubrutal-shadow hover-shift active-shift !rounded-none flex items-center gap-3">
+  MASUK
+  <ArrowRight className="!size-10" />
+</Button>
+
+// Outline style (white bg, thick border)
+<Button variant="outline" size="md" className="!rounded-none">
+  KEMBALI
+</Button>
+
+// Icon-only button (password toggle, etc.)
+<Button variant="ghost" size="icon" className="!rounded-none"
+  onClick={() => setVisible(!visible)}>
+  {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+</Button>
 ```
 
 Rules:
-- Always `border-2 border-black`
-- Always `text-black`
-- Always `font-extrabold` or `font-black`
-- Always `text-xs uppercase`
-- Always `cursor-pointer`
-- ALWAYS square corners (no `rounded`)
-- Add shadow: `neubrutalism-shadow-sm`
-- Add press effect on hover/active
 
-### Cards / Panels
+- Always add `!rounded-none` (RetroUI may default to rounded)
+- Use `variant="default"` for primary CTAs, `variant="outline"` for secondary, `variant="ghost"` for icon-only
+- Add `neubrutal-shadow hover-shift active-shift` for primary CTAs
+- Icons inside buttons use `lucide-react` components
 
-```jsx
-<div className="bg-white border-4 border-black p-4 neubrutalism-shadow">
-  {/* content */}
-</div>
+### Cards
+
+```tsx
+import { Card } from "@/components/retroui/Card";
+
+<Card className="w-full">
+  <Card.Header>
+    <Card.Title>JUDUL</Card.Title>
+  </Card.Header>
+  <Card.Content className="space-y-4">
+    <p className="text-sm font-medium">Content text</p>
+  </Card.Content>
+</Card>;
 ```
 
 Rules:
-- Always `bg-white` (or module-specific color like `bg-[#fff8ef]`)
-- Always `border-4 border-black`
-- Always `neubrutalism-shadow` (or `-sm` / `-lg`)
-- Padding: `p-4` minimum, `p-6` for larger panels
-- NEVER use `rounded` on cards
+
+- Card borders are implicit in the component
+- `Card.Title` is `font-black uppercase` automatically
+- Padding is handled by `Card.Content`
+
+### Tabs
+
+```tsx
+import { Tabs } from "@/components/retroui/Tab";
+
+<Tabs defaultValue="titik">
+  <Tabs.List>
+    <Tabs.Trigger value="titik">TITIK</Tabs.Trigger>
+    <Tabs.Trigger value="garis">GARIS</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="titik">Content</Tabs.Content>
+</Tabs>;
+```
+
+Rules:
+
+- Tab labels are always uppercase
+- Use `defaultValue` for initial active tab
+- Triggers and content are linked by `value`
 
 ### Inputs
 
-```jsx
-<input className="w-full border-2 border-black p-2.5 text-xs font-bold
-  focus:outline-none focus:ring-2 focus:ring-black rounded" />
+```tsx
+// Plain input (use AuthFormField for auth forms)
+<input
+  className="w-full border-2 border-border p-2.5 text-xs font-bold rounded
+    focus:outline-none focus:ring-2 focus:ring-border bg-card text-foreground"
+/>
+```
+
+```tsx
+// Auth form field (label + input + optional icon)
+import { AuthFormField } from "@/components/auth/AuthFormField";
+
+<AuthFormField
+  label="NAMA PENGGUNA"
+  type="text"
+  placeholder="Masukkan nama pengguna"
+  icon={<User className="size-4" />}
+/>;
 ```
 
 Rules:
-- Always `border-2 border-black`
-- Always `p-2.5`
-- Always `text-xs font-bold`
-- Use `rounded` (4px radius)
-- Focus: `focus:ring-2 focus:ring-black`
+
+- Always `border-2 border-border`
+- Always `p-2.5 text-xs font-bold`
+- Use `rounded` (4px radius, not square)
 
 ### Labels
 
-```jsx
-<label className="text-xs font-black text-black uppercase tracking-wide
-  flex items-center gap-1.5">
-  <span className="material-symbols-outlined text-sm">icon</span>
+```tsx
+<label className="text-xs font-black uppercase tracking-wide flex items-center gap-1.5">
   LABEL TEXT
 </label>
 ```
 
-Rules:
-- Always `text-xs font-black uppercase`
-- Always `tracking-wide`
-- Icons are `text-sm` inline with label
+### AuthLayout (Authentication Pages)
 
-### Section Headers / Banners
+```tsx
+import { AuthLayout } from "@/components/auth/AuthLayout"
+import { AuthFormField } from "@/components/auth/AuthFormField"
 
-```jsx
-<div className="bg-[#ffd1ce] border-4 border-black p-4 sm:p-5 mb-6
-  neubrutalism-shadow flex flex-col sm:flex-row justify-between
-  items-center gap-4">
-  <h2 className="text-xl font-black uppercase text-[#ae2f34]">
-    Section Title
-  </h2>
-</div>
+<AuthLayout subtitle="MASUK UNTUK MELANJUTKAN">
+  <AuthFormField label="NAMA PENGGUNA" ... />
+  <Button variant="default" size="lg" className="w-full">MASUK</Button>
+</AuthLayout>
 ```
 
-Rules:
-- Always `border-4 border-black`
-- Always `neubrutalism-shadow`
-- Flex layout with responsive direction
-- Heading is `font-black uppercase`
-
-### Tab Bars
-
-```jsx
-// Container
-<div className="border-4 border-black bg-white p-1 neubrutalism-shadow-sm">
-  {/* Tab buttons */}
-</div>
-
-// Individual tab
-<button className="flex-1 font-black text-xs uppercase border-2
-  py-2 px-3 cursor-pointer
-  [selected]: bg-[#ffd1ce] border-black neubrutalism-shadow-sm
-    translate-y-[-2px] z-10
-  [unselected]: bg-transparent text-gray-700 border-transparent">
-</button>
-```
-
-Rules:
-- Tabs use `translate-y-[-2px]` when active (raised above peers)
-- Active tab has full border, inactive has transparent border
-- Active tab gets container color (green, coral, gold, etc.)
-
-### Checkboxes (Inquiry Steps)
-
-```jsx
-<label className="flex items-start gap-3 p-2.5 border-2 border-black rounded cursor-pointer
-  [&:has(input:checked)]:bg-[#93f59c]/20 [&:has(input:checked)]:border-[#006e29]">
-  <input type="checkbox" className="accent-black mt-0.5" />
-  <span className="text-xs font-bold">
-    Step text
-  </span>
-</label>
-```
-
-Rules:
-- Always `border-2 border-black rounded`
-- Checked state: green tinted background, green border
-- Checkbox accent color: `accent-black`
+AuthLayout provides: branding shell, decorative Kawung watermark, footer text, and Batik stamps.
 
 ---
 
-## Batik Pattern Backgrounds
+## Module Config (Tab Mappings)
 
-Use these CSS classes for decorative Batik watermarks:
+Defined in `data/moduleConfig.ts` (to be created). Controls tab navigation in `modul/[slug]/layout.tsx`.
 
-| Class | Pattern | Opacity |
-|---|---|---|
-| `.parang-pattern` | Diagonal zigzag | 4% |
-| `.kawung-pattern` | Circular floral arcs | 4% |
-| `.kawung-pattern-opacity-10` | Circular floral arcs | 8% |
-| `.parang-watermark-small` | Outline diagonal | 6% |
-
-Apply as background patterns on hero sections, banners, or decorative containers.
-
----
-
-## Animation
-
-### Float Animation
-
-```css
-.animate-float {
-  animation: float 5s ease-in-out infinite;
-}
-/* translateY(-10px) + rotate(2deg) */
+```typescript
+// slugs and their tab values
+translasi → titik, garis, bangun
+refleksi  → sumbu-x, sumbu-y, garis, bangun
 ```
 
-Use for decorative elements, badges, or playful accents.
-
-### Interactive Press
-
-All interactive cards/buttons should have:
-```
-transition-all duration-150
-hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none
-active:translate-x-[4px] active:translate-y-[4px]
-```
+The layout renders a tab bar from `MODULE_TABS[slug]` and footer with Kembali/Kuis buttons.
 
 ---
 
 ## Responsive Breakpoints
 
-| Breakpoint | Tailwind Prefix | Target |
-|---|---|---|
-| Default | (none) | Mobile (< 640px) |
-| `sm` | `sm:` | Small tablet (640px+) |
-| `md` | `md:` | Tablet (768px+) |
-| `lg` | `lg:` | Desktop (1024px+) |
-
-### Responsive Patterns
-
-| Element | Mobile | Desktop |
-|---|---|---|
-| Page layout | `grid-cols-1` | `lg:grid-cols-12` |
-| Content columns | Full width | `col-span-6` / `col-span-7` + `col-span-5` / `col-span-6` |
-| Padding | `p-4` | `lg:p-8` |
-| Banner direction | `flex-col` | `sm:flex-row` |
-| Text sizes | Smaller scale | Larger scale |
+| Breakpoint | Tailwind | Target            |
+| ---------- | -------- | ----------------- |
+| Default    | (none)   | Mobile (< 640px)  |
+| `sm`       | `sm:`    | Tablet (640px+)   |
+| `md`       | `md:`    | Tablet (768px+)   |
+| `lg`       | `lg:`    | Desktop (1024px+) |
 
 ---
 
@@ -426,25 +366,21 @@ active:translate-x-[4px] active:translate-y-[4px]
 
 ### Do
 
-- Use `border-4 border-black` on all major panels
-- Use `neubrutalism-shadow` on cards and containers
-- Make buttons square with `font-extrabold uppercase`
-- Use `text-xs font-black uppercase` for labels
-- Use `#ffd93d` for primary CTAs
-- Use `#93f59c` for success states
-- Use `#ffd1ce` for reflection module accents
-- Add press effect (translate + shadow) on interactive elements
-- Use Material Symbols for icons
-- Use Space Grotesk for all text
+- Use Tailwind semantic classes (`bg-primary`, `text-foreground`, `border-border`)
+- Import `Button` from `@/components/retroui/Button` — never use plain `<button>`
+- Add `!rounded-none` to buttons
+- Use `font-black uppercase` for labels and headings
+- Use `lucide-react` for all icons
+- Use `space-y-6` for vertical section rhythm
+- Use `neubrutal-shadow hover-shift active-shift` for primary CTAs
 
 ### Don't
 
+- Don't use raw hex colors — always use Tailwind semantic tokens
+- Don't use `<button>` HTML element — always use `<Button>` from RetroUI
 - Don't use `rounded` on buttons or cards
 - Don't use gradient backgrounds
-- Don't use soft/diffused shadows (always hard offset)
-- Don't use font-weight below 700 for UI elements
-- Don't use colors outside the palette
-- Don't use multiple font families
-- Don't skip the black border on containers
-- Don't use `text-sm` or `text-base` for labels (use `text-xs`)
-- Don't add rounded corners to the tab bar buttons
+- Don't use soft/diffused shadows
+- Don't use Material Symbols — use `lucide-react`
+- Don't use font-weight below 700 for labels
+- Don't skip black borders on interactive elements

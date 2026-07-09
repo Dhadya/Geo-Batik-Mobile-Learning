@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-/* Space Grotesk — single font for the entire app (300-900 via variable font) */
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "GEMATRI - Gemakan Mahir Transformasi Geometri",
-  description: "Belajar Transformasi Geometri melalui Batik",
+  title: "Batik Geometry",
+  description: "Belajar Geometri Transformasi melalui Batik",
 };
 
 export default function RootLayout({
@@ -23,6 +23,13 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} h-full antialiased`}
     >
+      <head>
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

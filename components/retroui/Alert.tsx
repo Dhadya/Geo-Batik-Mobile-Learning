@@ -1,3 +1,4 @@
+/* RetroUI - Alert, AlertTitle, AlertDescription components */
 import { HtmlHTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 

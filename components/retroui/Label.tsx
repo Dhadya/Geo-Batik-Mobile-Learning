@@ -1,3 +1,4 @@
+/* RetroUI - Form label via base-ui Field */
 import * as React from "react";
 import { Field } from "@base-ui/react/field";
 import { cva } from "class-variance-authority";
