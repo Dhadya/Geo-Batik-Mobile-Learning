@@ -1,26 +1,256 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ── Theme tokens ────────────────────────────────────────────
+   Tailwind v4 @theme blocks. Maps CSS vars to Tailwind
+   utility classes (bg-primary, text-foreground, etc.)
+   ────────────────────────────────────────────────────────── */
 @theme inline {
+  --font-sans: var(--font-sans);
+  --radius: 0;
+
+  /* NeoBrutalism hard shadows (no blur) */
+  --shadow-xs: 1px 1px 0 0 var(--color-border);
+  --shadow-sm: 2px 2px 0 0 var(--color-border);
+  --shadow: 3px 3px 0 0 var(--color-border);
+  --shadow-md: 4px 4px 0 0 var(--color-border);
+  --shadow-lg: 6px 6px 0 0 var(--color-border);
+  --shadow-xl: 10px 10px 0 1px var(--color-border);
+  --shadow-2xl: 16px 16px 0 1px var(--color-border);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-container: var(--secondary-container);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-outline: var(--outline);
+  --color-error: var(--error);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-module-translasi: var(--module-translasi);
+  --color-module-refleksi: var(--module-refleksi);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Nusantara Rebel palette ─────────────────────────────────
+   The Academic Rebel: Indonesian heritage meets NeoBrutalism.
+   Canary Yellow = primary action, Vibrant Green = secondary,
+   Electric Pink-Red = tertiary/emphasis, Deep Blue = info.
+   ────────────────────────────────────────────────────────── */
+:root {
+  --background: #fff8ef;
+  --foreground: #1f1b12;
+  --card: #ffffff;
+  --card-foreground: #1f1b12;
+  --primary: #ffd93d;
+  --primary-foreground: #000;
+  --primary-dark: #705d00;
+  --secondary: #006e29;
+  --secondary-foreground: #fff;
+  --secondary-container: #93f59c;
+  --tertiary: #ae2f34;
+  --tertiary-foreground: #fff;
+  --tertiary-container: #ffd1ce;
+  --muted: #eae2d2;
+  --muted-foreground: #4d4633;
+  --accent: #ffe173;
+  --accent-foreground: #000;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #fff;
+  --border: #000;
+  --input: #ffffff;
+  --popover: #ffffff;
+  --popover-foreground: #1f1b12;
+  --ring: #000;
+  --outline: #7e7761;
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+  --on-error-container: #93000a;
+  --surface-dim: #e1d9c9;
+  --surface-bright: #fff8ef;
+  --surface-container: #f5eddd;
+  --surface-container-low: #fbf3e2;
+  --surface-container-high: #efe7d7;
+
+  /* Module-specific accent colors (not part of Material theme) */
+  --module-translasi: #00ffff;
+  --module-refleksi: #ff00ff;
+}
+
+/* Dark mode — inverted surface with bright accent glow */
+.dark {
+  --background: #1a1a1a;
+  --foreground: #f8f0df;
+  --card: #242424;
+  --card-foreground: #f8f0df;
+  --primary: #ffd93d;
+  --primary-foreground: #000;
+  --primary-dark: #e8c426;
+  --secondary: #7bdb85;
+  --secondary-foreground: #002107;
+  --tertiary: #ffb3b0;
+  --tertiary-foreground: #410006;
+  --muted: #2e2e2e;
+  --muted-foreground: #b0a898;
+  --accent: #705d00;
+  --accent-foreground: #ffe173;
+  --destructive: #ffb4ab;
+  --destructive-foreground: #690005;
+  --border: #5c5c5c;
+  --input: #1a1a1a;
+  --popover: #242424;
+  --popover-foreground: #f8f0df;
+  --ring: #5c5c5c;
+  --outline: #8f8872;
+  --error-container: #93000a;
+  --on-error-container: #ffdad6;
+  --surface-dim: #121212;
+  --surface-bright: #2e2e2e;
+  --surface-container: #1e1e1e;
+  --module-translasi: #00cccc;
+  --module-refleksi: #cc00cc;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* Material Symbols font settings — default to outline style */
+  .material-symbols-outlined {
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
+}
+
+/* ── Custom animations ───────────────────────────────────── */
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+/* ── Decoratives & NeoBrutalism utilities ─────────────────── */
+@layer utilities {
+  .animate-float {
+    animation: float 5s ease-in-out infinite;
+  }
+
+  /* Kawung motif: 4 circles forming a diamond, rotated 45deg */
+  .kawung-stamp {
+    width: 140px;
+    height: 140px;
+    position: relative;
+    transform: rotate(45deg);
+  }
+
+  .kawung-circle {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border: 4px solid black;
+    border-radius: 50%;
+  }
+
+  /* Corner positions for the 4 circles */
+  .c1 {
+    top: 0;
+    left: 0;
+  }
+  .c2 {
+    top: 0;
+    right: 0;
+  }
+  .c3 {
+    bottom: 0;
+    left: 0;
+  }
+  .c4 {
+    bottom: 0;
+    right: 0;
+  }
+
+  /* Subtle decorative watermark */
+  .batik-watermark {
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  /* Kawung motif pattern overlay — subtle curved lines at 5% opacity */
+  .kawung-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-16.569 13.431-30 30-30M30 30c0 16.569-13.431 30-30 30M30 30c16.569 0 30 13.431 30 30M30 30c-16.569 0-30-13.431-30-30' fill='none' stroke='%23000' stroke-width='1' stroke-opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #000;
+    border-radius: 4px;
+  }
+
+  /* Hard offset shadows */
+  .neubrutal-shadow {
+    box-shadow: 12px 12px 0 0 #000;
+  }
+
+  .neubrutal-shadow-sm {
+    box-shadow: 6px 6px 0 0 #000;
+  }
+
+  /* Interactive press effects */
+  .hover-shift:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 16px 16px 0 0 #000;
+  }
+
+  .active-shift:active {
+    transform: translate(8px, 8px);
+    box-shadow: 0 0 0 0 #000;
+  }
 }
