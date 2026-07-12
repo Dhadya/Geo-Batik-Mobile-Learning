@@ -15,15 +15,15 @@ export function ModuleTabNav({
   currentTab: string
 }) {
   return (
-    <section className="flex flex-wrap gap-2 overflow-x-auto pb-2">
+    <section className="flex flex-wrap gap-2 overflow-x-auto pb-4 pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
       {tabs.map((t) => (
-        <Link key={t.value} href={`/modul/${slug}/${t.value}`}>
+        <Link key={t.value} href={`/modul/${slug}/${t.value}`} className="flex-1 min-w-fit">
           <Button
             variant={t.value === currentTab ? "default" : "outline"}
-            size="md"
-            className="!rounded-none font-bold uppercase whitespace-nowrap"
+            size="lg"
+            className="rounded-none! font-bold uppercase whitespace-nowrap w-full"
           >
-            {t.label}
+            {slug === "translasi" ? `TRANSLASI ${t.label}` : t.label}
           </Button>
         </Link>
       ))}

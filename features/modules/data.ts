@@ -31,27 +31,6 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       ],
     },
     {
-      label: "GARIS",
-      value: "garis",
-      title: "Translasi Garis",
-      instruction:
-        "Amati perpindahan garis PQ setelah ditranslasi sejauh T(a, b).",
-      formula: {
-        prefix: "P(x, y) → P'(",
-        suffix: ")",
-        placeholders: ["x + a", "y + b"],
-      },
-      assessment: [
-        {
-          id: 1,
-          question:
-            "Garis PQ dengan P(1,1) dan Q(3,3) ditranslasi T(2,0). Panjang P'Q' adalah...",
-          options: ["2√2", "4", "2", "8"],
-          correctIndex: 0,
-        },
-      ],
-    },
-    {
       label: "BANGUN",
       value: "bangun",
       title: "Translasi Bangun",
@@ -68,6 +47,27 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
           question:
             "Segitiga ABC dengan A(0,0), B(4,0), C(0,3) ditranslasi T(1,1). Luas A'B'C' adalah...",
           options: ["6", "7", "12", "14"],
+          correctIndex: 0,
+        },
+      ],
+    },
+    {
+      label: "GARIS",
+      value: "garis",
+      title: "Translasi Garis",
+      instruction:
+        "Amati perpindahan garis PQ setelah ditranslasi sejauh T(a, b).",
+      formula: {
+        prefix: "P(x, y) → P'(",
+        suffix: ")",
+        placeholders: ["x + a", "y + b"],
+      },
+      assessment: [
+        {
+          id: 1,
+          question:
+            "Garis PQ dengan P(1,1) dan Q(3,3) ditranslasi T(2,0). Panjang P'Q' adalah...",
+          options: ["2√2", "4", "2", "8"],
           correctIndex: 0,
         },
       ],

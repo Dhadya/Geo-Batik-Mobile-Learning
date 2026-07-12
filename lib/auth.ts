@@ -4,8 +4,40 @@ import { nextCookies } from "better-auth/next-js";
 import { db } from "@/lib/db";
 import { user, session, account, verification } from "@/drizzle/schema";
 
+function getAuthBaseURL() {
+  const configuredURL = process.env.BETTER_AUTH_URL;
+  const isLocalURL =
+    configuredURL?.startsWith("http://localhost") ||
+    configuredURL?.startsWith("https://localhost") ||
+    configuredURL?.startsWith("http://127.0.0.1") ||
+    configuredURL?.startsWith("https://127.0.0.1");
+
+  if (configuredURL && !(process.env.VERCEL_URL && isLocalURL)) {
+    return configuredURL;
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  return "http://localhost:3000";
+}
+
+const authBaseURL = getAuthBaseURL();
+const trustedOrigins = Array.from(
+  new Set(
+    [
+      authBaseURL,
+      process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+    ].filter(Boolean)
+  )
+) as string[];
+
 // BetterAuth server config — Drizzle adapter with Postgres and schema mapping
 export const auth = betterAuth({
+  baseURL: authBaseURL,
+  trustedOrigins,
   database: drizzleAdapter(db, {
     provider: "pg",
     // Map BetterAuth models to our Drizzle table exports
