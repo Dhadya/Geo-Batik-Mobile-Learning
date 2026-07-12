@@ -5,8 +5,11 @@ import { Button } from "@/components/retroui/Button"
 import { BayanganInput } from "./BayanganInput"
 import { useBangunForm } from "@/features/modules/hooks/useObservation"
 
+/** Pengamatan form for translasi bangun — 4-point grid with row-spanned translasi vector. */
 export function PengamatanBangunForm() {
+  // Form state from zustand store via hook
   const { form, errors, isChecked, setForm, handleSubmit } = useBangunForm()
+  const isFilled = Object.values(form).every((v) => v !== undefined && v !== "")
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -72,6 +75,7 @@ export function PengamatanBangunForm() {
 
       <Button
         type="submit"
+        disabled={!isFilled}
         variant={isChecked ? "secondary" : "default"}
         className="w-full font-bold py-3 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
       >

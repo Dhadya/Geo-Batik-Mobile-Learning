@@ -19,6 +19,7 @@ export function ModuleContent({
   slug: string
   tab: string
 }) {
+  // Validate slug has tabs, decode URL-encoded tab param
   const tabs = getModuleTabs(slug)
   if (!tabs) notFound()
 
@@ -30,21 +31,27 @@ export function ModuleContent({
 
   return (
     <div className="space-y-4 md:space-y-6">
+      {/* Breadcrumb navigation */}
       <QuizBreadcrumb slug={slug} label={label} path="modul" />
 
+      {/* Module title banner */}
       <div className="bg-white border-4 border-black p-4 text-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] uppercase">
         <Text as="h1" className="text-xl md:text-2xl font-black text-black">
           {slug === "translasi" ? "TRANSLASI" : "REFLEKSI TITIK"}
         </Text>
       </div>
 
+      {/* Tab navigation bar */}
       <ModuleTabNav slug={slug} tabs={tabs} currentTab={decodedTab} />
 
+      {/* Main 2-column layout: workspace + observation panel */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+        {/* Left column — GeoGebra canvas + conclusion formula */}
         <div className="lg:col-span-8 flex flex-col gap-4 md:gap-6">
           <InteractiveWorkspace materialId={tabConfig.materialId} />
           <ConclusionArea formula={tabConfig.formula} />
         </div>
+        {/* Right column — observation/pengamatan panel */}
         <div className="lg:col-span-4 flex flex-col">
           <ObservationPanel
             slug={slug}
@@ -54,8 +61,10 @@ export function ModuleContent({
         </div>
       </div>
 
+      {/* Assessment section with multiple choice questions */}
       <AssessmentSection questions={tabConfig.assessment} />
 
+      {/* Navigation buttons — back to apersepsi or forward to quiz */}
       <div className="flex justify-center gap-4 pt-4">
         <Link href={`/apersepsi/${slug}`}>
           <Button variant="outline" size="lg" className="rounded-none! px-8 py-4 text-lg font-black uppercase gap-2">

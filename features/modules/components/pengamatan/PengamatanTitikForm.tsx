@@ -6,8 +6,11 @@ import { CoordStack } from "./CoordStack"
 import { BayanganInput } from "./BayanganInput"
 import { useTitikForm } from "@/features/modules/hooks/useObservation"
 
+/** Pengamatan form for translasi titik — 3-point table + standalone bayangan question. */
 export function PengamatanTitikForm() {
+  // Form state from zustand store via hook
   const { form, errors, isChecked, setForm, handleSubmit } = useTitikForm()
+  const isFilled = Object.values(form).every((v) => v !== undefined && v !== "")
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -70,6 +73,7 @@ export function PengamatanTitikForm() {
 
       <Button
         type="submit"
+        disabled={!isFilled}
         variant={isChecked ? "secondary" : "default"}
         className="w-full font-bold py-3 mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
       >

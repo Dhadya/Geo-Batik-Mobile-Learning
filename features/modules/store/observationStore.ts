@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import type { TranslasiTitikData, TranslasiBangunData } from "@/lib/schemas"
 
+/** Centralized state for observation panel sandbox, titik, bangun, and mock forms. */
 interface ObservationState {
   sandboxX: string
   sandboxY: string
@@ -48,6 +49,7 @@ const initial = {
   isMockChecked: false,
 }
 
+/** Zustand store managing all observation panel form state and setters. */
 export const useObservationStore = create<ObservationState>((set) => ({
   ...initial,
   setSandboxX: (val) => set({ sandboxX: val }),

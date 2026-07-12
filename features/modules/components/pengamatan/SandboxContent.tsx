@@ -6,7 +6,7 @@ import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
-import { useSandbox } from "@/features/modules/hooks/useObservation"
+import { useSandbox, allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
 
 interface SandboxContentProps {
   slug: string
@@ -14,15 +14,17 @@ interface SandboxContentProps {
   instruction: string
 }
 
+/** Percobaan tab — coordinate input, live bayangan preview, and notes. */
 export function SandboxContent({ slug, tab, instruction }: SandboxContentProps) {
+  // Sandbox state from zustand store via hook
   const { sandboxX, sandboxY, notes, preview, setSandboxX, setSandboxY, setNotes } = useSandbox(slug, tab)
   const [isChecked, setIsChecked] = useState(false)
 
+  const isFilled = sandboxX !== "" && sandboxY !== "" && notes.trim() !== ""
+
+  // Validate that notes are filled before checking
   const handleCheck = () => {
-    if (notes.trim() === "") {
-      toast.error("Tuliskan catatan pengamatan Anda terlebih dahulu.")
-      return
-    }
+    if (!isFilled) return
     setIsChecked(true)
     toast.success("Catatan pengamatan Anda berhasil diperiksa dan disimpan! 🎉")
   }
@@ -40,9 +42,11 @@ export function SandboxContent({ slug, tab, instruction }: SandboxContentProps) 
           </label>
           <div className="grid grid-cols-2 gap-2 md:gap-4">
             <Input
-              type="number"
+              type="text"
+              inputMode="numeric"
               placeholder="x"
               value={sandboxX}
+              onKeyDown={allowOnlyNumbers}
               onChange={(e) => {
                 setSandboxX(e.target.value)
                 setIsChecked(false)
@@ -50,9 +54,11 @@ export function SandboxContent({ slug, tab, instruction }: SandboxContentProps) 
               className="border-4 border-black text-lg font-bold p-3"
             />
             <Input
-              type="number"
+              type="text"
+              inputMode="numeric"
               placeholder="y"
               value={sandboxY}
+              onKeyDown={allowOnlyNumbers}
               onChange={(e) => {
                 setSandboxY(e.target.value)
                 setIsChecked(false)
@@ -101,9 +107,9 @@ export function SandboxContent({ slug, tab, instruction }: SandboxContentProps) 
         </div>
 
         <Button
-          type="button"
-          variant={isChecked ? "secondary" : "default"}
           onClick={handleCheck}
+          disabled={!isFilled}
+          variant={isChecked ? "secondary" : "default"}
           className="w-full font-bold py-3 mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
         >
           {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}

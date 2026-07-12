@@ -11,7 +11,17 @@ import {
 } from "@/lib/schemas"
 import { useObservationStore } from "../store/observationStore"
 
+/** Blocks non-numeric keystrokes; allows digits, leading minus, and control keys. */
+export const allowOnlyNumbers = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.ctrlKey || e.metaKey) return
+  if (["Backspace", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) return
+  if (e.key === "-" && (e.target as HTMLInputElement).selectionStart === 0) return
+  if (!/^\d$/.test(e.key)) e.preventDefault()
+}
+
+/** Hook providing sandbox coordinate input, live preview, and notes state. */
 export function useSandbox(slug: string, tab: string) {
+  // Sandbox coordinate state from zustand store
   const sandboxX = useObservationStore((s) => s.sandboxX)
   const sandboxY = useObservationStore((s) => s.sandboxY)
   const notes = useObservationStore((s) => s.notes)
@@ -19,6 +29,7 @@ export function useSandbox(slug: string, tab: string) {
   const setSandboxY = useObservationStore((s) => s.setSandboxY)
   const setNotes = useObservationStore((s) => s.setNotes)
 
+  // Compute preview bayangan based on slug/tab transformation rules
   const preview = useCallback(() => {
     const x = Number(sandboxX)
     const y = Number(sandboxY)
@@ -44,6 +55,7 @@ export function useSandbox(slug: string, tab: string) {
 
 type FormErrors<T> = Partial<Record<keyof T, string>>
 
+/** Generic form submit handler with Zod validation and toast feedback. */
 function useFormSubmit<T extends Record<string, number>>(
   schema: ZodSchema<T>,
   form: Partial<Record<keyof T, string>>,
@@ -56,6 +68,7 @@ function useFormSubmit<T extends Record<string, number>>(
     (e: React.FormEvent) => {
       e.preventDefault()
       try {
+        // Coerce string form values to numbers, empty strings become undefined
         const cleaned = Object.fromEntries(
           Object.entries(form).map(([k, v]) => [k, v === "" ? undefined : Number(v)]),
         )
@@ -80,7 +93,9 @@ function useFormSubmit<T extends Record<string, number>>(
   )
 }
 
+/** Hook managing translasi titik form state, validation, and submission. */
 export function useTitikForm() {
+  // Titik form state from zustand store
   const form = useObservationStore((s) => s.titikForm)
   const errors = useObservationStore((s) => s.titikErrors)
   const isChecked = useObservationStore((s) => s.isTitikChecked)
@@ -100,7 +115,9 @@ export function useTitikForm() {
   return { form, errors, isChecked, setForm, handleSubmit }
 }
 
+/** Hook managing translasi bangun form state, validation, and submission. */
 export function useBangunForm() {
+  // Bangun form state from zustand store
   const form = useObservationStore((s) => s.bangunForm)
   const errors = useObservationStore((s) => s.bangunErrors)
   const isChecked = useObservationStore((s) => s.isBangunChecked)
@@ -120,7 +137,9 @@ export function useBangunForm() {
   return { form, errors, isChecked, setForm, handleSubmit }
 }
 
+/** Hook managing mock/fallback form with empty-field validation. */
 export function useMockForm() {
+  // Mock answer state from zustand store
   const mockAns = useObservationStore((s) => s.mockAns)
   const mockError = useObservationStore((s) => s.mockError)
   const isMockChecked = useObservationStore((s) => s.isMockChecked)

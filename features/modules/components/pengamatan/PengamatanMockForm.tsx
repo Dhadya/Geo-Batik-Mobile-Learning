@@ -5,8 +5,11 @@ import { Input } from "@/components/retroui/Input"
 import { Button } from "@/components/retroui/Button"
 import { useMockForm } from "@/features/modules/hooks/useObservation"
 
+/** Fallback pengamatan form for non-titik/bangun tabs — single text input answer. */
 export function PengamatanMockForm() {
+  // Mock form state from zustand store via hook
   const { mockAns, mockError, isMockChecked, setMockAns, handleSubmit } = useMockForm()
+  const isFilled = mockAns.trim() !== ""
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -34,6 +37,7 @@ export function PengamatanMockForm() {
 
       <Button
         type="submit"
+        disabled={!isFilled}
         variant={isMockChecked ? "secondary" : "default"}
         className="w-full font-bold py-3 mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
       >

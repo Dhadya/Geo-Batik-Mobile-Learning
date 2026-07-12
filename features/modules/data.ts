@@ -1,5 +1,6 @@
 import type { ModuleSlug, ModuleTab } from "./types"
 
+/** Module tab configurations for translasi and refleksi sections. */
 export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
   translasi: [
     {
