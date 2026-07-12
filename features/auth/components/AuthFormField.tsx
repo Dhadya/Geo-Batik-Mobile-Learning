@@ -43,7 +43,7 @@ export function AuthFormField({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="w-full h-14 bg-white border-4 border-black !rounded-none text-base px-4"
+          className="w-full h-14 bg-white border-4 border-black text-base px-4"
         />
         {/* Right-side icon container — password toggle or static icon */}
         <div className="absolute inset-y-0 right-0 flex items-center pr-4">
@@ -54,7 +54,7 @@ export function AuthFormField({
               variant="ghost"
               size="icon"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="!rounded-none !border-0 !shadow-none !bg-transparent h-full text-muted-foreground hover:text-foreground hover:!bg-transparent"
+              className="border-0 shadow-none bg-transparent h-full text-muted-foreground hover:text-foreground hover:bg-transparent"
             >
               {showPassword ? <Eye className="size-5" /> : <EyeOff className="size-5" />}
             </Button>

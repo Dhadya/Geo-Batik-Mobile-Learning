@@ -21,7 +21,7 @@ export function ConclusionArea({ formula }: ConclusionAreaProps) {
         <div className="w-12 h-12 md:w-16 md:h-16 border-4 border-black bg-white flex items-center justify-center shrink-0">
           <Lightbulb className="size-6 md:size-8" />
         </div>
-        <div className="flex-grow">
+        <div className="grow">
           <Text
             as="h2"
             className="text-xl md:text-2xl font-black uppercase mb-4"
@@ -39,13 +39,13 @@ export function ConclusionArea({ formula }: ConclusionAreaProps) {
             <Input
               type="text"
               placeholder={formula.placeholders[0]}
-              className="!rounded-none border-4 border-black w-24 md:w-32 text-center text-lg md:text-xl font-bold p-2 md:p-3"
+              className="border-4 border-black w-24 md:w-32 text-center text-lg md:text-xl font-bold p-2 md:p-3"
             />
             <span className="text-xl md:text-2xl font-bold">,</span>
             <Input
               type="text"
               placeholder={formula.placeholders[1]}
-              className="!rounded-none border-4 border-black w-24 md:w-32 text-center text-lg md:text-xl font-bold p-2 md:p-3"
+              className="border-4 border-black w-24 md:w-32 text-center text-lg md:text-xl font-bold p-2 md:p-3"
             />
             <span className="text-xl md:text-2xl font-bold">
               {formula.suffix}

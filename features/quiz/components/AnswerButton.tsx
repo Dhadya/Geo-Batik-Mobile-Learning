@@ -21,13 +21,13 @@ export function AnswerButton({
     <Button
       variant={isSelected ? "default" : "outline"}
       size="lg"
-      className="!rounded-none w-full justify-start gap-3 p-4 md:p-5 text-left font-bold text-base md:text-lg relative"
+      className="w-full justify-start gap-3 p-4 md:p-5 text-left font-bold text-base md:text-lg relative"
       onClick={onSelect}
     >
       <span className="w-8 h-8 md:w-10 md:h-10 border-2 border-black bg-foreground text-background flex items-center justify-center text-sm md:text-base shrink-0">
         {LABELS[index]}
       </span>
-      <span className="flex-grow">{text}</span>
+      <span className="grow">{text}</span>
       {isSelected && (
         <Badge variant="solid" size="sm" className="absolute -top-2 -right-2 uppercase">
           Dipilih

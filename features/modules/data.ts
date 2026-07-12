@@ -8,6 +8,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Translasi Titik",
       instruction:
         "Amati perpindahan koordinat titik A setelah ditranslasi sejauh T(a, b).",
+      materialId: "xqcrxksq",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",
@@ -36,6 +37,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Translasi Bangun",
       instruction:
         "Amati perpindahan bangun datar setelah ditranslasi sejauh T(a, b).",
+      materialId: "dmvhzyum",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",

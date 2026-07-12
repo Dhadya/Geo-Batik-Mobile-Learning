@@ -4,6 +4,7 @@ export interface ModuleTab {
   value: string
   title: string
   instruction: string
+  materialId?: string
   formula: {
     prefix: string
     suffix: string

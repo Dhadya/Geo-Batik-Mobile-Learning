@@ -42,10 +42,14 @@ export function ModuleContent({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
         <div className="lg:col-span-8">
-          <InteractiveWorkspace />
+          <InteractiveWorkspace materialId={tabConfig.materialId} />
         </div>
         <div className="lg:col-span-4">
-          <ObservationPanel instruction={tabConfig.instruction} />
+          <ObservationPanel
+            slug={slug}
+            tab={decodedTab}
+            instruction={tabConfig.instruction}
+          />
         </div>
       </div>
 

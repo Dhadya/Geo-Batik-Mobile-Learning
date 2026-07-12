@@ -50,10 +50,10 @@ export default function LandingPage() {
             <Button
               variant="default"
               size="lg"
-              className="!px-16 !py-4 !text-3xl font-bold neubrutal-shadow hover-shift active-shift flex items-center gap-6 !rounded-none"
+              className="px-16 py-4 text-3xl font-bold neubrutal-shadow hover-shift active-shift flex items-center gap-6"
             >
               MASUK
-              <ArrowRight className="!size-10 group-hover:translate-x-3 transition-transform" />
+              <ArrowRight className="size-10 group-hover:translate-x-3 transition-transform" />
             </Button>
           </Link>
         </div>

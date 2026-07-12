@@ -56,7 +56,7 @@ export function ProfileDropdown() {
         variant="outline"
         size="sm"
         onClick={() => setOpen((prev) => !prev)}
-        className="!rounded-none flex items-center gap-2 border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
+        className="flex items-center gap-2 border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
       >
         {showAvatar ? (
           <Image
@@ -64,11 +64,11 @@ export function ProfileDropdown() {
             alt=""
             width={28}
             height={28}
-            className="size-7 object-cover !rounded-none border-2 border-black"
+            className="size-7 object-cover border-2 border-black"
             onError={() => setImgFailed(true)}
           />
         ) : (
-          <span className="flex items-center justify-center size-7 bg-black text-primary-foreground font-black text-xs !rounded-none">
+          <span className="flex items-center justify-center size-7 bg-black text-primary-foreground font-black text-xs">
             {initials}
           </span>
         )}
@@ -89,7 +89,7 @@ export function ProfileDropdown() {
             <Button
               variant="ghost"
               onClick={handleSignOut}
-              className="!rounded-none w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold uppercase text-destructive hover:bg-destructive/10"
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold uppercase text-destructive hover:bg-destructive/10"
             >
               <LogOut className="size-4" />
               Keluar

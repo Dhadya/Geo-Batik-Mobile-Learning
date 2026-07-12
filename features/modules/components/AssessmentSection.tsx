@@ -58,7 +58,7 @@ export function AssessmentSection({
           <Button
             variant="default"
             size="lg"
-            className="!rounded-none font-black uppercase tracking-widest"
+            className="font-black uppercase tracking-widest"
           >
             Submit Jawaban
           </Button>

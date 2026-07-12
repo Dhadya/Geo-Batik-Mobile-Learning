@@ -18,7 +18,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
   const label = data.slug === "translasi" ? "Translasi" : "Refleksi"
 
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-12 pt-4 md:pt-6 pb-8 md:pb-12 space-y-6 md:space-y-8">
+    <div className="max-w-384 mx-auto px-4 md:px-12 py-6 md:py-8 space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={data.slug} label={label} path="apersepsi" />
 
       <ApersepsiHeader
@@ -57,7 +57,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
           <Button
             variant="default"
             size="lg"
-            className="!rounded-none px-10 md:px-16 py-5 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
+            className="px-10 md:px-16 py-5 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
           >
             Baik, Ayo Belajar
             <ArrowRight className="size-7 md:size-8" />

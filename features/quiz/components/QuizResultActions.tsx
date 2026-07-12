@@ -20,7 +20,7 @@ export function QuizResultActions({ slug }: { slug: string }) {
       <Button
         variant="outline"
         size="lg"
-        className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
+        className="px-8 py-4 text-lg font-black uppercase gap-2"
         onClick={handleUlangi}
       >
         <RefreshCw className="size-6" />
@@ -30,7 +30,7 @@ export function QuizResultActions({ slug }: { slug: string }) {
         <Button
           variant="default"
           size="lg"
-          className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
+          className="px-8 py-4 text-lg font-black uppercase gap-2"
         >
           <Home className="size-6" />
           Kembali ke Menu
