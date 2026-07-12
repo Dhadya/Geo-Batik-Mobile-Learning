@@ -11,7 +11,7 @@ const TabsTriggerList = ({
   ...props
 }: ITabsTriggerList) => {
   return (
-    <BaseTabs.List className={cn("flex flex-row space-x-2 w-full", className)} {...props}>
+    <BaseTabs.List className={cn("flex flex-row items-center justify-center w-full gap-2", className)} {...props}>
       {children}
     </BaseTabs.List>
   );
@@ -24,7 +24,7 @@ const TabsTrigger = ({ children, className, ...props }: ITabsTrigger) => {
   return (
     <BaseTabs.Tab
       className={cn(
-        "px-4 flex items-center py-1 border-2 border-transparent data-[active]:border-border data-[active]:bg-primary data-[active]:text-primary-foreground data-[active]:font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+        "px-4 py-2 text-sm font-medium border-2 border-transparent text-muted-foreground data-[active]:border-border data-[active]:bg-primary data-[active]:text-foreground data-[active]:font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
         className,
       )}
       {...props}
@@ -39,7 +39,7 @@ interface ITabsContent extends React.ComponentProps<typeof BaseTabs.Panel> {
 }
 const TabsContent = ({ children, className, ...props }: ITabsContent) => {
   return (
-    <BaseTabs.Panel className={cn("mt-2 w-full", className)} {...props}>
+    <BaseTabs.Panel className={cn("w-full", className)} {...props}>
       {children}
     </BaseTabs.Panel>
   );

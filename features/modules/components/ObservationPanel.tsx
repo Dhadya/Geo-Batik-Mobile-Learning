@@ -18,32 +18,34 @@ export function ObservationPanel({ slug, tab, instruction }: ObservationPanelPro
   const showMockForm = !isTranslasiTitik && !isTranslasiBangun
 
   return (
-    <div className="border-4 border-black bg-white h-auto lg:h-[600px] flex flex-col shadow-lg">
-      <Tabs defaultValue="percobaan" className="flex flex-col h-full">
-        <Tabs.List className="border-b-4 border-black bg-accent flex">
-          <Tabs.Trigger
-            value="percobaan"
-            className="flex-1 py-3 text-center font-black uppercase border-r-2 border-black last:border-r-0 cursor-pointer"
-          >
-            Percobaan
-          </Tabs.Trigger>
+    <div className="h-auto lg:h-full flex flex-col gap-4">
+      <Tabs defaultValue="pengamatan" className="flex flex-col h-full gap-4">
+        <Tabs.List className="border-4 border-black bg-white p-1.5 flex gap-2 shadow-[4px_4px_0_0_#000] w-full rounded-none">
           <Tabs.Trigger
             value="pengamatan"
-            className="flex-1 py-3 text-center font-black uppercase cursor-pointer"
+            className="flex-1 py-2.5 text-center font-black uppercase cursor-pointer rounded-none border-2 border-transparent text-muted-foreground text-base md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_#000] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150"
           >
             Pengamatan
           </Tabs.Trigger>
+          <Tabs.Trigger
+            value="percobaan"
+            className="flex-1 py-2.5 text-center font-black uppercase cursor-pointer rounded-none border-2 border-transparent text-muted-foreground text-base md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_#000] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150"
+          >
+            Percobaan
+          </Tabs.Trigger>
         </Tabs.List>
 
-        <Tabs.Content value="percobaan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 md:space-y-6 mt-0">
-          <SandboxContent slug={slug} tab={tab} instruction={instruction} />
-        </Tabs.Content>
+        <div className="border-4 border-black bg-white grow flex flex-col shadow-lg overflow-hidden">
+          <Tabs.Content value="percobaan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 md:space-y-6 mt-0">
+            <SandboxContent slug={slug} tab={tab} instruction={instruction} />
+          </Tabs.Content>
 
-        <Tabs.Content value="pengamatan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 mt-0">
-          {isTranslasiTitik && <PengamatanTitikForm />}
-          {isTranslasiBangun && <PengamatanBangunForm />}
-          {showMockForm && <PengamatanMockForm />}
-        </Tabs.Content>
+          <Tabs.Content value="pengamatan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 mt-0">
+            {isTranslasiTitik && <PengamatanTitikForm />}
+            {isTranslasiBangun && <PengamatanBangunForm />}
+            {showMockForm && <PengamatanMockForm />}
+          </Tabs.Content>
+        </div>
       </Tabs>
     </div>
   )

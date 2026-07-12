@@ -11,7 +11,7 @@ export function PengamatanTitikForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Text as="p" className="text-sm font-semibold">
+      <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
         Seorang pembatik harus mampu menyusun motif sesuai yang dia rencanakan. Kak Dhadya telah menentukan bahwa motif berikutnya harus berada pada koordinat (4, 4). Bantulah Kakak ini menentukan nilai translasi agar titik bayangannya sesuai target.
       </Text>
 
@@ -27,7 +27,7 @@ export function PengamatanTitikForm() {
             <div key={prefix} className="grid grid-cols-3 items-center py-3 text-center">
               <div className="font-bold">{label}</div>
               <div className="flex items-center justify-center gap-0.5">
-                <span className="text-2xl font-light select-none">(</span>
+                <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">(</span>
                 <CoordStack
                   a={form[`${prefix}_a` as keyof typeof form] ?? ""}
                   b={form[`${prefix}_b` as keyof typeof form] ?? ""}
@@ -36,7 +36,7 @@ export function PengamatanTitikForm() {
                   onAChange={(val) => setForm({ [`${prefix}_a`]: val })}
                   onBChange={(val) => setForm({ [`${prefix}_b`]: val })}
                 />
-                <span className="text-2xl font-light select-none">)</span>
+                <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">)</span>
               </div>
               <div className="font-bold">(4, 4)</div>
             </div>
@@ -44,19 +44,19 @@ export function PengamatanTitikForm() {
         </div>
       </div>
 
-      <Text as="p" className="text-sm font-semibold pt-2">
+      <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed pt-2">
         Sekarang, translasikan lagi motifnya dan tentukan bayangannya:
       </Text>
 
       <div className="border-4 border-black p-4 flex items-center justify-between bg-background">
         <div className="text-center font-bold">(-3, -2)</div>
         <div className="flex items-center gap-0.5">
-          <span className="text-3xl font-light select-none">(</span>
+          <span className="text-3xl font-light select-none inline-block scale-y-[1.6] origin-center">(</span>
           <div className="flex flex-col text-sm font-black">
             <div>5</div>
             <div>4</div>
           </div>
-          <span className="text-3xl font-light select-none">)</span>
+          <span className="text-3xl font-light select-none inline-block scale-y-[1.6] origin-center">)</span>
         </div>
         <BayanganInput
           x={form.t4_x ?? ""}

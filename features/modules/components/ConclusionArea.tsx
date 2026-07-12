@@ -16,7 +16,7 @@ interface ConclusionAreaProps {
 /** Conclusion section where students write the general transformation formula. */
 export function ConclusionArea({ formula }: ConclusionAreaProps) {
   return (
-    <section className="border-4 border-black bg-tertiary-container shadow-lg p-4 md:p-6">
+    <section className="border-4 border-black bg-white shadow-lg p-4 md:p-6">
       <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
         <div className="w-12 h-12 md:w-16 md:h-16 border-4 border-black bg-white flex items-center justify-center shrink-0">
           <Lightbulb className="size-6 md:size-8" />

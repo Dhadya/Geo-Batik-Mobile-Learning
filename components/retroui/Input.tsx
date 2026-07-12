@@ -1,26 +1,27 @@
 /* RetroUI - Styled text input */
 import React, { InputHTMLAttributes } from "react";
+import { cn } from "@/lib/utils";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
 }
 
-export const Input: React.FC<InputProps> = ({
-  type = "text",
-  placeholder = "Enter text",
-  className = "",
-  ...props
-}) => {
-  return (
-    <input
-      type={type}
-      placeholder={placeholder}
-      className={`px-4 py-2 w-full rounded border-2 shadow-md transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus:shadow-xs ${
-        props["aria-invalid"]
-          ? "border-destructive text-destructive shadow-xs shadow-destructive"
-          : ""
-      } ${className}`}
-      {...props}
-    />
-  );
-};
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ type = "text", placeholder = "Enter text", className = "", ...props }, ref) => {
+    return (
+      <input
+        ref={ref}
+        type={type}
+        placeholder={placeholder}
+        className={cn(
+          "px-4 py-2 w-full rounded border-2 shadow-md transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary focus:shadow-xs",
+          props["aria-invalid"] && "border-destructive text-destructive shadow-xs shadow-destructive",
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+
+Input.displayName = "Input";

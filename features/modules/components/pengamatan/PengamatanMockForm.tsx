@@ -10,7 +10,7 @@ export function PengamatanMockForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Text as="p" className="text-sm font-semibold">
+      <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
         Amati visualisasi GeoGebra di samping, lalu tentukan koordinat bayangannya berdasarkan teori refleksi/translasi.
       </Text>
 

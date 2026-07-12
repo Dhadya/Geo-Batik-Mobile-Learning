@@ -41,10 +41,11 @@ export function ModuleContent({
       <ModuleTabNav slug={slug} tabs={tabs} currentTab={decodedTab} />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-8 flex flex-col gap-4 md:gap-6">
           <InteractiveWorkspace materialId={tabConfig.materialId} />
+          <ConclusionArea formula={tabConfig.formula} />
         </div>
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-4 flex flex-col">
           <ObservationPanel
             slug={slug}
             tab={decodedTab}
@@ -52,8 +53,6 @@ export function ModuleContent({
           />
         </div>
       </div>
-
-      <ConclusionArea formula={tabConfig.formula} />
 
       <AssessmentSection questions={tabConfig.assessment} />
 

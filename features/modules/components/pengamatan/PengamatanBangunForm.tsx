@@ -10,7 +10,7 @@ export function PengamatanBangunForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Text as="p" className="text-sm font-semibold">
+      <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
         Sekarang kita beralih ke motif yang berupa bangun. Kak Dhadya ingin memindahkan motif tersebut dengan translasi [ 5 / 4 ]. Bantu menentukan bayangan motif tersebut.
       </Text>
 
@@ -22,12 +22,12 @@ export function PengamatanBangunForm() {
 
           <div className="text-center font-bold text-sm">(-6, 3)</div>
           <div className="row-span-4 flex items-center justify-center gap-0.5 border-4 border-black p-2 bg-muted select-none">
-            <span className="text-4xl font-light">(</span>
+            <span className="text-4xl font-light select-none inline-block scale-y-[1.4] origin-center">(</span>
             <div className="flex flex-col gap-1 text-sm font-black">
               <div>5</div>
               <div>4</div>
             </div>
-            <span className="text-4xl font-light">)</span>
+            <span className="text-4xl font-light select-none inline-block scale-y-[1.4] origin-center">)</span>
           </div>
           <BayanganInput
             x={form.b1_x ?? ""}
