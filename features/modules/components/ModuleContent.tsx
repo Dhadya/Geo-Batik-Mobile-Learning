@@ -34,7 +34,17 @@ export function ModuleContent({
   // Derive MCQ questions from cekPemahaman section (backward compat with AssessmentQuestion)
   const cekPemahamanQuestions = (tabConfig.sections?.cekPemahaman.items ?? [])
     .filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
-    .map((i) => ({ id: i.id, question: i.question, options: i.options, correctIndex: i.correctIndex, optionFormat: i.optionFormat }))
+    .map((i) => ({
+      id: i.id,
+      question: i.question,
+      options: i.options,
+      correctIndex: i.correctIndex,
+      optionFormat: i.optionFormat,
+      imageOptions: i.imageOptions,
+      multiSelect: i.multiSelect,
+      correctIndices: i.correctIndices,
+      questionImage: i.questionImage,
+    }))
 
   // Fallback to legacy assessment prop if no sections defined
   const questions = cekPemahamanQuestions.length > 0 ? cekPemahamanQuestions : tabConfig.assessment

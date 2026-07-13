@@ -69,25 +69,25 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
-                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">-</span>
+                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
                 <div className="grow space-y-2 md:space-y-3">
-                  <Text as="p" className="text-xs md:text-sm font-medium">
-                    Jika salah satu titik sebuah bangun ditranslasikan oleh
-                  </Text>
-                  <div className="flex items-center justify-center gap-0.5">
+                  <div className="flex items-center gap-0.5">
+                    <p className="text-xs md:text-sm font-medium text-black">
+                      Jika salah satu titik sebuah bangun ditranslasikan oleh
+                    </p>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
-                      <div className="px-1 md:px-2 italic select-none">a</div>
-                      <div className="px-1 md:px-2 italic select-none">b</div>
+                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
+                      <div className="px-1 italic select-none">a</div>
+                      <div className="px-1 italic select-none">b</div>
                     </div>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                   </div>
-                  <Text as="p" className="text-xs md:text-sm font-medium text-center">
-                    maka seluruh titik lainnya ditranslasikan oleh
-                  </Text>
-                  <div className="flex items-center justify-center gap-0.5">
+                  <div className="flex items-center gap-0.5">
+                    <p className="text-xs md:text-sm font-medium text-black">
+                      maka seluruh titik lainnya ditranslasikan oleh
+                    </p>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
+                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
                       <Input
                         type="text"
                         value={aVal}
@@ -97,7 +97,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                         }}
                         disabled={isChecked}
                         placeholder="..."
-                        className={`w-12 md:w-14 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${item11Err ? "border-destructive" : "border-black"}`}
+                        className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${item11Err ? "border-destructive" : "border-black"}`}
                       />
                       <Input
                         type="text"
@@ -108,12 +108,12 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                         }}
                         disabled={isChecked}
                         placeholder="..."
-                        className={`w-12 md:w-14 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${item11Err ? "border-destructive" : "border-black"}`}
+                        className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${item11Err ? "border-destructive" : "border-black"}`}
                       />
                     </div>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                   </div>
-                  {isChecked && item11Err && <Text className="text-destructive text-[10px] md:text-xs font-bold text-center">{item11Err}</Text>}
+                  {isChecked && item11Err && <Text className="text-destructive text-[10px] md:text-xs font-medium">{item11Err}</Text>}
                 </div>
               </div>
             )
@@ -126,16 +126,16 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
-                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">-</span>
+                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
                 <div className="grow space-y-1.5 md:space-y-2">
-                  <Text as="p" className="text-xs md:text-sm font-medium">
-                    Apa arti dari translasi berikut
-                  </Text>
-                  <div className="flex items-center justify-center gap-0.5">
+                  <div className="flex items-center gap-0.5">
+                    <Text as="p" className="text-xs md:text-sm font-medium text-black">
+                      Apa arti dari translasi berikut.
+                    </Text>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
-                      <div className="px-2 md:px-3 py-0.5 select-none">2</div>
-                      <div className="px-2 md:px-3 py-0.5 select-none">1</div>
+                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
+                      <div className="px-1 select-none">2</div>
+                      <div className="px-1 select-none">1</div>
                     </div>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                   </div>
@@ -143,9 +143,9 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                     value={val}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                     disabled={isChecked}
-                    rows={3}
+                    rows={2}
                     placeholder="Tuliskan penjelasanmu..."
-                    className={`border-4 border-black font-medium resize-none text-xs md:text-sm ${err ? "border-destructive" : ""}`}
+                    className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${err ? "border-destructive" : ""}`}
                   />
                   {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}
                 </div>
@@ -155,58 +155,82 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
           // Item 8: Table with formula input
           if (u.id === 8) {
-            const val = fields[String(u.id)]?.text ?? ""
+            const rows = [
+              { label: "A", coords: "(-3, 3)" },
+              { label: "B", coords: "(-3, 1)" },
+              { label: "C", coords: "(-1, 1)" },
+              { label: "D", coords: "(-1, 3)" },
+            ]
             const err = errors[`${u.id}_text`]
 
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
-                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">-</span>
+                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
                 <div className="grow space-y-1.5 md:space-y-2">
-                  <Text as="p" className="text-xs md:text-sm font-medium">
+                  <Text as="p" className="text-xs md:text-sm font-medium text-black">
                     Amati percobaanmu.
                   </Text>
-                  <Text as="p" className="text-xs md:text-sm font-medium">
-                    Jika titik awal (<span className="italic">x, y</span>) ditranslasikan oleh
-                  </Text>
-                  <div className="flex items-center justify-center gap-0.5">
+                  <div className="flex items-center gap-0.5">
+                    <Text as="p" className="text-xs md:text-sm font-medium text-black">
+                      Jika titik awal (<span className="italic">x, y</span>) ditranslasikan oleh
+                    </Text>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
+                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
                       <div className="px-1 select-none italic">a</div>
                       <div className="px-1 select-none italic">b</div>
                     </div>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
+                    <Text as="p" className="text-xs md:text-sm font-medium text-black">
+                      , tentukan titik bayangannya dengan mengisi tabel berikut
+                    </Text>
                   </div>
-                  <Text as="p" className="text-xs md:text-sm font-medium">
-                    , tentukan titik bayangannya dengan mengisi tabel berikut
-                  </Text>
                   <div className="border-4 border-black overflow-hidden bg-background">
                     <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-[10px] md:text-sm font-black p-1.5 md:p-2">
                       <div>Titik Awal</div>
-                      <div>Translasi oleh</div>
+                      <div>Translasi</div>
                       <div>Titik Bayangan</div>
                     </div>
-                    <div className="grid grid-cols-3 items-center py-2 md:py-3 px-2 md:px-4 text-center text-xs md:text-sm">
-                      <div className="italic font-bold">x, y</div>
-                      <div className="flex items-center justify-center gap-0.5">
-                        <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-                        <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
-                          <div className="px-1 select-none italic">a</div>
-                          <div className="px-1 select-none italic">b</div>
-                        </div>
-                        <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
-                      </div>
-                      <div className="flex items-center justify-center gap-0.5">
-                        <span className="text-xs md:text-sm font-bold select-none">(</span>
-                        <Input
-                          type="text"
-                          value={val}
-                          onChange={(e) => setField(String(u.id), "text", e.target.value)}
-                          disabled={isChecked}
-                          placeholder="...,..."
-                          className={`w-16 md:w-20 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${err ? "border-destructive bg-destructive-container" : "border-black"}`}
-                        />
-                        <span className="text-xs md:text-sm font-bold select-none">)</span>
-                      </div>
+                    <div className="divide-y-2 divide-black">
+                      {rows.map((row) => {
+                        const xKey = `${row.label.toLowerCase()}_x`
+                        const yKey = `${row.label.toLowerCase()}_y`
+                        const xVal = fields[String(u.id)]?.[xKey] ?? ""
+                        const yVal = fields[String(u.id)]?.[yKey] ?? ""
+                        return (
+                          <div key={row.label} className="grid grid-cols-3 items-center py-2 md:py-3 px-1 md:px-2 text-center text-xs md:text-sm">
+                            <div className="font-bold italic">{row.label}{row.coords}</div>
+                            <div className="flex items-center justify-center gap-0.5">
+                              <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+                              <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
+                                <div className="px-1 select-none">6</div>
+                                <div className="px-1 select-none">-4</div>
+                              </div>
+                              <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
+                            </div>
+                            <div className="flex items-center justify-center gap-0.5">
+                              <span className="text-xs md:text-sm font-bold select-none">(</span>
+                              <Input
+                                type="text"
+                                value={xVal}
+                                onChange={(e) => setField(String(u.id), xKey, e.target.value)}
+                                disabled={isChecked}
+                                placeholder="x'"
+                                className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${err ? "border-destructive" : "border-black"}`}
+                              />
+                              <span className="text-xs md:text-sm font-bold select-none">,</span>
+                              <Input
+                                type="text"
+                                value={yVal}
+                                onChange={(e) => setField(String(u.id), yKey, e.target.value)}
+                                disabled={isChecked}
+                                placeholder="y'"
+                                className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${err ? "border-destructive" : "border-black"}`}
+                              />
+                              <span className="text-xs md:text-sm font-bold select-none">)</span>
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                   {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}
@@ -221,18 +245,18 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
           return (
             <div key={u.id} className="flex gap-1.5 md:gap-2">
-              <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">-</span>
+              <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
               <div className="grow space-y-1">
-                <Text as="p" className="text-xs md:text-sm font-medium">
+                <Text as="p" className="text-xs md:text-sm font-medium text-black">
                   {u.question}
                 </Text>
                 <Textarea
                   value={val}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                   disabled={isChecked}
-                  rows={3}
+                  rows={2}
                   placeholder="Tuliskan jawabanmu..."
-                  className={`border-4 border-black font-medium resize-none text-xs md:text-sm ${err ? "border-destructive" : ""}`}
+                  className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${err ? "border-destructive" : ""}`}
                 />
                 {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}
               </div>

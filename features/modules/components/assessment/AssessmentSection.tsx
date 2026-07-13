@@ -70,9 +70,7 @@ function ModuleAnswerButton({
             alt={text}
             width={100}
             height={100}
-            className="border-2 border-black"
           />
-          <span className="text-[10px] md:text-xs font-bold">{text}</span>
         </div>
       ) : parsed ? (
         <span className="flex items-center justify-start gap-0.5">
@@ -192,29 +190,34 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                 </div>
 
                 {/* Question text + optional embedded image */}
-                <div className="w-full px-1 md:px-2 text-center space-y-2">
-                  <Text as="p" className="text-xs md:text-base font-semibold leading-relaxed">
-                    {q.question}
-                  </Text>
-
+                <div className="w-full px-1 md:px-2 space-y-2">
                   {/* Embedded question image (e.g. soal diagram for item 13) */}
                   {q.questionImage && (
-                    <div className="flex justify-center">
-                      <Image
-                        src={q.questionImage}
-                        alt="Soal"
-                        width={120}
-                        height={120}
-                        className="border-2 border-black"
-                      />
+                    <div className="space-y-1 md:space-y-2">
+                      <Text as="p" className="text-xs md:text-base font-semibold leading-relaxed text-black">
+                        Perhatikan gambar berikut!
+                      </Text>
+                      <div className="flex justify-center">
+                        <Image
+                          src={q.questionImage}
+                          alt="Soal"
+                          width={120}
+                          height={120}
+                        />
+                      </div>
                     </div>
                   )}
 
+                  {/* Question text */}
+                  <Text as="p" className="text-xs md:text-base font-semibold leading-relaxed text-black">
+                    {q.question}
+                  </Text>
+
                   {/* Translasi matrix displayed inline for question 13 */}
                   {q.id === 13 && (
-                    <div className="flex items-center justify-center gap-0.5 pt-1">
+                    <div className="flex items-center gap-0.5 pt-1">
                       <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
-                      <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
+                      <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
                         <div className="px-1 md:px-2 select-none">5</div>
                         <div className="px-1 md:px-2 select-none">2</div>
                       </div>

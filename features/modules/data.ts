@@ -180,7 +180,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       sections: {
         percobaan: {
           instruction:
-            "Tentukan bayangan dari titik-titik berikut jika ditranslasikan oleh T(6, -4).",
+            "Tentukan bayangan dari titik-titik berikut jika ditranslasikan oleh",
           items: [
             {
               id: 1,

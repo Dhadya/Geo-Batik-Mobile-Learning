@@ -31,7 +31,13 @@ function isSectionFilled(items: SectionItem[], fields: Record<string, Record<str
     const f = fields[String(item.id)] ?? {}
     if (item.type === "matriks") return f.a !== "" && f.a !== undefined && f.b !== "" && f.b !== undefined
     if (item.type === "koordinat") return f.x !== "" && f.x !== undefined && f.y !== "" && f.y !== undefined
-    if (item.type === "uraian") return (f.text ?? "").trim() !== ""
+    if (item.type === "uraian") {
+      // Item 11 uses a_val/b_val instead of text
+      if (item.id === 11) return (f.a_val ?? "").trim() !== "" && (f.b_val ?? "").trim() !== ""
+      // Item 8 uses multiple coordinate fields
+      if (item.id === 8) return ["a", "b", "c", "d"].every((l) => (f[`${l}_x`] ?? "").trim() !== "" && (f[`${l}_y`] ?? "").trim() !== "")
+      return (f.text ?? "").trim() !== ""
+    }
     if (item.type === "memasangkan") {
       const m = item as import("../types").MemasangkanItem
       return m.leftItems.every((l) => (f[l.id] ?? "") !== "")

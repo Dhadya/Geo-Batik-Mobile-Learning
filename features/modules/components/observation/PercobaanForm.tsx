@@ -36,9 +36,21 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
     <div className="space-y-3 md:space-y-4">
       {/* Section instruction text */}
       {block?.instruction && (
-        <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
+        <Text as="p" className="text-xs md:text-sm text-black font-semibold leading-relaxed">
           {block.instruction}
         </Text>
+      )}
+
+      {/* Translasi matrix display for translasi-bangun instruction */}
+      {slug === "translasi" && tab === "bangun" && (
+        <div className="flex items-center justify-center gap-0.5 pt-1">
+          <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+          <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
+            <div className="px-1 md:px-2 select-none">6</div>
+            <div className="px-1 md:px-2 select-none">-4</div>
+          </div>
+          <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
+        </div>
       )}
 
       {/* Experiment table: 3-column grid (Titik Awal | Translasi | Titik Bayangan) */}
