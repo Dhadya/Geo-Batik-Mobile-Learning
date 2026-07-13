@@ -90,8 +90,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         {questions.map((q, qi) => (
           <Card key={q.id} className="border-4 border-black shadow-md">
             <Card.Content className="space-y-3">
-              <div className="w-full p-4 md:p-5 text-center">
-                <Text as="h2" className="text-sm md:text-base font-bold leading-relaxed">
+              <div className="w-full px-2 pt-3 md:pt-4 text-center">
+                <Text as="p" className="text-base md:text-lg font-bold leading-relaxed">
                   {q.question}
                 </Text>
               </div>
