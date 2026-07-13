@@ -32,9 +32,9 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-4 md:p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 md: border-3 border-black bg-white flex items-center justify-center shrink-0">
-          <Lightbulb className="size-4 md:s" />
+      <div className="flex items-center gap-4 mb-4">
+        <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
+          <Lightbulb className="size-4 md:size-6" />
         </div>
         <Text as="h2" className="text-xl md:text-2xl font-black uppercase">
           Penyimpulan
@@ -56,7 +56,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 <span className="text-lg font-black shrink-0 w-4 text-right -mt-0.5">•</span>
                 <div className="grow space-y-2">
                   <Text as="p" className="text-sm font-medium">
-                    Apa arti dari translasi berikut
+                    Apa arti dari translasi berikut?
                   </Text>
                   <div className="flex items-center justify-center pb-1 gap-0.5">
                     <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
@@ -70,7 +70,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                     value={val}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                     disabled={isChecked}
-                    rows={3}
+                    rows={1}
                     placeholder="Tuliskan penjelasanmu..."
                     className={`border-4 border-black font-medium resize-none text-sm ${err ? "border-destructive" : ""}`}
                   />
@@ -127,7 +127,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                           onChange={(e) => setField(String(u.id), "text", e.target.value)}
                           disabled={isChecked}
                           placeholder="...,..."
-                          className={`w-20 text-center p-1 font-black border-2 text-xs h-7 !shadow-none ${err ? "border-destructive bg-destructive-container" : "border-black"}`}
+                          className={`w-20 text-center p-1 font-black border-2 text-xs h-7 shadow-none ${err ? "border-destructive bg-destructive-container" : "border-black"}`}
                         />
                         <span className="text-sm font-bold select-none">)</span>
                       </div>
@@ -151,7 +151,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                   value={val}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                   disabled={isChecked}
-                  rows={3}
+                  rows={1}
                   placeholder="Tuliskan jawabanmu..."
                   className={`border-4 border-black font-medium resize-none text-sm ${err ? "border-destructive" : ""}`}
                 />

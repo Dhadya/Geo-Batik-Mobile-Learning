@@ -103,7 +103,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
           disabled={!allAnswered && !isChecked}
           variant="default"
           size="lg"
-          className="font-black uppercase tracking-widest shadow-[2px_2px_0_0_rgba(0,0,0,1)] !rounded-none"
+          className="font-black uppercase tracking-widest shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
         >
           {isChecked ? "Periksa Lagi" : "Submit Jawaban"}
         </Button>

@@ -89,7 +89,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                           >
                             <Select.Trigger
                               disabled={isChecked}
-                              className={`h-8 border-2 border-black font-semibold text-xs bg-white min-w-32 shadow-none ${err ? "border-destructive" : ""}`}
+                              className={`h-8 border-2 border-black font-semibold text-xs bg-white min-w-32 shadow-none capitalize ${err ? "border-destructive" : ""}`}
                             >
                               <Select.Value placeholder="Pilih..." />
                             </Select.Trigger>
@@ -129,7 +129,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
         onClick={handleClick}
         disabled={!isFilled && !isChecked}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] !rounded-none"
+        className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>
