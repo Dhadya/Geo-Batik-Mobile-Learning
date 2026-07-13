@@ -78,29 +78,31 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                       const selected = fields[String(m.id)]?.[left.id] ?? ""
                       const err = errors[`${m.id}_${left.id}`]
                       return (
-                        <div key={left.id} className="flex items-center gap-1.5 md:gap-2">
-                          <div className="border-2 border-black px-4 md:px-8 py-0.5 md:py-1 font-bold text-xs md:text-sm shrink-0 text-center min-w-10 md:min-w-12">
+                        <div key={left.id} className="flex items-center gap-1 md:gap-1.5">
+                          <div className="border-2 border-black px-2 md:px-3 py-0.5 md:py-1 font-bold text-xs md:text-sm shrink-0 text-center">
                             {left.label}
                           </div>
-                          <span className="text-base md:text-lg font-bold">→</span>
-                          <Select
-                            value={selected || null}
-                            onValueChange={(val) => setField(String(m.id), left.id, val ?? "")}
-                          >
-                            <Select.Trigger
-                              disabled={isChecked}
-                              className={`h-7 md:h-8 border-2 border-black font-semibold text-[10px] md:text-xs bg-white min-w-24 md:min-w-32 shadow-none capitalize ${err ? "border-destructive" : ""}`}
+                          <span className="text-sm md:text-base font-bold shrink-0">→</span>
+                          <div className="flex-1 min-w-0">
+                            <Select
+                              value={selected || null}
+                              onValueChange={(val) => setField(String(m.id), left.id, val ?? "")}
                             >
-                              <Select.Value placeholder="Pilih..." />
-                            </Select.Trigger>
-                            <Select.Content className="bg-white">
-                              {m.rightItems.map((right) => (
-                                <Select.Item key={right.id} value={right.id} className="text-[10px] md:text-xs">
-                                  {right.label}
-                                </Select.Item>
-                              ))}
-                            </Select.Content>
-                          </Select>
+                              <Select.Trigger
+                                disabled={isChecked}
+                                className={`h-7 md:h-8 w-full max-w-sm border-2 border-black font-semibold text-[10px] md:text-xs bg-white min-w-0 shadow-none capitalize ${err ? "border-destructive" : ""}`}
+                              >
+                                <Select.Value placeholder="Pilih..." />
+                              </Select.Trigger>
+                              <Select.Content className="bg-white">
+                                {m.rightItems.map((right) => (
+                                  <Select.Item key={right.id} value={right.id} className="text-[10px] md:text-xs">
+                                    {right.label}
+                                  </Select.Item>
+                                ))}
+                              </Select.Content>
+                            </Select>
+                          </div>
                         </div>
                       )
                     })}

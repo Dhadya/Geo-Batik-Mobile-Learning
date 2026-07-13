@@ -55,19 +55,27 @@ export function ModuleContent({
       <ModuleTabNav slug={slug} tabs={tabs} currentTab={decodedTab} />
 
       {/* Main 2-column layout: workspace + observation panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6">
-        {/* Left column — GeoGebra canvas + conclusion formula */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6 items-start">
+        {/* Left column — GeoGebra canvas + conclusion formula (desktop only) */}
         <div className="lg:col-span-8 flex flex-col gap-3 md:gap-6">
           <InteractiveWorkspace materialId={tabConfig.materialId} />
-          <ConclusionArea slug={slug} tab={decodedTab} />
+          {/* Penyimpulan: hidden on mobile (shown below grid), visible on lg+ */}
+          <div className="hidden lg:block">
+            <ConclusionArea slug={slug} tab={decodedTab} />
+          </div>
         </div>
-        {/* Right column — observation/pengamatan panel */}
-        <div className="lg:col-span-4 flex flex-col">
+        {/* Right column — observation/pengamatan panel: sticky on lg+ */}
+        <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24 lg:self-start">
           <ObservationPanel
             slug={slug}
             tab={decodedTab}
           />
         </div>
+      </div>
+
+      {/* Penyimpulan: shown on mobile below observation panel, hidden on lg+ (rendered inside left col) */}
+      <div className="lg:hidden">
+        <ConclusionArea slug={slug} tab={decodedTab} />
       </div>
 
       {/* Assessment section with multiple choice questions */}
