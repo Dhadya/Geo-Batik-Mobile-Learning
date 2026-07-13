@@ -4,9 +4,10 @@ import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Button } from "@/components/retroui/Button"
 import { useMockForm } from "@/features/modules/hooks/useObservation"
+import type { SectionBlock } from "@/features/modules/types"
 
 /** Fallback pengamatan form for non-titik/bangun tabs — single text input answer. */
-export function PengamatanMockForm() {
+export function PengamatanMockForm({ slug, sectionBlock }: { slug?: string; sectionBlock?: SectionBlock }) {
   // Mock form state from zustand store via hook
   const { mockAns, mockError, isMockChecked, setMockAns, handleSubmit } = useMockForm()
   const isFilled = mockAns.trim() !== ""

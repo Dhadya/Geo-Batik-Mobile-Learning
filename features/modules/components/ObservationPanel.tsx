@@ -5,6 +5,7 @@ import { SandboxContent } from "./pengamatan/SandboxContent"
 import { PengamatanTitikForm } from "./pengamatan/PengamatanTitikForm"
 import { PengamatanBangunForm } from "./pengamatan/PengamatanBangunForm"
 import { PengamatanMockForm } from "./pengamatan/PengamatanMockForm"
+import { getModuleTab } from "../data"
 
 interface ObservationPanelProps {
   slug: string
@@ -19,10 +20,13 @@ export function ObservationPanel({ slug, tab, instruction }: ObservationPanelPro
   const isTranslasiBangun = slug === "translasi" && tab === "bangun"
   const showMockForm = !isTranslasiTitik && !isTranslasiBangun
 
+  // Section content from tab config for data-driven forms
+  const tabConfig = getModuleTab(slug, tab)
+  const sections = tabConfig?.sections
+
   return (
     <div className="h-auto lg:h-full flex flex-col gap-4">
       <Tabs defaultValue="pengamatan" className="flex flex-col h-full gap-4">
-        {/* Tab navigation bar */}
         <Tabs.List className="border-4 border-black bg-white p-1.5 flex gap-2 shadow-[4px_4px_0_0_#000] w-full rounded-none">
           <Tabs.Trigger
             value="pengamatan"
@@ -38,18 +42,20 @@ export function ObservationPanel({ slug, tab, instruction }: ObservationPanelPro
           </Tabs.Trigger>
         </Tabs.List>
 
-        {/* Tab content container */}
         <div className="border-4 border-black bg-white grow flex flex-col shadow-lg overflow-hidden">
-          {/* Percobaan tab — sandbox with coordinate input and live preview */}
           <Tabs.Content value="percobaan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 md:space-y-6 mt-0">
-            <SandboxContent slug={slug} tab={tab} instruction={instruction} />
+            <SandboxContent
+              slug={slug}
+              tab={tab}
+              instruction={instruction}
+              sectionBlock={sections?.percobaan}
+            />
           </Tabs.Content>
 
-          {/* Pengamatan tab — form variant based on module/tab */}
           <Tabs.Content value="pengamatan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 mt-0">
-            {isTranslasiTitik && <PengamatanTitikForm />}
-            {isTranslasiBangun && <PengamatanBangunForm />}
-            {showMockForm && <PengamatanMockForm />}
+            {isTranslasiTitik && <PengamatanTitikForm slug={slug} sectionBlock={sections?.pengamatan} />}
+            {isTranslasiBangun && <PengamatanBangunForm slug={slug} sectionBlock={sections?.pengamatan} />}
+            {showMockForm && <PengamatanMockForm slug={slug} sectionBlock={sections?.pengamatan} />}
           </Tabs.Content>
         </div>
       </Tabs>

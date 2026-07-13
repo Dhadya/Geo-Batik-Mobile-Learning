@@ -7,15 +7,17 @@ import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
 import { useSandbox, allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
+import type { SectionBlock } from "@/features/modules/types"
 
 interface SandboxContentProps {
   slug: string
   tab: string
   instruction: string
+  sectionBlock?: SectionBlock
 }
 
 /** Percobaan tab — coordinate input, live bayangan preview, and notes. */
-export function SandboxContent({ slug, tab, instruction }: SandboxContentProps) {
+export function SandboxContent({ slug, tab, instruction, sectionBlock: _sectionBlock }: SandboxContentProps) {
   // Sandbox state from zustand store via hook
   const { sandboxX, sandboxY, notes, preview, setSandboxX, setSandboxY, setNotes } = useSandbox(slug, tab)
   const [isChecked, setIsChecked] = useState(false)

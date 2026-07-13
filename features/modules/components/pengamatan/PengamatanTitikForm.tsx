@@ -5,9 +5,10 @@ import { Button } from "@/components/retroui/Button"
 import { CoordStack } from "./CoordStack"
 import { BayanganInput } from "./BayanganInput"
 import { useTitikForm } from "@/features/modules/hooks/useObservation"
+import type { SectionBlock } from "@/features/modules/types"
 
 /** Pengamatan form for translasi titik — 3-point table + standalone bayangan question. */
-export function PengamatanTitikForm() {
+export function PengamatanTitikForm({ slug, sectionBlock }: { slug?: string; sectionBlock?: SectionBlock }) {
   // Form state from zustand store via hook
   const { form, errors, isChecked, setForm, handleSubmit } = useTitikForm()
   const isFilled = Object.values(form).every((v) => v !== undefined && v !== "")

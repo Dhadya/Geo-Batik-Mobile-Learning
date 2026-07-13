@@ -10,6 +10,10 @@ import {
   type TranslasiBangunData,
 } from "@/lib/schemas"
 import { useObservationStore } from "../store/observationStore"
+import { useAnswerStore } from "../store/answerStore"
+import { getModuleTab } from "../data"
+import { validateSection } from "../lib/validation"
+import type { SectionItem, SectionBlock, ModuleSections } from "../types"
 
 /** Blocks non-numeric keystrokes; allows digits, leading minus, and control keys. */
 export const allowOnlyNumbers = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -17,6 +21,51 @@ export const allowOnlyNumbers = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (["Backspace", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) return
   if (e.key === "-" && (e.target as HTMLInputElement).selectionStart === 0) return
   if (!/^\d$/.test(e.key)) e.preventDefault()
+}
+
+type SectionName = "percobaan" | "pengamatan" | "penyimpulan"
+
+/** Check whether all fields for a set of items are filled. */
+function isSectionFilled(items: SectionItem[], fields: Record<string, Record<string, string>>): boolean {
+  return items.every((item) => {
+    const f = fields[String(item.id)] ?? {}
+    if (item.type === "matriks") return f.a !== "" && f.a !== undefined && f.b !== "" && f.b !== undefined
+    if (item.type === "koordinat") return f.x !== "" && f.x !== undefined && f.y !== "" && f.y !== undefined
+    if (item.type === "uraian") return (f.text ?? "").trim() !== ""
+    if (item.type === "memasangkan") {
+      const m = item as import("../types").MemasangkanItem
+      return m.leftItems.every((l) => (f[l.id] ?? "") !== "")
+    }
+    if (item.type === "pilihan_ganda") return true
+    return false
+  })
+}
+
+/** Generic hook for reading/writing any section (percobaan/pengamatan/penyimpulan) from answerStore. */
+export function useSection(slug: string, tab: string, section: SectionName) {
+  const tabConfig = getModuleTab(slug, tab)
+  const answers = useAnswerStore((s) => s.getTabAnswers(slug, tab))
+  const setField = useAnswerStore((s) => s.setField)
+  const setChecked = useAnswerStore((s) => s.setChecked)
+
+  const block = tabConfig?.sections?.[section] as SectionBlock | undefined
+  const items = block?.items ?? []
+  const sectionAnswers = answers[section]
+  const fields = sectionAnswers?.fields ?? {}
+  const isChecked = sectionAnswers?.isChecked ?? false
+
+  const isFilled = isSectionFilled(items, fields)
+
+  const handleSubmit = useCallback(async () => {
+    const result = validateSection(items, fields, answers.cekPemahaman.selections)
+    setChecked(slug, tab, section, true)
+
+    if (result.isCorrect) {
+      toast.success("Semua jawaban benar!")
+    }
+  }, [items, fields, answers.cekPemahaman.selections, setChecked, slug, tab, section])
+
+  return { items, fields, isChecked, isFilled, setField, handleSubmit, block }
 }
 
 /** Hook providing sandbox coordinate input, live preview, and notes state. */
