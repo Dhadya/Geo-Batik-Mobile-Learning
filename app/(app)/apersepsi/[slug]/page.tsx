@@ -34,7 +34,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
             <RichParagraph key={`before-${i}`} text={paragraph} />
           ))}
 
-          <div className="relative w-full max-w-2xl mx-auto aspect-[3/2] bg-surface-container border-4 border-black overflow-hidden">
+          <div className="relative w-full max-w-2xl mx-auto aspect-3/2 bg-surface-container border-4 border-black overflow-hidden">
             <Image
               src={data.image}
               alt={`Motif batik ${data.title}`}

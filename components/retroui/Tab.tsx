@@ -24,7 +24,7 @@ const TabsTrigger = ({ children, className, ...props }: ITabsTrigger) => {
   return (
     <BaseTabs.Tab
       className={cn(
-        "px-4 py-2 text-sm font-medium border-2 border-transparent text-muted-foreground data-[active]:border-border data-[active]:bg-primary data-[active]:text-foreground data-[active]:font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+        "px-4 py-2 text-sm font-medium border-2 border-transparent text-muted-foreground data-active:border-border data-active:bg-primary data-active:text-foreground data-active:font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
         className,
       )}
       {...props}
