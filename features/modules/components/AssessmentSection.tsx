@@ -86,17 +86,17 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         </Text>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-5xl mx-auto">
+      <div className="space-y-6">
         {questions.map((q, qi) => (
           <Card key={q.id} className="border-4 border-black shadow-md">
             <Card.Content className="space-y-3">
               <div className="w-full px-2 pt-3 md:pt-4 text-center">
-                <Text as="p" className="text-base md:text-lg font-bold leading-relaxed">
+                <Text as="p" className="text-sm md:text-base font-semibold leading-relaxed">
                   {q.question}
                 </Text>
               </div>
 
-              <div className="space-y-2">
+              <div className="grid grid-cols-4 gap-2">
                 {q.options.map((opt, oi) => (
                   <ModuleAnswerButton
                     key={oi}
