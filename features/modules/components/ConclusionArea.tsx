@@ -47,29 +47,30 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
             const val = fields[String(u.id)]?.text ?? ""
             const err = errors[`${u.id}_text`]
 
-            // Item 7: Matrix display (2/1) + textarea
+            // Item 7: Matrix display (2/1) with parentheses + textarea
             if (u.id === 7) {
               return (
                 <div key={u.id} className="flex gap-2">
                   <span className="text-lg font-black shrink-0 w-4 text-right -mt-0.5">•</span>
                   <div className="grow space-y-2">
-                    <Text as="p" className="font-medium">
+                    <Text as="p" className="text-sm font-medium">
                       Apa arti dari translasi berikut
                     </Text>
-                    <div className="flex justify-center">
-                      <div className="text-center text-2xl font-bold leading-tight">
-                        <div className="border-t-2 border-b-2 border-l-2 border-r-0 border-black px-3 py-1 inline-block">
-                          <div className="px-2">2</div>
-                          <div className="px-2">1</div>
-                        </div>
+                    <div className="flex items-center justify-center gap-0.5">
+                      <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+                      <div className="flex flex-col gap-1 text-sm font-black">
+                        <div className="px-3 py-0.5 bg-muted select-none">2</div>
+                        <div className="px-3 py-0.5 bg-muted select-none">1</div>
                       </div>
+                      <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                     </div>
                     <Textarea
                       value={val}
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                       disabled={isChecked}
                       rows={3}
-                      className={`border-4 border-black font-semibold resize-none ${err ? "border-destructive" : ""}`}
+                      placeholder="Tuliskan penjelasanmu..."
+                      className={`border-4 border-black font-medium resize-none text-sm ${err ? "border-destructive" : ""}`}
                     />
                     {err && <Text className="text-destructive text-xs">{err}</Text>}
                   </div>
@@ -83,48 +84,50 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 <div key={u.id} className="flex gap-2">
                   <span className="text-lg font-black shrink-0 w-4 text-right -mt-0.5">•</span>
                   <div className="grow space-y-2">
-                    <Text as="p" className="font-medium">
+                    <Text as="p" className="text-sm font-medium">
                       Amati percobaanmu.
                     </Text>
-                    <Text as="p" className="font-medium">
+                    <Text as="p" className="text-sm font-medium">
                       Jika titik awal (<span className="italic">x, y</span>) ditranslasikan oleh
                     </Text>
-                    <div className="flex justify-center">
-                      <div className="text-center text-2xl font-bold leading-tight">
-                        <div className="border-t-2 border-b-2 border-l-2 border-r-0 border-black px-3 py-1 inline-block">
-                          <div className="px-2 italic">a</div>
-                          <div className="px-2 italic">b</div>
-                        </div>
+                    <div className="flex items-center justify-center gap-0.5">
+                      <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+                      <div className="flex flex-col gap-1 text-sm font-black">
+                        <div className="px-3 py-0.5 bg-muted select-none italic">a</div>
+                        <div className="px-3 py-0.5 bg-muted select-none italic">b</div>
                       </div>
+                      <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                     </div>
-                    <Text as="p" className="font-medium">
+                    <Text as="p" className="text-sm font-medium">
                       , tentukan titik bayangannya dengan mengisi tabel berikut
                     </Text>
                     <div className="border-4 border-black overflow-hidden">
-                      <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs font-black p-2 uppercase">
+                      <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs md:text-sm font-black p-2">
                         <div>Titik Awal</div>
                         <div>Translasi oleh</div>
                         <div>Titik Bayangan</div>
                       </div>
-                      <div className="grid grid-cols-3 items-center py-3 px-4 text-center text-lg">
+                      <div className="grid grid-cols-3 items-center py-3 px-4 text-center text-sm">
                         <div className="italic font-bold">x, y</div>
-                        <div className="flex justify-center">
-                          <div className="text-center text-xl font-bold leading-tight">
-                            <div className="border-t-2 border-b-2 border-l-2 border-r-0 border-black px-2 py-0.5 inline-block">
-                              <div className="px-1 italic">a</div>
-                              <div className="px-1 italic">b</div>
-                            </div>
+                        <div className="flex items-center justify-center gap-0.5">
+                          <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+                          <div className="flex flex-col gap-1 text-sm font-black">
+                            <div className="border-2 border-black px-3 py-0.5 bg-muted select-none italic">a</div>
+                            <div className="border-2 border-black px-3 py-0.5 bg-muted select-none italic">b</div>
                           </div>
+                          <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                         </div>
-                        <div className="flex justify-center">
+                        <div className="flex items-center justify-center gap-0.5">
+                          <span className="text-sm font-bold select-none">(</span>
                           <Input
                             type="text"
                             value={val}
                             onChange={(e) => setField(String(u.id), "text", e.target.value)}
                             disabled={isChecked}
-                            placeholder="(...,...)"
-                            className={`w-32 text-center font-bold border-4 border-black ${err ? "border-destructive" : ""}`}
+                            placeholder="x + a, y + b"
+                            className={`w-28 text-center p-1 font-black border-2 text-xs h-7 !shadow-none ${err ? "border-destructive bg-destructive-container" : "border-black"}`}
                           />
+                          <span className="text-sm font-bold select-none">)</span>
                         </div>
                       </div>
                     </div>
@@ -139,7 +142,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
               <div key={u.id} className="flex gap-2">
                 <span className="text-lg font-black shrink-0 w-4 text-right -mt-0.5">•</span>
                 <div className="grow space-y-1">
-                  <Text as="p" className="font-medium">
+                  <Text as="p" className="text-sm font-medium">
                     {u.question}
                   </Text>
                   <Textarea
@@ -147,7 +150,8 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                     disabled={isChecked}
                     rows={3}
-                    className={`border-4 border-black font-semibold resize-none ${err ? "border-destructive" : ""}`}
+                    placeholder="Tuliskan jawabanmu..."
+                    className={`border-4 border-black font-medium resize-none text-sm ${err ? "border-destructive" : ""}`}
                   />
                   {err && <Text className="text-destructive text-xs">{err}</Text>}
                 </div>
@@ -165,7 +169,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
             onClick={handleClick}
             disabled={!isFilled && !isChecked}
             variant={isChecked ? "secondary" : "default"}
-            className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] !rounded-none"
+            className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
           >
             {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
           </Button>

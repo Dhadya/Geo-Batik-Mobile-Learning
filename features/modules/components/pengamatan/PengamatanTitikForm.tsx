@@ -79,7 +79,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                       const err = errors[`${m.id}_${left.id}`]
                       return (
                         <div key={left.id} className="flex items-center gap-2">
-                          <div className="border-2 border-black px-4 py-1.5 font-bold text-sm shrink-0 text-center min-w-12">
+                          <div className="border-2 border-black px-8 py-1 font-bold text-sm shrink-0 text-center min-w-12">
                             {left.label}
                           </div>
                           <span className="text-lg font-bold">→</span>
@@ -89,11 +89,11 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                           >
                             <Select.Trigger
                               disabled={isChecked}
-                              className={`h-8 border-4 border-black !rounded-none font-semibold text-xs bg-white min-w-32 shadow-none ${err ? "border-destructive" : ""}`}
+                              className={`h-8 border-2 border-black font-semibold text-xs bg-white min-w-32 shadow-none ${err ? "border-destructive" : ""}`}
                             >
                               <Select.Value placeholder="Pilih..." />
                             </Select.Trigger>
-                            <Select.Content>
+                            <Select.Content className="bg-white">
                               {m.rightItems.map((right) => (
                                 <Select.Item key={right.id} value={right.id} className="text-xs">
                                   {right.label}
