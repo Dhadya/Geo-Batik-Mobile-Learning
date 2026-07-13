@@ -16,6 +16,7 @@ interface CoordStackProps {
 export function CoordStack({ a, b, aError, bError, onAChange, onBChange }: CoordStackProps) {
   return (
     <div className="flex flex-col gap-0.5 w-8 md:w-10">
+      {/* A-value input (top row of the stacked vector) */}
       <Input
         type="text"
         inputMode="numeric"
@@ -25,6 +26,7 @@ export function CoordStack({ a, b, aError, bError, onAChange, onBChange }: Coord
         onChange={(e) => onAChange(e.target.value)}
         className={`text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${aError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
+      {/* B-value input (bottom row of the stacked vector) */}
       <Input
         type="text"
         inputMode="numeric"

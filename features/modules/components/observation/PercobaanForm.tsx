@@ -21,6 +21,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   } = useSection(slug, tab, "percobaan")
 
   const handleClick = useCallback(() => {
+    /* Toggle: submit for checking or reset to re-try */
     if (isChecked) {
       setChecked(false)
       setErrors({})
@@ -33,21 +34,26 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 
   return (
     <div className="space-y-3 md:space-y-4">
+      {/* Section instruction text */}
       {block?.instruction && (
         <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
           {block.instruction}
         </Text>
       )}
 
+      {/* Experiment table: 3-column grid (Titik Awal | Translasi | Titik Bayangan) */}
       <div className="border-4 border-black overflow-hidden bg-background">
+        {/* Table header row */}
         <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-[10px] md:text-sm font-black p-1.5 md:p-2">
           <div>Titik Awal</div>
           <div>Translasi</div>
           <div>Titik Bayangan</div>
         </div>
+        {/* Data rows */}
         <div className="divide-y-2 divide-black text-xs md:text-sm">
           {items.map((item) => {
             switch (item.type) {
+              /* Matriks row: displays label + stacked vector input (a/b) + target bayangan */
               case "matriks": {
                 const m = item as MatriksItem
                 return (
@@ -69,6 +75,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                   </div>
                 )
               }
+              /* Koordinat row: displays label + static bayangan matrix + (x, y) input fields */
               case "koordinat": {
                 const k = item as KoordinatItem
                 const bayanganVal = k.bayangan || ""
@@ -105,12 +112,14 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         </div>
       </div>
 
+      {/* AI-generated feedback banner, shown after submission */}
       {isChecked && aiFeedback && (
         <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
 
+      {/* Submit / Re-check button */}
       <Button
         onClick={handleClick}
         disabled={!isFilled && !isChecked}

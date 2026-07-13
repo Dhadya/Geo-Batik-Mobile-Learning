@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { Lightbulb } from "lucide-react"
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
@@ -21,14 +21,29 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
     setField, handleSubmit, setChecked, setErrors,
   } = useSection(slug, tab, "penyimpulan")
 
+  const [item11Err, setItem11Err] = useState<string>("")
+
   const handleClick = useCallback(() => {
     if (isChecked) {
       setChecked(false)
       setErrors({})
+      setItem11Err("")
     } else {
       handleSubmit()
     }
   }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  const validateItem11 = (aVal: string, bVal: string) => {
+    if (!aVal.trim() && !bVal.trim()) {
+      setItem11Err("")
+      return
+    }
+    if (aVal.trim().toLowerCase() === "a" && bVal.trim().toLowerCase() === "b") {
+      setItem11Err("")
+    } else {
+      setItem11Err("Jawaban kurang tepat")
+    }
+  }
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
@@ -46,14 +61,72 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
         {items.map((item) => {
           if (item.type !== "uraian") return null
           const u = item as UraianItem
-          const val = fields[String(u.id)]?.text ?? ""
-          const err = errors[`${u.id}_text`]
 
-          // Item 7: Matrix display (2/1) with parentheses + textarea
-          if (u.id === 7) {
+          // Item 11: Matriks input (fill in the translation vector)
+          if (u.id === 11) {
+            const aVal = fields["11"]?.a_val ?? ""
+            const bVal = fields["11"]?.b_val ?? ""
+
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
-                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">•</span>
+                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">-</span>
+                <div className="grow space-y-2 md:space-y-3">
+                  <Text as="p" className="text-xs md:text-sm font-medium">
+                    Jika salah satu titik sebuah bangun ditranslasikan oleh
+                  </Text>
+                  <div className="flex items-center justify-center gap-0.5">
+                    <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
+                      <div className="px-1 md:px-2 italic select-none">a</div>
+                      <div className="px-1 md:px-2 italic select-none">b</div>
+                    </div>
+                    <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
+                  </div>
+                  <Text as="p" className="text-xs md:text-sm font-medium text-center">
+                    maka seluruh titik lainnya ditranslasikan oleh
+                  </Text>
+                  <div className="flex items-center justify-center gap-0.5">
+                    <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+                    <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
+                      <Input
+                        type="text"
+                        value={aVal}
+                        onChange={(e) => {
+                          setField("11", "a_val", e.target.value)
+                          validateItem11(e.target.value, bVal)
+                        }}
+                        disabled={isChecked}
+                        placeholder="..."
+                        className={`w-12 md:w-14 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${item11Err ? "border-destructive" : "border-black"}`}
+                      />
+                      <Input
+                        type="text"
+                        value={bVal}
+                        onChange={(e) => {
+                          setField("11", "b_val", e.target.value)
+                          validateItem11(aVal, e.target.value)
+                        }}
+                        disabled={isChecked}
+                        placeholder="..."
+                        className={`w-12 md:w-14 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${item11Err ? "border-destructive" : "border-black"}`}
+                      />
+                    </div>
+                    <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
+                  </div>
+                  {isChecked && item11Err && <Text className="text-destructive text-[10px] md:text-xs font-bold text-center">{item11Err}</Text>}
+                </div>
+              </div>
+            )
+          }
+
+          // Item 7: Matrix display (2/1) with textarea
+          if (u.id === 7) {
+            const val = fields[String(u.id)]?.text ?? ""
+            const err = errors[`${u.id}_text`]
+
+            return (
+              <div key={u.id} className="flex gap-1.5 md:gap-2">
+                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">-</span>
                 <div className="grow space-y-1.5 md:space-y-2">
                   <Text as="p" className="text-xs md:text-sm font-medium">
                     Apa arti dari translasi berikut
@@ -82,9 +155,12 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
           // Item 8: Table with formula input
           if (u.id === 8) {
+            const val = fields[String(u.id)]?.text ?? ""
+            const err = errors[`${u.id}_text`]
+
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
-                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">•</span>
+                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">-</span>
                 <div className="grow space-y-1.5 md:space-y-2">
                   <Text as="p" className="text-xs md:text-sm font-medium">
                     Amati percobaanmu.
@@ -139,10 +215,13 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
             )
           }
 
-          // Item 9 and others: standard uraian
+          // Items 9, 10 and other standard uraian items
+          const val = fields[String(u.id)]?.text ?? ""
+          const err = errors[`${u.id}_text`]
+
           return (
             <div key={u.id} className="flex gap-1.5 md:gap-2">
-              <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">•</span>
+              <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">-</span>
               <div className="grow space-y-1">
                 <Text as="p" className="text-xs md:text-sm font-medium">
                   {u.question}

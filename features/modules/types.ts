@@ -28,7 +28,11 @@ export interface AssessmentQuestion {
   question: string
   options: string[]
   correctIndex: number
-  optionFormat?: "matrix"
+  optionFormat?: "matrix" | "image"
+  imageOptions?: string[]
+  multiSelect?: boolean
+  correctIndices?: number[]
+  questionImage?: string
 }
 
 // ============================================================
@@ -124,7 +128,11 @@ export interface PilihanGandaItem extends BaseItem {
   question: string
   options: string[]
   correctIndex: number
-  optionFormat?: "matrix"
+  optionFormat?: "matrix" | "image"
+  imageOptions?: string[]
+  multiSelect?: boolean
+  correctIndices?: number[]
+  questionImage?: string
 }
 
 // ============================================================

@@ -21,17 +21,20 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
   } = useSection(slug, tab, "pengamatan")
 
   const handleClick = useCallback(() => {
+    /* Direct submit — no toggle since mock form doesn't use "Periksa Lagi" pattern */
     handleSubmit()
   }, [handleSubmit])
 
   return (
     <form onSubmit={handleClick} className="space-y-3 md:space-y-4">
+      {/* Static instruction for all mock tabs */}
       <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
         Amati visualisasi GeoGebra di samping, lalu jawab pertanyaan berikut.
       </Text>
 
       <div className="space-y-3 md:space-y-4 pt-1 md:pt-2">
         {items.map((item) => {
+          /* Koordinat type: horizontal (x, y) input with parentheses */
           if (item.type === "koordinat") {
             const k = item as KoordinatItem
             const xVal = fields[String(k.id)]?.x ?? ""
@@ -72,6 +75,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
             )
           }
 
+          /* Uraian type: label + textarea for essay answer */
           if (item.type === "uraian") {
             const u = item as UraianItem
             const val = fields[String(u.id)]?.text ?? ""
@@ -100,6 +104,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
         })}
       </div>
 
+      {/* Submit / Re-check button */}
       <Button
         type="submit"
         disabled={!isFilled}

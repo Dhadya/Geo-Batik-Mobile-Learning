@@ -21,6 +21,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   } = useSection(slug, tab, "pengamatan")
 
   const handleClick = useCallback(() => {
+    /* Toggle: check answers or switch back to edit mode */
     if (isChecked) {
       setChecked(false)
       setErrors({})
@@ -31,6 +32,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
 
   return (
     <form className="space-y-3 md:space-y-4">
+      {/* Section instruction */}
       {block?.instruction && (
         <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
           {block.instruction}
@@ -39,6 +41,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
 
       {items.map((item) => {
         switch (item.type) {
+          /* Uraian / essay: bullet number + textarea for free-form answer */
           case "uraian": {
             const u = item as UraianItem
             const val = fields[String(u.id)]?.text ?? ""
@@ -64,6 +67,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
               </div>
             )
           }
+          /* Memasangkan / matching: left items with dropdown selects to right items */
           case "memasangkan": {
             const m = item as MemasangkanItem
             return (
@@ -121,12 +125,14 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
         }
       })}
 
+      {/* AI feedback banner */}
       {isChecked && aiFeedback && (
         <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
 
+      {/* Submit / Re-check button */}
       <Button
         onClick={handleClick}
         disabled={!isFilled && !isChecked}

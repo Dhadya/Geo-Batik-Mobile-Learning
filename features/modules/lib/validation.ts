@@ -71,11 +71,32 @@ export function validateSection(
       }
       case "pilihan_ganda": {
         const pg = item as PilihanGandaItem
-        const idx = selections?.[i] ?? -1
-        if (idx === pg.correctIndex) {
-          correctCount++
+        if (pg.multiSelect && pg.correctIndices) {
+          const selectedStr = fields[String(pg.id)]?.selected ?? ""
+          const selected = selectedStr ? selectedStr.split(",").map(Number) : []
+          const correct = selected.length === pg.correctIndices.length &&
+            pg.correctIndices.every((v) => selected.includes(v))
+          if (correct) {
+            correctCount++
+          } else {
+            errors[`${pg.id}_selection`] = "Jawaban kurang tepat"
+          }
+        } else if (selections !== undefined) {
+          const idx = selections[i] ?? -1
+          if (idx === pg.correctIndex) {
+            correctCount++
+          } else {
+            errors[`${pg.id}_selection`] = "Jawaban salah"
+          }
         } else {
-          errors[`${pg.id}_selection`] = "Jawaban salah"
+          const idx = fields[String(pg.id)]?.selected !== undefined
+            ? Number(fields[String(pg.id)].selected)
+            : -1
+          if (idx === pg.correctIndex) {
+            correctCount++
+          } else {
+            errors[`${pg.id}_selection`] = "Jawaban salah"
+          }
         }
         break
       }
