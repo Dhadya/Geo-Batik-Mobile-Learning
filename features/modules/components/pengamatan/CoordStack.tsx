@@ -15,7 +15,7 @@ interface CoordStackProps {
 /** Stacked vertical (a, b) input pair used in translasi titik table rows. */
 export function CoordStack({ a, b, aError, bError, onAChange, onBChange }: CoordStackProps) {
   return (
-    <div className="flex flex-col gap-0.5 w-10">
+    <div className="flex flex-col gap-0.5 w-8 md:w-10">
       <Input
         type="text"
         inputMode="numeric"
@@ -23,7 +23,7 @@ export function CoordStack({ a, b, aError, bError, onAChange, onBChange }: Coord
         value={a}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onAChange(e.target.value)}
-        className={`text-center p-1 font-black border-2 text-xs h-7 shadow-none ${aError ? "border-destructive bg-destructive-container" : "border-black"}`}
+        className={`text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${aError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
       <Input
         type="text"
@@ -32,7 +32,7 @@ export function CoordStack({ a, b, aError, bError, onAChange, onBChange }: Coord
         value={b}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onBChange(e.target.value)}
-        className={`text-center p-1 font-black border-2 text-xs h-7 shadow-none ${bError ? "border-destructive bg-destructive-container" : "border-black"}`}
+        className={`text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${bError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
     </div>
   )

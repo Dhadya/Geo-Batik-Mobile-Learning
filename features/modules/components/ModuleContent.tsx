@@ -40,13 +40,13 @@ export function ModuleContent({
   const questions = cekPemahamanQuestions.length > 0 ? cekPemahamanQuestions : tabConfig.assessment
 
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="space-y-3 md:space-y-6">
       {/* Breadcrumb navigation */}
       <QuizBreadcrumb slug={slug} label={label} path="modul" />
 
       {/* Module title banner */}
-      <div className="bg-white border-4 border-black p-4 text-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] uppercase">
-        <Text as="h1" className="text-xl md:text-2xl font-black text-black">
+      <div className="bg-white border-4 border-black p-3 md:p-4 text-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] uppercase">
+        <Text as="h1" className="text-lg md:text-2xl font-black text-black">
           {slug === "translasi" ? "TRANSLASI" : "REFLEKSI TITIK"}
         </Text>
       </div>
@@ -55,9 +55,9 @@ export function ModuleContent({
       <ModuleTabNav slug={slug} tabs={tabs} currentTab={decodedTab} />
 
       {/* Main 2-column layout: workspace + observation panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6">
         {/* Left column — GeoGebra canvas + conclusion formula */}
-        <div className="lg:col-span-8 flex flex-col gap-4 md:gap-6">
+        <div className="lg:col-span-8 flex flex-col gap-3 md:gap-6">
           <InteractiveWorkspace materialId={tabConfig.materialId} />
           <ConclusionArea slug={slug} tab={decodedTab} />
         </div>
@@ -74,17 +74,17 @@ export function ModuleContent({
       <AssessmentSection slug={slug} tab={decodedTab} questions={questions} />
 
       {/* Navigation buttons — back to apersepsi or forward to quiz */}
-      <div className="flex justify-center gap-4 pt-4">
+      <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
         <Link href={`/apersepsi/${slug}`}>
-          <Button variant="outline" size="lg" className="rounded-none! px-8 py-4 text-lg font-black uppercase gap-2">
-            <ArrowLeft className="size-6" />
+          <Button variant="outline" size="lg" className="rounded-none! px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
+            <ArrowLeft className="size-4 md:size-6" />
             KEMBALI
           </Button>
         </Link>
         <Link href={`/modul/${slug}/kuis`}>
-          <Button variant="default" size="lg" className="rounded-none! px-8 py-4 text-lg font-black uppercase gap-2">
+          <Button variant="default" size="lg" className="rounded-none! px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
             KERJAKAN KUIS
-            <ArrowRight className="size-6" />
+            <ArrowRight className="size-4 md:size-6" />
           </Button>
         </Link>
       </div>

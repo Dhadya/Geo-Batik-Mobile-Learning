@@ -19,13 +19,11 @@ interface SandboxContentProps {
 /** Percobaan tab — coordinate input, live bayangan preview, and notes. */
 export function SandboxContent({ slug, tab, instruction, sectionBlock }: SandboxContentProps) {
   void sectionBlock
-  // Sandbox state from zustand store via hook
   const { sandboxX, sandboxY, notes, preview, setSandboxX, setSandboxY, setNotes } = useSandbox(slug, tab)
   const [isChecked, setIsChecked] = useState(false)
 
   const isFilled = sandboxX !== "" && sandboxY !== "" && notes.trim() !== ""
 
-  // Validate that notes are filled before checking
   const handleCheck = () => {
     if (!isFilled) return
     setIsChecked(true)
@@ -33,17 +31,17 @@ export function SandboxContent({ slug, tab, instruction, sectionBlock }: Sandbox
   }
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
+    <div className="space-y-3 md:space-y-6">
+      <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
         {instruction}
       </Text>
 
-      <div className="space-y-4 pt-2">
+      <div className="space-y-3 md:space-y-4 pt-1 md:pt-2">
         <div>
-          <label className="font-bold text-sm uppercase mb-2 block">
+          <label className="font-bold text-xs md:text-sm uppercase mb-1 md:mb-2 block">
             Koordinat Awal A(x, y)
           </label>
-          <div className="grid grid-cols-2 gap-2 md:gap-4">
+          <div className="grid grid-cols-2 gap-1.5 md:gap-4">
             <Input
               type="text"
               inputMode="numeric"
@@ -54,7 +52,7 @@ export function SandboxContent({ slug, tab, instruction, sectionBlock }: Sandbox
                 setSandboxX(e.target.value)
                 setIsChecked(false)
               }}
-              className="border-4 border-black text-lg font-bold p-3"
+              className="border-4 border-black text-sm md:text-lg font-bold p-2 md:p-3"
             />
             <Input
               type="text"
@@ -66,35 +64,35 @@ export function SandboxContent({ slug, tab, instruction, sectionBlock }: Sandbox
                 setSandboxY(e.target.value)
                 setIsChecked(false)
               }}
-              className="border-4 border-black text-lg font-bold p-3"
+              className="border-4 border-black text-sm md:text-lg font-bold p-2 md:p-3"
             />
           </div>
         </div>
 
         <div>
-          <label className="font-bold text-sm uppercase mb-2 block">
+          <label className="font-bold text-xs md:text-sm uppercase mb-1 md:mb-2 block">
             Koordinat Bayangan A&apos;(x&apos;, y&apos;)
           </label>
-          <div className="grid grid-cols-2 gap-2 md:gap-4">
+          <div className="grid grid-cols-2 gap-1.5 md:gap-4">
             <Input
               type="text"
               placeholder="x'"
               value={preview.x}
               readOnly
-              className="border-4 border-black bg-muted text-lg font-bold p-3"
+              className="border-4 border-black bg-muted text-sm md:text-lg font-bold p-2 md:p-3"
             />
             <Input
               type="text"
               placeholder="y'"
               value={preview.y}
               readOnly
-              className="border-4 border-black bg-muted text-lg font-bold p-3"
+              className="border-4 border-black bg-muted text-sm md:text-lg font-bold p-2 md:p-3"
             />
           </div>
         </div>
 
         <div>
-          <label className="font-bold text-sm uppercase mb-2 block">
+          <label className="font-bold text-xs md:text-sm uppercase mb-1 md:mb-2 block">
             Catatan Pengamatan
           </label>
           <Textarea
@@ -105,7 +103,7 @@ export function SandboxContent({ slug, tab, instruction, sectionBlock }: Sandbox
               setNotes(e.target.value)
               setIsChecked(false)
             }}
-            className="border-4 border-black"
+            className="border-4 border-black text-xs md:text-sm"
           />
         </div>
 
@@ -113,7 +111,7 @@ export function SandboxContent({ slug, tab, instruction, sectionBlock }: Sandbox
           onClick={handleCheck}
           disabled={!isFilled}
           variant={isChecked ? "secondary" : "default"}
-          className="w-full font-bold py-3 mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
+          className="w-full font-bold py-2 md:py-3 mt-1 md:mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
         >
           {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
         </Button>

@@ -25,12 +25,12 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
   }, [handleSubmit])
 
   return (
-    <form onSubmit={handleClick} className="space-y-4">
-      <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
+    <form onSubmit={handleClick} className="space-y-3 md:space-y-4">
+      <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
         Amati visualisasi GeoGebra di samping, lalu jawab pertanyaan berikut.
       </Text>
 
-      <div className="space-y-4 pt-2">
+      <div className="space-y-3 md:space-y-4 pt-1 md:pt-2">
         {items.map((item) => {
           if (item.type === "koordinat") {
             const k = item as KoordinatItem
@@ -40,33 +40,33 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
             const yErr = errors[`${k.id}_y`]
 
             return (
-              <div key={k.id} className="space-y-1">
-                <label className="font-bold text-sm uppercase mb-1 block select-none">
+              <div key={k.id} className="space-y-0.5 md:space-y-1">
+                <label className="font-bold text-xs md:text-sm uppercase mb-0.5 md:mb-1 block select-none">
                   Koordinat Bayangan {k.label}
                 </label>
-                <div className="flex gap-2 items-center">
-                  <span className="font-bold text-sm">(</span>
+                <div className="flex gap-1.5 md:gap-2 items-center">
+                  <span className="font-bold text-xs md:text-sm">(</span>
                   <Input
                     type="text"
                     placeholder="x"
                     value={xVal}
                     onChange={(e) => setField(String(k.id), "x", e.target.value)}
                     disabled={isChecked}
-                    className={`w-20 text-center border-4 border-black font-bold ${xErr ? "border-destructive" : ""}`}
+                    className={`w-16 md:w-20 text-center border-4 border-black font-bold text-xs md:text-sm ${xErr ? "border-destructive" : ""}`}
                   />
-                  <span className="font-bold text-sm">,</span>
+                  <span className="font-bold text-xs md:text-sm">,</span>
                   <Input
                     type="text"
                     placeholder="y"
                     value={yVal}
                     onChange={(e) => setField(String(k.id), "y", e.target.value)}
                     disabled={isChecked}
-                    className={`w-20 text-center border-4 border-black font-bold ${yErr ? "border-destructive" : ""}`}
+                    className={`w-16 md:w-20 text-center border-4 border-black font-bold text-xs md:text-sm ${yErr ? "border-destructive" : ""}`}
                   />
-                  <span className="font-bold text-sm">)</span>
+                  <span className="font-bold text-xs md:text-sm">)</span>
                 </div>
                 {(xErr || yErr) && (
-                  <span className="text-xs text-destructive font-bold">{xErr || yErr}</span>
+                  <span className="text-[10px] md:text-xs text-destructive font-bold">{xErr || yErr}</span>
                 )}
               </div>
             )
@@ -78,8 +78,8 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
             const err = errors[`${u.id}_text`]
 
             return (
-              <div key={u.id} className="space-y-1">
-                <label className="font-bold text-sm uppercase mb-1 block select-none">
+              <div key={u.id} className="space-y-0.5 md:space-y-1">
+                <label className="font-bold text-xs md:text-sm uppercase mb-0.5 md:mb-1 block select-none">
                   {u.question}
                 </label>
                 <Textarea
@@ -87,10 +87,10 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                   disabled={isChecked}
                   rows={3}
-                  className={`border-4 border-black font-semibold resize-none ${err ? "border-destructive" : ""}`}
+                  className={`border-4 border-black font-medium resize-none text-xs md:text-sm ${err ? "border-destructive" : ""}`}
                 />
                 {err && (
-                  <span className="text-xs text-destructive font-bold">{err}</span>
+                  <span className="text-[10px] md:text-xs text-destructive font-bold">{err}</span>
                 )}
               </div>
             )
@@ -104,7 +104,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
         type="submit"
         disabled={!isFilled}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold py-3 mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
+        className="w-full font-bold py-2 md:py-3 mt-1 md:mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>

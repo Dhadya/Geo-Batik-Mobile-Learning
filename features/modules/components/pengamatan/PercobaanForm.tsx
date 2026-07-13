@@ -32,29 +32,29 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   if (items.length === 0) return null
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 md:space-y-4">
       {block?.instruction && (
-        <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
+        <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
           {block.instruction}
         </Text>
       )}
 
       <div className="border-4 border-black overflow-hidden bg-background">
-        <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs md:text-sm font-black p-2">
+        <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-[10px] md:text-sm font-black p-1.5 md:p-2">
           <div>Titik Awal</div>
           <div>Translasi</div>
           <div>Titik Bayangan</div>
         </div>
-        <div className="divide-y-2 divide-black text-sm">
+        <div className="divide-y-2 divide-black text-xs md:text-sm">
           {items.map((item) => {
             switch (item.type) {
               case "matriks": {
                 const m = item as MatriksItem
                 return (
-                  <div key={m.id} className="grid grid-cols-3 items-center py-3 text-center">
+                  <div key={m.id} className="grid grid-cols-3 items-center py-2 md:py-3 text-center">
                     <div className="font-bold">{m.label}</div>
                     <div className="flex items-center justify-center gap-0.5">
-                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">(</span>
+                      <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
                       <CoordStack
                         a={fields[String(m.id)]?.a ?? ""}
                         b={fields[String(m.id)]?.b ?? ""}
@@ -63,7 +63,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                         onAChange={(val) => setField(String(m.id), "a", val)}
                         onBChange={(val) => setField(String(m.id), "b", val)}
                       />
-                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">)</span>
+                      <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                     </div>
                     <div className="font-bold">{m.targetBayangan}</div>
                   </div>
@@ -77,15 +77,15 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                 const by = match?.[2] ?? ""
 
                 return (
-                  <div key={k.id} className="grid grid-cols-3 items-center py-3 text-center">
+                  <div key={k.id} className="grid grid-cols-3 items-center py-2 md:py-3 text-center">
                     <div className="font-bold">{k.label}</div>
                     <div className="flex items-center justify-center gap-0.5">
-                      <span className="text-3xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
-                      <div className="flex flex-col gap-1 text-sm font-black">
-                        <div className="px-1 select-none">{bx}</div>
-                        <div className="px-1 select-none">{by}</div>
+                      <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
+                      <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
+                        <div className="px-0.5 md:px-1 select-none">{bx}</div>
+                        <div className="px-0.5 md:px-1 select-none">{by}</div>
                       </div>
-                      <span className="text-3xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
+                      <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
                     </div>
                     <BayanganInput
                       x={fields[String(k.id)]?.x ?? ""}
@@ -106,8 +106,8 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
       </div>
 
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-4 rounded-none">
-          <Text className="text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
+        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
 
@@ -115,7 +115,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         onClick={handleClick}
         disabled={!isFilled && !isChecked}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+        className="w-full font-bold py-2 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>

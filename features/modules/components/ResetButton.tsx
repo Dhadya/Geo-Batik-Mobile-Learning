@@ -16,26 +16,26 @@ export function ResetButton() {
       <Dialog.Trigger
         render={
           <Button
-            variant="default"
-            className="fixed bottom-6 left-6 z-40 w-12 h-12 p-0 flex items-center justify-center"
+            variant="outline"
+            className="fixed bottom-4 md:bottom-6 left-4 md:left-6 z-40 w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center"
           />
         }
       >
-        <RotateCcw className="size-5" />
+        <RotateCcw className="size-4 md:size-5" />
       </Dialog.Trigger>
 
       <Dialog.Content size="sm">
         <Dialog.Header asChild>
-          <div className="flex items-center justify-between border-b-2 px-4 min-h-12 bg-primary text-primary-foreground">
-            <span className="font-black uppercase text-sm">Reset Jawaban</span>
+          <div className="flex items-center justify-between border-b-2 px-3 md:px-4 min-h-10 md:min-h-12 bg-primary text-primary-foreground">
+            <span className="font-black uppercase text-xs md:text-sm">Reset Jawaban</span>
           </div>
         </Dialog.Header>
 
-        <div className="p-6 text-center space-y-2">
-          <p className="font-semibold text-base">
+        <div className="p-4 md:p-6 text-center space-y-1.5 md:space-y-2">
+          <p className="font-semibold text-sm md:text-base">
             Yakin ingin mereset semua jawaban?
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-[10px] md:text-sm text-muted-foreground">
             Semua jawaban yang sudah kamu isi akan dihapus.
           </p>
         </div>
@@ -43,7 +43,7 @@ export function ResetButton() {
         <Dialog.Footer>
           <Dialog.Close
             render={
-              <Button variant="outline" size="sm" className="font-bold uppercase" />
+              <Button variant="outline" className="font-bold uppercase text-xs md:text-sm" />
             }
           >
             Batal
@@ -52,8 +52,7 @@ export function ResetButton() {
             render={
               <Button
                 variant="default"
-                size="sm"
-                className="font-bold uppercase"
+                className="font-bold uppercase text-xs md:text-sm"
               />
             }
             onClick={() => {

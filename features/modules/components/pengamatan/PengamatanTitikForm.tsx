@@ -30,9 +30,9 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   }, [isChecked, setChecked, setErrors, handleSubmit])
 
   return (
-    <form className="space-y-4">
+    <form className="space-y-3 md:space-y-4">
       {block?.instruction && (
-        <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
+        <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
           {block.instruction}
         </Text>
       )}
@@ -44,10 +44,10 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
             const val = fields[String(u.id)]?.text ?? ""
             const err = errors[`${u.id}_text`]
             return (
-              <div key={u.id} className="flex gap-2">
-                <span className="text-lg font-black shrink-0 w-4 text-right -mt-0.5">•</span>
+              <div key={u.id} className="flex gap-1.5 md:gap-2">
+                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">•</span>
                 <div className="grow space-y-1">
-                  <Text as="p" className="text-sm font-medium">
+                  <Text as="p" className="text-xs md:text-sm font-medium">
                     {u.question}
                   </Text>
                   <Textarea
@@ -57,9 +57,9 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                     }
                     disabled={isChecked}
                     rows={5}
-                    className={`border-4 border-black font-medium resize-none min-h-28 ${err ? "border-destructive" : ""}`}
+                    className={`border-4 border-black font-medium resize-none min-h-20 md:min-h-28 text-xs md:text-sm ${err ? "border-destructive" : ""}`}
                   />
-                  {err && <Text className="text-destructive text-xs">{err}</Text>}
+                  {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}
                 </div>
               </div>
             )
@@ -67,35 +67,35 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
           case "memasangkan": {
             const m = item as MemasangkanItem
             return (
-              <div key={m.id} className="flex gap-2">
-                <span className="text-lg font-black shrink-0 w-4 text-right -mt-0.5">•</span>
-                <div className="grow space-y-3">
-                  <Text as="p" className="text-sm font-medium">
+              <div key={m.id} className="flex gap-1.5 md:gap-2">
+                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">•</span>
+                <div className="grow space-y-2 md:space-y-3">
+                  <Text as="p" className="text-xs md:text-sm font-medium">
                     {m.question}
                   </Text>
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 md:space-y-2">
                     {m.leftItems.map((left) => {
                       const selected = fields[String(m.id)]?.[left.id] ?? ""
                       const err = errors[`${m.id}_${left.id}`]
                       return (
-                        <div key={left.id} className="flex items-center gap-2">
-                          <div className="border-2 border-black px-8 py-1 font-bold text-sm shrink-0 text-center min-w-12">
+                        <div key={left.id} className="flex items-center gap-1.5 md:gap-2">
+                          <div className="border-2 border-black px-4 md:px-8 py-0.5 md:py-1 font-bold text-xs md:text-sm shrink-0 text-center min-w-10 md:min-w-12">
                             {left.label}
                           </div>
-                          <span className="text-lg font-bold">→</span>
+                          <span className="text-base md:text-lg font-bold">→</span>
                           <Select
                             value={selected || null}
                             onValueChange={(val) => setField(String(m.id), left.id, val ?? "")}
                           >
                             <Select.Trigger
                               disabled={isChecked}
-                              className={`h-8 border-2 border-black font-semibold text-xs bg-white min-w-32 shadow-none capitalize ${err ? "border-destructive" : ""}`}
+                              className={`h-7 md:h-8 border-2 border-black font-semibold text-[10px] md:text-xs bg-white min-w-24 md:min-w-32 shadow-none capitalize ${err ? "border-destructive" : ""}`}
                             >
                               <Select.Value placeholder="Pilih..." />
                             </Select.Trigger>
                             <Select.Content className="bg-white">
                               {m.rightItems.map((right) => (
-                                <Select.Item key={right.id} value={right.id} className="text-xs">
+                                <Select.Item key={right.id} value={right.id} className="text-[10px] md:text-xs">
                                   {right.label}
                                 </Select.Item>
                               ))}
@@ -106,7 +106,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                     })}
                   </div>
                   {m.leftItems.some((l) => errors[`${m.id}_${l.id}`]) && (
-                    <Text className="text-destructive text-xs">
+                    <Text className="text-destructive text-[10px] md:text-xs">
                       Ada pasangan yang belum tepat
                     </Text>
                   )}
@@ -120,8 +120,8 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
       })}
 
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-4 rounded-none">
-          <Text className="text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
+        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
 
@@ -129,7 +129,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
         onClick={handleClick}
         disabled={!isFilled && !isChecked}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
+        className="w-full font-bold py-2 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>

@@ -16,14 +16,14 @@ export function ModuleTabNav({
   currentTab: string
 }) {
   return (
-    <section className="flex flex-wrap gap-4 overflow-x-auto pb-4 pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+    <section className="flex flex-wrap gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-4 pr-1 md:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
       {tabs.map((t) => (
         <Link key={t.value} href={`/modul/${slug}/${t.value}`} className="flex-1 min-w-fit">
           <Button
             variant={t.value === currentTab ? "default" : "outline"}
             size="lg"
             className={cn(
-              "rounded-none! font-bold uppercase whitespace-nowrap w-full",
+              "rounded-none! font-bold uppercase whitespace-nowrap w-full text-sm md:text-lg px-2 md:px-6",
               t.value !== currentTab && "bg-white!"
             )}
           >

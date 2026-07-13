@@ -15,8 +15,8 @@ interface BayanganInputProps {
 /** Horizontal (x, y) input pair with parentheses and error styling. */
 export function BayanganInput({ x, y, xError, yError, onXChange, onYChange }: BayanganInputProps) {
   return (
-    <div className="flex items-center gap-1 justify-center">
-      <span className="text-sm font-bold select-none">(</span>
+    <div className="flex items-center gap-0.5 md:gap-1 justify-center">
+      <span className="text-xs md:text-sm font-bold select-none">(</span>
       <Input
         type="text"
         inputMode="numeric"
@@ -24,9 +24,9 @@ export function BayanganInput({ x, y, xError, yError, onXChange, onYChange }: Ba
         value={x}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onXChange(e.target.value)}
-        className={`w-10 text-center p-1 font-black border-2 text-xs h-7 shadow-none ${xError ? "border-destructive bg-destructive-container" : "border-black"}`}
+        className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${xError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
-      <span className="text-sm font-bold select-none">,</span>
+      <span className="text-xs md:text-sm font-bold select-none">,</span>
       <Input
         type="text"
         inputMode="numeric"
@@ -34,9 +34,9 @@ export function BayanganInput({ x, y, xError, yError, onXChange, onYChange }: Ba
         value={y}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onYChange(e.target.value)}
-        className={`w-10 text-center p-1 font-black border-2 text-xs h-7 shadow-none ${yError ? "border-destructive bg-destructive-container" : "border-black"}`}
+        className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${yError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
-      <span className="text-sm font-bold select-none">)</span>
+      <span className="text-xs md:text-sm font-bold select-none">)</span>
     </div>
   )
 }
