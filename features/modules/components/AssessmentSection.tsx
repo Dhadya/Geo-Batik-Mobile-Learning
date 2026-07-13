@@ -4,11 +4,10 @@ import { useCallback, useMemo } from "react"
 import { CheckCircle } from "lucide-react"
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
-import { Badge } from "@/components/retroui/Badge"
+import { Card } from "@/components/retroui/Card"
+import { AnswerButton } from "@/features/quiz/components/AnswerButton"
 import { useAnswerStore } from "../store/answerStore"
 import type { AssessmentQuestion } from "../types"
-
-const LABELS = ["A", "B", "C", "D"]
 
 interface AssessmentSectionProps {
   slug: string
@@ -56,39 +55,27 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
       <div className="space-y-10 max-w-3xl mx-auto">
         {questions.map((q, qi) => (
-          <div key={q.id} className="space-y-4">
-            <Text as="p" className="text-base md:text-lg font-medium text-center">
-              {q.question}
-            </Text>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {q.options.map((opt, oi) => {
-                const selected = selections[qi] === oi
-                return (
-                  <button
+          <Card key={q.id} className="border-4 border-black shadow-md">
+            <Card.Content className="space-y-4 md:space-y-6">
+              <div className="w-full p-6 md:p-8 text-center">
+                <Text as="h2" className="text-lg md:text-xl lg:text-2xl font-bold leading-relaxed">
+                  {q.question}
+                </Text>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 w-full">
+                {q.options.map((opt, oi) => (
+                  <AnswerButton
                     key={oi}
-                    type="button"
-                    onClick={() => handleSelect(qi, oi)}
-                    disabled={isChecked}
-                    className={`flex items-center gap-3 p-4 border-4 border-black text-left font-bold text-base md:text-lg relative transition-all ${
-                      selected
-                        ? "bg-yellow-400 shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
-                        : "bg-white hover:bg-muted"
-                    }`}
-                  >
-                    <span className="w-8 h-8 md:w-10 md:h-10 border-2 border-black bg-foreground text-background flex items-center justify-center text-sm md:text-base shrink-0">
-                      {LABELS[oi]}
-                    </span>
-                    <span className="grow">{opt}</span>
-                    {selected && (
-                      <Badge variant="solid" size="sm" className="absolute -top-2 -right-2 uppercase">
-                        Dipilih
-                      </Badge>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+                    index={oi}
+                    text={opt}
+                    isSelected={selections[qi] === oi}
+                    onSelect={() => handleSelect(qi, oi)}
+                  />
+                ))}
+              </div>
+            </Card.Content>
+          </Card>
         ))}
       </div>
 
