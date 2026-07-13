@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useMemo } from "react"
+import { CheckCircle } from "lucide-react"
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { Badge } from "@/components/retroui/Badge"
@@ -44,10 +45,10 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-4 md:p-6">
-      <div className="flex flex-wrap items-center gap-2 mb-8 justify-center">
-        <Badge variant="solid" size="sm">
-          Latihan 01
-        </Badge>
+      <div className="flex items-center gap-2 mb-8">
+        <div className="w-8 h-8 border-2 border-black bg-white flex items-center justify-center shrink-0">
+          <CheckCircle className="size-4" />
+        </div>
         <Text as="h2" className="text-xl md:text-2xl font-black uppercase">
           Cek Pemahaman
         </Text>
