@@ -184,6 +184,102 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
           correctIndex: 0,
         },
       ],
+      sections: {
+        percobaan: {
+          instruction:
+            "Tentukan nilai translasi agar bangun mencapai bayangan yang dituju.",
+          items: [
+            {
+              id: 1,
+              type: "koordinat",
+              label: "(-6, 3)",
+              bayangan: "(-1, 7)",
+              answer: { x: 5, y: 4 },
+            },
+            {
+              id: 2,
+              type: "koordinat",
+              label: "(-6, 1)",
+              bayangan: "(-1, 5)",
+              answer: { x: 5, y: 4 },
+            },
+            {
+              id: 3,
+              type: "koordinat",
+              label: "(-4, 1)",
+              bayangan: "(1, 5)",
+              answer: { x: 5, y: 4 },
+            },
+            {
+              id: 4,
+              type: "koordinat",
+              label: "(-4, 3)",
+              bayangan: "(1, 7)",
+              answer: { x: 5, y: 4 },
+            },
+          ],
+        },
+        pengamatan: {
+          instruction:
+            "Amati perpindahan bangun datar berikut. Translasi yang digunakan adalah T(5, 4).",
+          items: [
+            {
+              id: 5,
+              type: "koordinat",
+              label: "(-6, 3)",
+              bayangan: "(-1, 7)",
+              answer: { x: -1, y: 7 },
+            },
+            {
+              id: 6,
+              type: "koordinat",
+              label: "(-6, 1)",
+              bayangan: "(-1, 5)",
+              answer: { x: -1, y: 5 },
+            },
+            {
+              id: 7,
+              type: "koordinat",
+              label: "(-4, 1)",
+              bayangan: "(1, 5)",
+              answer: { x: 1, y: 5 },
+            },
+            {
+              id: 8,
+              type: "koordinat",
+              label: "(-4, 3)",
+              bayangan: "(1, 7)",
+              answer: { x: 1, y: 7 },
+            },
+          ],
+        },
+        penyimpulan: {
+          instruction: "Simpulkan hasil percobaanmu.",
+          items: [
+            {
+              id: 9,
+              type: "uraian",
+              question:
+                "Jika seluruh titik pada bangun ditranslasi sejauh T(a, b), apakah bentuk bangun berubah?",
+              answer:
+                "Tidak, bentuk bangun tidak berubah karena translasi hanya menggeser posisi bangun tanpa mengubah ukuran atau bentuknya",
+            },
+          ],
+        },
+        cekPemahaman: {
+          instruction: "Kerjakan soal-soal berikut.",
+          items: [
+            {
+              id: 10,
+              type: "pilihan_ganda",
+              question:
+                "Segitiga dengan titik A(1,1), B(4,1), C(1,5) ditranslasi T(2,3). Koordinat A' adalah...",
+              options: ["(3, 4)", "(-1, -2)", "(3, 8)", "(5, 4)"],
+              correctIndex: 0,
+            },
+          ],
+        },
+      },
     },
     {
       label: "GARIS",

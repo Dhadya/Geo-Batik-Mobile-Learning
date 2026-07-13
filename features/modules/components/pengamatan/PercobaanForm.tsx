@@ -40,10 +40,10 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
       )}
 
       <div className="border-4 border-black overflow-hidden bg-background">
-        <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs font-black p-2 uppercase">
+        <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs font-black p-2">
           <div>Titik Awal</div>
           <div>Translasi oleh</div>
-          <div>Bayangan</div>
+          <div>Titik Bayangan</div>
         </div>
         <div className="divide-y-2 divide-black text-sm">
           {items.map((item) => {
