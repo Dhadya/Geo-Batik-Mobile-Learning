@@ -15,9 +15,9 @@ export function ResetButton() {
     <Dialog open={open} onOpenChange={setOpen}>
       <Dialog.Trigger
         render={
-          <button
-            type="button"
-            className="fixed bottom-6 left-6 z-40 w-12 h-12 border-4 border-black bg-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center justify-center hover:shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+          <Button
+            variant="default"
+            className="fixed bottom-6 left-6 z-40 w-12 h-12 p-0 flex items-center justify-center"
           />
         }
       >
