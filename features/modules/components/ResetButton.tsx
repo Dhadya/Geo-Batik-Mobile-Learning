@@ -17,7 +17,7 @@ export function ResetButton() {
         render={
           <Button
             variant="outline"
-            className="fixed bottom-4 md:bottom-6 left-4 md:left-6 z-40 w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center"
+            className="fixed bottom-4 md:bottom-6 left-4 md:left-6 z-40 w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center bg-white"
           />
         }
       >

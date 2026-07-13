@@ -61,8 +61,8 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                   <div className="flex items-center justify-center gap-0.5">
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
                     <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
-                      <div className="px-2 md:px-3 py-0.5 bg-muted select-none">2</div>
-                      <div className="px-2 md:px-3 py-0.5 bg-muted select-none">1</div>
+                      <div className="px-2 md:px-3 py-0.5 select-none">2</div>
+                      <div className="px-2 md:px-3 py-0.5 select-none">1</div>
                     </div>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                   </div>
