@@ -18,13 +18,14 @@ interface AssessmentSectionProps {
 /** Assessment section — multiple choice questions matching quiz UI. */
 export function AssessmentSection({ slug, tab, questions }: AssessmentSectionProps) {
   const tabKey = useMemo(() => `${slug}-${tab}`, [slug, tab])
-  const selections = useAnswerStore((s) => s.answers[tabKey]?.cekPemahaman?.selections ?? [])
-  const isChecked = useAnswerStore((s) => s.answers[tabKey]?.cekPemahaman?.isChecked ?? false)
-  const aiFeedback = useAnswerStore((s) => s.answers[tabKey]?.cekPemahaman?.aiFeedback)
+  const rawTab = useAnswerStore((s) => s.answers[tabKey])
+  const selections = useMemo(() => rawTab?.cekPemahaman?.selections ?? [], [rawTab])
+  const isChecked = useMemo(() => rawTab?.cekPemahaman?.isChecked ?? false, [rawTab])
+  const aiFeedback = useMemo(() => rawTab?.cekPemahaman?.aiFeedback, [rawTab])
   const setSelections = useAnswerStore((s) => s.setSelections)
   const setChecked = useAnswerStore((s) => s.setChecked)
 
-  const allAnswered = questions.every((_, i) => selections[i] != null)
+  const allAnswered = useMemo(() => questions.every((_, i) => selections[i] != null), [questions, selections])
 
   const handleSelect = useCallback((qi: number, oi: number) => {
     if (isChecked) return

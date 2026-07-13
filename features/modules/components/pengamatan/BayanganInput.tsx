@@ -24,7 +24,7 @@ export function BayanganInput({ x, y, xError, yError, onXChange, onYChange }: Ba
         value={x}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onXChange(e.target.value)}
-        className={`w-10 text-center p-1 font-black border-2 text-xs h-7 ${xError ? "border-destructive bg-destructive-container" : "border-black"}`}
+        className={`w-10 text-center p-1 font-black border-2 text-xs h-7 !shadow-none ${xError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
       <span className="text-sm font-bold select-none">,</span>
       <Input
@@ -34,7 +34,7 @@ export function BayanganInput({ x, y, xError, yError, onXChange, onYChange }: Ba
         value={y}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onYChange(e.target.value)}
-        className={`w-10 text-center p-1 font-black border-2 text-xs h-7 ${yError ? "border-destructive bg-destructive-container" : "border-black"}`}
+        className={`w-10 text-center p-1 font-black border-2 text-xs h-7 !shadow-none ${yError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
       <span className="text-sm font-bold select-none">)</span>
     </div>

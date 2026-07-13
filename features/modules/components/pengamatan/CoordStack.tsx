@@ -23,7 +23,7 @@ export function CoordStack({ a, b, aError, bError, onAChange, onBChange }: Coord
         value={a}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onAChange(e.target.value)}
-        className={`text-center p-1 font-black border-2 text-xs h-7 ${aError ? "border-destructive bg-destructive-container" : "border-black"}`}
+        className={`text-center p-1 font-black border-2 text-xs h-7 !shadow-none ${aError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
       <Input
         type="text"
@@ -32,7 +32,7 @@ export function CoordStack({ a, b, aError, bError, onAChange, onBChange }: Coord
         value={b}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onBChange(e.target.value)}
-        className={`text-center p-1 font-black border-2 text-xs h-7 ${bError ? "border-destructive bg-destructive-container" : "border-black"}`}
+        className={`text-center p-1 font-black border-2 text-xs h-7 !shadow-none ${bError ? "border-destructive bg-destructive-container" : "border-black"}`}
       />
     </div>
   )

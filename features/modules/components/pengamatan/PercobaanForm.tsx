@@ -42,7 +42,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
       <div className="border-4 border-black overflow-hidden bg-background">
         <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs md:text-sm font-black p-2">
           <div>Titik Awal</div>
-          <div>Translasi oleh</div>
+          <div>Translasi</div>
           <div>Titik Bayangan</div>
         </div>
         <div className="divide-y-2 divide-black text-sm">
@@ -80,12 +80,12 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                   <div key={k.id} className="grid grid-cols-3 items-center py-3 text-center">
                     <div className="font-bold">{k.label}</div>
                     <div className="flex items-center justify-center gap-0.5">
-                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">(</span>
+                      <span className="text-3xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
                       <div className="flex flex-col gap-1 text-sm font-black">
-                        <div className="select-none">{bx}</div>
-                        <div className="select-none">{by}</div>
+                        <div className="px-1 select-none">{bx}</div>
+                        <div className="px-1 select-none">{by}</div>
                       </div>
-                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">)</span>
+                      <span className="text-3xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
                     </div>
                     <BayanganInput
                       x={fields[String(k.id)]?.x ?? ""}
@@ -115,7 +115,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         onClick={handleClick}
         disabled={!isFilled && !isChecked}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] !rounded-none"
+        className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>
