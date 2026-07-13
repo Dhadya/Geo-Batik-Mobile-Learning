@@ -4,15 +4,48 @@ import { useCallback, useMemo } from "react"
 import { CheckCircle } from "lucide-react"
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
+import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
-import { AnswerButton } from "@/features/quiz/components/AnswerButton"
 import { useAnswerStore } from "../store/answerStore"
 import type { AssessmentQuestion } from "../types"
+
+const LABELS = ["A", "B", "C", "D"]
 
 interface AssessmentSectionProps {
   slug: string
   tab: string
   questions: AssessmentQuestion[]
+}
+
+/** Compact answer button for module context — smaller than quiz version. */
+function ModuleAnswerButton({
+  index,
+  text,
+  isSelected,
+  onSelect,
+}: {
+  index: number
+  text: string
+  isSelected: boolean
+  onSelect: () => void
+}) {
+  return (
+    <Button
+      variant={isSelected ? "default" : "outline"}
+      className="w-full justify-start gap-2 p-2.5 md:p-3 text-left font-semibold text-sm md:text-base relative"
+      onClick={onSelect}
+    >
+      <span className="w-6 h-6 md:w-7 md:h-7 border-2 border-black bg-foreground text-background flex items-center justify-center text-xs md:text-sm shrink-0">
+        {LABELS[index]}
+      </span>
+      <span className="grow">{text}</span>
+      {isSelected && (
+        <Badge variant="solid" size="sm" className="absolute -top-2 -right-2 uppercase">
+          Dipilih
+        </Badge>
+      )}
+    </Button>
+  )
 }
 
 /** Assessment section — multiple choice questions matching quiz UI. */
@@ -44,28 +77,28 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-4 md:p-6">
-      <div className="flex items-center gap-2 mb-8">
-        <div className="w-8 h-8 border-2 border-black bg-white flex items-center justify-center shrink-0">
-          <CheckCircle className="size-4" />
+      <div className="flex items-center justify-center gap-2 mb-6">
+        <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
+          <CheckCircle className="size-4 md:size-6" />
         </div>
         <Text as="h2" className="text-xl md:text-2xl font-black uppercase">
           Cek Pemahaman
         </Text>
       </div>
 
-      <div className="space-y-10 max-w-3xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-5xl mx-auto">
         {questions.map((q, qi) => (
           <Card key={q.id} className="border-4 border-black shadow-md">
-            <Card.Content className="space-y-4 md:space-y-6">
-              <div className="w-full p-6 md:p-8 text-center">
-                <Text as="h2" className="text-lg md:text-xl lg:text-2xl font-bold leading-relaxed">
+            <Card.Content className="space-y-3">
+              <div className="w-full p-4 md:p-5 text-center">
+                <Text as="h2" className="text-sm md:text-base font-bold leading-relaxed">
                   {q.question}
                 </Text>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 w-full">
+              <div className="space-y-2">
                 {q.options.map((opt, oi) => (
-                  <AnswerButton
+                  <ModuleAnswerButton
                     key={oi}
                     index={oi}
                     text={opt}
@@ -85,7 +118,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         </div>
       )}
 
-      <div className="mt-8 md:mt-10 flex justify-center">
+      <div className="mt-6 md:mt-8 flex justify-center">
         <Button
           onClick={handleClick}
           disabled={!allAnswered && !isChecked}
