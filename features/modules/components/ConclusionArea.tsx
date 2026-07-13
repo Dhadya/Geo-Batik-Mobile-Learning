@@ -93,15 +93,15 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                     <div className="flex items-center justify-center gap-0.5">
                       <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
                       <div className="flex flex-col gap-1 text-sm font-black">
-                        <div className="px-3 py-0.5 bg-muted select-none italic">a</div>
-                        <div className="px-3 py-0.5 bg-muted select-none italic">b</div>
+                        <div className="px-1 select-none italic">a</div>
+                        <div className="px-1 select-none italic">b</div>
                       </div>
                       <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                     </div>
                     <Text as="p" className="text-sm font-medium">
                       , tentukan titik bayangannya dengan mengisi tabel berikut
                     </Text>
-                    <div className="border-4 border-black overflow-hidden">
+                    <div className="border-4 border-black overflow-hidden bg-background">
                       <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs md:text-sm font-black p-2">
                         <div>Titik Awal</div>
                         <div>Translasi oleh</div>
@@ -112,8 +112,8 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                         <div className="flex items-center justify-center gap-0.5">
                           <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
                           <div className="flex flex-col gap-1 text-sm font-black">
-                            <div className="border-2 border-black px-3 py-0.5 bg-muted select-none italic">a</div>
-                            <div className="border-2 border-black px-3 py-0.5 bg-muted select-none italic">b</div>
+                            <div className="px-1 select-none italic">a</div>
+                            <div className="px-1 select-none italic">b</div>
                           </div>
                           <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                         </div>
@@ -124,8 +124,8 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                             value={val}
                             onChange={(e) => setField(String(u.id), "text", e.target.value)}
                             disabled={isChecked}
-                            placeholder="x + a, y + b"
-                            className={`w-28 text-center p-1 font-black border-2 text-xs h-7 !shadow-none ${err ? "border-destructive bg-destructive-container" : "border-black"}`}
+                            placeholder=", "
+                            className={`w-20 text-center p-1 font-black border-2 text-xs h-7 !shadow-none ${err ? "border-destructive bg-destructive-container" : "border-black"}`}
                           />
                           <span className="text-sm font-bold select-none">)</span>
                         </div>
