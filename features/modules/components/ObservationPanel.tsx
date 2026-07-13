@@ -1,31 +1,21 @@
 "use client"
 
 import { Tabs } from "@/components/retroui/Tab"
-import { SandboxContent } from "./pengamatan/SandboxContent"
+import { PercobaanForm } from "./pengamatan/PercobaanForm"
 import { PengamatanTitikForm } from "./pengamatan/PengamatanTitikForm"
 import { PengamatanBangunForm } from "./pengamatan/PengamatanBangunForm"
 import { PengamatanMockForm } from "./pengamatan/PengamatanMockForm"
-import { getModuleTab } from "../data"
-import type { SectionBlock } from "../types"
 
 interface ObservationPanelProps {
   slug: string
   tab: string
-  instruction: string
-  pengamatan?: SectionBlock
 }
 
 /** Right-side panel with percobaan/pengamatan tabs and conditional form content. */
-export function ObservationPanel({ slug, tab, instruction, pengamatan: _pengamatan }: ObservationPanelProps) {
-  void _pengamatan
-  // Determine which form variant to show based on module and tab
+export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const isTranslasiTitik = slug === "translasi" && tab === "titik"
   const isTranslasiBangun = slug === "translasi" && tab === "bangun"
   const showMockForm = !isTranslasiTitik && !isTranslasiBangun
-
-  // Section content from tab config for data-driven forms
-  const tabConfig = getModuleTab(slug, tab)
-  const sections = tabConfig?.sections
 
   return (
     <div className="h-auto lg:h-full flex flex-col gap-4">
@@ -48,14 +38,9 @@ export function ObservationPanel({ slug, tab, instruction, pengamatan: _pengamat
 
         {/* Tab content container */}
         <div className="border-4 border-black bg-white grow flex flex-col shadow-lg overflow-hidden">
-          {/* Percobaan tab — sandbox with coordinate input and live preview */}
+          {/* Percobaan tab — structured experiment table from section data */}
           <Tabs.Content value="percobaan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 md:space-y-6 mt-0">
-            <SandboxContent
-              slug={slug}
-              tab={tab}
-              instruction={instruction}
-              sectionBlock={sections?.percobaan}
-            />
+            <PercobaanForm slug={slug} tab={tab} />
           </Tabs.Content>
 
           {/* Pengamatan tab — form variant based on module/tab */}

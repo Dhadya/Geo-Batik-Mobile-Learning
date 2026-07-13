@@ -65,8 +65,6 @@ export function ModuleContent({
           <ObservationPanel
             slug={slug}
             tab={decodedTab}
-            instruction={tabConfig.instruction}
-            pengamatan={tabConfig.sections?.pengamatan}
           />
         </div>
       </div>

@@ -47,18 +47,21 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
             const err = errors[`${u.id}_text`]
 
             return (
-              <div key={u.id}>
-                <Text as="p" className="whitespace-pre-wrap font-medium mb-1">
-                  {u.id}. {u.question}
-                </Text>
-                <Textarea
-                  value={val}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
-                  disabled={isChecked}
-                  rows={3}
-                  className={`border-4 border-black font-semibold resize-none ${err ? "border-destructive" : ""}`}
-                />
-                {err && <Text className="text-destructive text-sm mt-1">{err}</Text>}
+              <div key={u.id} className="flex gap-3">
+                <span className="text-lg font-black shrink-0 w-4 text-right -mt-0.5">•</span>
+                <div className="grow space-y-1">
+                  <Text as="p" className="whitespace-pre-wrap font-medium">
+                    {u.question}
+                  </Text>
+                  <Textarea
+                    value={val}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
+                    disabled={isChecked}
+                    rows={2}
+                    className={`border-4 border-black font-semibold resize-none ${err ? "border-destructive" : ""}`}
+                  />
+                  {err && <Text className="text-destructive text-sm">{err}</Text>}
+                </div>
               </div>
             )
           })}
