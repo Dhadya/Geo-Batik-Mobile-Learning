@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { RotateCcw } from "lucide-react"
-import { Button } from "@/components/retroui/Button"
 import { Dialog } from "@/components/retroui/Dialog"
 import { useAnswerStore } from "../store/answerStore"
 
@@ -13,14 +12,7 @@ export function ResetButton() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger
-        render={
-          <Button
-            variant="outline"
-            className="fixed bottom-4 md:bottom-6 left-4 md:left-6 z-40 w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center bg-white"
-          />
-        }
-      >
+      <Dialog.Trigger className="fixed bottom-4 md:bottom-6 left-4 md:left-6 z-40 w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center bg-white cursor-pointer rounded-none border-2 border-black font-bold hover:shadow-[2px_2px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150">
         <RotateCcw className="size-4 md:size-5" />
       </Dialog.Trigger>
 
@@ -41,20 +33,11 @@ export function ResetButton() {
         </div>
 
         <Dialog.Footer>
-          <Dialog.Close
-            render={
-              <Button variant="outline" className="font-bold uppercase text-xs md:text-sm" />
-            }
-          >
+          <Dialog.Close className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer rounded-none border-2 border-black bg-white hover:shadow-[2px_2px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150">
             Batal
           </Dialog.Close>
           <Dialog.Close
-            render={
-              <Button
-                variant="default"
-                className="font-bold uppercase text-xs md:text-sm"
-              />
-            }
+            className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer rounded-none border-2 border-black bg-foreground text-background hover:shadow-[2px_2px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150"
             onClick={() => {
               resetAll()
               setOpen(false)

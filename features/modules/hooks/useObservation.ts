@@ -92,7 +92,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   return {
     items,
     fields,
-    errors,
+    errors: isChecked ? errors : {},
     isChecked,
     isFilled,
     aiFeedback,

@@ -1,10 +1,10 @@
 "use client"
 
 import { Tabs } from "@/components/retroui/Tab"
-import { PercobaanForm } from "./pengamatan/PercobaanForm"
-import { PengamatanTitikForm } from "./pengamatan/PengamatanTitikForm"
-import { PengamatanBangunForm } from "./pengamatan/PengamatanBangunForm"
-import { PengamatanMockForm } from "./pengamatan/PengamatanMockForm"
+import { PercobaanForm } from "./PercobaanForm"
+import { PengamatanTitikForm } from "./PengamatanTitikForm"
+import { PengamatanBangunForm } from "./PengamatanBangunForm"
+import { PengamatanMockForm } from "./PengamatanMockForm"
 
 interface ObservationPanelProps {
   slug: string

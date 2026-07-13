@@ -6,8 +6,8 @@ import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
-import { useSection } from "../hooks/useObservation"
-import type { UraianItem } from "../types"
+import { useSection } from "../../hooks/useObservation"
+import type { UraianItem } from "../../types"
 
 interface ConclusionAreaProps {
   slug: string

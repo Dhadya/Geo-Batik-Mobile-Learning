@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { cn } from "@/lib/utils"
-import type { ModuleTab } from "../types"
+import type { ModuleTab } from "../../types"
 
 /** Horizontal scrollable tab bar for navigating module sub-sections. */
 export function ModuleTabNav({
