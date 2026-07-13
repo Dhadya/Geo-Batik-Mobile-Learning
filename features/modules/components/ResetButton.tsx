@@ -42,7 +42,7 @@ export function ResetButton() {
             Batal
           </Dialog.Close>
           <Dialog.Close
-            className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer rounded-none border-2 border-black bg-foreground text-background hover:shadow-[2px_2px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150"
+            className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer rounded-none border-2 border-destructive bg-destructive text-destructive-foreground hover:shadow-[2px_2px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150"
             onClick={() => {
               resetAll()
               setOpen(false)

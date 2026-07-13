@@ -100,7 +100,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                               </Select.Trigger>
                               <Select.Content className="bg-white">
                                 {m.rightItems.map((right) => (
-                                  <Select.Item key={right.id} value={right.id} className="text-[10px] md:text-xs">
+                                   <Select.Item key={right.id} value={right.id} className="text-[10px] md:text-xs font-medium">
                                     {right.label}
                                   </Select.Item>
                                 ))}
@@ -112,7 +112,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                     })}
                   </div>
                   {m.leftItems.some((l) => errors[`${m.id}_${l.id}`]) && (
-                    <Text className="text-destructive text-[10px] md:text-xs">
+                    <Text className="text-destructive text-[10px] md:text-xs font-medium">
                       Ada pasangan yang belum tepat
                     </Text>
                   )}

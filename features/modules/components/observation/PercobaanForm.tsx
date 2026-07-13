@@ -3,9 +3,9 @@
 import { useCallback } from "react"
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
+import { Input } from "@/components/retroui/Input"
 import { CoordStack } from "./CoordStack"
-import { BayanganInput } from "./BayanganInput"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection, allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
 import type { MatriksItem, KoordinatItem } from "@/features/modules/types"
 
 interface PercobaanFormProps {
@@ -63,7 +63,8 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         </div>
         {/* Data rows */}
         <div className="divide-y-2 divide-black text-xs md:text-sm">
-          {items.map((item) => {
+          {items.map((item, idx) => {
+            const pointLetter = ["A", "B", "C", "D"][idx] ?? ""
             switch (item.type) {
               /* Matriks row: displays label + stacked vector input (a/b) + target bayangan */
               case "matriks": {
@@ -87,7 +88,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                   </div>
                 )
               }
-              /* Koordinat row: displays label + static bayangan matrix + (x, y) input fields */
+              /* Koordinat row: displays label + static bayangan matrix + A'({x}, {y}) input fields */
               case "koordinat": {
                 const k = item as KoordinatItem
                 const bayanganVal = k.bayangan || ""
@@ -106,14 +107,30 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                       </div>
                       <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
                     </div>
-                    <BayanganInput
-                      x={fields[String(k.id)]?.x ?? ""}
-                      y={fields[String(k.id)]?.y ?? ""}
-                      xError={errors[`${k.id}_x`]}
-                      yError={errors[`${k.id}_y`]}
-                      onXChange={(val) => setField(String(k.id), "x", val)}
-                      onYChange={(val) => setField(String(k.id), "y", val)}
-                    />
+                    <div className="flex items-center justify-center gap-0.5">
+                      {tab === "bangun" && <span className="font-bold text-xs md:text-sm">{pointLetter}&apos;</span>}
+                      <span className="font-bold text-xs md:text-sm">(</span>
+                      <Input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="x'"
+                        value={fields[String(k.id)]?.x ?? ""}
+                        onKeyDown={allowOnlyNumbers}
+                        onChange={(e) => setField(String(k.id), "x", e.target.value)}
+                        className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${errors[`${k.id}_x`] ? "border-destructive" : "border-black"}`}
+                      />
+                      <span className="font-bold text-xs md:text-sm">,</span>
+                      <Input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="y'"
+                        value={fields[String(k.id)]?.y ?? ""}
+                        onKeyDown={allowOnlyNumbers}
+                        onChange={(e) => setField(String(k.id), "y", e.target.value)}
+                        className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${errors[`${k.id}_y`] ? "border-destructive" : "border-black"}`}
+                      />
+                      <span className="font-bold text-xs md:text-sm">)</span>
+                    </div>
                   </div>
                 )
               }

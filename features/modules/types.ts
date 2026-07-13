@@ -33,6 +33,8 @@ export interface AssessmentQuestion {
   multiSelect?: boolean
   correctIndices?: number[]
   questionImage?: string
+  questionMatrix?: string
+  questionSuffix?: string
 }
 
 // ============================================================
@@ -133,6 +135,8 @@ export interface PilihanGandaItem extends BaseItem {
   multiSelect?: boolean
   correctIndices?: number[]
   questionImage?: string
+  questionMatrix?: string
+  questionSuffix?: string
 }
 
 // ============================================================

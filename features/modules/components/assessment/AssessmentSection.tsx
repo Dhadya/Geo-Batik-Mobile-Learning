@@ -75,9 +75,9 @@ function ModuleAnswerButton({
       ) : parsed ? (
         <span className="flex items-center justify-start gap-0.5">
           <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-          <span className="flex flex-col items-start gap-0.5 text-[10px] md:text-xs font-black">
-            <span className="px-1 md:px-2 select-none text-left">{parsed[1].trim()}</span>
-            <span className="px-1 md:px-2 select-none text-left">{parsed[2].trim()}</span>
+          <span className="flex flex-col items-center gap-0.5 text-[10px] md:text-xs font-black">
+            <span className="px-1 md:px-2 select-none text-center">{parsed[1].trim()}</span>
+            <span className="px-1 md:px-2 select-none text-center">{parsed[2].trim()}</span>
           </span>
           <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
         </span>
@@ -185,8 +185,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
             <Card key={q.id} className="block w-full border-4 border-black shadow-md">
               <Card.Content className="space-y-2 md:space-y-3">
                 {/* Question number badge */}
-                <div className="flex justify-center">
-                  <Badge variant="solid" size="sm">Soal {qi + 1}</Badge>
+                <div className="flex justify-start">
+                  <Badge variant="solid" size="sm">SOAL {qi + 1}</Badge>
                 </div>
 
                 {/* Question text + optional embedded image */}
@@ -197,7 +197,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                       <Text as="p" className="text-xs md:text-base font-semibold leading-relaxed text-black">
                         Perhatikan gambar berikut!
                       </Text>
-                      <div className="flex justify-center">
+                      <div className="flex justify-start">
                         <Image
                           src={q.questionImage}
                           alt="Soal"
@@ -208,21 +208,29 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                     </div>
                   )}
 
-                  {/* Question text */}
-                  <Text as="p" className="text-xs md:text-base font-semibold leading-relaxed text-black">
-                    {q.question}
-                  </Text>
-
-                  {/* Translasi matrix displayed inline for question 13 */}
-                  {q.id === 13 && (
-                    <div className="flex items-center gap-0.5 pt-1">
-                      <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
-                      <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
-                        <div className="px-1 md:px-2 select-none">5</div>
-                        <div className="px-1 md:px-2 select-none">2</div>
-                      </div>
-                      <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
-                    </div>
+                  {/* Question text + optional inline matrix + suffix */}
+                  {q.questionMatrix ? (
+                    <p className="text-xs md:text-base font-semibold leading-relaxed text-black">
+                      {q.question}
+                      {(() => {
+                        const [top, bottom] = q.questionMatrix!.split(",")
+                        return (
+                          <span className="inline-flex items-center gap-0.5 mx-0.5">
+                            <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
+                            <span className="flex flex-col items-center gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
+                              <span className="text-center leading-none select-none">{top}</span>
+                              <span className="text-center leading-none select-none">{bottom}</span>
+                            </span>
+                            <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
+                          </span>
+                        )
+                      })()}
+                      {q.questionSuffix && ` ${q.questionSuffix}`}
+                    </p>
+                  ) : (
+                    <Text as="p" className="text-xs md:text-base font-semibold leading-relaxed text-black">
+                      {q.question}
+                    </Text>
                   )}
 
                   {/* Hint for multi-select questions */}
@@ -270,7 +278,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
                 {/* Error feedback shown below question when answer is wrong */}
                 {isChecked && hasError && (
-                  <Text className="text-destructive text-[10px] md:text-xs font-bold text-center">
+                  <Text className="text-destructive text-[10px] md:text-xs font-medium text-center">
                     Jawaban kurang tepat
                   </Text>
                 )}

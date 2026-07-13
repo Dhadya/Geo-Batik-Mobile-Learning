@@ -155,12 +155,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
           // Item 8: Table with formula input
           if (u.id === 8) {
-            const rows = [
-              { label: "A", coords: "(-3, 3)" },
-              { label: "B", coords: "(-3, 1)" },
-              { label: "C", coords: "(-1, 1)" },
-              { label: "D", coords: "(-1, 3)" },
-            ]
+            const val = fields[String(u.id)]?.text ?? ""
             const err = errors[`${u.id}_text`]
 
             return (
@@ -187,50 +182,31 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                   <div className="border-4 border-black overflow-hidden bg-background">
                     <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-[10px] md:text-sm font-black p-1.5 md:p-2">
                       <div>Titik Awal</div>
-                      <div>Translasi</div>
+                      <div>Translasi oleh</div>
                       <div>Titik Bayangan</div>
                     </div>
-                    <div className="divide-y-2 divide-black">
-                      {rows.map((row) => {
-                        const xKey = `${row.label.toLowerCase()}_x`
-                        const yKey = `${row.label.toLowerCase()}_y`
-                        const xVal = fields[String(u.id)]?.[xKey] ?? ""
-                        const yVal = fields[String(u.id)]?.[yKey] ?? ""
-                        return (
-                          <div key={row.label} className="grid grid-cols-3 items-center py-2 md:py-3 px-1 md:px-2 text-center text-xs md:text-sm">
-                            <div className="font-bold italic">{row.label}{row.coords}</div>
-                            <div className="flex items-center justify-center gap-0.5">
-                              <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-                              <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
-                                <div className="px-1 select-none">6</div>
-                                <div className="px-1 select-none">-4</div>
-                              </div>
-                              <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
-                            </div>
-                            <div className="flex items-center justify-center gap-0.5">
-                              <span className="text-xs md:text-sm font-bold select-none">(</span>
-                              <Input
-                                type="text"
-                                value={xVal}
-                                onChange={(e) => setField(String(u.id), xKey, e.target.value)}
-                                disabled={isChecked}
-                                placeholder="x'"
-                                className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${err ? "border-destructive" : "border-black"}`}
-                              />
-                              <span className="text-xs md:text-sm font-bold select-none">,</span>
-                              <Input
-                                type="text"
-                                value={yVal}
-                                onChange={(e) => setField(String(u.id), yKey, e.target.value)}
-                                disabled={isChecked}
-                                placeholder="y'"
-                                className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${err ? "border-destructive" : "border-black"}`}
-                              />
-                              <span className="text-xs md:text-sm font-bold select-none">)</span>
-                            </div>
-                          </div>
-                        )
-                      })}
+                    <div className="grid grid-cols-3 items-center py-2 md:py-3 px-2 md:px-4 text-center text-xs md:text-sm">
+                      <div className="italic font-bold">(x, y)</div>
+                      <div className="flex items-center justify-center gap-0.5">
+                        <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+                        <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black">
+                          <div className="px-1 select-none italic">a</div>
+                          <div className="px-1 select-none italic">b</div>
+                        </div>
+                        <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-0.5">
+                        <span className="text-xs md:text-sm font-bold select-none">(</span>
+                        <Input
+                          type="text"
+                          value={val}
+                          onChange={(e) => setField(String(u.id), "text", e.target.value)}
+                          disabled={isChecked}
+                          placeholder="..., ..."
+                          className={`w-16 md:w-20 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${err ? "border-destructive" : "border-black"}`}
+                        />
+                        <span className="text-xs md:text-sm font-bold select-none">)</span>
+                      </div>
                     </div>
                   </div>
                   {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}

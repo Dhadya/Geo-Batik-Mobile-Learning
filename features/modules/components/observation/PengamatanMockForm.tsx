@@ -69,7 +69,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                   <span className="font-bold text-xs md:text-sm">)</span>
                 </div>
                 {(xErr || yErr) && (
-                  <span className="text-[10px] md:text-xs text-destructive font-bold">{xErr || yErr}</span>
+                  <span className="text-[10px] md:text-xs text-destructive font-medium">{xErr || yErr}</span>
                 )}
               </div>
             )
@@ -94,7 +94,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                   className={`border-4 border-black font-medium resize-none text-xs md:text-sm ${err ? "border-destructive" : ""}`}
                 />
                 {err && (
-                  <span className="text-[10px] md:text-xs text-destructive font-bold">{err}</span>
+                  <span className="text-[10px] md:text-xs text-destructive font-medium">{err}</span>
                 )}
               </div>
             )

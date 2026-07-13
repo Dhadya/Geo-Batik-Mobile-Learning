@@ -86,7 +86,7 @@ export function validateSection(
           if (idx === pg.correctIndex) {
             correctCount++
           } else {
-            errors[`${pg.id}_selection`] = "Jawaban salah"
+            errors[`${pg.id}_selection`] = "Jawaban kurang tepat"
           }
         } else {
           const idx = fields[String(pg.id)]?.selected !== undefined
@@ -95,7 +95,7 @@ export function validateSection(
           if (idx === pg.correctIndex) {
             correctCount++
           } else {
-            errors[`${pg.id}_selection`] = "Jawaban salah"
+            errors[`${pg.id}_selection`] = "Jawaban kurang tepat"
           }
         }
         break

@@ -88,10 +88,10 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
                 { id: "a-neg", label: "a < 0" },
               ],
               rightItems: [
-                { id: "kanan", label: "Kanan" },
-                { id: "bawah", label: "Bawah" },
-                { id: "atas", label: "Atas" },
                 { id: "kiri", label: "Kiri" },
+                { id: "kanan", label: "Kanan" },
+                { id: "atas", label: "Atas" },
+                { id: "bawah", label: "Bawah" },
               ],
               correctMatches: {
                 "a-pos": "kanan",
@@ -137,7 +137,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
               id: 10,
               type: "pilihan_ganda",
               question:
-                "Titik A(-3, 2) ditranslasikan oleh (5, -1). Berapakah koordinat bayangannya?",
+                "Titik A(-3, 2) ditranslasikan oleh",
               options: [
                 "A'(1, 2)",
                 "A'(-1, 2)",
@@ -145,6 +145,8 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
                 "A'(2, -1)",
               ],
               correctIndex: 2,
+              questionMatrix: "5,-1",
+              questionSuffix: ". Berapakah koordinat bayangannya?",
             },
             {
               id: 11,
@@ -303,6 +305,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
                 "/questions/translasi bangun_2d.webp",
               ],
               questionImage: "/questions/translasi bangun_2_soal.webp",
+              questionMatrix: "5,2",
             },
           ],
         },

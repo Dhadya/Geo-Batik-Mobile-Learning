@@ -44,6 +44,8 @@ export function ModuleContent({
       multiSelect: i.multiSelect,
       correctIndices: i.correctIndices,
       questionImage: i.questionImage,
+      questionMatrix: i.questionMatrix,
+      questionSuffix: i.questionSuffix,
     }))
 
   // Fallback to legacy assessment prop if no sections defined

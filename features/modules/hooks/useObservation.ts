@@ -34,8 +34,6 @@ function isSectionFilled(items: SectionItem[], fields: Record<string, Record<str
     if (item.type === "uraian") {
       // Item 11 uses a_val/b_val instead of text
       if (item.id === 11) return (f.a_val ?? "").trim() !== "" && (f.b_val ?? "").trim() !== ""
-      // Item 8 uses multiple coordinate fields
-      if (item.id === 8) return ["a", "b", "c", "d"].every((l) => (f[`${l}_x`] ?? "").trim() !== "" && (f[`${l}_y`] ?? "").trim() !== "")
       return (f.text ?? "").trim() !== ""
     }
     if (item.type === "memasangkan") {
