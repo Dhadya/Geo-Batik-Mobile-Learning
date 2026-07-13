@@ -9,6 +9,7 @@ import { ObservationPanel } from "./ObservationPanel"
 import { ConclusionArea } from "./ConclusionArea"
 import { AssessmentSection } from "./AssessmentSection"
 import { ModuleTabNav } from "./ModuleTabNav"
+import { ResetButton } from "./ResetButton"
 import { getModuleTabs, getModuleTab } from "../data"
 import type { PilihanGandaItem } from "../types"
 
@@ -87,6 +88,9 @@ export function ModuleContent({
           </Button>
         </Link>
       </div>
+
+      {/* Reset FAB */}
+      <ResetButton />
     </div>
   )
 }

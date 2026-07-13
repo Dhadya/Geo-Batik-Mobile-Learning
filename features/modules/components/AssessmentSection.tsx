@@ -115,7 +115,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                 </Text>
               </div>
 
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-3">
                 {q.options.map((opt, oi) => (
                   <ModuleAnswerButton
                     key={oi}
