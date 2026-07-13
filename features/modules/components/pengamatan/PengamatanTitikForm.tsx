@@ -1,81 +1,121 @@
 "use client"
 
+import { useCallback } from "react"
 import { Text } from "@/components/retroui/Text"
+import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
-import { CoordStack } from "./CoordStack"
-import { BayanganInput } from "./BayanganInput"
-import { useTitikForm } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useObservation"
+import type { UraianItem, MemasangkanItem } from "@/features/modules/types"
 
-/** Pengamatan form for translasi titik — 3-point table + standalone bayangan question. */
-export function PengamatanTitikForm() {
-  // Form state from zustand store via hook
-  const { form, errors, isChecked, setForm, handleSubmit } = useTitikForm()
-  const isFilled = Object.values(form).every((v) => v !== undefined && v !== "")
+interface PengamatanTitikFormProps {
+  slug: string
+  tab: string
+}
+
+/** Pengamatan form for translasi titik — renders uraian + memasangkan items from section data. */
+export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
+  const {
+    items, fields, errors, isChecked, isFilled, aiFeedback,
+    setField, handleSubmit, setChecked, setErrors, block,
+  } = useSection(slug, tab, "pengamatan")
+
+  const handleClick = useCallback(() => {
+    if (isChecked) {
+      setChecked(false)
+      setErrors({})
+    } else {
+      handleSubmit()
+    }
+  }, [isChecked, setChecked, setErrors, handleSubmit])
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
-        Seorang pembatik harus mampu menyusun motif sesuai yang dia rencanakan. Kak Dhadya telah menentukan bahwa motif berikutnya harus berada pada koordinat (4, 4). Bantulah Kakak ini menentukan nilai translasi agar titik bayangannya sesuai target.
-      </Text>
+    <form className="space-y-4">
+      {block?.instruction && (
+        <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed">
+          {block.instruction}
+        </Text>
+      )}
 
-      <div className="border-4 border-black overflow-hidden bg-background">
-        <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs font-black p-2 uppercase">
-          <div>Titik Awal</div>
-          <div>Translasi oleh</div>
-          <div>Bayangan</div>
-        </div>
-
-        <div className="divide-y-2 divide-black text-sm">
-          {([["t1", "(2, 3)"], ["t2", "(-1, 4)"], ["t3", "(-2, 2)"]] as const).map(([prefix, label]) => (
-            <div key={prefix} className="grid grid-cols-3 items-center py-3 text-center">
-              <div className="font-bold">{label}</div>
-              <div className="flex items-center justify-center gap-0.5">
-                <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">(</span>
-                <CoordStack
-                  a={form[`${prefix}_a` as keyof typeof form] ?? ""}
-                  b={form[`${prefix}_b` as keyof typeof form] ?? ""}
-                  aError={errors[`${prefix}_a` as keyof typeof errors]}
-                  bError={errors[`${prefix}_b` as keyof typeof errors]}
-                  onAChange={(val) => setForm({ [`${prefix}_a`]: val })}
-                  onBChange={(val) => setForm({ [`${prefix}_b`]: val })}
+      {items.map((item) => {
+        switch (item.type) {
+          case "uraian": {
+            const u = item as UraianItem
+            const val = fields[String(u.id)]?.text ?? ""
+            const err = errors[`${u.id}_text`]
+            return (
+              <div key={u.id} className="space-y-2">
+                <Text as="p" className="text-sm font-medium">
+                  {u.id}. {u.question}
+                </Text>
+                <Textarea
+                  value={val}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setField(String(u.id), "text", e.target.value)
+                  }
+                  disabled={isChecked}
+                  rows={3}
+                  className={`border-4 border-black font-semibold resize-none ${err ? "border-destructive" : ""}`}
                 />
-                <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">)</span>
+                {err && <Text className="text-destructive text-xs mt-1">{err}</Text>}
               </div>
-              <div className="font-bold">(4, 4)</div>
-            </div>
-          ))}
-        </div>
-      </div>
+            )
+          }
+          case "memasangkan": {
+            const m = item as MemasangkanItem
+            return (
+              <div key={m.id} className="space-y-2">
+                <Text as="p" className="text-sm font-medium">
+                  {m.id}. {m.question}
+                </Text>
+                <div className="space-y-2">
+                  {m.leftItems.map((left) => {
+                    const selected = fields[String(m.id)]?.[left.id] ?? ""
+                    const err = errors[`${m.id}_${left.id}`]
+                    return (
+                      <div key={left.id} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                        <span className="font-bold text-sm text-right">{left.label}</span>
+                        <span className="text-lg font-bold">→</span>
+                        <select
+                          value={selected}
+                          onChange={(e) => setField(String(m.id), left.id, e.target.value)}
+                          disabled={isChecked}
+                          className={`border-4 border-black p-1.5 font-semibold text-sm bg-white ${err ? "border-destructive" : ""}`}
+                        >
+                          <option value="">Pilih...</option>
+                          {m.rightItems.map((right) => (
+                            <option key={right.id} value={right.id}>
+                              {right.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )
+                  })}
+                </div>
+                {m.leftItems.some((l) => errors[`${m.id}_${l.id}`]) && (
+                  <Text className="text-destructive text-xs">
+                    Ada pasangan yang belum tepat
+                  </Text>
+                )}
+              </div>
+            )
+          }
+          default:
+            return null
+        }
+      })}
 
-      <Text as="p" className="text-sm text-muted-foreground font-semibold leading-relaxed pt-2">
-        Sekarang, translasikan lagi motifnya dan tentukan bayangannya:
-      </Text>
-
-      <div className="border-4 border-black p-4 flex items-center justify-between bg-background">
-        <div className="text-center font-bold">(-3, -2)</div>
-        <div className="flex items-center gap-0.5">
-          <span className="text-3xl font-light select-none inline-block scale-y-[1.6] origin-center">(</span>
-          <div className="flex flex-col text-sm font-black">
-            <div>5</div>
-            <div>4</div>
-          </div>
-          <span className="text-3xl font-light select-none inline-block scale-y-[1.6] origin-center">)</span>
+      {isChecked && aiFeedback && (
+        <div className="border-4 border-primary bg-primary/5 p-4 rounded-none">
+          <Text className="text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
-        <BayanganInput
-          x={form.t4_x ?? ""}
-          y={form.t4_y ?? ""}
-          xError={errors.t4_x}
-          yError={errors.t4_y}
-          onXChange={(val) => setForm({ t4_x: val })}
-          onYChange={(val) => setForm({ t4_y: val })}
-        />
-      </div>
+      )}
 
       <Button
-        type="submit"
-        disabled={!isFilled}
+        onClick={handleClick}
+        disabled={!isFilled && !isChecked}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold py-3 mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
+        className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] !rounded-none"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>

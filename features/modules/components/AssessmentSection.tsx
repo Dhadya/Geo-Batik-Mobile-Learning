@@ -7,10 +7,15 @@ import type { AssessmentQuestion } from "../types"
 
 /** Assessment section with multiple choice questions to check understanding. */
 export function AssessmentSection({
+  slug,
+  tab,
   questions,
 }: {
+  slug: string
+  tab: string
   questions: AssessmentQuestion[]
 }) {
+  void slug; void tab
   return (
     <section className="border-4 border-black bg-white shadow-lg p-4 md:p-6 relative overflow-hidden">
       <div className="absolute bottom-0 right-0 opacity-5 pointer-events-none">

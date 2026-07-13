@@ -10,6 +10,7 @@ import { ConclusionArea } from "./ConclusionArea"
 import { AssessmentSection } from "./AssessmentSection"
 import { ModuleTabNav } from "./ModuleTabNav"
 import { getModuleTabs, getModuleTab } from "../data"
+import type { PilihanGandaItem } from "../types"
 
 /** Main module content orchestrator — composes all sections for a given slug and tab. */
 export function ModuleContent({
@@ -28,6 +29,14 @@ export function ModuleContent({
   if (!tabConfig) notFound()
 
   const label = slug === "translasi" ? "Translasi" : "Refleksi"
+
+  // Derive MCQ questions from cekPemahaman section (backward compat with AssessmentQuestion)
+  const cekPemahamanQuestions = (tabConfig.sections?.cekPemahaman.items ?? [])
+    .filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
+    .map((i) => ({ id: i.id, question: i.question, options: i.options, correctIndex: i.correctIndex }))
+
+  // Fallback to legacy assessment prop if no sections defined
+  const questions = cekPemahamanQuestions.length > 0 ? cekPemahamanQuestions : tabConfig.assessment
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -57,12 +66,13 @@ export function ModuleContent({
             slug={slug}
             tab={decodedTab}
             instruction={tabConfig.instruction}
+            pengamatan={tabConfig.sections?.pengamatan}
           />
         </div>
       </div>
 
       {/* Assessment section with multiple choice questions */}
-      <AssessmentSection questions={tabConfig.assessment} />
+      <AssessmentSection slug={slug} tab={decodedTab} questions={questions} />
 
       {/* Navigation buttons — back to apersepsi or forward to quiz */}
       <div className="flex justify-center gap-4 pt-4">

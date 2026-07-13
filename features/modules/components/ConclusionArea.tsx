@@ -3,6 +3,7 @@
 import { useCallback } from "react"
 import { Lightbulb } from "lucide-react"
 import { Text } from "@/components/retroui/Text"
+import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "../hooks/useObservation"
 import type { UraianItem } from "../types"
@@ -50,12 +51,12 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 <Text as="p" className="whitespace-pre-wrap font-medium mb-1">
                   {u.id}. {u.question}
                 </Text>
-                <textarea
+                <Textarea
                   value={val}
-                  onChange={(e) => setField(String(u.id), "text", e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                   disabled={isChecked}
                   rows={3}
-                  className={`w-full border-4 border-black p-3 font-semibold resize-none focus:outline-none ${err ? "border-destructive" : ""}`}
+                  className={`border-4 border-black font-semibold resize-none ${err ? "border-destructive" : ""}`}
                 />
                 {err && <Text className="text-destructive text-sm mt-1">{err}</Text>}
               </div>
@@ -74,7 +75,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
             onClick={handleClick}
             disabled={!isFilled && !isChecked}
             variant={isChecked ? "secondary" : "default"}
-            className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] !rounded-none"
+            className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
           >
             {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
           </Button>

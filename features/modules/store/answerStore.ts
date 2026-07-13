@@ -49,7 +49,7 @@ interface AnswerStore {
 }
 
 /** Create an empty TabAnswers record for a given slug + tab. */
-function emptyTab(slug: string, tab: string): TabAnswers {
+export function emptyTab(slug: string, tab: string): TabAnswers {
   return {
     slug,
     tab,

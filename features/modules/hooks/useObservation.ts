@@ -10,7 +10,7 @@ import {
   type TranslasiBangunData,
 } from "@/lib/schemas"
 import { useObservationStore } from "../store/observationStore"
-import { useAnswerStore } from "../store/answerStore"
+import { useAnswerStore, emptyTab } from "../store/answerStore"
 import { getModuleTab } from "../data"
 import { validateSection } from "../lib/validation"
 import type { SectionItem, SectionBlock } from "../types"
@@ -44,7 +44,12 @@ function isSectionFilled(items: SectionItem[], fields: Record<string, Record<str
 /** Generic hook for reading/writing/validating any section from answerStore. */
 export function useSection(slug: string, tab: string, section: SectionName) {
   const tabConfig = getModuleTab(slug, tab)
-  const answers = useAnswerStore((s) => s.getTabAnswers(slug, tab))
+
+  // Select raw store entry by key to avoid new-object-on-every-call from getTabAnswers
+  const tabKey = useMemo(() => `${slug}-${tab}`, [slug, tab])
+  const rawTab = useAnswerStore((s) => s.answers[tabKey])
+  const answers = useMemo(() => rawTab ?? emptyTab(slug, tab), [rawTab, slug, tab])
+
   const setField = useAnswerStore((s) => s.setField)
   const setChecked = useAnswerStore((s) => s.setChecked)
   const setAIFeedback = useAnswerStore((s) => s.setAIFeedback)
@@ -72,10 +77,8 @@ export function useSection(slug: string, tab: string, section: SectionName) {
 
   const isFilled = isSectionFilled(items, fields)
 
-  const selections = section === "cekPemahaman" ? answers.cekPemahaman.selections : undefined
-
   const handleSubmit = useCallback(async () => {
-    const result = validateSection(items, fields, selections)
+    const result = validateSection(items, fields, undefined)
     setErrors_(result.errors)
     boundSetChecked(true)
 
@@ -84,7 +87,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     } else {
       toast.error(result.summary)
     }
-  }, [items, fields, selections, boundSetChecked])
+  }, [items, fields, boundSetChecked])
 
   return {
     items,

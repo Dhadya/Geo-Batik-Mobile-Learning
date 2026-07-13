@@ -6,15 +6,18 @@ import { PengamatanTitikForm } from "./pengamatan/PengamatanTitikForm"
 import { PengamatanBangunForm } from "./pengamatan/PengamatanBangunForm"
 import { PengamatanMockForm } from "./pengamatan/PengamatanMockForm"
 import { getModuleTab } from "../data"
+import type { SectionBlock } from "../types"
 
 interface ObservationPanelProps {
   slug: string
   tab: string
   instruction: string
+  pengamatan?: SectionBlock
 }
 
 /** Right-side panel with percobaan/pengamatan tabs and conditional form content. */
-export function ObservationPanel({ slug, tab, instruction }: ObservationPanelProps) {
+export function ObservationPanel({ slug, tab, instruction, pengamatan: _pengamatan }: ObservationPanelProps) {
+  void _pengamatan
   // Determine which form variant to show based on module and tab
   const isTranslasiTitik = slug === "translasi" && tab === "titik"
   const isTranslasiBangun = slug === "translasi" && tab === "bangun"
@@ -57,7 +60,7 @@ export function ObservationPanel({ slug, tab, instruction }: ObservationPanelPro
 
           {/* Pengamatan tab — form variant based on module/tab */}
           <Tabs.Content value="pengamatan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 mt-0">
-            {isTranslasiTitik && <PengamatanTitikForm />}
+            {isTranslasiTitik && <PengamatanTitikForm slug={slug} tab={tab} />}
             {isTranslasiBangun && <PengamatanBangunForm />}
             {showMockForm && <PengamatanMockForm />}
           </Tabs.Content>
