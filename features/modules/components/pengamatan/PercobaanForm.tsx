@@ -53,8 +53,8 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                 return (
                   <div key={m.id} className="grid grid-cols-3 items-center py-3 text-center">
                     <div className="font-bold">{m.label}</div>
-                    <div className="flex items-center justify-center">
-                      <span className="text-[2.5rem] font-light select-none inline-block scale-y-[1.8] origin-center leading-none -mr-1">(</span>
+                    <div className="flex items-center justify-center gap-0.5">
+                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">(</span>
                       <CoordStack
                         a={fields[String(m.id)]?.a ?? ""}
                         b={fields[String(m.id)]?.b ?? ""}
@@ -63,7 +63,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                         onAChange={(val) => setField(String(m.id), "a", val)}
                         onBChange={(val) => setField(String(m.id), "b", val)}
                       />
-                      <span className="text-[2.5rem] font-light select-none inline-block scale-y-[1.8] origin-center leading-none -ml-1">)</span>
+                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">)</span>
                     </div>
                     <div className="font-bold">{m.targetBayangan}</div>
                   </div>
@@ -71,11 +71,21 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
               }
               case "koordinat": {
                 const k = item as KoordinatItem
+                const bayanganVal = k.bayangan || ""
+                const match = bayanganVal.match(/\((-?\d+),\s*(-?\d+)\)/)
+                const bx = match?.[1] ?? ""
+                const by = match?.[2] ?? ""
+
                 return (
                   <div key={k.id} className="grid grid-cols-3 items-center py-3 text-center">
                     <div className="font-bold">{k.label}</div>
-                    <div className="flex items-center justify-center gap-1 font-bold text-sm">
-                      {k.bayangan || "T(...)"}
+                    <div className="flex items-center justify-center gap-0.5">
+                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">(</span>
+                      <div className="flex flex-col gap-1 text-sm font-black">
+                        <div className="select-none">{bx}</div>
+                        <div className="select-none">{by}</div>
+                      </div>
+                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">)</span>
                     </div>
                     <BayanganInput
                       x={fields[String(k.id)]?.x ?? ""}
