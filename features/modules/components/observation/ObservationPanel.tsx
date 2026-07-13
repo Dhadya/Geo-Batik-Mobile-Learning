@@ -4,6 +4,7 @@ import { Tabs } from "@/components/retroui/Tab"
 import { PercobaanForm } from "./PercobaanForm"
 import { PengamatanTitikForm } from "./PengamatanTitikForm"
 import { PengamatanBangunForm } from "./PengamatanBangunForm"
+import { PengamatanGarisForm } from "./PengamatanGarisForm"
 import { PengamatanMockForm } from "./PengamatanMockForm"
 
 interface ObservationPanelProps {
@@ -15,6 +16,7 @@ interface ObservationPanelProps {
 export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const isTranslasiTitik = slug === "translasi" && tab === "titik"
   const isTranslasiBangun = slug === "translasi" && tab === "bangun"
+  const isTranslasiGaris = slug === "translasi" && tab === "garis"
 
   return (
     <div className="h-auto lg:h-full flex flex-col gap-3 md:gap-4">
@@ -46,7 +48,8 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
           <Tabs.Content value="pengamatan" className="p-3 md:p-6 grow overflow-y-auto space-y-3 md:space-y-4 mt-0">
             {isTranslasiTitik && <PengamatanTitikForm slug={slug} tab={tab} />}
             {isTranslasiBangun && <PengamatanBangunForm slug={slug} tab={tab} />}
-            {!isTranslasiTitik && !isTranslasiBangun && <PengamatanMockForm slug={slug} tab={tab} />}
+            {isTranslasiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
+            {!isTranslasiTitik && !isTranslasiBangun && !isTranslasiGaris && <PengamatanMockForm slug={slug} tab={tab} />}
           </Tabs.Content>
         </div>
       </Tabs>

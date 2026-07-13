@@ -41,6 +41,7 @@ function isSectionFilled(items: SectionItem[], fields: Record<string, Record<str
       return m.leftItems.every((l) => (f[l.id] ?? "") !== "")
     }
     if (item.type === "pilihan_ganda") return true
+    if (item.type === "urutkan") return (f.order ?? "").trim() !== ""
     return false
   })
 }

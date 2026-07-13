@@ -317,6 +317,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Translasi Garis",
       instruction:
         "Amati perpindahan garis PQ setelah ditranslasi sejauh T(a, b).",
+      materialId: "nmamck92",
       formula: {
         prefix: "P(x, y) → P'(",
         suffix: ")",
@@ -331,6 +332,124 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
           correctIndex: 0,
         },
       ],
+      sections: {
+        percobaan: {
+          instruction:
+            "Diberikan persamaan garis k : -x + 2y = 4. Garis k akan ditranslasikan sejauh",
+          instructionMatrix: "4,-2",
+          items: [
+            {
+              id: 1,
+              type: "koordinat",
+              label: "Titik potong sumbu x",
+              bayangan: "T(4, -2)",
+              answer: { x: -4, y: 0 },
+            },
+            {
+              id: 2,
+              type: "koordinat",
+              label: "Titik potong sumbu y",
+              bayangan: "T(4, -2)",
+              answer: { x: 0, y: 2 },
+            },
+            {
+              id: 3,
+              type: "koordinat",
+              label: "A'",
+              bayangan: "T(4, -2)",
+              answer: { x: 2, y: -2 },
+            },
+            {
+              id: 4,
+              type: "koordinat",
+              label: "B'",
+              bayangan: "T(4, -2)",
+              answer: { x: 6, y: 0 },
+            },
+            {
+              id: 5,
+              type: "uraian",
+              question: "Tentukan persamaan garis yang melalui 2 titik A' dan B'",
+              answer: "x - 2y = 6",
+            },
+            {
+              id: 6,
+              type: "uraian",
+              question: "Tuliskan persamaan garis bayangan k' yang terbentuk!",
+              answer: "x - 2y = 6",
+            },
+          ],
+        },
+        pengamatan: {
+          instruction:
+            "Jawab pertanyaan berikut berdasarkan percobaan garis tersebut.",
+          items: [
+            {
+              id: 7,
+              type: "pilihan_ganda",
+              question: "Apakah kemiringan garis berubah?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 1,
+            },
+            {
+              id: 8,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi garis setelah ditranslasi?",
+              options: ["Hanya bergeser", "Berputar", "Terbalik"],
+              correctIndex: 0,
+            },
+            {
+              id: 9,
+              type: "uraian",
+              question: "Apa yang terjadi pada titik potong garis terhadap sumbu x dan y setelah ditranslasi?",
+              answer: "Titik potongnya berubah menyesuaikan pergeseran yang bergantung oleh nilai translasi",
+            },
+            {
+              id: 10,
+              type: "pilihan_ganda",
+              question: "Bagaimana jika ditranslasikan oleh (0, 0), apakah titik potong sumbu x dan sumbu y berubah?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 1,
+            },
+          ],
+        },
+        penyimpulan: {
+          instruction: "Simpulkan hasil percobaanmu.",
+          items: [
+            {
+              id: 11,
+              type: "urutkan",
+              question: "Urutkan cara menentukan bayangan dari sebuah persamaan garis yang mengalami proses translasi!",
+              items: [
+                "Persamaan garis diketahui",
+                "Menentukan titik potong sumbu x dan titik potong sumbu y",
+                "Mentranslasikan titik potong sumbu x dan titik potong sumbu y",
+                "Menentukan persamaan garis melalui 2 titik",
+              ],
+            },
+            {
+              id: 12,
+              type: "uraian",
+              question: "Mengapa cukup mentranslasikan dua titik untuk menentukan garis hasil translasi?",
+              answer: "Karena untuk mengetahui persamaan garis bisa dengan mengetahui 2 titik yang berada di garis tersebut",
+            },
+          ],
+        },
+        cekPemahaman: {
+          instruction: "Kerjakan soal berikut.",
+          items: [
+            {
+              id: 13,
+              type: "pilihan_ganda",
+              question: "Persamaan garis h : 2x + 3y = 6 ditranslasikan oleh",
+              options: ["3y + 2x = 6", "2x + 3y = 0", "x + y = 6", "2x + 3y = 12"],
+              correctIndex: 1,
+              questionMatrix: "3,-4",
+              questionSuffix: ". Tentukan persamaan garis hasil translasi!",
+            },
+          ],
+        },
+      },
     },
   ],
   refleksi: [

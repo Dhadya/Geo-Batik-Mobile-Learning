@@ -56,6 +56,7 @@ export interface ModuleSections {
 /** A section block with instruction and ordered items. */
 export interface SectionBlock {
   instruction: string
+  instructionMatrix?: string
   items: SectionItem[]
 }
 
@@ -70,6 +71,7 @@ export type SectionItem =
   | UraianItem
   | MemasangkanItem
   | PilihanGandaItem
+  | UrutkanItem
 
 /** Base fields shared by every item type. */
 interface BaseItem {
@@ -137,6 +139,15 @@ export interface PilihanGandaItem extends BaseItem {
   questionImage?: string
   questionMatrix?: string
   questionSuffix?: string
+}
+
+// ── Urutkan (drag-and-drop sorting) ────────────────────────
+
+/** Drag-and-drop sorting exercise — student arranges items in correct order. */
+export interface UrutkanItem extends BaseItem {
+  type: "urutkan"
+  question: string
+  items: string[]
 }
 
 // ============================================================

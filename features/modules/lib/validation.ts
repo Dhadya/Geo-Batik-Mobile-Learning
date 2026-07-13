@@ -5,6 +5,7 @@ import type {
   UraianItem,
   MemasangkanItem,
   PilihanGandaItem,
+  UrutkanItem,
 } from "../types"
 
 export interface ValidationResult {
@@ -97,6 +98,19 @@ export function validateSection(
           } else {
             errors[`${pg.id}_selection`] = "Jawaban kurang tepat"
           }
+        }
+        break
+      }
+      case "urutkan": {
+        const u = item as UrutkanItem
+        const userOrder = (itemAnswers.order ?? "").split(",").map(Number)
+        const expectedOrder = u.items.map((_, i) => i)
+        const isCorrect = userOrder.length === expectedOrder.length &&
+          userOrder.every((val, idx) => val === expectedOrder[idx])
+        if (isCorrect) {
+          correctCount++
+        } else {
+          errors[`${item.id}_order`] = "Urutan belum tepat"
         }
         break
       }
