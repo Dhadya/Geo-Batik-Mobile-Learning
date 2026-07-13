@@ -39,8 +39,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
             const k = item as KoordinatItem
             const xVal = fields[String(k.id)]?.x ?? ""
             const yVal = fields[String(k.id)]?.y ?? ""
-            const xErr = errors[`${k.id}_x`]
-            const yErr = errors[`${k.id}_y`]
+            const coordErr = errors[`${k.id}_coord`]
 
             return (
               <div key={k.id} className="space-y-0.5 md:space-y-1">
@@ -55,7 +54,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                     value={xVal}
                     onChange={(e) => setField(String(k.id), "x", e.target.value)}
                     disabled={isChecked}
-                    className={`w-16 md:w-20 text-center border-4 border-black font-bold text-xs md:text-sm ${xErr ? "border-destructive" : ""}`}
+                    className={`w-16 md:w-20 text-center border-4 border-black font-bold text-xs md:text-sm ${coordErr ? "border-destructive" : ""}`}
                   />
                   <span className="font-bold text-xs md:text-sm">,</span>
                   <Input
@@ -64,13 +63,11 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                     value={yVal}
                     onChange={(e) => setField(String(k.id), "y", e.target.value)}
                     disabled={isChecked}
-                    className={`w-16 md:w-20 text-center border-4 border-black font-bold text-xs md:text-sm ${yErr ? "border-destructive" : ""}`}
+                    className={`w-16 md:w-20 text-center border-4 border-black font-bold text-xs md:text-sm ${coordErr ? "border-destructive" : ""}`}
                   />
                   <span className="font-bold text-xs md:text-sm">)</span>
                 </div>
-                {(xErr || yErr) && (
-                  <span className="text-[10px] md:text-xs text-destructive font-medium">{xErr || yErr}</span>
-                )}
+                {coordErr && <span className="text-[10px] md:text-xs text-destructive font-medium">{coordErr}</span>}
               </div>
             )
           }

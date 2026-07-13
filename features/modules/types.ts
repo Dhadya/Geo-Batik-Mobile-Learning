@@ -53,10 +53,18 @@ export interface ModuleSections {
   cekPemahaman: SectionBlock
 }
 
+/** Garis translation table config: shows source→matrix→target layout. */
+export interface GarisTranslasiTable {
+  sourceItemIds: [number, number]
+  targetItemIds: [number, number]
+  matrix: string
+}
+
 /** A section block with instruction and ordered items. */
 export interface SectionBlock {
   instruction: string
   instructionMatrix?: string
+  garisTranslasiTable?: GarisTranslasiTable
   items: SectionItem[]
 }
 
@@ -105,6 +113,7 @@ export interface UraianItem extends BaseItem {
   type: "uraian"
   question: string
   answer: string
+  acceptAnswers?: string[]
 }
 
 // ── Memasangkan (drag-and-drop matching) ───────────────────

@@ -337,46 +337,42 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
           instruction:
             "Diberikan persamaan garis k : -x + 2y = 4. Garis k akan ditranslasikan sejauh",
           instructionMatrix: "4,-2",
+          garisTranslasiTable: {
+            sourceItemIds: [1, 2],
+            targetItemIds: [3, 4],
+            matrix: "6,-2",
+          },
           items: [
             {
               id: 1,
               type: "koordinat",
               label: "Titik potong sumbu x",
-              bayangan: "T(4, -2)",
               answer: { x: -4, y: 0 },
             },
             {
               id: 2,
               type: "koordinat",
               label: "Titik potong sumbu y",
-              bayangan: "T(4, -2)",
               answer: { x: 0, y: 2 },
             },
             {
               id: 3,
               type: "koordinat",
               label: "A'",
-              bayangan: "T(4, -2)",
               answer: { x: 2, y: -2 },
             },
             {
               id: 4,
               type: "koordinat",
               label: "B'",
-              bayangan: "T(4, -2)",
               answer: { x: 6, y: 0 },
-            },
-            {
-              id: 5,
-              type: "uraian",
-              question: "Tentukan persamaan garis yang melalui 2 titik A' dan B'",
-              answer: "x - 2y = 6",
             },
             {
               id: 6,
               type: "uraian",
               question: "Tuliskan persamaan garis bayangan k' yang terbentuk!",
               answer: "x - 2y = 6",
+              acceptAnswers: ["y = x/2 - 3", "x = 2y + 6", "-2y + x = 6"],
             },
           ],
         },

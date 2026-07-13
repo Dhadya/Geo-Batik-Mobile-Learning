@@ -41,16 +41,25 @@ export function validateSection(
         const k = item as KoordinatItem
         const xVal = Number(itemAnswers.x)
         const yVal = Number(itemAnswers.y)
-        if (xVal !== k.answer.x) errors[`${item.id}_x`] = "Jawaban belum tepat"
-        if (yVal !== k.answer.y) errors[`${item.id}_y`] = "Jawaban belum tepat"
-        if (xVal === k.answer.x && yVal === k.answer.y) correctCount++
+        if (xVal !== k.answer.x || yVal !== k.answer.y) {
+          errors[`${item.id}_coord`] = "Jawaban belum tepat"
+        } else {
+          correctCount++
+        }
         break
       }
       case "uraian": {
         const u = item as UraianItem
-        const userAns = (itemAnswers.text ?? "").trim().toLowerCase()
-        const expected = u.answer.trim().toLowerCase()
-        if (!userAns || !expected.split(/[.,;!?]+/).some((p) => p.trim() && userAns.includes(p.trim()))) {
+        const userAns = (itemAnswers.text ?? "").trim()
+        const normalize = (s: string) => s.replace(/\u2212/g, "-").replace(/\s+/g, "").toLowerCase()
+        const allExpected = [u.answer, ...(u.acceptAnswers ?? [])]
+        const isCorrect = allExpected.some((expected) => {
+          const normExpected = normalize(expected)
+          const normUser = normalize(userAns)
+          if (normUser === normExpected) return true
+          return normExpected.split(/[.,;!?]+/).some((p) => p.trim() && normUser.includes(p))
+        })
+        if (!userAns || !isCorrect) {
           errors[`${item.id}_text`] = "Jawaban kurang tepat"
         } else {
           correctCount++

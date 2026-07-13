@@ -68,7 +68,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
             return (
               <div key={ur.id} className="flex gap-1.5 md:gap-2">
-                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
+                <span className="text-base md:text-lg shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
                 <div className="grow space-y-1.5 md:space-y-2">
                   <Text as="p" className="text-xs md:text-sm font-medium text-black">
                     {ur.question}
@@ -95,10 +95,10 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
-                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
+                <span className="text-base md:text-lg shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
                 <div className="grow space-y-2 md:space-y-3">
                   <div className="flex items-center gap-0.5">
-                    <p className="text-xs md:text-sm font-medium text-black">
+                    <p className="text-xs md:text-sm text-black">
                       Jika salah satu titik sebuah bangun ditranslasikan oleh
                     </p>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
