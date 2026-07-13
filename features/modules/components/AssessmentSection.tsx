@@ -88,7 +88,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
       <div className="space-y-6">
         {questions.map((q, qi) => (
-          <Card key={q.id} className="border-4 border-black shadow-md">
+          <Card key={q.id} className="block w-full border-4 border-black shadow-md">
             <Card.Content className="space-y-3">
               <div className="w-full px-2 pt-3 md:pt-4 text-center">
                 <Text as="p" className="text-sm md:text-base font-semibold leading-relaxed">
@@ -124,7 +124,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
           disabled={!allAnswered && !isChecked}
           variant="default"
           size="lg"
-          className="font-black uppercase tracking-widest shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
+          className="font-black uppercase tracking-wide shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
         >
           {isChecked ? "Periksa Lagi" : "Submit Jawaban"}
         </Button>
