@@ -27,6 +27,7 @@ export function ObservationPanel({ slug, tab, instruction }: ObservationPanelPro
   return (
     <div className="h-auto lg:h-full flex flex-col gap-4">
       <Tabs defaultValue="pengamatan" className="flex flex-col h-full gap-4">
+        {/* Tab navigation bar */}
         <Tabs.List className="border-4 border-black bg-white p-1.5 flex gap-2 shadow-[4px_4px_0_0_#000] w-full rounded-none">
           <Tabs.Trigger
             value="pengamatan"
@@ -42,7 +43,9 @@ export function ObservationPanel({ slug, tab, instruction }: ObservationPanelPro
           </Tabs.Trigger>
         </Tabs.List>
 
+        {/* Tab content container */}
         <div className="border-4 border-black bg-white grow flex flex-col shadow-lg overflow-hidden">
+          {/* Percobaan tab — sandbox with coordinate input and live preview */}
           <Tabs.Content value="percobaan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 md:space-y-6 mt-0">
             <SandboxContent
               slug={slug}
@@ -52,10 +55,11 @@ export function ObservationPanel({ slug, tab, instruction }: ObservationPanelPro
             />
           </Tabs.Content>
 
+          {/* Pengamatan tab — form variant based on module/tab */}
           <Tabs.Content value="pengamatan" className="p-4 md:p-6 grow overflow-y-auto space-y-4 mt-0">
-            {isTranslasiTitik && <PengamatanTitikForm slug={slug} sectionBlock={sections?.pengamatan} />}
-            {isTranslasiBangun && <PengamatanBangunForm slug={slug} sectionBlock={sections?.pengamatan} />}
-            {showMockForm && <PengamatanMockForm slug={slug} sectionBlock={sections?.pengamatan} />}
+            {isTranslasiTitik && <PengamatanTitikForm />}
+            {isTranslasiBangun && <PengamatanBangunForm />}
+            {showMockForm && <PengamatanMockForm />}
           </Tabs.Content>
         </div>
       </Tabs>

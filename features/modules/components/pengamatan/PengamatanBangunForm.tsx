@@ -4,10 +4,9 @@ import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { BayanganInput } from "./BayanganInput"
 import { useBangunForm } from "@/features/modules/hooks/useObservation"
-import type { SectionBlock } from "@/features/modules/types"
 
 /** Pengamatan form for translasi bangun — 4-point grid with row-spanned translasi vector. */
-export function PengamatanBangunForm({ slug, sectionBlock }: { slug?: string; sectionBlock?: SectionBlock }) {
+export function PengamatanBangunForm() {
   // Form state from zustand store via hook
   const { form, errors, isChecked, setForm, handleSubmit } = useBangunForm()
   const isFilled = Object.values(form).every((v) => v !== undefined && v !== "")

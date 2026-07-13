@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { ZodError, type ZodSchema } from "zod"
 import {
@@ -13,7 +13,7 @@ import { useObservationStore } from "../store/observationStore"
 import { useAnswerStore } from "../store/answerStore"
 import { getModuleTab } from "../data"
 import { validateSection } from "../lib/validation"
-import type { SectionItem, SectionBlock, ModuleSections } from "../types"
+import type { SectionItem, SectionBlock } from "../types"
 
 /** Blocks non-numeric keystrokes; allows digits, leading minus, and control keys. */
 export const allowOnlyNumbers = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -41,31 +41,65 @@ function isSectionFilled(items: SectionItem[], fields: Record<string, Record<str
   })
 }
 
-/** Generic hook for reading/writing any section (percobaan/pengamatan/penyimpulan) from answerStore. */
+/** Generic hook for reading/writing/validating any section from answerStore. */
 export function useSection(slug: string, tab: string, section: SectionName) {
   const tabConfig = getModuleTab(slug, tab)
   const answers = useAnswerStore((s) => s.getTabAnswers(slug, tab))
   const setField = useAnswerStore((s) => s.setField)
   const setChecked = useAnswerStore((s) => s.setChecked)
+  const setAIFeedback = useAnswerStore((s) => s.setAIFeedback)
 
   const block = tabConfig?.sections?.[section] as SectionBlock | undefined
-  const items = block?.items ?? []
+  const items = useMemo(() => block?.items ?? [], [block])
   const sectionAnswers = answers[section]
-  const fields = sectionAnswers?.fields ?? {}
+  const fields = useMemo(() => sectionAnswers?.fields ?? {}, [sectionAnswers])
   const isChecked = sectionAnswers?.isChecked ?? false
+  const aiFeedback = sectionAnswers?.aiFeedback
+
+  const [errors, setErrors_] = useState<Record<string, string>>({})
+
+  const boundSetField = useCallback(
+    (itemId: string, fieldKey: string, value: string) => {
+      setField(slug, tab, section, itemId, fieldKey, value)
+    },
+    [setField, slug, tab, section],
+  )
+
+  const boundSetChecked = useCallback(
+    (checked: boolean) => setChecked(slug, tab, section, checked),
+    [setChecked, slug, tab, section],
+  )
 
   const isFilled = isSectionFilled(items, fields)
 
+  const selections = section === "cekPemahaman" ? answers.cekPemahaman.selections : undefined
+
   const handleSubmit = useCallback(async () => {
-    const result = validateSection(items, fields, answers.cekPemahaman.selections)
-    setChecked(slug, tab, section, true)
+    const result = validateSection(items, fields, selections)
+    setErrors_(result.errors)
+    boundSetChecked(true)
 
     if (result.isCorrect) {
-      toast.success("Semua jawaban benar!")
+      toast.success(result.summary)
+    } else {
+      toast.error(result.summary)
     }
-  }, [items, fields, answers.cekPemahaman.selections, setChecked, slug, tab, section])
+  }, [items, fields, selections, boundSetChecked])
 
-  return { items, fields, isChecked, isFilled, setField, handleSubmit, block }
+  return {
+    items,
+    fields,
+    errors,
+    isChecked,
+    isFilled,
+    aiFeedback,
+    setField: boundSetField,
+    setAIFeedback,
+    setChecked: boundSetChecked,
+    setErrors: setErrors_,
+    handleSubmit,
+    block,
+  }
 }
 
 /** Hook providing sandbox coordinate input, live preview, and notes state. */
@@ -179,7 +213,7 @@ export function useBangunForm() {
     form as Partial<Record<keyof TranslasiBangunData, string>>,
     setErrors,
     setChecked,
-    "Hebat! Semua koordinat bayangan benar! 🌟",
+    "Hebat! Semua koordinat bayangan benar!",
     "Silakan periksa kembali koordinat bayangan Anda.",
   )
 

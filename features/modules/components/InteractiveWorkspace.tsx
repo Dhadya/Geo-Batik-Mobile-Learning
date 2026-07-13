@@ -4,7 +4,6 @@ import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { Grid } from "lucide-react"
 import { useGeoGebra } from "@/features/prasyarat/hooks/useGeoGebra"
-import type { GGBWindow } from "@/features/prasyarat/types"
 
 /** GeoGebra interactive canvas workspace with placeholder and controls. */
 export function InteractiveWorkspace({ materialId }: { materialId?: string }) {

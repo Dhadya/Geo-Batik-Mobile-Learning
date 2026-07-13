@@ -49,7 +49,7 @@ export function ModuleContent({
         {/* Left column — GeoGebra canvas + conclusion formula */}
         <div className="lg:col-span-8 flex flex-col gap-4 md:gap-6">
           <InteractiveWorkspace materialId={tabConfig.materialId} />
-          <ConclusionArea formula={tabConfig.formula} />
+          <ConclusionArea slug={slug} tab={decodedTab} />
         </div>
         {/* Right column — observation/pengamatan panel */}
         <div className="lg:col-span-4 flex flex-col">

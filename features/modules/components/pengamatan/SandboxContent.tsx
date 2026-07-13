@@ -17,7 +17,8 @@ interface SandboxContentProps {
 }
 
 /** Percobaan tab — coordinate input, live bayangan preview, and notes. */
-export function SandboxContent({ slug, tab, instruction, sectionBlock: _sectionBlock }: SandboxContentProps) {
+export function SandboxContent({ slug, tab, instruction, sectionBlock }: SandboxContentProps) {
+  void sectionBlock
   // Sandbox state from zustand store via hook
   const { sandboxX, sandboxY, notes, preview, setSandboxX, setSandboxY, setNotes } = useSandbox(slug, tab)
   const [isChecked, setIsChecked] = useState(false)

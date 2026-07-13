@@ -147,7 +147,8 @@ export const useAnswerStore = create<AnswerStore>()(
 
       resetTab: (slug, tab) => {
         const key = `${slug}-${tab}`
-        const { [key]: _, ...rest } = get().answers
+        const rest = { ...get().answers }
+        delete rest[key]
         set({ answers: rest })
       },
 

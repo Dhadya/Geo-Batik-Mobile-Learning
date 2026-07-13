@@ -1,56 +1,83 @@
 "use client"
 
-import { Text } from "@/components/retroui/Text"
-import { Input } from "@/components/retroui/Input"
+import { useCallback } from "react"
 import { Lightbulb } from "lucide-react"
-
+import { Text } from "@/components/retroui/Text"
+import { Button } from "@/components/retroui/Button"
+import { useSection } from "../hooks/useObservation"
+import type { UraianItem } from "../types"
 
 interface ConclusionAreaProps {
-  formula: {
-    prefix: string
-    suffix: string
-    placeholders: [string, string]
-  }
+  slug: string
+  tab: string
 }
 
-/** Conclusion section where students write the general transformation formula. */
-export function ConclusionArea({ formula }: ConclusionAreaProps) {
+/** Penyimpulan section — renders uraian items with validation + AI feedback. */
+export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
+  const {
+    items, fields, errors, isChecked, isFilled, aiFeedback,
+    setField, handleSubmit, setChecked, setErrors,
+  } = useSection(slug, tab, "penyimpulan")
+
+  const handleClick = useCallback(() => {
+    if (isChecked) {
+      setChecked(false)
+      setErrors({})
+    } else {
+      handleSubmit()
+    }
+  }, [isChecked, setChecked, setErrors, handleSubmit])
+
   return (
     <section className="border-4 border-black bg-white shadow-lg p-4 md:p-6">
-      <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
+      <div className="flex items-start gap-4">
         <div className="w-12 h-12 md:w-16 md:h-16 border-4 border-black bg-white flex items-center justify-center shrink-0">
           <Lightbulb className="size-6 md:size-8" />
         </div>
-        <div className="grow">
-          <Text
-            as="h2"
-            className="text-xl md:text-2xl font-black uppercase mb-4"
-          >
+        <div className="grow space-y-3">
+          <Text as="h2" className="text-xl md:text-2xl font-black uppercase">
             Penyimpulan
           </Text>
-          <Text as="p" className="text-base md:text-lg mb-6 font-medium">
-            Berdasarkan hasil pengamatan di atas, apa rumus umum transformasi
-            geometri yang diamati?
-          </Text>
-          <div className="flex flex-wrap items-center gap-2 md:gap-4">
-            <span className="text-xl md:text-2xl font-bold">
-              {formula.prefix}
-            </span>
-            <Input
-              type="text"
-              placeholder={formula.placeholders[0]}
-              className="border-4 border-black w-24 md:w-32 text-center text-lg md:text-xl font-bold p-2 md:p-3"
-            />
-            <span className="text-xl md:text-2xl font-bold">,</span>
-            <Input
-              type="text"
-              placeholder={formula.placeholders[1]}
-              className="border-4 border-black w-24 md:w-32 text-center text-lg md:text-xl font-bold p-2 md:p-3"
-            />
-            <span className="text-xl md:text-2xl font-bold">
-              {formula.suffix}
-            </span>
-          </div>
+
+          {items.map((item) => {
+            if (item.type !== "uraian") return null
+            const u = item as UraianItem
+            const val = fields[String(u.id)]?.text ?? ""
+            const err = errors[`${u.id}_text`]
+
+            return (
+              <div key={u.id}>
+                <Text as="p" className="whitespace-pre-wrap font-medium mb-1">
+                  {u.id}. {u.question}
+                </Text>
+                <textarea
+                  value={val}
+                  onChange={(e) => setField(String(u.id), "text", e.target.value)}
+                  disabled={isChecked}
+                  rows={3}
+                  className={`w-full border-4 border-black p-3 font-semibold resize-none focus:outline-none ${err ? "border-destructive" : ""}`}
+                />
+                {err && <Text className="text-destructive text-sm mt-1">{err}</Text>}
+              </div>
+            )
+          })}
+
+          {isChecked && aiFeedback && (
+            <div className="border-4 border-primary bg-primary/5 p-4 rounded-none">
+              <Text className="text-sm font-semibold whitespace-pre-wrap">
+                {aiFeedback}
+              </Text>
+            </div>
+          )}
+
+          <Button
+            onClick={handleClick}
+            disabled={!isFilled && !isChecked}
+            variant={isChecked ? "secondary" : "default"}
+            className="w-full font-bold py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] !rounded-none"
+          >
+            {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
+          </Button>
         </div>
       </div>
     </section>
