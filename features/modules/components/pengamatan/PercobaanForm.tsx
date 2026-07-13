@@ -40,7 +40,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
       )}
 
       <div className="border-4 border-black overflow-hidden bg-background">
-        <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs font-black p-2">
+        <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs md:text-sm font-black p-2">
           <div>Titik Awal</div>
           <div>Translasi oleh</div>
           <div>Titik Bayangan</div>
@@ -53,8 +53,8 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                 return (
                   <div key={m.id} className="grid grid-cols-3 items-center py-3 text-center">
                     <div className="font-bold">{m.label}</div>
-                    <div className="flex items-center justify-center gap-0.5">
-                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">(</span>
+                    <div className="flex items-center justify-center">
+                      <span className="text-[2.5rem] font-light select-none inline-block scale-y-[1.8] origin-center leading-none -mr-1">(</span>
                       <CoordStack
                         a={fields[String(m.id)]?.a ?? ""}
                         b={fields[String(m.id)]?.b ?? ""}
@@ -63,7 +63,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                         onAChange={(val) => setField(String(m.id), "a", val)}
                         onBChange={(val) => setField(String(m.id), "b", val)}
                       />
-                      <span className="text-3xl font-light select-none inline-block scale-y-[2.1] origin-center">)</span>
+                      <span className="text-[2.5rem] font-light select-none inline-block scale-y-[1.8] origin-center leading-none -ml-1">)</span>
                     </div>
                     <div className="font-bold">{m.targetBayangan}</div>
                   </div>
