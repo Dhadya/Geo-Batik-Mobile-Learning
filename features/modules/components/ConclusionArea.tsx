@@ -70,7 +70,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                     value={val}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                     disabled={isChecked}
-                    rows={1}
+                    rows={2}
                     placeholder="Tuliskan penjelasanmu..."
                     className={`border-4 border-black font-medium resize-none text-sm ${err ? "border-destructive" : ""}`}
                   />
@@ -101,7 +101,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                     <span className="text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
                   </div>
                   <Text as="p" className="text-sm font-medium">
-                    tentukan titik bayangannya dengan mengisi tabel berikut
+                    tentukan titik bayangannya dengan mengisi tabel berikut.
                   </Text>
                   <div className="border-4 border-black overflow-hidden bg-background">
                     <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-xs md:text-sm font-black p-2">
@@ -151,7 +151,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                   value={val}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                   disabled={isChecked}
-                  rows={1}
+                  rows={2}
                   placeholder="Tuliskan jawabanmu..."
                   className={`border-4 border-black font-medium resize-none text-sm ${err ? "border-destructive" : ""}`}
                 />

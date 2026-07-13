@@ -157,6 +157,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
                 "(30, 0)",
                 "(15, 5)",
               ],
+              optionFormat: "matrix",
               correctIndex: 0,
             },
           ],

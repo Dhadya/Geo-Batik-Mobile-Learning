@@ -23,12 +23,16 @@ function ModuleAnswerButton({
   text,
   isSelected,
   onSelect,
+  matrix,
 }: {
   index: number
   text: string
   isSelected: boolean
   onSelect: () => void
+  matrix?: boolean
 }) {
+  const parsed = matrix ? text.match(/\(([^,]+),\s*([^)]+)\)/) : null
+
   return (
     <Button
       variant={isSelected ? "default" : "outline"}
@@ -38,7 +42,18 @@ function ModuleAnswerButton({
       <span className="w-6 h-6 md:w-7 md:h-7 border-2 border-black bg-foreground text-background flex items-center justify-center text-xs md:text-sm shrink-0">
         {LABELS[index]}
       </span>
-      <span className="grow">{text}</span>
+      {parsed ? (
+        <span className="flex items-center justify-center gap-0.5">
+          <span className="text-xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
+          <span className="flex flex-col items-center gap-0.5 text-xs font-black">
+            <span className="px-2 select-none text-center">{parsed[1].trim()}</span>
+            <span className="px-2 select-none text-center">{parsed[2].trim()}</span>
+          </span>
+          <span className="text-xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
+        </span>
+      ) : (
+        <span className="grow">{text}</span>
+      )}
       {isSelected && (
         <Badge variant="solid" size="sm" className="absolute -top-2 -right-2 uppercase">
           Dipilih
@@ -108,6 +123,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                     text={opt}
                     isSelected={selections[qi] === oi}
                     onSelect={() => handleSelect(qi, oi)}
+                    matrix={q.optionFormat === "matrix"}
                   />
                 ))}
               </div>
