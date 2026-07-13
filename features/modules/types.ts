@@ -178,6 +178,8 @@ export type RefleksiTab =
   | "garis-x=-y"
   | "garis-x=h"
   | "garis-y=h"
+  | "bangun"
+  | "garis"
 
 /** All tab slug identifiers. */
 export type TabSlug = TranslasiTab | RefleksiTab

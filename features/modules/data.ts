@@ -455,6 +455,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Refleksi Sumbu X",
       instruction:
         "Amati perpindahan koordinat titik A setelah direfleksikan terhadap Sumbu X.",
+      materialId: "e2ahvxgg",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",
@@ -483,6 +484,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Refleksi Sumbu Y",
       instruction:
         "Amati perpindahan koordinat titik A setelah direfleksikan terhadap Sumbu Y.",
+      materialId: "m4pxxf27",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",
@@ -504,6 +506,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Refleksi Titik (0,0)",
       instruction:
         "Amati perpindahan koordinat titik A setelah direfleksikan terhadap titik (0,0).",
+      materialId: "ysc23jvw",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",
@@ -525,6 +528,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Refleksi Garis x=y",
       instruction:
         "Amati perpindahan koordinat titik A setelah direfleksikan terhadap garis x=y.",
+      materialId: "drnrb3fr",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",
@@ -546,6 +550,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Refleksi Garis x=-y",
       instruction:
         "Amati perpindahan koordinat titik A setelah direfleksikan terhadap garis x=-y.",
+      materialId: "pyfvyvbc",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",
@@ -567,6 +572,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Refleksi Garis x=h",
       instruction:
         "Amati perpindahan koordinat titik A setelah direfleksikan terhadap garis x=h.",
+      materialId: "dsvtvzcn",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",
@@ -588,6 +594,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       title: "Refleksi Garis y=h",
       instruction:
         "Amati perpindahan koordinat titik A setelah direfleksikan terhadap garis y=h.",
+      materialId: "ksq5uvva",
       formula: {
         prefix: "A(x, y) → A'(",
         suffix: ")",
@@ -602,6 +609,34 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
           correctIndex: 0,
         },
       ],
+    },
+    {
+      label: "BANGUN",
+      value: "bangun",
+      title: "Refleksi Bangun Datar",
+      instruction:
+        "Amati perpindahan bangun datar setelah direfleksikan.",
+      materialId: "j8mjwvcj",
+      formula: {
+        prefix: "A(x, y) → A'(",
+        suffix: ")",
+        placeholders: ["?", "?"],
+      },
+      assessment: [],
+    },
+    {
+      label: "GARIS",
+      value: "garis",
+      title: "Refleksi Garis",
+      instruction:
+        "Amati perpindahan garis setelah direfleksikan.",
+      materialId: "nqw7mzat",
+      formula: {
+        prefix: "A(x, y) → A'(",
+        suffix: ")",
+        placeholders: ["?", "?"],
+      },
+      assessment: [],
     },
   ],
 }
