@@ -16,7 +16,7 @@ export function ConceptCard({ title, description, icon }: ConceptCardProps) {
     <div className="bg-card border-4 border-black p-4 md:p-6 shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all flex gap-3 md:gap-5">
       {/* Icon badge */}
       <div className="shrink-0 size-9 md:size-12 bg-primary border-4 border-black flex items-center justify-center shadow-sm">
-        <MaterialIcon name={icon} className="!text-xl md:!text-2xl text-primary-foreground" />
+        <MaterialIcon name={icon} className="text-xl md:text-2xl text-primary-foreground" />
       </div>
 
       {/* Content */}

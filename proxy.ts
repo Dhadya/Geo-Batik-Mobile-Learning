@@ -9,8 +9,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for BetterAuth session cookie
-  const sessionCookie = request.cookies.get("better-auth.session_token");
+  // Check for BetterAuth session cookie. Production secure cookies use __Secure- prefix.
+  const sessionCookie =
+    request.cookies.get("better-auth.session_token") ||
+    request.cookies.get("__Secure-better-auth.session_token");
 
   // Redirect logged-in users from auth pages to menu
   const authRoutes = ["/login", "/register"];

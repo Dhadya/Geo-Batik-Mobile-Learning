@@ -33,30 +33,29 @@ function NavDropdownItem({
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger
-        className={`!rounded-none font-black uppercase text-base !h-auto !px-0 !py-0 bg-transparent hover:!bg-transparent focus:!bg-transparent data-open:!bg-transparent data-popup-open:!bg-transparent text-primary-foreground ${
-          isActive ? "underline underline-offset-4 decoration-4" : ""
-        }`}
+        className={`font-black uppercase text-base h-auto px-0 py-0 bg-transparent hover:bg-transparent focus:bg-transparent data-open:bg-transparent data-popup-open:bg-transparent text-primary-foreground ${isActive ? "underline underline-offset-4 decoration-4" : ""
+          }`}
       >
         {label}
       </NavigationMenuTrigger>
       <NavigationMenuContent
-        className="!rounded-none border-4 border-black bg-card shadow-lg !p-0 w-48"
+        className="border-4 border-black bg-card shadow-lg p-0 w-48"
       >
         <NavigationMenuLink
           render={<Link href={apersepsiHref} />}
-          className="!rounded-none block px-4 py-3 text-sm font-black uppercase border-b-2 border-black hover:!bg-secondary-container focus:!bg-secondary-container data-active:!bg-secondary-container"
+          className="block px-4 py-3 text-sm font-black uppercase border-b-2 border-black hover:bg-secondary-container focus:bg-secondary-container data-active:bg-secondary-container"
         >
           Apersepsi
         </NavigationMenuLink>
         <NavigationMenuLink
           render={<Link href={modulHref} />}
-          className="!rounded-none block px-4 py-3 text-sm font-black uppercase border-b-2 border-black hover:!bg-secondary-container focus:!bg-secondary-container data-active:!bg-secondary-container"
+          className="block px-4 py-3 text-sm font-black uppercase border-b-2 border-black hover:bg-secondary-container focus:bg-secondary-container data-active:bg-secondary-container"
         >
           Modul
         </NavigationMenuLink>
         <NavigationMenuLink
           render={<Link href={kuisHref} />}
-          className="!rounded-none block px-4 py-3 text-sm font-black uppercase hover:!bg-secondary-container focus:!bg-secondary-container data-active:!bg-secondary-container"
+          className="block px-4 py-3 text-sm font-black uppercase hover:bg-secondary-container focus:bg-secondary-container data-active:bg-secondary-container"
         >
           Kuis
         </NavigationMenuLink>
@@ -85,7 +84,7 @@ function MobileNavDropdown({
         variant="outline"
         size="md"
         onClick={() => setOpen((prev) => !prev)}
-        className="!rounded-none flex items-center justify-between w-full px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container"
+        className="flex items-center justify-between w-full px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container"
       >
         {label}
         <Image
@@ -152,7 +151,7 @@ export function Navbar() {
 
   return (
     <header className="border-b-4 border-black bg-primary text-primary-foreground sticky top-0 z-40">
-      <div className="max-w-[96rem] mx-auto px-4 md:px-12">
+      <div className="max-w-384 mx-auto px-4 md:px-12">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Left — Logo + Brand */}
           <Link href="/" className="flex items-center gap-3 shrink-0">
@@ -171,9 +170,8 @@ export function Navbar() {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   render={<Link href="/menu" />}
-                  className={`!rounded-none font-black uppercase text-base !h-auto !px-0 !py-0 bg-transparent hover:!bg-transparent focus:!bg-transparent data-active:!bg-transparent text-primary-foreground ${
-                    isMenuActive ? "underline underline-offset-4 decoration-4" : ""
-                  }`}
+                  className={`font-black uppercase text-base h-auto px-0 py-0 bg-transparent hover:bg-transparent focus:bg-transparent data-active:bg-transparent text-primary-foreground ${isMenuActive ? "underline underline-offset-4 decoration-4" : ""
+                    }`}
                 >
                   Menu
                 </NavigationMenuLink>
@@ -198,9 +196,8 @@ export function Navbar() {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   render={<Link href="/lab" />}
-                  className={`!rounded-none font-black uppercase text-base !h-auto !px-0 !py-0 bg-transparent hover:!bg-transparent focus:!bg-transparent data-active:!bg-transparent text-primary-foreground ${
-                    isLabActive ? "underline underline-offset-4 decoration-4" : ""
-                  }`}
+                  className={`font-black uppercase text-base h-auto px-0 py-0 bg-transparent hover:bg-transparent focus:bg-transparent data-active:bg-transparent text-primary-foreground ${isLabActive ? "underline underline-offset-4 decoration-4" : ""
+                    }`}
                 >
                   Lab
                 </NavigationMenuLink>
@@ -219,7 +216,7 @@ export function Navbar() {
               variant="outline"
               size="icon"
               onClick={() => setMobileOpen((prev) => !prev)}
-              className="md:hidden !rounded-none border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
+              className="md:hidden border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -231,11 +228,11 @@ export function Navbar() {
       {/* Mobile menu panel */}
       {mobileOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 z-50 border-t-4 border-black bg-primary">
-          <div className="max-w-[96rem] mx-auto px-4 py-4 space-y-3">
+          <div className="max-w-384 mx-auto px-4 py-4 space-y-3">
             <Link
               href="/menu"
               onClick={() => setMobileOpen(false)}
-              className="block px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors !rounded-none"
+              className="block px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors"
             >
               Menu
             </Link>
@@ -257,7 +254,7 @@ export function Navbar() {
             <Link
               href="/lab"
               onClick={() => setMobileOpen(false)}
-              className="block px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors !rounded-none"
+              className="block px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors"
             >
               Lab
             </Link>

@@ -12,7 +12,7 @@ export function ModuleGrid() {
           label={mod.label}
           title={mod.title}
           description={mod.description}
-          icon={<MaterialIcon name={mod.icon} className="!text-2xl md:!text-3xl" />}
+          icon={<MaterialIcon name={mod.icon} className="text-2xl md:text-3xl" />}
           bgColor={mod.bgColor}
           imageSrc={mod.imageSrc}
           imageAlt={mod.imageAlt}

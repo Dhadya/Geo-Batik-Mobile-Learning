@@ -27,7 +27,7 @@ export function QuizHeader({
       <div className={icon ? "pr-14 md:pr-20" : ""}>
         <Text
           as="h1"
-          className="!text-4xl md:!text-5xl lg:!text-6xl !font-black uppercase leading-none tracking-tighter text-primary-foreground"
+          className="text-4xl md:text-5xl lg:text-6xl font-black uppercase leading-none tracking-tighter text-primary-foreground"
         >
           {title}
         </Text>

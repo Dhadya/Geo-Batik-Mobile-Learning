@@ -45,7 +45,7 @@ export function LabCard({
 
       {/* Right side — trailing icon */}
       <div className="relative z-10 group-hover:translate-x-4 transition-transform">
-        {trailingIcon ?? <MaterialIcon name="architecture" className="!text-4xl md:!text-6xl" />}
+        {trailingIcon ?? <MaterialIcon name="architecture" className="text-4xl md:text-6xl" />}
       </div>
 
       {/* Decorative skew accent — right edge */}

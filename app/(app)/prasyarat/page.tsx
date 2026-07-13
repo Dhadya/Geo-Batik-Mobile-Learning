@@ -16,7 +16,7 @@ export default function PrasyaratPage() {
         </div>
         <Text
           as="h1"
-          className="!text-3xl md:!text-5xl lg:!text-6xl !font-black uppercase"
+          className="text-3xl md:text-5xl lg:text-6xl font-black uppercase"
         >
           Elemen Dasar Geometri
         </Text>
@@ -43,7 +43,7 @@ export default function PrasyaratPage() {
       <section className="space-y-4 md:space-y-6">
         <div className="flex items-center gap-3 md:gap-4">
           <div className="size-10 md:size-14 bg-secondary border-4 border-black shadow-md flex items-center justify-center">
-            <MaterialIcon name="library_books" className="!text-2xl md:!text-3xl text-secondary-foreground" />
+            <MaterialIcon name="library_books" className="text-2xl md:text-3xl text-secondary-foreground" />
           </div>
           <h2 className="text-lg md:text-2xl font-black uppercase">Konsep Dasar</h2>
         </div>
@@ -74,12 +74,12 @@ export default function PrasyaratPage() {
               LANJUT KE MENU
               <MaterialIcon
                 name="arrow_forward"
-                className="!text-3xl md:!text-5xl group-hover:translate-x-4 transition-transform"
+                className="text-3xl md:text-5xl group-hover:translate-x-4 transition-transform"
               />
             </span>
             {/* Decorative stamp */}
             <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 size-12 md:size-16 bg-primary border-4 border-black flex items-center justify-center shadow-md">
-              <MaterialIcon name="star_rate" className="!text-2xl md:!text-3xl text-primary-foreground" />
+              <MaterialIcon name="star_rate" className="text-2xl md:text-3xl text-primary-foreground" />
             </div>
           </Link>
         </div>

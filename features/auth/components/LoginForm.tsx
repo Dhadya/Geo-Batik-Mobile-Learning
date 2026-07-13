@@ -62,7 +62,7 @@ export function LoginForm() {
         {/* Remember me checkbox + forgot password link */}
         <div className="flex items-center justify-between pt-2">
           <label className="flex items-center gap-3 cursor-pointer">
-            <Checkbox variant="outline" className="border-4 border-black !rounded-none size-6" />
+            <Checkbox variant="outline" className="border-4 border-black size-6" />
             <span className="text-xs font-bold uppercase">Ingat Saya</span>
           </label>
           <Link href="#" className="text-xs font-bold uppercase text-primary-dark underline">
@@ -76,7 +76,7 @@ export function LoginForm() {
           variant="default"
           size="lg"
           disabled={isDisabled}
-          className="w-full !h-16 !text-xl font-black uppercase neubrutal-shadow hover-shift active-shift !rounded-none flex items-center justify-center gap-3"
+          className="w-full h-16 text-xl font-black uppercase neubrutal-shadow hover-shift active-shift flex items-center justify-center gap-3"
         >
           {loading ? (
             <Loader variant="secondary" size="lg" />
@@ -106,7 +106,7 @@ export function LoginForm() {
           variant="outline"
           onClick={handleGoogleSignIn}
           disabled={isDisabled}
-          className="w-full !h-14 mt-6 border-4 border-black !rounded-none font-bold uppercase flex items-center justify-center gap-3"
+          className="w-full h-14 mt-6 border-4 border-black font-bold uppercase flex items-center justify-center gap-3"
         >
           {googleLoading ? (
             <Loader size="md" />
@@ -125,7 +125,7 @@ export function LoginForm() {
         <Link href="/register">
           <Button
             variant="default"
-            className="w-full !h-12 bg-card border-4 border-black !rounded-none text-xs font-bold uppercase hover:bg-secondary-container transition-all"
+            className="w-full h-12 bg-card border-4 border-black text-xs font-bold uppercase hover:bg-secondary-container transition-all"
           >
             Daftar Baru
           </Button>

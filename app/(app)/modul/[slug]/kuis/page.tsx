@@ -31,10 +31,10 @@ export default async function KuisIntroPage(props: {
   const label = MODULE_LABELS[slug] ?? slug
 
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
+    <div className="space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={slug} label={label} />
 
-      <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="!text-2xl md:!text-3xl" />} />
+      <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />} />
 
       <section className="border-4 border-black bg-white shadow-lg p-6 md:p-8 space-y-4">
         <Text as="h2" className="text-xl md:text-2xl font-black uppercase">
@@ -61,7 +61,7 @@ export default async function KuisIntroPage(props: {
           <Button
             variant="default"
             size="lg"
-            className="!rounded-none px-10 md:px-16 py-5 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
+            className="px-10 md:px-16 py-5 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
           >
             Mulai Kuis
             <ArrowRight className="size-7 md:size-8" />

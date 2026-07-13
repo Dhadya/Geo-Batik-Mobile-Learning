@@ -6,7 +6,7 @@ export function MenuHeader() {
     <div className="text-center md:text-left">
       <Text
         as="h1"
-        className="!text-4xl md:!text-5xl lg:!text-6xl !font-black uppercase inline-block mb-3 md:mb-4"
+        className="text-4xl md:text-5xl lg:text-6xl font-black uppercase inline-block mb-3 md:mb-4"
       >
         Menu Utama
       </Text>
