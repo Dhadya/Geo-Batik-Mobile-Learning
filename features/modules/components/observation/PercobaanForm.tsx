@@ -270,6 +270,17 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           "garis-y=h": "Garis y=h",
         }
         const reflectText = reflectionLabels[tab] ?? tab
+        const groups = block?.refleksiGroups
+
+        // Build a map: itemId -> group index for rowSpan handling
+        const groupByItem = new Map<number, { garis: string; isFirst: boolean; count: number }>()
+        if (groups) {
+          groups.forEach((g) => {
+            g.itemIds.forEach((id, i) => {
+              groupByItem.set(id, { garis: g.garis, isFirst: i === 0, count: g.itemIds.length })
+            })
+          })
+        }
 
         return (
           <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
@@ -284,17 +295,37 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
               {tableItems.map((item, idx) => {
                 if (item.type !== "koordinat") return null
                 const k = item as KoordinatItem
+                const groupInfo = groupByItem.get(k.id)
+
+                // Determine if this row should show the middle cell
+                const showMiddleCell = groups
+                  ? groupInfo?.isFirst ?? false
+                  : idx === 0
+                const rowSpan = groups
+                  ? groupInfo?.count ?? 1
+                  : tableItems.length
+                const middleLabel = groups
+                  ? groupInfo?.garis ?? reflectText
+                  : reflectText
+
+                // Add top border separator between groups
+                const isFirstInGroup = groupInfo?.isFirst ?? false
+                const groupIndex = groups
+                  ? groups.findIndex(g => g.itemIds.includes(k.id))
+                  : 0
+                const needsTopBorder = groups && isFirstInGroup && groupIndex > 0
+
                 return (
                   <tr key={k.id} className="text-center">
-                    <td className="py-2 md:py-3 font-bold border-r-2 border-black border-b-2">
+                    <td className={`py-2 md:py-3 font-bold border-r-2 border-black border-b-2 ${needsTopBorder ? "border-t-2 border-t-black" : ""}`}>
                       {k.label.replace(/^[A-Z]/, '')}
                     </td>
-                    {idx === 0 && (
-                      <td rowSpan={tableItems.length} className="py-2 md:py-3 font-bold border-r-2 border-black align-middle text-[10px] md:text-xs">
-                        {reflectText}
+                    {showMiddleCell && (
+                      <td rowSpan={rowSpan} className={`py-2 md:py-3 font-bold border-r-2 border-black align-middle text-xs md:text-sm ${needsTopBorder ? "border-t-2 border-t-black" : ""}`}>
+                        {middleLabel}
                       </td>
                     )}
-                    <td className="py-2 md:py-3 border-b-2 border-black">
+                    <td className={`py-2 md:py-3 border-b-2 border-black ${needsTopBorder ? "border-t-2 border-t-black" : ""}`}>
                       <div className="flex items-center justify-center gap-0.5">
                         <span className="font-bold text-xs md:text-sm">(</span>
                         <Input
