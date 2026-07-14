@@ -6,8 +6,9 @@ import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
+import { UrutkanInput } from "../observation/UrutkanInput"
 import { useSection } from "../../hooks/useObservation"
-import type { UraianItem } from "../../types"
+import type { UraianItem, UrutkanItem as UrutkanItemType } from "../../types"
 
 interface ConclusionAreaProps {
   slug: string
@@ -59,6 +60,31 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
       <div className="space-y-4 md:space-y-6">
 
         {items.map((item) => {
+          // Urutkan type: drag-and-drop sorting
+          if (item.type === "urutkan") {
+            const ur = item as UrutkanItemType
+            const val = fields[String(ur.id)]?.order ?? ""
+            const err = errors[`${ur.id}_order`]
+
+            return (
+              <div key={ur.id} className="flex gap-1.5 md:gap-2">
+                <span className="text-base md:text-lg shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
+                <div className="grow space-y-1.5 md:space-y-2">
+                  <Text as="p" className="text-xs md:text-sm font-medium text-black">
+                    {ur.question}
+                  </Text>
+                  <UrutkanInput
+                    items={ur.items}
+                    value={val}
+                    onChange={(order) => setField(String(ur.id), "order", order)}
+                    disabled={isChecked}
+                  />
+                  {err && <Text className="text-destructive text-[10px] md:text-xs font-medium">{err}</Text>}
+                </div>
+              </div>
+            )
+          }
+
           if (item.type !== "uraian") return null
           const u = item as UraianItem
 
@@ -69,10 +95,10 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
-                <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
+                <span className="text-base md:text-lg shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
                 <div className="grow space-y-2 md:space-y-3">
                   <div className="flex items-center gap-0.5">
-                    <p className="text-xs md:text-sm font-medium text-black">
+                    <p className="text-xs md:text-sm text-black">
                       Jika salah satu titik sebuah bangun ditranslasikan oleh
                     </p>
                     <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>

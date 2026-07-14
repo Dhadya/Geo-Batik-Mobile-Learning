@@ -3,6 +3,8 @@ export { ModuleContent } from "./components/ModuleContent"
 export { ModuleTabNav } from "./components/navigation/ModuleTabNav"
 export { InteractiveWorkspace } from "./components/workspace/InteractiveWorkspace"
 export { ObservationPanel } from "./components/observation/ObservationPanel"
+export { PengamatanGarisForm } from "./components/observation/PengamatanGarisForm"
+export { UrutkanInput } from "./components/observation/UrutkanInput"
 export { ConclusionArea } from "./components/conclusion/ConclusionArea"
 export { AssessmentSection } from "./components/assessment/AssessmentSection"
 
@@ -25,6 +27,7 @@ export type {
   UraianItem,
   MemasangkanItem,
   PilihanGandaItem,
+  UrutkanItem,
   MatchItem,
   ModuleSlug,
   TranslasiTab,

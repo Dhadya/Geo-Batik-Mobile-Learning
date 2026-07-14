@@ -53,9 +53,18 @@ export interface ModuleSections {
   cekPemahaman: SectionBlock
 }
 
+/** Garis translation table config: shows source→matrix→target layout. */
+export interface GarisTranslasiTable {
+  sourceItemIds: [number, number]
+  targetItemIds: [number, number]
+  matrix: string
+}
+
 /** A section block with instruction and ordered items. */
 export interface SectionBlock {
   instruction: string
+  instructionMatrix?: string
+  garisTranslasiTable?: GarisTranslasiTable
   items: SectionItem[]
 }
 
@@ -70,6 +79,7 @@ export type SectionItem =
   | UraianItem
   | MemasangkanItem
   | PilihanGandaItem
+  | UrutkanItem
 
 /** Base fields shared by every item type. */
 interface BaseItem {
@@ -103,6 +113,7 @@ export interface UraianItem extends BaseItem {
   type: "uraian"
   question: string
   answer: string
+  acceptAnswers?: string[]
 }
 
 // ── Memasangkan (drag-and-drop matching) ───────────────────
@@ -139,6 +150,15 @@ export interface PilihanGandaItem extends BaseItem {
   questionSuffix?: string
 }
 
+// ── Urutkan (drag-and-drop sorting) ────────────────────────
+
+/** Drag-and-drop sorting exercise — student arranges items in correct order. */
+export interface UrutkanItem extends BaseItem {
+  type: "urutkan"
+  question: string
+  items: string[]
+}
+
 // ============================================================
 // Slug Types
 // ============================================================
@@ -158,6 +178,8 @@ export type RefleksiTab =
   | "garis-x=-y"
   | "garis-x=h"
   | "garis-y=h"
+  | "bangun"
+  | "garis"
 
 /** All tab slug identifiers. */
 export type TabSlug = TranslasiTab | RefleksiTab
