@@ -68,7 +68,7 @@ export function ProfileDropdown() {
             onError={() => setImgFailed(true)}
           />
         ) : (
-          <span className="flex items-center justify-center size-7 bg-black text-primary-foreground font-black text-xs">
+          <span className="flex items-center justify-center size-7 bg-module-refleksi text-white font-black text-xs border-2 border-black">
             {initials}
           </span>
         )}
