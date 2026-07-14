@@ -461,22 +461,95 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
         suffix: ")",
         placeholders: ["x", "-y"],
       },
-      assessment: [
-        {
-          id: 1,
-          question:
-            "Titik P(5, -3) direfleksikan terhadap sumbu X. Koordinat P' adalah...",
-          options: ["(5, 3)", "(-5, -3)", "(-5, 3)", "(3, 5)"],
-          correctIndex: 0,
+      assessment: [],
+      sections: {
+        percobaan: {
+          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh sumbu x.",
+          items: [
+            {
+              id: 1,
+              type: "koordinat",
+              label: "A(2, 5)",
+              answer: { x: 2, y: -5 },
+            },
+            {
+              id: 2,
+              type: "koordinat",
+              label: "B(-3, 2)",
+              answer: { x: -3, y: -2 },
+            },
+            {
+              id: 3,
+              type: "koordinat",
+              label: "C(-1, -4)",
+              answer: { x: -1, y: 4 },
+            },
+          ],
         },
-        {
-          id: 2,
-          question:
-            "Titik Q(-4, 6) direfleksikan terhadap sumbu X. Koordinat Q' adalah...",
-          options: ["(-4, -6)", "(4, 6)", "(4, -6)", "(-4, 6)"],
-          correctIndex: 0,
+        pengamatan: {
+          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          items: [
+            {
+              id: 4,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi titik A dan A' terhadap sumbu x?",
+              options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
+              correctIndex: 1,
+            },
+            {
+              id: 5,
+              type: "pilihan_ganda",
+              question: "Bandingkan jarak titik A ke sumbu x dengan jarak A' ke sumbu x?",
+              options: ["Sama", "Berbeda"],
+              correctIndex: 0,
+            },
+            {
+              id: 6,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap sumbu x?",
+              options: ["Sejajar", "Tegak Lurus"],
+              correctIndex: 1,
+            },
+            {
+              id: 7,
+              type: "pilihan_ganda",
+              question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 0,
+            },
+          ],
         },
-      ],
+        penyimpulan: {
+          instruction: "Simpulkan hasil percobaanmu.",
+          items: [
+            {
+              id: 8,
+              type: "uraian",
+              question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap sumbu x, tentukan titik bayangannya dengan mengisi tabel berikut.",
+              answer: "(x, -y)",
+            },
+          ],
+        },
+        cekPemahaman: {
+          instruction: "Kerjakan soal-soal berikut.",
+          items: [
+            {
+              id: 9,
+              type: "pilihan_ganda",
+              question: "Tentukan bayangan titik P(4, -3) jika dicerminkan terhadap sumbu x!",
+              options: ["P'(-4, 3)", "P'(-4, -3)", "P'(3, 4)", "P'(4, 3)"],
+              correctIndex: 3,
+            },
+            {
+              id: 10,
+              type: "pilihan_ganda",
+              question: "Titik Q'(2, -5) merupakan bayangan titik Q terhadap sumbu x. Tentukan koordinat titik Q!",
+              options: ["Q(-2, 5)", "Q(2, 5)", "Q(-2, -5)", "Q(-5, 2)"],
+              correctIndex: 1,
+            },
+          ],
+        },
+      },
     },
     {
       label: "SUMBU Y",
@@ -490,15 +563,95 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
         suffix: ")",
         placeholders: ["-x", "y"],
       },
-      assessment: [
-        {
-          id: 1,
-          question:
-            "Titik P(5, -3) direfleksikan terhadap sumbu Y. Koordinat P' adalah...",
-          options: ["(-5, -3)", "(5, 3)", "(-5, 3)", "(3, 5)"],
-          correctIndex: 0,
+      assessment: [],
+      sections: {
+        percobaan: {
+          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh sumbu y.",
+          items: [
+            {
+              id: 1,
+              type: "koordinat",
+              label: "A(2, 3)",
+              answer: { x: -2, y: 3 },
+            },
+            {
+              id: 2,
+              type: "koordinat",
+              label: "B(-2, 4)",
+              answer: { x: 2, y: 4 },
+            },
+            {
+              id: 3,
+              type: "koordinat",
+              label: "C(1, -6)",
+              answer: { x: -1, y: -6 },
+            },
+          ],
         },
-      ],
+        pengamatan: {
+          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          items: [
+            {
+              id: 4,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi titik A dan A' terhadap sumbu y?",
+              options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
+              correctIndex: 1,
+            },
+            {
+              id: 5,
+              type: "pilihan_ganda",
+              question: "Bandingkan jarak titik A ke sumbu y dengan jarak A' ke sumbu y!",
+              options: ["Sama", "Berbeda"],
+              correctIndex: 0,
+            },
+            {
+              id: 6,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap sumbu y?",
+              options: ["Sejajar", "Tegak Lurus"],
+              correctIndex: 1,
+            },
+            {
+              id: 7,
+              type: "pilihan_ganda",
+              question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 0,
+            },
+          ],
+        },
+        penyimpulan: {
+          instruction: "Simpulkan hasil percobaanmu.",
+          items: [
+            {
+              id: 8,
+              type: "uraian",
+              question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap sumbu y, tentukan titik bayangannya dengan mengisi tabel berikut.",
+              answer: "(-x, y)",
+            },
+          ],
+        },
+        cekPemahaman: {
+          instruction: "Kerjakan soal-soal berikut.",
+          items: [
+            {
+              id: 9,
+              type: "pilihan_ganda",
+              question: "Tentukan bayangan titik P(8, -2) jika dicerminkan terhadap sumbu y!",
+              options: ["P'(8, 2)", "P'(-8, 2)", "P'(-8, -2)", "P'(-2, 8)"],
+              correctIndex: 2,
+            },
+            {
+              id: 10,
+              type: "pilihan_ganda",
+              question: "Titik Q'(4, -6) merupakan bayangan titik Q terhadap sumbu y. Tentukan koordinat titik Q!",
+              options: ["Q(6, 4)", "Q(6, -4)", "Q(-6, -4)", "Q(-4, -6)"],
+              correctIndex: 3,
+            },
+          ],
+        },
+      },
     },
     {
       label: "TITIK (0,0)",

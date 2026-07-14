@@ -17,6 +17,7 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const isTranslasiTitik = slug === "translasi" && tab === "titik"
   const isTranslasiBangun = slug === "translasi" && tab === "bangun"
   const isTranslasiGaris = slug === "translasi" && tab === "garis"
+  const isRefleksiTitik = slug === "refleksi"
 
   return (
     <div className="h-auto lg:h-full flex flex-col gap-3 md:gap-4">
@@ -47,9 +48,9 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
           {/* Pengamatan tab — form variant based on module/tab */}
           <Tabs.Content value="pengamatan" className="p-3 md:p-6 grow overflow-y-auto space-y-3 md:space-y-4 mt-0">
             {isTranslasiTitik && <PengamatanTitikForm slug={slug} tab={tab} />}
-            {isTranslasiBangun && <PengamatanBangunForm slug={slug} tab={tab} />}
+            {(isTranslasiBangun || isRefleksiTitik) && <PengamatanBangunForm slug={slug} tab={tab} />}
             {isTranslasiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
-            {!isTranslasiTitik && !isTranslasiBangun && !isTranslasiGaris && <PengamatanMockForm slug={slug} tab={tab} />}
+            {!isTranslasiTitik && !isTranslasiBangun && !isTranslasiGaris && !isRefleksiTitik && <PengamatanMockForm slug={slug} tab={tab} />}
           </Tabs.Content>
         </div>
       </Tabs>

@@ -259,7 +259,75 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         </div>
       )}
 
-      {tableItems.length > 0 && (
+      {tableItems.length > 0 && slug === "refleksi" && (() => {
+        const reflectionLabels: Record<string, string> = {
+          "sumbu-x": "Sumbu X",
+          "sumbu-y": "Sumbu Y",
+          "titik": "Titik (0,0)",
+          "garis-x=y": "Garis x=y",
+          "garis-x=-y": "Garis x=-y",
+          "garis-x=h": "Garis x=h",
+          "garis-y=h": "Garis y=h",
+        }
+        const reflectText = reflectionLabels[tab] ?? tab
+
+        return (
+          <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
+            <thead>
+              <tr className="bg-muted border-b-4 border-black text-center font-black">
+                <th className="p-1.5 md:p-2 border-r-2 border-black">Titik Awal <span>(A)</span></th>
+                <th className="p-1.5 md:p-2 border-r-2 border-black">Refleksi terhadap</th>
+                <th className="p-1.5 md:p-2">Titik Bayangan <span>(A&apos;)</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableItems.map((item, idx) => {
+                if (item.type !== "koordinat") return null
+                const k = item as KoordinatItem
+                return (
+                  <tr key={k.id} className="text-center">
+                    <td className="py-2 md:py-3 font-bold border-r-2 border-black border-b-2">
+                      {k.label.replace(/^[A-Z]/, '')}
+                    </td>
+                    {idx === 0 && (
+                      <td rowSpan={tableItems.length} className="py-2 md:py-3 font-bold border-r-2 border-black align-middle text-[10px] md:text-xs">
+                        {reflectText}
+                      </td>
+                    )}
+                    <td className="py-2 md:py-3 border-b-2 border-black">
+                      <div className="flex items-center justify-center gap-0.5">
+                        <span className="font-bold text-xs md:text-sm">(</span>
+                        <Input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="x'"
+                          value={fields[String(k.id)]?.x ?? ""}
+                          onKeyDown={allowOnlyNumbers}
+                          onChange={(e) => setField(String(k.id), "x", e.target.value)}
+                          className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${errors[`${k.id}_coord`] ? "border-destructive" : "border-black"}`}
+                        />
+                        <span className="font-bold text-xs md:text-sm">,</span>
+                        <Input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="y'"
+                          value={fields[String(k.id)]?.y ?? ""}
+                          onKeyDown={allowOnlyNumbers}
+                          onChange={(e) => setField(String(k.id), "y", e.target.value)}
+                          className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${errors[`${k.id}_coord`] ? "border-destructive" : "border-black"}`}
+                        />
+                        <span className="font-bold text-xs md:text-sm">)</span>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        )
+      })()}
+
+      {tableItems.length > 0 && slug !== "refleksi" && (
         <div className="border-4 border-black overflow-hidden bg-background">
           <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-[10px] md:text-sm font-black p-1.5 md:p-2">
             <div>Titik Awal</div>
