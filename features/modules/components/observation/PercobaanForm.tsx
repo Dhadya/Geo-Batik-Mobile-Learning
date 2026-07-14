@@ -308,17 +308,24 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                   ? groupInfo?.garis ?? reflectText
                   : reflectText
 
+                // Add top border separator between groups
+                const isFirstInGroup = groupInfo?.isFirst ?? false
+                const groupIndex = groups
+                  ? groups.findIndex(g => g.itemIds.includes(k.id))
+                  : 0
+                const needsTopBorder = groups && isFirstInGroup && groupIndex > 0
+
                 return (
                   <tr key={k.id} className="text-center">
-                    <td className="py-2 md:py-3 font-bold border-r-2 border-black border-b-2">
+                    <td className={`py-2 md:py-3 font-bold border-r-2 border-black border-b-2 ${needsTopBorder ? "border-t-2 border-t-black" : ""}`}>
                       {k.label.replace(/^[A-Z]/, '')}
                     </td>
                     {showMiddleCell && (
-                      <td rowSpan={rowSpan} className="py-2 md:py-3 font-bold border-r-2 border-black align-middle text-[10px] md:text-xs">
+                      <td rowSpan={rowSpan} className={`py-2 md:py-3 font-bold border-r-2 border-black align-middle text-xs md:text-sm ${needsTopBorder ? "border-t-2 border-t-black" : ""}`}>
                         {middleLabel}
                       </td>
                     )}
-                    <td className="py-2 md:py-3 border-b-2 border-black">
+                    <td className={`py-2 md:py-3 border-b-2 border-black ${needsTopBorder ? "border-t-2 border-t-black" : ""}`}>
                       <div className="flex items-center justify-center gap-0.5">
                         <span className="font-bold text-xs md:text-sm">(</span>
                         <Input
