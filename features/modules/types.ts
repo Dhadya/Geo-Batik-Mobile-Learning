@@ -65,7 +65,14 @@ export interface SectionBlock {
   instruction: string
   instructionMatrix?: string
   garisTranslasiTable?: GarisTranslasiTable
+  refleksiGroups?: RefleksiGroup[]
   items: SectionItem[]
+}
+
+/** Group of items sharing the same garis value for rowSpan in refleksi tables. */
+export interface RefleksiGroup {
+  garis: string
+  itemIds: number[]
 }
 
 // ============================================================

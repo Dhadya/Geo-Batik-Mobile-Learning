@@ -971,15 +971,105 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
         suffix: ")",
         placeholders: ["2h - x", "y"],
       },
-      assessment: [
-        {
-          id: 1,
-          question:
-            "Titik P(5, -3) direfleksikan terhadap garis x=2. Koordinat P' adalah...",
-          options: ["(-1, -3)", "(1, -3)", "(9, -3)", "(-1, 3)"],
-          correctIndex: 0,
+      assessment: [],
+      sections: {
+        percobaan: {
+          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh garis x=h.",
+          refleksiGroups: [
+            { garis: "x = 2", itemIds: [1, 2] },
+            { garis: "x = -1", itemIds: [3, 4] },
+          ],
+          items: [
+            {
+              id: 1,
+              type: "koordinat",
+              label: "A(3, 2)",
+              answer: { x: 1, y: 2 },
+            },
+            {
+              id: 2,
+              type: "koordinat",
+              label: "B(-3, -3)",
+              answer: { x: 7, y: -3 },
+            },
+            {
+              id: 3,
+              type: "koordinat",
+              label: "C(1, 5)",
+              answer: { x: -3, y: 5 },
+            },
+            {
+              id: 4,
+              type: "koordinat",
+              label: "D(-2, 2)",
+              answer: { x: 0, y: 2 },
+            },
+          ],
         },
-      ],
+        pengamatan: {
+          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          items: [
+            {
+              id: 5,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi titik A dan A' terhadap garis x=h?",
+              options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
+              correctIndex: 1,
+            },
+            {
+              id: 6,
+              type: "pilihan_ganda",
+              question: "Bandingkan jarak titik A ke garis x=h dengan jarak A' ke garis x=h!",
+              options: ["Sama", "Berbeda"],
+              correctIndex: 0,
+            },
+            {
+              id: 7,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap garis x=h?",
+              options: ["Sejajar", "Tegak Lurus"],
+              correctIndex: 1,
+            },
+            {
+              id: 8,
+              type: "pilihan_ganda",
+              question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 0,
+            },
+          ],
+        },
+        penyimpulan: {
+          instruction: "Simpulkan hasil percobaanmu.",
+          items: [
+            {
+              id: 9,
+              type: "uraian",
+              question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap garis x=h, tentukan titik bayangannya dengan mengisi tabel berikut.",
+              answer: "(2h - x, y)",
+            },
+          ],
+        },
+        cekPemahaman: {
+          instruction: "Kerjakan soal-soal berikut.",
+          items: [
+            {
+              id: 10,
+              type: "pilihan_ganda",
+              question: "Tentukan bayangan titik P(6, 7) jika dicerminkan terhadap garis x=3!",
+              options: ["P'(7, 0)", "P'(7, 6)", "P'(3, 7)", "P'(0, 7)"],
+              correctIndex: 3,
+            },
+            {
+              id: 11,
+              type: "pilihan_ganda",
+              question: "Titik Q'(-3, 6) merupakan bayangan titik Q terhadap garis x=-2. Tentukan koordinat titik asalnya!",
+              options: ["Q(-1, 6)", "Q(1, 6)", "Q(3, 6)", "Q(6, 6)"],
+              correctIndex: 0,
+            },
+          ],
+        },
+      },
     },
     {
       label: "GARIS Y=H",
