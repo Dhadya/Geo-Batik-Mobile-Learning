@@ -665,15 +665,95 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
         suffix: ")",
         placeholders: ["-x", "-y"],
       },
-      assessment: [
-        {
-          id: 1,
-          question:
-            "Titik P(5, -3) direfleksikan terhadap titik (0,0). Koordinat P' adalah...",
-          options: ["(-5, 3)", "(5, 3)", "(-5, -3)", "(3, -5)"],
-          correctIndex: 0,
+      assessment: [],
+      sections: {
+        percobaan: {
+          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh titik (0,0).",
+          items: [
+            {
+              id: 1,
+              type: "koordinat",
+              label: "A(5, 3)",
+              answer: { x: -5, y: -3 },
+            },
+            {
+              id: 2,
+              type: "koordinat",
+              label: "B(-3, 5)",
+              answer: { x: 3, y: -5 },
+            },
+            {
+              id: 3,
+              type: "koordinat",
+              label: "C(2, -5)",
+              answer: { x: -2, y: 5 },
+            },
+          ],
         },
-      ],
+        pengamatan: {
+          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          items: [
+            {
+              id: 4,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi titik A dan A' terhadap titik (0,0)?",
+              options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
+              correctIndex: 1,
+            },
+            {
+              id: 5,
+              type: "pilihan_ganda",
+              question: "Bandingkan jarak titik A ke titik (0,0) dengan jarak A' ke titik (0,0)!",
+              options: ["Sama", "Berbeda"],
+              correctIndex: 0,
+            },
+            {
+              id: 6,
+              type: "pilihan_ganda",
+              question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap titik (0,0)?",
+              options: ["Sejajar", "Tegak Lurus"],
+              correctIndex: 1,
+            },
+            {
+              id: 7,
+              type: "pilihan_ganda",
+              question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 0,
+            },
+          ],
+        },
+        penyimpulan: {
+          instruction: "Simpulkan hasil percobaanmu.",
+          items: [
+            {
+              id: 8,
+              type: "uraian",
+              question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap titik (0,0), tentukan titik bayangannya dengan mengisi tabel berikut.",
+              answer: "(-x, -y)",
+            },
+          ],
+        },
+        cekPemahaman: {
+          instruction: "Kerjakan soal-soal berikut.",
+          items: [
+            {
+              id: 9,
+              type: "pilihan_ganda",
+              question: "Tentukan bayangan titik P(7, 3) jika dicerminkan terhadap titik (0,0)!",
+              options: ["P'(-7, -3)", "P'(7, 3)", "P'(-7, 3)", "P'(3, -7)"],
+              correctIndex: 0,
+            },
+            {
+              id: 10,
+              type: "pilihan_ganda",
+              question: "Titik Q'(-8, -2) merupakan bayangan titik Q terhadap titik (0,0). Tentukan koordinat titik Q!",
+              options: ["Q(-8, 2)", "Q(8, -2)", "Q(8, 2)", "Q(2, 8)"],
+              correctIndex: 2,
+            },
+          ],
+        },
+      },
     },
     {
       label: "GARIS X=Y",
