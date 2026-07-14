@@ -42,7 +42,7 @@ export function InteractiveCanvas({ materialId, alt = "Interactive canvas" }: In
       {/* Section header */}
       <div className="flex items-center gap-3 md:gap-4">
         <div className="size-10 md:size-14 bg-secondary border-4 border-black shadow-md flex items-center justify-center">
-          <MaterialIcon name="grid_4x4" className="!text-2xl md:!text-3xl text-secondary-foreground" />
+          <MaterialIcon name="grid_4x4" className="text-2xl md:text-3xl text-secondary-foreground" />
         </div>
         <h2 className="text-lg md:text-2xl font-black uppercase">Interactive Canvas</h2>
       </div>

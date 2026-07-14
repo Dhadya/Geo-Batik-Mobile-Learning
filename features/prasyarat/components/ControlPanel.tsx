@@ -68,7 +68,7 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
         {accordionGroups.map(group => (
           <AccordionItem key={group.label} value={group.label}>
             <AccordionTrigger value={group.label}>
-              <MaterialIcon name={group.icon} className="!text-sm md:!text-base" />
+              <MaterialIcon name={group.icon} className="text-sm md:text-base" />
               <span className="flex-1 text-left">{group.label}</span>
             </AccordionTrigger>
             <AccordionContent>
@@ -115,7 +115,7 @@ function ToggleButton({ toggle, isActive, onToggle }: {
       size="sm"
       className="border-2 border-black font-bold text-xs md:text-sm shadow-sm hover:shadow justify-start px-2 md:px-2.5"
     >
-      <MaterialIcon name={toggle.icon} className="!text-sm md:!text-base" />
+      <MaterialIcon name={toggle.icon} className="text-sm md:text-base" />
       <span>{toggle.label}</span>
     </Toggle>
   )

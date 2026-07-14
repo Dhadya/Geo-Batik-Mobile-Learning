@@ -12,7 +12,7 @@ export default function MenuPage() {
       <LabCard
         title="LAB BATIK"
         description="Eksperimen membuat motif batik dengan transformasi geometri."
-        icon={<MaterialIcon name="draw" className="!text-3xl md:!text-5xl" />}
+        icon={<MaterialIcon name="draw" className="text-3xl md:text-5xl" />}
         href="/lab"
       />
 

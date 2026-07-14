@@ -15,7 +15,7 @@ export function QuizResultScore({
   return (
     <Card className="w-full border-4 border-black shadow-lg">
       <Card.Header className="bg-primary-container border-b-4 border-black">
-        <Card.Title className="!text-xl md:!text-2xl !font-black uppercase">
+        <Card.Title className="text-xl md:text-2xl font-black uppercase">
           Skor Anda
         </Card.Title>
       </Card.Header>

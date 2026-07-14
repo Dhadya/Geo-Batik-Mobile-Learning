@@ -159,7 +159,7 @@ import { Button } from "@/components/retroui/Button"
 
 // Primary CTA
 <Button variant="default" size="lg"
-  className="neubrutal-shadow hover-shift active-shift !rounded-none"
+  className="neubrutal-shadow hover-shift active-shift"
   onClick={...}>
   MASUK
   <ArrowRight className="!size-10" />

@@ -50,7 +50,7 @@ export function KuisSoalClient({
 
   if (!quiz || !question) {
     return (
-      <div className="max-w-[96rem] mx-auto p-4 md:p-6">
+      <div className="space-y-4 md:space-y-6">
         <p>Soal tidak ditemukan.</p>
       </div>
     )
@@ -64,7 +64,7 @@ export function KuisSoalClient({
   )
 
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
+    <div className="space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={slug} label={label} />
 
       <div className="bg-surface-container-high border-4 border-black shadow-lg">
@@ -80,7 +80,7 @@ export function KuisSoalClient({
             <QuizArrowNav slug={slug} isFirst={isFirst} current={nomor} />
           </div>
 
-          <div className="flex-grow p-3 md:p-4">
+          <div className="grow p-3 md:p-4">
             <Card className="w-full border-4 border-black shadow-md">
               <Card.Content className="space-y-4 md:space-y-6">
                 <QuestionBox question={question.question} />
@@ -124,7 +124,7 @@ export function KuisSoalClient({
           <Button
             variant="default"
             size="lg"
-            className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
+            className="px-8 py-4 text-lg font-black uppercase gap-2"
             onClick={() => {
               useQuizStore.getState().submitAnswers()
               router.push(`/modul/${slug}/kuis/hasil`)
@@ -138,7 +138,7 @@ export function KuisSoalClient({
             <Button
               variant="default"
               size="lg"
-              className="!rounded-none px-8 py-4 text-lg font-black uppercase gap-2"
+              className="px-8 py-4 text-lg font-black uppercase gap-2"
             >
               Kembali
             </Button>
@@ -147,7 +147,7 @@ export function KuisSoalClient({
           <Button
             variant="outline"
             size="lg"
-            className="!rounded-none px-8 py-4 text-lg font-black uppercase"
+            className="px-8 py-4 text-lg font-black uppercase"
             disabled
           >
             Jawab semua soal terlebih dahulu

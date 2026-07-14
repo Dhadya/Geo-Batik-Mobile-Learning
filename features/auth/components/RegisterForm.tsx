@@ -88,7 +88,7 @@ export function RegisterForm() {
           variant="default"
           size="lg"
           disabled={isDisabled}
-          className="w-full !h-16 !text-xl font-black uppercase neubrutal-shadow hover-shift active-shift !rounded-none flex items-center justify-center gap-3"
+          className="w-full h-16 text-xl font-black uppercase neubrutal-shadow hover-shift active-shift flex items-center justify-center gap-3"
         >
           {loading ? (
             <Loader variant="secondary" size="lg" />
@@ -118,7 +118,7 @@ export function RegisterForm() {
           variant="outline"
           onClick={handleGoogleSignUp}
           disabled={isDisabled}
-          className="w-full !h-14 mt-6 border-4 border-black !rounded-none font-bold uppercase flex items-center justify-center gap-3"
+          className="w-full h-14 mt-6 border-4 border-black font-bold uppercase flex items-center justify-center gap-3"
         >
           {googleLoading ? (
             <Loader size="md" />
@@ -137,7 +137,7 @@ export function RegisterForm() {
         <Link href="/login">
           <Button
             variant="default"
-            className="w-full !h-12 bg-card border-4 border-black !rounded-none text-xs font-bold uppercase hover:bg-secondary-container transition-all"
+            className="w-full h-12 bg-card border-4 border-black text-xs font-bold uppercase hover:bg-secondary-container transition-all"
           >
             Masuk Sekarang
           </Button>

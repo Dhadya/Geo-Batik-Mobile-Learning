@@ -55,13 +55,13 @@ export function ModuleCard({
       <div>
         <Badge
           variant="surface"
-          className="border-4 border-black bg-card shadow-md font-black uppercase text-xs md:text-sm mb-4 md:mb-6 !rounded-none"
+          className="border-4 border-black bg-card shadow-md font-black uppercase text-xs md:text-sm mb-4 md:mb-6"
         >
           {label}
         </Badge>
         <Text
           as="h2"
-          className="!text-4xl md:!text-5xl lg:!text-6xl !font-black leading-none tracking-tighter uppercase mb-3 md:mb-4"
+          className="text-4xl md:text-5xl lg:text-6xl font-black leading-none tracking-tighter uppercase mb-3 md:mb-4"
         >
           {title}
         </Text>
@@ -91,10 +91,10 @@ export function ModuleCard({
         {/* CTA button — navigates to module apersepsi */}
         <Link
           href={href}
-          className={`w-full border-4 border-black py-4 md:py-6 shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all flex items-center justify-center gap-3 md:gap-4 uppercase font-black text-lg md:text-xl !rounded-none ${ctaBgColor}`}
+          className={`w-full border-4 border-black py-4 md:py-6 shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all flex items-center justify-center gap-3 md:gap-4 uppercase font-black text-lg md:text-xl ${ctaBgColor}`}
         >
           {ctaText}
-          <MaterialIcon name="arrow_forward" className="!text-2xl md:!text-3xl" />
+          <MaterialIcon name="arrow_forward" className="text-2xl md:text-3xl" />
         </Link>
       </div>
     </div>

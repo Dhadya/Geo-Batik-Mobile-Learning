@@ -220,18 +220,18 @@ import { Button } from "@/components/retroui/Button"
 
 // Primary CTA (gold bg, thick shadow, press effect)
 <Button variant="default" size="lg"
-  className="neubrutal-shadow hover-shift active-shift !rounded-none flex items-center gap-3">
+  className="neubrutal-shadow hover-shift active-shift rounded-none! flex items-center gap-3">
   MASUK
-  <ArrowRight className="!size-10" />
+  <ArrowRight className="size-10!" />
 </Button>
 
 // Outline style (white bg, thick border)
-<Button variant="outline" size="md" className="!rounded-none">
+<Button variant="outline" size="md" className="rounded-none!">
   KEMBALI
 </Button>
 
 // Icon-only button (password toggle, etc.)
-<Button variant="ghost" size="icon" className="!rounded-none"
+<Button variant="ghost" size="icon" className="rounded-none!"
   onClick={() => setVisible(!visible)}>
   {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
 </Button>
