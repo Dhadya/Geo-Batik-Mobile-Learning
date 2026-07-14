@@ -1,8 +1,12 @@
 import { createAuthClient } from "better-auth/react";
 
-// BetterAuth React client — defaults to same-origin /api/auth in the browser.
-// Avoid an absolute localhost fallback so deployed builds never call local dev.
-export const authClient = createAuthClient();
+const baseURL =
+  typeof window !== "undefined"
+    ? window.location.origin
+    : (process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000")
+
+/** BetterAuth React client — dynamically resolves to the current page origin. */
+export const authClient = createAuthClient({ baseURL });
 
 // Destructure commonly used auth methods for convenience
 export const { signIn, signOut, signUp } = authClient;
