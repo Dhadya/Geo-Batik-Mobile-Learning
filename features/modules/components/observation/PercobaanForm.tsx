@@ -269,14 +269,14 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           "garis-x=h": "Garis x=h",
           "garis-y=h": "Garis y=h",
         }
-        const reflectText = `Refleksi terhadap ${reflectionLabels[tab] ?? tab}`
+        const reflectText = reflectionLabels[tab] ?? tab
 
         return (
           <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
             <thead>
               <tr className="bg-muted border-b-4 border-black text-center font-black">
                 <th className="p-1.5 md:p-2 border-r-2 border-black">Titik Awal <span>(A)</span></th>
-                <th className="p-1.5 md:p-2 border-r-2 border-black">Refleksi</th>
+                <th className="p-1.5 md:p-2 border-r-2 border-black">Refleksi terhadap</th>
                 <th className="p-1.5 md:p-2">Titik Bayangan <span>(A&apos;)</span></th>
               </tr>
             </thead>
@@ -287,7 +287,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
                 return (
                   <tr key={k.id} className="text-center">
                     <td className="py-2 md:py-3 font-bold border-r-2 border-black border-b-2">
-                      {k.bayangan ? `(${k.bayangan.x}, ${k.bayangan.y})` : k.label}
+                      {k.label.replace(/^[A-Z]/, '')}
                     </td>
                     {idx === 0 && (
                       <td rowSpan={tableItems.length} className="py-2 md:py-3 font-bold border-r-2 border-black align-middle text-[10px] md:text-xs">

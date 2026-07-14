@@ -22,6 +22,18 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
     setField, handleSubmit, setChecked, setErrors,
   } = useSection(slug, tab, "penyimpulan")
 
+  // Map tab to reflection label for conclusion table
+  const reflectionLabels: Record<string, string> = {
+    "sumbu-x": "Sumbu x",
+    "sumbu-y": "Sumbu y",
+    "titik": "Titik (0,0)",
+    "garis-x=y": "Garis x=y",
+    "garis-x=-y": "Garis x=-y",
+    "garis-x=h": "Garis x=h",
+    "garis-y=h": "Garis y=h",
+  }
+  const reflectLabel = reflectionLabels[tab] ?? tab
+
   const [item11Err, setItem11Err] = useState<string>("")
 
   const handleClick = useCallback(() => {
@@ -194,7 +206,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                   {slug === "refleksi" ? (
                     <div className="flex items-center gap-0.5">
                       <Text as="p" className="text-xs md:text-sm font-medium text-black">
-                        Jika titik awal (<span className="italic">x, y</span>) direfleksikan terhadap sumbu x
+                        Jika titik awal (<span className="italic">x, y</span>) direfleksikan terhadap {reflectLabel}
                       </Text>
                       <Text as="p" className="text-xs md:text-sm font-medium text-black">
                         , tentukan titik bayangannya dengan mengisi tabel berikut.
@@ -225,7 +237,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                     <div className="grid grid-cols-3 items-center py-2 md:py-3 px-2 md:px-4 text-center text-xs md:text-sm">
                       <div className="italic font-bold">(x, y)</div>
                       {slug === "refleksi" ? (
-                        <div className="text-xs md:text-sm font-semibold">Sumbu x</div>
+                        <div className="text-xs md:text-sm font-semibold">{reflectLabel}</div>
                       ) : (
                         <div className="flex items-center justify-center gap-0.5">
                           <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
