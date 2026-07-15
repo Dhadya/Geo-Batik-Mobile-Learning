@@ -70,6 +70,7 @@ function ModuleAnswerButton({
             alt={text}
             width={100}
             height={100}
+            style={{ width: "auto", height: "auto" }}
           />
         </div>
       ) : parsed ? (
@@ -203,6 +204,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                           alt="Soal"
                           width={120}
                           height={120}
+                          style={{ width: "auto", height: "auto" }}
                         />
                       </div>
                     </div>

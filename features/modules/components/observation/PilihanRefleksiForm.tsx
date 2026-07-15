@@ -40,26 +40,23 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
     <section className="space-y-3 md:space-y-4">
       <div className="border-4 border-black p-3 md:p-4 bg-background shadow-[4px_4px_0_0_rgba(0,0,0,1)] space-y-3 md:space-y-4">
         {/* Instruction */}
-        <Text as="p" className="text-xs md:text-sm font-medium text-black">
+        <Text as="p" className="text-xs md:text-sm font-medium text-black whitespace-pre-line">
           {refleksiItem.question}
         </Text>
 
         {/* Select dropdown for reflection type */}
         <div className="space-y-2">
-          <Text as="p" className="text-xs md:text-sm font-bold text-black">
-            Pilih salah satu refleksi berikut:
-          </Text>
           <Select
-            value={selectedOption || "Sumbu x"}
+            value={selectedOption}
             onValueChange={(val) => { if (val) setField(String(refleksiItem.id), "selected", val) }}
             disabled={isChecked}
           >
-            <Select.Trigger className="w-full border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)]">
-              <Select.Value placeholder="Pilih Refleksi" />
+            <Select.Trigger className="w-full border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] text-xs md:text-sm font-medium">
+              <Select.Value placeholder="Pilih opsi refleksi" />
             </Select.Trigger>
             <Select.Content>
               {refleksiItem.options.map((opt) => (
-                <Select.Item key={opt} value={opt}>
+                <Select.Item key={opt} value={opt} className="text-xs md:text-sm font-medium">
                   {opt}
                 </Select.Item>
               ))}
@@ -73,7 +70,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
             <thead>
               <tr className="bg-muted border-b-4 border-black text-center font-black">
                 <th className="p-1.5 md:p-2 border-r-2 border-black">Titik Awal</th>
-                <th className="p-1.5 md:p-2 border-r-2 border-black">Refleksi terhadap</th>
+                <th className="p-1.5 md:p-2 border-r-2 border-black">Refleksi yang dipilih</th>
                 <th className="p-1.5 md:p-2">Titik Bayangan</th>
               </tr>
             </thead>
@@ -85,7 +82,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
                 return (
                   <tr key={idx} className="text-center">
                     <td className="py-2 md:py-3 font-bold border-r-2 border-black border-b-2">
-                      {origLabel.replace(/^[A-Z]/, '')}
+                      {origLabel}
                     </td>
                     <td className="py-2 md:py-3 font-medium border-r-2 border-black border-b-2 text-xs md:text-sm">
                       {selectedOption}

@@ -1203,7 +1203,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
             {
               id: 1,
               type: "pilihan_refleksi",
-              question: "Pilih salah satu refleksi berikut:",
+              question: "Motif bangun ABCD memiliki titik sudut A(\u22124, 0), B(\u22122, 2), C(\u22122, 6), D(\u22124, 4).\n\nPilih salah satu refleksi berikut:",
               options: ["Sumbu x", "Sumbu y", "Titik (0,0)", "Garis x=y", "Garis x=-y", "Garis x=2", "Garis y=-1"],
               correctAnswers: {
                 "Sumbu x": [
@@ -1282,7 +1282,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
             {
               id: 6,
               type: "checklist_table",
-              question: "Perhatikan pernyataan berikut!",
+              question: "Berdasarkan pengamatanmu, tentukan sifat-sifat refleksi bangun dengan checklist pernyataan berikut!",
               statements: [
                 "Bentuk bangun berubah",
                 "Ukuran bangun berubah",

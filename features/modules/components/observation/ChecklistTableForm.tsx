@@ -48,9 +48,9 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
         <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
           <thead>
             <tr className="bg-muted border-b-4 border-black text-center font-black">
-              <th className="p-1.5 md:p-2 border-r-2 border-black text-left">Pernyataan</th>
-              <th className="p-1.5 md:p-2 border-r-2 border-black">Ya</th>
-              <th className="p-1.5 md:p-2">Tidak</th>
+              <th className="p-2 md:p-3 border-r-2 border-black text-left">Pernyataan</th>
+              <th className="p-2 md:p-3 border-r-2 border-black w-12 md:w-16">Ya</th>
+              <th className="p-2 md:p-3 w-12 md:w-16">Tidak</th>
             </tr>
           </thead>
           <tbody>
@@ -58,10 +58,10 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
               const currentValue = fields[String(checklistItem.id)]?.[`statement_${idx}`] ?? ""
               return (
                 <tr key={idx} className="text-center">
-                  <td className="py-2 md:py-3 font-medium text-left border-r-2 border-black border-b-2">
+                  <td className="py-3 md:py-4 px-2 md:px-3 font-medium text-left border-r-2 border-black border-b-2">
                     {statement}
                   </td>
-                  <td className="py-2 md:py-3 border-r-2 border-black border-b-2">
+                  <td className="py-3 md:py-4 border-r-2 border-b-2">
                     <div className="flex items-center justify-center">
                       <Checkbox
                         checked={currentValue === "ya"}
@@ -70,7 +70,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
                       />
                     </div>
                   </td>
-                  <td className="py-2 md:py-3 border-b-2 border-black">
+                  <td className="py-3 md:py-4 border-b-2 border-black">
                     <div className="flex items-center justify-center">
                       <Checkbox
                         checked={currentValue === "tidak"}
