@@ -31,7 +31,7 @@ export function ResetButton() {
           <p className="font-semibold text-sm md:text-base">
             Yakin ingin mereset semua jawaban?
           </p>
-          <p className="text-[10px] md:text-sm text-muted-foreground">
+          <p className="text-xs md:text-sm text-muted-foreground">
             Semua jawaban yang sudah kamu isi akan dihapus.
           </p>
         </div>

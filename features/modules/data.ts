@@ -1396,21 +1396,9 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
                 ],
                 "Garis y=\u22122": [
                   { x: -6, y: -5 },
-                  { x: -2, y: -7 },
+                  { x: -2, y: 7 },
                 ],
               },
-            },
-            {
-              id: 2,
-              type: "koordinat",
-              label: "A'",
-              answer: { x: 0, y: 0 },
-            },
-            {
-              id: 3,
-              type: "koordinat",
-              label: "B'",
-              answer: { x: 0, y: 0 },
             },
           ],
         },

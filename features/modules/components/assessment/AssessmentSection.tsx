@@ -309,8 +309,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
           onClick={handleClick}
           disabled={!allAnswered && !isChecked}
           variant="default"
-          size="lg"
-          className="font-black uppercase tracking-wide rounded-none"
+          className="font-black uppercase tracking-wide rounded-none text-xs md:text-lg px-4 md:px-8 py-1.5 md:py-3"
         >
           {isChecked ? "Periksa Lagi" : "Submit Jawaban"}
         </Button>

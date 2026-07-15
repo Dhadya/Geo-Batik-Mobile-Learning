@@ -47,7 +47,7 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
     <div className="xl:col-span-1 space-y-4 md:space-y-6">
       {/* Guide text */}
       <h3 className="font-black uppercase text-base md:text-lg">Eksplorasi Konsep</h3>
-      <p className="text-sm md:text-base text-muted-foreground">
+      <p className="text-sm md:text-base font-medium text-muted-foreground">
         Tekan tombol berikut untuk menampilkan objek geometri
       </p>
 

@@ -58,7 +58,7 @@ export function ModuleContent({
 
       {/* Module title banner */}
       <div className="bg-white border-4 border-black p-3 md:p-4 text-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] uppercase">
-        <Text as="h1" className="text-lg md:text-2xl font-black text-black">
+        <Text as="h2" className="text-lg md:text-xl font-black text-black">
           {tabConfig.title.toUpperCase()}
         </Text>
       </div>

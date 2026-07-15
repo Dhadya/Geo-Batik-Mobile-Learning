@@ -15,7 +15,7 @@ export function VideoEmbed({ label, src, alt = "Video embed" }: VideoEmbedProps)
   return (
     <div className="w-full bg-card border-4 border-black shadow-xl overflow-hidden">
       {/* Header bar */}
-      <div className="p-3 md:p-4 bg-primary border-b-4 border-black flex justify-between items-center">
+      <div className="p-2 md:p-3 bg-primary border-b-4 border-black flex justify-between items-center">
         <span className="font-bold text-primary-foreground uppercase tracking-widest flex items-center gap-2 text-xs md:text-sm">
           <MaterialIcon name="play_circle" className="text-xl md:text-2xl" />
           {label}

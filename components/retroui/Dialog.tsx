@@ -47,7 +47,7 @@ const DialogBackdrop = (inputProps: IDialogBackgroupProps & { ref?: React.Ref<HT
 };
 
 const dialogVariants = cva(
-  `fixed left-[50%] top-[50%] z-50 grid rounded overflow-hidden w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border-2 bg-background shadow-lg duration-200
+  `fixed left-[50%] top-[50%] z-50 grid rounded overflow-hidden w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 border-2 bg-background shadow-lg duration-200
   data-[open]:animate-in
   data-[open]:fade-in-0
   data-[open]:zoom-in-95
@@ -57,14 +57,14 @@ const dialogVariants = cva(
   {
     variants: {
       size: {
-        auto: "max-w-fit",
-        sm: "lg:max-w-[30%]",
-        md: "lg:max-w-[40%]",
-        lg: "lg:max-w-[50%]",
-        xl: "lg:max-w-[60%]",
-        "2xl": "lg:max-w-[70%]",
-        "3xl": "lg:max-w-[80%]",
-        "4xl": "lg:max-w-[90%]",
+        auto: "md:max-w-lg",
+        sm: "md:max-w-xs lg:max-w-[30%]",
+        md: "md:max-w-sm lg:max-w-[40%]",
+        lg: "md:max-w-md lg:max-w-[50%]",
+        xl: "md:max-w-lg lg:max-w-[60%]",
+        "2xl": "md:max-w-xl lg:max-w-[70%]",
+        "3xl": "md:max-w-2xl lg:max-w-[80%]",
+        "4xl": "md:max-w-3xl lg:max-w-[90%]",
         screen: "max-w-[100%]",
       },
     },

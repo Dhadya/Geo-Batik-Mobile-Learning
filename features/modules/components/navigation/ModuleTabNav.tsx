@@ -21,10 +21,10 @@ export function ModuleTabNav({
         <Link key={t.value} href={`/modul/${slug}/${t.value}`} className="flex-1 min-w-fit">
           <Button
             variant={t.value === currentTab ? "default" : "outline"}
-            size="lg"
+            size="sm"
             className={cn(
-              "font-bold uppercase whitespace-nowrap w-full text-xs md:text-sm px-1.5 md:px-4",
-              t.value !== currentTab && "!bg-white"
+              "font-bold uppercase whitespace-nowrap w-full text-xs md:text-sm lg:text-base p-1.5 md:p-3",
+              t.value !== currentTab && "bg-white!"
             )}
           >
             {slug === "translasi" ? `TRANSLASI ${t.label}` : t.label}

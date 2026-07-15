@@ -6,32 +6,34 @@ import { ConceptCard, VideoEmbed, InteractiveCanvas, prerequisiteConcepts } from
 /* Prasyarat (prerequisites) — Cartesian coordinate recap before module lessons. */
 export default function PrasyaratPage() {
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
+    <div className="max-w-384 mx-auto px-4 md:px-12 py-4 md:py-6 space-y-6 md:space-y-8">
       {/* Header — badge + title + description */}
       <header className="space-y-3 md:space-y-4">
-        <div className="inline-block bg-primary border-4 border-black p-2 shadow-md">
+        <div className="inline-block bg-primary border-4 border-black p-1 md:p-1.5 shadow-md">
           <span className="font-bold text-primary-foreground uppercase px-2 text-xs md:text-sm">
             Materi Prasyarat
           </span>
         </div>
         <Text
           as="h1"
-          className="text-3xl md:text-5xl lg:text-6xl font-black uppercase"
+          className="text-3xl md:text-4xl lg:text-5xl font-black uppercase"
         >
           Elemen Dasar Geometri
         </Text>
-        <p className="text-base md:text-lg max-w-3xl">
+        <p className="font-medium text-sm md:text-base lg:text-lg">
           Sebelum lebih dalam memasuki media GEMATRI, mari kita ingat kembali
           tentang sistem koordinat kartesius.
         </p>
       </header>
 
       {/* Video embed — YouTube */}
-      <VideoEmbed
-        label="Video Penjelasan"
-        src="https://www.youtube.com/embed/pcoG-VM2sq4"
-        alt="Video — Elemen Dasar Geometri"
-      />
+      <div className="w-full max-w-5xl mx-auto">
+        <VideoEmbed
+          label="Video Penjelasan"
+          src="https://www.youtube.com/embed/pcoG-VM2sq4"
+          alt="Video — Elemen Dasar Geometri"
+        />
+      </div>
 
       {/* Interactive canvas — GeoGebra embed with concept controls */}
       <InteractiveCanvas
@@ -61,28 +63,22 @@ export default function PrasyaratPage() {
       </section>
 
       {/* CTA section */}
-      <section className="py-4 md:py-6 flex flex-col items-center gap-6 md:gap-8">
-        <div className="w-full border-t-4 border-black" />
-
-        <div className="w-full flex flex-col items-center gap-4 md:gap-6">
-          {/* LANJUT — links to menu */}
-          <Link
-            href="/menu"
-            className="group relative w-full md:w-3/4 bg-secondary-container border-4 border-black py-4 px-8 md:py-8 md:px-12 shadow-xl hover:translate-x-2 hover:translate-y-2 hover:shadow-lg active:translate-x-4 active:translate-y-4 active:shadow-none transition-all"
-          >
-            <span className="flex items-center justify-center gap-4 md:gap-8 text-xl md:text-3xl lg:text-4xl font-black uppercase">
-              LANJUT KE MENU
-              <MaterialIcon
-                name="arrow_forward"
-                className="text-3xl md:text-5xl group-hover:translate-x-4 transition-transform"
-              />
-            </span>
-            {/* Decorative stamp */}
-            <div className="absolute -top-6 -left-6 md:-top-8 md:-left-8 size-12 md:size-16 bg-primary border-4 border-black flex items-center justify-center shadow-md">
-              <MaterialIcon name="star_rate" className="text-2xl md:text-3xl text-primary-foreground" />
-            </div>
-          </Link>
-        </div>
+      <section className="py-4 md:py-6 flex justify-center">
+        {/* LANJUT — links to menu */}
+        <Link
+          href="/menu"
+          className="group relative inline-flex items-center gap-3 md:gap-4 bg-secondary-container border-4 border-black px-8 py-3 md:px-12 md:py-4 font-black text-lg md:text-2xl shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all uppercase"
+        >
+          <span>LANJUT KE MENU</span>
+          <MaterialIcon
+            name="arrow_forward"
+            className="text-2xl md:text-3xl group-hover:translate-x-2 transition-transform"
+          />
+          {/* Decorative stamp */}
+          <div className="absolute -top-5 -left-5 md:-top-7 md:-left-7 size-10 md:size-14 bg-primary border-4 border-black flex items-center justify-center shadow-md">
+            <MaterialIcon name="star_rate" className="text-xl md:text-2xl text-primary-foreground" />
+          </div>
+        </Link>
       </section>
     </div>
   )
