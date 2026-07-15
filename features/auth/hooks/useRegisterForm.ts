@@ -96,7 +96,7 @@ export function useRegisterForm() {
         name: name.trim(),
         email: email.trim(),
         password,
-        callbackURL: "/menu",
+        callbackURL: "/prasyarat",
       })
 
       if (error) {
@@ -123,9 +123,9 @@ export function useRegisterForm() {
     try {
       await signIn.social({
         provider: "google",
-        callbackURL: "/menu",
+        callbackURL: "/prasyarat",
         errorCallbackURL: "/register",
-        newUserCallbackURL: "/menu",
+        newUserCallbackURL: "/prasyarat",
         requestSignUp: true,
       })
     } catch {

@@ -115,8 +115,11 @@ export function UrutkanInput({ items, value, onChange, disabled }: UrutkanInputP
     [orderArr, onChange],
   )
 
+  const dndId = useMemo(() => `dnd-${items.join("-").slice(0, 30)}`, [items])
+
   return (
     <DndContext
+      id={dndId}
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}

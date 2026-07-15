@@ -70,6 +70,7 @@ function ModuleAnswerButton({
             alt={text}
             width={100}
             height={100}
+            className="w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] md:w-[200px] md:h-[200px] object-contain"
           />
         </div>
       ) : parsed ? (
@@ -203,6 +204,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                           alt="Soal"
                           width={120}
                           height={120}
+                          className="w-[160px] h-[160px] sm:w-[200px] sm:h-[200px] md:w-[240px] md:h-[240px] object-contain"
                         />
                       </div>
                     </div>
@@ -242,7 +244,13 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                 </div>
 
                 {/* Answer options grid — renders ModuleAnswerButton per option */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
+                <div
+                  className={`grid gap-2 md:gap-3 ${
+                    q.options.length >= 5
+                      ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
+                      : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+                  }`}
+                >
                   {q.options.map((opt, oi) => {
                     /* Determine if option oi is selected: bitmap for multi, direct compare for single */
                     const isSelected = isMulti
@@ -301,8 +309,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
           onClick={handleClick}
           disabled={!allAnswered && !isChecked}
           variant="default"
-          size="lg"
-          className="font-black uppercase tracking-wide rounded-none"
+          className="font-black uppercase tracking-wide rounded-none text-xs md:text-lg px-4 md:px-8 py-1.5 md:py-3"
         >
           {isChecked ? "Periksa Lagi" : "Submit Jawaban"}
         </Button>

@@ -18,7 +18,7 @@ export function proxy(request: NextRequest) {
   const authRoutes = ["/login", "/register"];
   if (authRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
     if (sessionCookie) {
-      return NextResponse.redirect(new URL("/menu", request.url));
+      return NextResponse.redirect(new URL("/prasyarat", request.url));
     }
     return NextResponse.next();
   }

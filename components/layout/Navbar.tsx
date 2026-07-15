@@ -82,16 +82,16 @@ function MobileNavDropdown({
     <div>
       <Button
         variant="outline"
-        size="md"
+        size="sm"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center justify-between w-full px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container"
+        className="flex items-center justify-between w-full px-4 py-2.5 font-black uppercase text-sm border-2 border-black bg-surface-container hover:bg-secondary-container"
       >
         {label}
         <Image
           src="/icons/chevron-down.svg"
           alt=""
-          width={16}
-          height={16}
+          width={14}
+          height={14}
           className={`transition-transform ${open ? "rotate-180" : ""}`}
         />
       </Button>
@@ -100,21 +100,21 @@ function MobileNavDropdown({
           <Link
             href={apersepsiHref}
             onClick={() => setOpen(false)}
-            className="block px-4 py-2 text-sm font-bold uppercase hover:bg-secondary-container transition-colors"
+            className="block px-4 py-2 text-xs font-bold uppercase hover:bg-secondary-container transition-colors"
           >
             Apersepsi
           </Link>
           <Link
             href={modulHref}
             onClick={() => setOpen(false)}
-            className="block px-4 py-2 text-sm font-bold uppercase hover:bg-secondary-container transition-colors border-t-2 border-black"
+            className="block px-4 py-2 text-xs font-bold uppercase hover:bg-secondary-container transition-colors border-t-2 border-black"
           >
             Modul
           </Link>
           <Link
             href={kuisHref}
             onClick={() => setOpen(false)}
-            className="block px-4 py-2 text-sm font-bold uppercase hover:bg-secondary-container transition-colors border-t-2 border-black"
+            className="block px-4 py-2 text-xs font-bold uppercase hover:bg-secondary-container transition-colors border-t-2 border-black"
           >
             Kuis
           </Link>
@@ -151,21 +151,21 @@ export function Navbar() {
 
   return (
     <header className="border-b-4 border-black bg-primary text-primary-foreground sticky top-0 z-40">
-      <div className="max-w-384 mx-auto px-4 md:px-12">
-        <div className="flex items-center justify-between h-16 md:h-20">
+      <div className="max-w-384 mx-auto px-4 lg:px-12">
+        <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Left — Logo + Brand */}
           <Link href="/" className="flex items-center gap-3 shrink-0">
             {/* Placeholder logo */}
-            <div className="size-10 md:size-14 bg-accent border-4 border-black flex items-center justify-center shadow-md">
-              <span className="font-black text-lg md:text-2xl text-black">G</span>
+            <div className="size-10 lg:size-14 bg-accent border-4 border-black flex items-center justify-center shadow-md">
+              <span className="font-black text-lg lg:text-2xl text-black">G</span>
             </div>
-            <span className="font-black text-xl md:text-3xl uppercase tracking-tight">
+            <span className="font-black text-xl lg:text-3xl uppercase tracking-tight">
               GEMATRI
             </span>
           </Link>
 
           {/* Center — Desktop nav */}
-          <NavigationMenu key={navKey} className="hidden md:flex">
+          <NavigationMenu key={navKey} className="hidden lg:flex">
             <NavigationMenuList className="gap-8">
               <NavigationMenuItem>
                 <NavigationMenuLink
@@ -207,7 +207,7 @@ export function Navbar() {
 
           {/* Right — Profile + Hamburger */}
           <div className="flex items-center gap-3">
-            <div className="hidden md:block">
+            <div className="hidden lg:block">
               <ProfileDropdown />
             </div>
 
@@ -216,7 +216,7 @@ export function Navbar() {
               variant="outline"
               size="icon"
               onClick={() => setMobileOpen((prev) => !prev)}
-              className="md:hidden border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
+              className="lg:hidden border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -227,12 +227,12 @@ export function Navbar() {
 
       {/* Mobile menu panel */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 z-50 border-t-4 border-black bg-primary">
+        <div className="lg:hidden absolute top-full left-0 right-0 z-50 border-t-4 border-black bg-primary">
           <div className="max-w-384 mx-auto px-4 py-4 space-y-3">
             <Link
               href="/menu"
               onClick={() => setMobileOpen(false)}
-              className="block px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors"
+              className="block px-4 py-2.5 font-black uppercase text-sm border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors"
             >
               Menu
             </Link>
@@ -254,13 +254,13 @@ export function Navbar() {
             <Link
               href="/lab"
               onClick={() => setMobileOpen(false)}
-              className="block px-4 py-3 font-black uppercase text-base border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors"
+              className="block px-4 py-2.5 font-black uppercase text-sm border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors"
             >
               Lab
             </Link>
 
             {/* Profile section in mobile */}
-            <div className="pt-3 border-t-2 border-black/20">
+            <div className="pt-3 border-t-2 border-black/20 w-full">
               <ProfileDropdown />
             </div>
           </div>
