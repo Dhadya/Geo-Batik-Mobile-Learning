@@ -106,7 +106,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
         type="submit"
         disabled={!isFilled}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold py-2 md:py-3 mt-1 md:mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
+        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 mt-1 md:mt-2 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>

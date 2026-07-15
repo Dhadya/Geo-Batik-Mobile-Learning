@@ -6,6 +6,8 @@ import type {
   MemasangkanItem,
   PilihanGandaItem,
   UrutkanItem,
+  PilihanRefleksiItem,
+  ChecklistTableItem,
 } from "../types"
 
 export interface ValidationResult {
@@ -121,6 +123,45 @@ export function validateSection(
         } else {
           errors[`${item.id}_order`] = "Urutan belum tepat"
         }
+        break
+      }
+      case "pilihan_refleksi": {
+        const pr = item as PilihanRefleksiItem
+        const selected = itemAnswers.selected ?? ""
+        if (!selected) {
+          errors[`${item.id}_selected`] = "Pilih salah satu refleksi"
+          break
+        }
+        const correctAnswers = pr.correctAnswers[selected]
+        if (!correctAnswers) {
+          errors[`${item.id}_selected`] = "Pilihan tidak valid"
+          break
+        }
+        let allCorrect = true
+        for (let idx = 0; idx < correctAnswers.length; idx++) {
+          const xVal = Number(itemAnswers[`x${idx}`])
+          const yVal = Number(itemAnswers[`y${idx}`])
+          if (xVal !== correctAnswers[idx].x || yVal !== correctAnswers[idx].y) {
+            errors[`${item.id}_coord${idx}`] = "Jawaban belum tepat"
+            allCorrect = false
+          }
+        }
+        if (allCorrect) correctCount++
+        break
+      }
+      case "checklist_table": {
+        const ct = item as ChecklistTableItem
+        let allCorrect = true
+        for (let idx = 0; idx < ct.statements.length; idx++) {
+          const userValue = itemAnswers[`statement_${idx}`] ?? ""
+          const correctValue = ct.correctAnswers[idx] ? "ya" : "tidak"
+          if (userValue !== correctValue) {
+            errors[`${item.id}_checklist`] = "Jawaban kurang tepat"
+            allCorrect = false
+            break
+          }
+        }
+        if (allCorrect) correctCount++
         break
       }
     }

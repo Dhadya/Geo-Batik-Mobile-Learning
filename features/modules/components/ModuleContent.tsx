@@ -58,7 +58,7 @@ export function ModuleContent({
 
       {/* Module title banner */}
       <div className="bg-white border-4 border-black p-3 md:p-4 text-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] uppercase">
-        <Text as="h1" className="text-lg md:text-2xl font-black text-black">
+        <Text as="h2" className="text-lg md:text-xl font-black text-black">
           {tabConfig.title.toUpperCase()}
         </Text>
       </div>
@@ -72,9 +72,11 @@ export function ModuleContent({
         <div className="lg:col-span-8 flex flex-col gap-3 md:gap-6">
           <InteractiveWorkspace materialId={tabConfig.materialId} />
           {/* Penyimpulan: hidden on mobile (shown below grid), visible on lg+ */}
-          <div className="hidden lg:block">
-            <ConclusionArea slug={slug} tab={decodedTab} />
-          </div>
+          {!(slug === "refleksi" && decodedTab === "bangun") && (
+            <div className="hidden lg:block">
+              <ConclusionArea slug={slug} tab={decodedTab} />
+            </div>
+          )}
         </div>
         {/* Right column — observation/pengamatan panel: sticky on lg+ */}
         <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24 lg:self-start">
@@ -86,9 +88,11 @@ export function ModuleContent({
       </div>
 
       {/* Penyimpulan: shown on mobile below observation panel, hidden on lg+ (rendered inside left col) */}
-      <div className="lg:hidden">
-        <ConclusionArea slug={slug} tab={decodedTab} />
-      </div>
+      {!(slug === "refleksi" && decodedTab === "bangun") && (
+        <div className="lg:hidden">
+          <ConclusionArea slug={slug} tab={decodedTab} />
+        </div>
+      )}
 
       {/* Assessment section with multiple choice questions */}
       <AssessmentSection slug={slug} tab={decodedTab} questions={questions} />
@@ -96,13 +100,13 @@ export function ModuleContent({
       {/* Navigation buttons — back to apersepsi or forward to quiz */}
       <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
         <Link href={`/apersepsi/${slug}`}>
-          <Button variant="outline" size="lg" className="rounded-none! px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
+          <Button variant="outline" size="lg" className="!rounded-none px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
             <ArrowLeft className="size-4 md:size-6" />
             KEMBALI
           </Button>
         </Link>
         <Link href={`/modul/${slug}/kuis`}>
-          <Button variant="default" size="lg" className="rounded-none! px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
+          <Button variant="default" size="lg" className="!rounded-none px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
             KERJAKAN KUIS
             <ArrowRight className="size-4 md:size-6" />
           </Button>

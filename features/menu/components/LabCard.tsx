@@ -36,20 +36,25 @@ export function LabCard({
           {icon}
         </div>
         <div className="text-left">
-          <h3 className="text-2xl md:text-3xl lg:text-5xl font-black uppercase leading-none mb-1 md:mb-2">
+          <h3 className="text-xl md:text-2xl lg:text-4xl font-black uppercase leading-none mb-1 md:mb-2">
             {title}
           </h3>
-          <p className="text-base md:text-lg">{description}</p>
+          <p className="text-base md:text-lg font-medium">{description}</p>
         </div>
       </div>
 
       {/* Right side — trailing icon */}
-      <div className="relative z-10 group-hover:translate-x-4 transition-transform">
-        {trailingIcon ?? <MaterialIcon name="architecture" className="text-4xl md:text-6xl" />}
+      <div className="relative z-10 group-hover:translate-x-4 transition-transform flex items-center justify-center shrink-0">
+        {trailingIcon ?? (
+          <MaterialIcon
+            name="architecture"
+            style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+          />
+        )}
       </div>
 
       {/* Decorative skew accent — right edge */}
-      <div className="absolute right-0 top-0 h-full w-20 md:w-32 bg-primary/10 -skew-x-12 translate-x-16" />
+      <div className="absolute right-0 top-0 h-full w-28 md:w-32 bg-primary/10 -skew-x-12 translate-x-16" />
     </Link>
   )
 }

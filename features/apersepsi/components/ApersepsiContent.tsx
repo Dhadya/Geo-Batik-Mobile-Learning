@@ -11,7 +11,7 @@ export function parseBold(text: string): ReactNode[] {
 /** Render a paragraph with bold markup support */
 export function RichParagraph({ text }: { text: string }) {
   return (
-    <p className="text-base md:text-lg leading-relaxed text-foreground text-justify">
+    <p className="text-sm md:text-base leading-relaxed text-foreground text-justify">
       {parseBold(text)}
     </p>
   )

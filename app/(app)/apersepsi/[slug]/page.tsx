@@ -34,7 +34,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
             <RichParagraph key={`before-${i}`} text={paragraph} />
           ))}
 
-          <div className="relative w-full max-w-2xl mx-auto aspect-3/2 bg-surface-container border-4 border-black overflow-hidden">
+          <div className="relative w-full max-w-md md:max-w-lg mx-auto aspect-3/2 bg-surface-container border-4 border-black overflow-hidden">
             <Image
               src={data.image}
               alt={`Motif batik ${data.title}`}
@@ -57,10 +57,10 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
           <Button
             variant="default"
             size="lg"
-            className="px-10 md:px-16 py-5 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
+            className="!rounded-none px-8 py-3 md:px-12 md:py-4 font-black text-lg md:text-2xl shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all uppercase gap-3 md:gap-4"
           >
             Baik, Ayo Belajar
-            <ArrowRight className="size-7 md:size-8" />
+            <ArrowRight className="size-6 md:size-8" />
           </Button>
         </Link>
       </div>

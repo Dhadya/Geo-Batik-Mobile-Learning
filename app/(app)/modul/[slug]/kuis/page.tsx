@@ -37,7 +37,7 @@ export default async function KuisIntroPage(props: {
       <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />} />
 
       <section className="border-4 border-black bg-white shadow-lg p-6 md:p-8 space-y-4">
-        <Text as="h2" className="text-xl md:text-2xl font-black uppercase">
+        <Text as="h2" className="text-lg md:text-xl font-black uppercase">
           Petunjuk Kuis
         </Text>
         <ul className="space-y-2 text-sm md:text-base list-disc list-inside">

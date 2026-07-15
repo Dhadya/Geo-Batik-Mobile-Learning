@@ -21,9 +21,9 @@ export function ModuleTabNav({
         <Link key={t.value} href={`/modul/${slug}/${t.value}`} className="flex-1 min-w-fit">
           <Button
             variant={t.value === currentTab ? "default" : "outline"}
-            size="lg"
+            size="sm"
             className={cn(
-              "rounded-none! font-bold uppercase whitespace-nowrap w-full text-sm md:text-lg px-2 md:px-6",
+              "font-bold uppercase whitespace-nowrap w-full text-xs md:text-sm lg:text-base p-1.5 md:p-3",
               t.value !== currentTab && "bg-white!"
             )}
           >

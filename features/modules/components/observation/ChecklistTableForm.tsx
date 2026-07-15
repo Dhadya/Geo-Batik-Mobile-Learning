@@ -1,0 +1,108 @@
+"use client"
+
+import { useCallback } from "react"
+import { Text } from "@/components/retroui/Text"
+import { Button } from "@/components/retroui/Button"
+import { Checkbox } from "@/components/retroui/Checkbox"
+import { useSection } from "@/features/modules/hooks/useObservation"
+import type { ChecklistTableItem } from "@/features/modules/types"
+
+interface ChecklistTableFormProps {
+  slug: string
+  tab: string
+}
+
+/** Checklist Table form — statements with Ya/Tidak checkboxes. */
+export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
+  const {
+    items, fields, errors, isChecked, isFilled, aiFeedback,
+    setField, handleSubmit, setChecked, setErrors,
+  } = useSection(slug, tab, "pengamatan")
+
+  const handleClick = useCallback(() => {
+    if (isChecked) {
+      setChecked(false)
+      setErrors({})
+    } else {
+      handleSubmit()
+    }
+  }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  // Find the ChecklistTableItem
+  const checklistItem = items.find((i): i is ChecklistTableItem => i.type === "checklist_table")
+  if (!checklistItem) return null
+
+  const handleCheckboxChange = (statementIdx: number, value: "ya" | "tidak") => {
+    const current = fields[String(checklistItem.id)]?.[`statement_${statementIdx}`] ?? ""
+    setField(String(checklistItem.id), `statement_${statementIdx}`, current === value ? "" : value)
+  }
+
+  return (
+    <section className="space-y-3 md:space-y-4">
+      {/* Instruction */}
+      <Text as="p" className="text-xs md:text-sm font-medium text-black">
+        {checklistItem.question}
+      </Text>
+
+      {/* Checklist table */}
+      <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
+        <thead>
+          <tr className="bg-muted border-b-4 border-black text-center font-black">
+            <th className="p-2 md:p-3 border-r-2 border-black text-left">Pernyataan</th>
+            <th className="p-2 md:p-3 border-r-2 border-black w-12 md:w-16">Ya</th>
+            <th className="p-2 md:p-3 w-12 md:w-16">Tidak</th>
+          </tr>
+        </thead>
+        <tbody>
+          {checklistItem.statements.map((statement, idx) => {
+            const currentValue = fields[String(checklistItem.id)]?.[`statement_${idx}`] ?? ""
+            return (
+              <tr key={idx} className="text-center">
+                <td className="py-3 md:py-4 px-2 md:px-3 font-medium text-left border-r-2 border-black border-b-2">
+                  {statement}
+                </td>
+                <td className="py-3 md:py-4 border-r-2 border-b-2">
+                  <div className="flex items-center justify-center">
+                    <Checkbox
+                      checked={currentValue === "ya"}
+                      onCheckedChange={() => handleCheckboxChange(idx, "ya")}
+                      disabled={isChecked}
+                    />
+                  </div>
+                </td>
+                <td className="py-3 md:py-4 border-b-2 border-black">
+                  <div className="flex items-center justify-center">
+                    <Checkbox
+                      checked={currentValue === "tidak"}
+                      onCheckedChange={() => handleCheckboxChange(idx, "tidak")}
+                      disabled={isChecked}
+                    />
+                  </div>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+
+      {errors[`${checklistItem.id}_checklist`] && (
+        <Text className="text-destructive text-[10px] md:text-xs">{errors[`${checklistItem.id}_checklist`]}</Text>
+      )}
+
+      <Button
+        onClick={handleClick}
+        disabled={!isFilled && !isChecked}
+        variant={isChecked ? "secondary" : "default"}
+        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+      >
+        {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
+      </Button>
+
+      {isChecked && aiFeedback && (
+        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
+        </div>
+      )}
+    </section>
+  )
+}

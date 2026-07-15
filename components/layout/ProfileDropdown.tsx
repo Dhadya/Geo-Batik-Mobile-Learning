@@ -50,34 +50,39 @@ export function ProfileDropdown() {
   const showAvatar = avatarUrl && !imgFailed
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-full lg:w-auto" ref={dropdownRef}>
       {/* Trigger button — avatar initials + chevron */}
       <Button
         variant="outline"
         size="sm"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-2 border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
+        className="flex items-center justify-between lg:justify-center gap-2 border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20 w-full lg:w-auto px-4 py-2.5 lg:py-1.5"
       >
-        {showAvatar ? (
-          <Image
-            src={avatarUrl}
-            alt=""
-            width={28}
-            height={28}
-            className="size-7 object-cover border-2 border-black"
-            onError={() => setImgFailed(true)}
-          />
-        ) : (
-          <span className="flex items-center justify-center size-7 bg-module-refleksi text-white font-black text-xs border-2 border-black">
-            {initials}
+        <span className="flex items-center gap-2">
+          {showAvatar ? (
+            <Image
+              src={avatarUrl}
+              alt=""
+              width={28}
+              height={28}
+              className="size-7 object-cover border-2 border-black"
+              onError={() => setImgFailed(true)}
+            />
+          ) : (
+            <span className="flex items-center justify-center size-7 bg-module-refleksi text-white font-black text-xs border-2 border-black">
+              {initials}
+            </span>
+          )}
+          <span className="lg:hidden font-black text-sm uppercase text-black">
+            {user.name || "Profil"}
           </span>
-        )}
+        </span>
         <ChevronDown className={`size-4 transition-transform ${open ? "rotate-180" : ""}`} />
       </Button>
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-64 border-4 border-black bg-card shadow-lg z-50">
+        <div className="absolute left-0 right-0 lg:left-auto lg:right-0 top-full mt-2 w-full lg:w-64 border-4 border-black bg-card shadow-lg z-50">
           {/* User info header */}
           <div className="px-4 py-3 border-b-4 border-black">
             <p className="text-sm font-black uppercase truncate">{user.name || "Pengguna"}</p>
