@@ -23,8 +23,8 @@ export function ModuleTabNav({
             variant={t.value === currentTab ? "default" : "outline"}
             size="lg"
             className={cn(
-              "rounded-none! font-bold uppercase whitespace-nowrap w-full text-sm md:text-lg px-2 md:px-6",
-              t.value !== currentTab && "bg-white!"
+              "font-bold uppercase whitespace-nowrap w-full text-xs md:text-sm px-1.5 md:px-4",
+              t.value !== currentTab && "!bg-white"
             )}
           >
             {slug === "translasi" ? `TRANSLASI ${t.label}` : t.label}

@@ -31,6 +31,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
     "garis-x=-y": "Garis x=-y",
     "garis-x=h": "Garis x=h",
     "garis-y=h": "Garis y=h",
+    "garis": "Ruas Garis",
   }
   const reflectLabel = reflectionLabels[tab] ?? tab
 

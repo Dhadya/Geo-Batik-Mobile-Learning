@@ -1352,7 +1352,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       value: "garis",
       title: "Refleksi Garis",
       instruction:
-        "Amati perpindahan garis setelah direfleksikan.",
+        "Amati perpindahan ruas garis setelah direfleksikan.",
       materialId: "nqw7mzat",
       formula: {
         prefix: "A(x, y) → A'(",
@@ -1360,6 +1360,152 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
         placeholders: ["?", "?"],
       },
       assessment: [],
+      sections: {
+        percobaan: {
+          instruction: "Perhatikan ruas garis AB, dengan A(\u22126, 1) dan B(\u22122, 3). Pilih salah satu refleksi berikut, lalu tentukan bayangan dari ruas garis yang terbentuk.",
+          items: [
+            {
+              id: 1,
+              type: "pilihan_refleksi",
+              question: "Perhatikan ruas garis AB, dengan A(\u22126, 1) dan B(\u22122, 3)\nPilih salah satu refleksi berikut:",
+              options: ["Sumbu x", "Sumbu y", "Titik (0,0)", "Garis x=y", "Garis x=-y", "Garis x=2", "Garis y=\u22122"],
+              correctAnswers: {
+                "Sumbu x": [
+                  { x: -6, y: -1 },
+                  { x: -2, y: -3 },
+                ],
+                "Sumbu y": [
+                  { x: 6, y: 1 },
+                  { x: 2, y: 3 },
+                ],
+                "Titik (0,0)": [
+                  { x: 6, y: -1 },
+                  { x: 2, y: -3 },
+                ],
+                "Garis x=y": [
+                  { x: 1, y: -6 },
+                  { x: 3, y: -2 },
+                ],
+                "Garis x=-y": [
+                  { x: -1, y: 6 },
+                  { x: -3, y: 2 },
+                ],
+                "Garis x=2": [
+                  { x: 10, y: 1 },
+                  { x: 6, y: 3 },
+                ],
+                "Garis y=\u22122": [
+                  { x: -6, y: -5 },
+                  { x: -2, y: -7 },
+                ],
+              },
+            },
+            {
+              id: 2,
+              type: "koordinat",
+              label: "A'",
+              answer: { x: 0, y: 0 },
+            },
+            {
+              id: 3,
+              type: "koordinat",
+              label: "B'",
+              answer: { x: 0, y: 0 },
+            },
+          ],
+        },
+        pengamatan: {
+          instruction: "Jawab pertanyaan berikut berdasarkan percobaan ruas garis tersebut.",
+          items: [
+            {
+              id: 4,
+              type: "uraian",
+              question: "Bagaimana cara menentukan koordinat A\u2019 dan B\u2019?",
+              answer: "Koordinat A\u2019 dan B\u2019 ditentukan dengan mencerminkan titik A dan B",
+              acceptAnswers: [
+                "Mencerminkan titik A dan B terhadap cermin refleksi",
+                "Dengan mencerminkan kedua titik ujung ruas garis",
+                "Mencerminkan titik A dan B sesuai dengan cermin refleksinya",
+              ],
+            },
+            {
+              id: 5,
+              type: "pilihan_ganda",
+              question: "Bandingkan jarak titik A ke cermin dengan titik A\u2019 ke cermin?",
+              options: ["Sama", "Berbeda"],
+              correctIndex: 0,
+            },
+            {
+              id: 6,
+              type: "pilihan_ganda",
+              question: "Bandingkan jarak titik B ke cermin dengan titik B\u2019 ke cermin?",
+              options: ["Sama", "Berbeda"],
+              correctIndex: 0,
+            },
+            {
+              id: 7,
+              type: "pilihan_ganda",
+              question: "Apakah panjang ruas garis awal dengan bayangannya sama?",
+              options: ["Iya", "Tidak"],
+              correctIndex: 0,
+            },
+            {
+              id: 8,
+              type: "pilihan_ganda",
+              question: "Apakah posisi ruas garis awal dengan bayangannya sama?",
+              options: ["Iya", "Tidak"],
+              correctIndex: 1,
+            },
+          ],
+        },
+        penyimpulan: {
+          instruction: "Simpulkan hasil percobaanmu.",
+          items: [
+            {
+              id: 9,
+              type: "urutkan",
+              question: "Urutkan cara menentukan bayangan ruas garis mengalami proses refleksi!",
+              items: [
+                "Ruas garis diketahui",
+                "Menentukan koordinat kedua titik ujungnya",
+                "Mencerminkan kedua titik ujung sesuai dengan cermin refleksinya",
+                "Menulis koordinat bayangan kedua titik ujung",
+                "Menghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus",
+              ],
+            },
+            {
+              id: 10,
+              type: "uraian",
+              question: "Mengapa cukup mencerminkan dua titik untuk menentukan ruas garis hasil refleksi?",
+              answer: "Karena untuk mengetahui ruas garis harus mengetahui 2 titik ujung ruas garis tersebut",
+              acceptAnswers: [
+                "Karena ruas garis ditentukan oleh dua titik ujungnya",
+                "Karena mengetahui 2 titik ujung sudah cukup untuk menentukan ruas garis",
+              ],
+            },
+          ],
+        },
+        cekPemahaman: {
+          instruction: "Kerjakan soal berikut.",
+          items: [
+            {
+              id: 11,
+              type: "pilihan_ganda",
+              question: "Perhatikan gambar berikut! Tentukan bayangan dari ruas garis berikut jika direfleksikan terhadap sumbu x",
+              questionImage: "/questions/ruas garis_soal.webp",
+              options: ["Gambar a", "Gambar b", "Gambar c", "Gambar d"],
+              imageOptions: [
+                "/questions/ruas_a.webp",
+                "/questions/ruas_b.webp",
+                "/questions/ruas_c.webp",
+                "/questions/ruas_d.webp",
+              ],
+              optionFormat: "image",
+              correctIndex: 1,
+            },
+          ],
+        },
+      },
     },
   ],
 }

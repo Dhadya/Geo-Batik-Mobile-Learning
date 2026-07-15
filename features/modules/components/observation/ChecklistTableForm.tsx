@@ -33,62 +33,61 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
   if (!checklistItem) return null
 
   const handleCheckboxChange = (statementIdx: number, value: "ya" | "tidak") => {
-    setField(String(checklistItem.id), `statement_${statementIdx}`, value)
+    const current = fields[String(checklistItem.id)]?.[`statement_${statementIdx}`] ?? ""
+    setField(String(checklistItem.id), `statement_${statementIdx}`, current === value ? "" : value)
   }
 
   return (
     <section className="space-y-3 md:space-y-4">
-      <div className="border-4 border-black p-3 md:p-4 bg-background shadow-[4px_4px_0_0_rgba(0,0,0,1)] space-y-3 md:space-y-4">
-        {/* Instruction */}
-        <Text as="p" className="text-xs md:text-sm font-medium text-black">
-          {checklistItem.question}
-        </Text>
+      {/* Instruction */}
+      <Text as="p" className="text-xs md:text-sm font-medium text-black">
+        {checklistItem.question}
+      </Text>
 
-        {/* Checklist table */}
-        <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
-          <thead>
-            <tr className="bg-muted border-b-4 border-black text-center font-black">
-              <th className="p-2 md:p-3 border-r-2 border-black text-left">Pernyataan</th>
-              <th className="p-2 md:p-3 border-r-2 border-black w-12 md:w-16">Ya</th>
-              <th className="p-2 md:p-3 w-12 md:w-16">Tidak</th>
-            </tr>
-          </thead>
-          <tbody>
-            {checklistItem.statements.map((statement, idx) => {
-              const currentValue = fields[String(checklistItem.id)]?.[`statement_${idx}`] ?? ""
-              return (
-                <tr key={idx} className="text-center">
-                  <td className="py-3 md:py-4 px-2 md:px-3 font-medium text-left border-r-2 border-black border-b-2">
-                    {statement}
-                  </td>
-                  <td className="py-3 md:py-4 border-r-2 border-b-2">
-                    <div className="flex items-center justify-center">
-                      <Checkbox
-                        checked={currentValue === "ya"}
-                        onCheckedChange={() => handleCheckboxChange(idx, "ya")}
-                        disabled={isChecked}
-                      />
-                    </div>
-                  </td>
-                  <td className="py-3 md:py-4 border-b-2 border-black">
-                    <div className="flex items-center justify-center">
-                      <Checkbox
-                        checked={currentValue === "tidak"}
-                        onCheckedChange={() => handleCheckboxChange(idx, "tidak")}
-                        disabled={isChecked}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+      {/* Checklist table */}
+      <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
+        <thead>
+          <tr className="bg-muted border-b-4 border-black text-center font-black">
+            <th className="p-2 md:p-3 border-r-2 border-black text-left">Pernyataan</th>
+            <th className="p-2 md:p-3 border-r-2 border-black w-12 md:w-16">Ya</th>
+            <th className="p-2 md:p-3 w-12 md:w-16">Tidak</th>
+          </tr>
+        </thead>
+        <tbody>
+          {checklistItem.statements.map((statement, idx) => {
+            const currentValue = fields[String(checklistItem.id)]?.[`statement_${idx}`] ?? ""
+            return (
+              <tr key={idx} className="text-center">
+                <td className="py-3 md:py-4 px-2 md:px-3 font-medium text-left border-r-2 border-black border-b-2">
+                  {statement}
+                </td>
+                <td className="py-3 md:py-4 border-r-2 border-b-2">
+                  <div className="flex items-center justify-center">
+                    <Checkbox
+                      checked={currentValue === "ya"}
+                      onCheckedChange={() => handleCheckboxChange(idx, "ya")}
+                      disabled={isChecked}
+                    />
+                  </div>
+                </td>
+                <td className="py-3 md:py-4 border-b-2 border-black">
+                  <div className="flex items-center justify-center">
+                    <Checkbox
+                      checked={currentValue === "tidak"}
+                      onCheckedChange={() => handleCheckboxChange(idx, "tidak")}
+                      disabled={isChecked}
+                    />
+                  </div>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
 
-        {errors[`${checklistItem.id}_checklist`] && (
-          <Text className="text-destructive text-[10px] md:text-xs">{errors[`${checklistItem.id}_checklist`]}</Text>
-        )}
-      </div>
+      {errors[`${checklistItem.id}_checklist`] && (
+        <Text className="text-destructive text-[10px] md:text-xs">{errors[`${checklistItem.id}_checklist`]}</Text>
+      )}
 
       <Button
         onClick={handleClick}

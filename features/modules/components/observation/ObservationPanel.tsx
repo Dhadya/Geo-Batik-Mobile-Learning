@@ -20,6 +20,7 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const isTranslasiBangun = slug === "translasi" && tab === "bangun"
   const isTranslasiGaris = slug === "translasi" && tab === "garis"
   const isRefleksiBangun = slug === "refleksi" && tab === "bangun"
+  const isRefleksiGaris = slug === "refleksi" && tab === "garis"
   const isRefleksi = slug === "refleksi"
 
   return (
@@ -45,7 +46,7 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
         <div className="border-4 border-black bg-white grow flex flex-col shadow-lg overflow-hidden">
           {/* Percobaan tab — structured experiment table from section data */}
           <Tabs.Content value="percobaan" className="p-3 md:p-6 grow overflow-y-auto space-y-3 md:space-y-6 mt-0">
-            {isRefleksiBangun ? (
+            {(isRefleksiBangun || isRefleksiGaris) ? (
               <PilihanRefleksiForm slug={slug} tab={tab} />
             ) : (
               <PercobaanForm slug={slug} tab={tab} />
@@ -57,7 +58,8 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
             {isTranslasiTitik && <PengamatanTitikForm slug={slug} tab={tab} />}
             {isTranslasiBangun && <PengamatanBangunForm slug={slug} tab={tab} />}
             {isRefleksiBangun && <ChecklistTableForm slug={slug} tab={tab} />}
-            {isRefleksi && !isRefleksiBangun && <PengamatanBangunForm slug={slug} tab={tab} />}
+            {isRefleksiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
+            {isRefleksi && !isRefleksiBangun && !isRefleksiGaris && <PengamatanBangunForm slug={slug} tab={tab} />}
             {isTranslasiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
             {!isTranslasiTitik && !isTranslasiBangun && !isTranslasiGaris && !isRefleksi && <PengamatanMockForm slug={slug} tab={tab} />}
           </Tabs.Content>
