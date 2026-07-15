@@ -1203,7 +1203,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
             {
               id: 1,
               type: "pilihan_refleksi",
-              question: "Motif bangun ABCD memiliki titik sudut A(\u22124, 0), B(\u22122, 2), C(\u22122, 6), D(\u22124, 4).\n\nPilih salah satu refleksi berikut:",
+              question: "Motif bangun ABCD memiliki titik sudut \nA(\u22124, 0), B(\u22122, 2), C(\u22122, 6), D(\u22124, 4).\nPilih salah satu refleksi berikut:",
               options: ["Sumbu x", "Sumbu y", "Titik (0,0)", "Garis x=y", "Garis x=-y", "Garis x=2", "Garis y=-1"],
               correctAnswers: {
                 "Sumbu x": [
