@@ -39,49 +39,51 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
   return (
     <section className="space-y-3 md:space-y-4">
       <div className="border-4 border-black p-3 md:p-4 bg-background shadow-[4px_4px_0_0_rgba(0,0,0,1)] space-y-3 md:space-y-4">
-        <Text as="h3" className="text-sm md:text-base font-black uppercase">
-          Pengamatan
-        </Text>
-
         {/* Instruction */}
         <Text as="p" className="text-xs md:text-sm font-medium text-black">
           {checklistItem.question}
         </Text>
 
         {/* Checklist table */}
-        <div className="border-4 border-black overflow-hidden bg-background">
-          <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-[10px] md:text-sm font-black p-1.5 md:p-2">
-            <div className="text-left">Pernyataan</div>
-            <div>Ya</div>
-            <div>Tidak</div>
-          </div>
-          <div className="divide-y-2 divide-black text-xs md:text-sm">
+        <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
+          <thead>
+            <tr className="bg-muted border-b-4 border-black text-center font-black">
+              <th className="p-1.5 md:p-2 border-r-2 border-black text-left">Pernyataan</th>
+              <th className="p-1.5 md:p-2 border-r-2 border-black">Ya</th>
+              <th className="p-1.5 md:p-2">Tidak</th>
+            </tr>
+          </thead>
+          <tbody>
             {checklistItem.statements.map((statement, idx) => {
               const currentValue = fields[String(checklistItem.id)]?.[`statement_${idx}`] ?? ""
               return (
-                <div key={idx} className="grid grid-cols-3 items-center text-center">
-                  <div className="p-1.5 md:p-2 font-medium text-left border-r-2 border-black">
+                <tr key={idx} className="text-center">
+                  <td className="py-2 md:py-3 font-medium text-left border-r-2 border-black border-b-2">
                     {statement}
-                  </div>
-                  <div className="flex items-center justify-center p-1.5 md:p-2 border-r-2 border-black">
-                    <Checkbox
-                      checked={currentValue === "ya"}
-                      onCheckedChange={() => handleCheckboxChange(idx, "ya")}
-                      disabled={isChecked}
-                    />
-                  </div>
-                  <div className="flex items-center justify-center p-1.5 md:p-2">
-                    <Checkbox
-                      checked={currentValue === "tidak"}
-                      onCheckedChange={() => handleCheckboxChange(idx, "tidak")}
-                      disabled={isChecked}
-                    />
-                  </div>
-                </div>
+                  </td>
+                  <td className="py-2 md:py-3 border-r-2 border-black border-b-2">
+                    <div className="flex items-center justify-center">
+                      <Checkbox
+                        checked={currentValue === "ya"}
+                        onCheckedChange={() => handleCheckboxChange(idx, "ya")}
+                        disabled={isChecked}
+                      />
+                    </div>
+                  </td>
+                  <td className="py-2 md:py-3 border-b-2 border-black">
+                    <div className="flex items-center justify-center">
+                      <Checkbox
+                        checked={currentValue === "tidak"}
+                        onCheckedChange={() => handleCheckboxChange(idx, "tidak")}
+                        disabled={isChecked}
+                      />
+                    </div>
+                  </td>
+                </tr>
               )
             })}
-          </div>
-        </div>
+          </tbody>
+        </table>
 
         {errors[`${checklistItem.id}_checklist`] && (
           <Text className="text-destructive text-[10px] md:text-xs">{errors[`${checklistItem.id}_checklist`]}</Text>

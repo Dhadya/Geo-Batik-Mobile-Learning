@@ -1198,7 +1198,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Motif bangun ABCD memiliki titik sudut A(-4, 0), B(-2, 2), C(-2, 6), D(-4, 4). Pilih salah satu refleksi berikut, lalu lengkapi tabel.",
+          instruction: "Motif bangun ABCD memiliki titik sudut A(\u22124, 0), B(\u22122, 2), C(\u22122, 6), D(\u22124, 4). Pilih salah satu refleksi berikut, lalu lengkapi tabel.",
           items: [
             {
               id: 1,
@@ -1253,25 +1253,25 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
             {
               id: 2,
               type: "koordinat",
-              label: "A(-4, 0)",
+              label: "A(\u22124, 0)",
               answer: { x: 0, y: 0 },
             },
             {
               id: 3,
               type: "koordinat",
-              label: "B(-2, 2)",
+              label: "B(\u22122, 2)",
               answer: { x: 0, y: 0 },
             },
             {
               id: 4,
               type: "koordinat",
-              label: "C(-2, 6)",
+              label: "C(\u22122, 6)",
               answer: { x: 0, y: 0 },
             },
             {
               id: 5,
               type: "koordinat",
-              label: "D(-4, 4)",
+              label: "D(\u22124, 4)",
               answer: { x: 0, y: 0 },
             },
           ],
@@ -1332,7 +1332,7 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
             {
               id: 9,
               type: "pilihan_ganda",
-              question: "Perhatikan gambar berikut! Tentukan bayangan dari bangun berikut jika direfleksikan terhadap sumbu y.",
+              question: "Perhatikan gambar berikut! Tentukan bayangan dari bangun berikut jika direfleksikan terhadap sumbu y!",
               questionImage: "/questions/refleksi_soal.webp",
               options: ["Gambar a", "Gambar b", "Gambar c"],
               imageOptions: [
