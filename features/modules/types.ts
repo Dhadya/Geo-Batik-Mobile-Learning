@@ -87,6 +87,8 @@ export type SectionItem =
   | MemasangkanItem
   | PilihanGandaItem
   | UrutkanItem
+  | PilihanRefleksiItem
+  | ChecklistTableItem
 
 /** Base fields shared by every item type. */
 interface BaseItem {
@@ -164,6 +166,26 @@ export interface UrutkanItem extends BaseItem {
   type: "urutkan"
   question: string
   items: string[]
+}
+
+// ── Pilihan Refleksi (radio select reflection type) ─────────
+
+/** Radio button selection for reflection type with dynamic coordinate answers. */
+export interface PilihanRefleksiItem extends BaseItem {
+  type: "pilihan_refleksi"
+  question: string
+  options: string[]
+  correctAnswers: Record<string, { x: number; y: number }[]>
+}
+
+// ── Checklist Table (Ya/Tidak checkboxes) ───────────────────
+
+/** Table with statements and Ya/Tidak checkboxes. */
+export interface ChecklistTableItem extends BaseItem {
+  type: "checklist_table"
+  question: string
+  statements: string[]
+  correctAnswers: boolean[] // true = Ya, false = Tidak
 }
 
 // ============================================================

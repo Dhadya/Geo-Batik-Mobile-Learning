@@ -2,10 +2,12 @@
 
 import { Tabs } from "@/components/retroui/Tab"
 import { PercobaanForm } from "./PercobaanForm"
+import { PilihanRefleksiForm } from "./PilihanRefleksiForm"
 import { PengamatanTitikForm } from "./PengamatanTitikForm"
 import { PengamatanBangunForm } from "./PengamatanBangunForm"
 import { PengamatanGarisForm } from "./PengamatanGarisForm"
 import { PengamatanMockForm } from "./PengamatanMockForm"
+import { ChecklistTableForm } from "./ChecklistTableForm"
 
 interface ObservationPanelProps {
   slug: string
@@ -17,7 +19,8 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const isTranslasiTitik = slug === "translasi" && tab === "titik"
   const isTranslasiBangun = slug === "translasi" && tab === "bangun"
   const isTranslasiGaris = slug === "translasi" && tab === "garis"
-  const isRefleksiTitik = slug === "refleksi"
+  const isRefleksiBangun = slug === "refleksi" && tab === "bangun"
+  const isRefleksi = slug === "refleksi"
 
   return (
     <div className="h-auto lg:h-full flex flex-col gap-3 md:gap-4">
@@ -42,15 +45,21 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
         <div className="border-4 border-black bg-white grow flex flex-col shadow-lg overflow-hidden">
           {/* Percobaan tab — structured experiment table from section data */}
           <Tabs.Content value="percobaan" className="p-3 md:p-6 grow overflow-y-auto space-y-3 md:space-y-6 mt-0">
-            <PercobaanForm slug={slug} tab={tab} />
+            {isRefleksiBangun ? (
+              <PilihanRefleksiForm slug={slug} tab={tab} />
+            ) : (
+              <PercobaanForm slug={slug} tab={tab} />
+            )}
           </Tabs.Content>
 
           {/* Pengamatan tab — form variant based on module/tab */}
           <Tabs.Content value="pengamatan" className="p-3 md:p-6 grow overflow-y-auto space-y-3 md:space-y-4 mt-0">
             {isTranslasiTitik && <PengamatanTitikForm slug={slug} tab={tab} />}
-            {(isTranslasiBangun || isRefleksiTitik) && <PengamatanBangunForm slug={slug} tab={tab} />}
+            {isTranslasiBangun && <PengamatanBangunForm slug={slug} tab={tab} />}
+            {isRefleksiBangun && <ChecklistTableForm slug={slug} tab={tab} />}
+            {isRefleksi && !isRefleksiBangun && <PengamatanBangunForm slug={slug} tab={tab} />}
             {isTranslasiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
-            {!isTranslasiTitik && !isTranslasiBangun && !isTranslasiGaris && !isRefleksiTitik && <PengamatanMockForm slug={slug} tab={tab} />}
+            {!isTranslasiTitik && !isTranslasiBangun && !isTranslasiGaris && !isRefleksi && <PengamatanMockForm slug={slug} tab={tab} />}
           </Tabs.Content>
         </div>
       </Tabs>

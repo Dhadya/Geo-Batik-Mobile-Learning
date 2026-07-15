@@ -40,8 +40,20 @@ function isSectionFilled(items: SectionItem[], fields: Record<string, Record<str
       const m = item as import("../types").MemasangkanItem
       return m.leftItems.every((l) => (f[l.id] ?? "") !== "")
     }
-    if (item.type === "pilihan_ganda") return true
+    if (item.type === "pilihan_ganda") return (f.selected ?? "") !== ""
     if (item.type === "urutkan") return (f.order ?? "").trim() !== ""
+    if (item.type === "pilihan_refleksi") {
+      const selected = f.selected ?? ""
+      if (!selected) return false
+      const pr = item as import("../types").PilihanRefleksiItem
+      const correctAnswers = pr.correctAnswers[selected]
+      if (!correctAnswers) return false
+      return correctAnswers.every((_, idx) => (f[`x${idx}`] ?? "") !== "" && (f[`y${idx}`] ?? "") !== "")
+    }
+    if (item.type === "checklist_table") {
+      const ct = item as import("../types").ChecklistTableItem
+      return ct.statements.every((_, idx) => (f[`statement_${idx}`] ?? "") !== "")
+    }
     return false
   })
 }

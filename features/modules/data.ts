@@ -1196,6 +1196,156 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
         placeholders: ["?", "?"],
       },
       assessment: [],
+      sections: {
+        percobaan: {
+          instruction: "Motif bangun ABCD memiliki titik sudut A(-4, 0), B(-2, 2), C(-2, 6), D(-4, 4). Pilih salah satu refleksi berikut, lalu lengkapi tabel.",
+          items: [
+            {
+              id: 1,
+              type: "pilihan_refleksi",
+              question: "Pilih salah satu refleksi berikut:",
+              options: ["Sumbu x", "Sumbu y", "Titik (0,0)", "Garis x=y", "Garis x=-y", "Garis x=2", "Garis y=-1"],
+              correctAnswers: {
+                "Sumbu x": [
+                  { x: -4, y: 0 },
+                  { x: -2, y: -2 },
+                  { x: -2, y: -6 },
+                  { x: -4, y: -4 },
+                ],
+                "Sumbu y": [
+                  { x: 4, y: 0 },
+                  { x: 2, y: 2 },
+                  { x: 2, y: 6 },
+                  { x: 4, y: 4 },
+                ],
+                "Titik (0,0)": [
+                  { x: 4, y: 0 },
+                  { x: 2, y: -2 },
+                  { x: 2, y: -6 },
+                  { x: 4, y: -4 },
+                ],
+                "Garis x=y": [
+                  { x: 0, y: -4 },
+                  { x: 2, y: -2 },
+                  { x: 6, y: -2 },
+                  { x: 4, y: -4 },
+                ],
+                "Garis x=-y": [
+                  { x: 0, y: 4 },
+                  { x: -2, y: 2 },
+                  { x: -6, y: 2 },
+                  { x: -4, y: 4 },
+                ],
+                "Garis x=2": [
+                  { x: 8, y: 0 },
+                  { x: 6, y: 2 },
+                  { x: 6, y: 6 },
+                  { x: 8, y: 4 },
+                ],
+                "Garis y=-1": [
+                  { x: -4, y: -2 },
+                  { x: -2, y: -4 },
+                  { x: -2, y: -8 },
+                  { x: -4, y: -6 },
+                ],
+              },
+            },
+            {
+              id: 2,
+              type: "koordinat",
+              label: "A(-4, 0)",
+              answer: { x: 0, y: 0 },
+            },
+            {
+              id: 3,
+              type: "koordinat",
+              label: "B(-2, 2)",
+              answer: { x: 0, y: 0 },
+            },
+            {
+              id: 4,
+              type: "koordinat",
+              label: "C(-2, 6)",
+              answer: { x: 0, y: 0 },
+            },
+            {
+              id: 5,
+              type: "koordinat",
+              label: "D(-4, 4)",
+              answer: { x: 0, y: 0 },
+            },
+          ],
+        },
+        pengamatan: {
+          instruction: "Berdasarkan pengamatanmu, tentukan sifat-sifat refleksi bangun dengan checklist pernyataan berikut!",
+          items: [
+            {
+              id: 6,
+              type: "checklist_table",
+              question: "Perhatikan pernyataan berikut!",
+              statements: [
+                "Bentuk bangun berubah",
+                "Ukuran bangun berubah",
+                "Bangun dan bayangan saling berhadapan",
+                "Jarak bangun ke cermin sama dengan jarak bayangan ke cermin",
+              ],
+              correctAnswers: [false, false, true, true],
+            },
+          ],
+        },
+        penyimpulan: {
+          instruction: "Simpulkan hasil percobaanmu.",
+          items: [
+            {
+              id: 7,
+              type: "uraian",
+              question: "Jelaskan sifat-sifat refleksi bangun datar!",
+              answer: "Refleksi mempertahankan bentuk dan ukuran bangun. Bangun dan bayangan saling berhadapan dengan jarak yang sama ke garis cermin.",
+              acceptAnswers: [
+                "Bentuk dan ukuran bangun tidak berubah. Bangun dan bayangan saling berhadapan.",
+                "Bentuk dan ukuran tidak berubah. Saling berhadapan.",
+                "Bangun dan bayangan bentuknya sama, ukurannya sama, dan saling berhadapan.",
+              ],
+            },
+          ],
+        },
+        cekPemahaman: {
+          instruction: "Kerjakan soal-soal berikut.",
+          items: [
+            {
+              id: 8,
+              type: "pilihan_ganda",
+              question: "Manakah dari gambar berikut yang menunjukkan proses refleksi?",
+              options: ["Gambar a", "Gambar b", "Gambar c", "Gambar d", "Gambar e"],
+              imageOptions: [
+                "/questions/refleksi_1a.webp",
+                "/questions/refleksi_1b.webp",
+                "/questions/refleksi_1c.webp",
+                "/questions/refleksi_1d.webp",
+                "/questions/refleksi_1e.webp",
+              ],
+              optionFormat: "image",
+              multiSelect: true,
+              correctIndex: 0,
+              correctIndices: [1, 2, 3, 4],
+            },
+            {
+              id: 9,
+              type: "pilihan_ganda",
+              question: "Perhatikan gambar berikut! Tentukan bayangan dari bangun berikut jika direfleksikan terhadap sumbu y.",
+              questionImage: "/questions/refleksi_soal.webp",
+              options: ["Gambar a", "Gambar b", "Gambar c"],
+              imageOptions: [
+                "/questions/refleksi_a.webp",
+                "/questions/refleksi_b.webp",
+                "/questions/refleksi_c.webp",
+              ],
+              optionFormat: "image",
+              correctIndex: 1,
+            },
+          ],
+        },
+      },
     },
     {
       label: "GARIS",
