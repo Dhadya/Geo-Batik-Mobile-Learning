@@ -5,11 +5,11 @@ import { Text } from "@/components/retroui/Text"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { QuizBreadcrumb } from "@/features/quiz"
 import { InteractiveWorkspace } from "./workspace/InteractiveWorkspace"
-import { ObservationPanel } from "./observation/ObservationPanel"
-import { ConclusionArea } from "./conclusion/ConclusionArea"
-import { AssessmentSection } from "./assessment/AssessmentSection"
+import { ObservationPanel } from "./sections/pengamatan/ObservationPanel"
+import { ConclusionArea } from "./sections/penyimpulan/ConclusionArea"
+import { AssessmentSection } from "./sections/cek-pemahaman/AssessmentSection"
 import { ModuleTabNav } from "./navigation/ModuleTabNav"
-import { ResetButton } from "./ResetButton"
+import { ResetButton } from "./shared/ResetButton"
 import { getModuleTabs, getModuleTab } from "../data"
 import type { PilihanGandaItem } from "../types"
 
@@ -100,13 +100,13 @@ export function ModuleContent({
       {/* Navigation buttons — back to apersepsi or forward to quiz */}
       <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
         <Link href={`/apersepsi/${slug}`}>
-          <Button variant="outline" size="lg" className="!rounded-none px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
+          <Button variant="outline" size="lg" className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
             <ArrowLeft className="size-4 md:size-6" />
             KEMBALI
           </Button>
         </Link>
         <Link href={`/modul/${slug}/kuis`}>
-          <Button variant="default" size="lg" className="!rounded-none px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
+          <Button variant="default" size="lg" className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
             KERJAKAN KUIS
             <ArrowRight className="size-4 md:size-6" />
           </Button>

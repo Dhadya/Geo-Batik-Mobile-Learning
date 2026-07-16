@@ -1,14 +1,14 @@
 "use client"
 
 import { Tabs } from "@/components/retroui/Tab"
-import { PercobaanForm } from "./PercobaanForm"
-import { PilihanRefleksiForm } from "./PilihanRefleksiForm"
-import { PercobaanRefleksiGarisForm } from "./PercobaanRefleksiGarisForm"
+import { PercobaanForm } from "../percobaan/PercobaanForm"
+import { PilihanRefleksiForm } from "../../shared/PilihanRefleksiForm"
+import { PercobaanRefleksiGarisForm } from "../percobaan/PercobaanRefleksiGarisForm"
 import { PengamatanTitikForm } from "./PengamatanTitikForm"
 import { PengamatanBangunForm } from "./PengamatanBangunForm"
 import { PengamatanGarisForm } from "./PengamatanGarisForm"
 import { PengamatanMockForm } from "./PengamatanMockForm"
-import { ChecklistTableForm } from "./ChecklistTableForm"
+import { ChecklistTableForm } from "../../shared/ChecklistTableForm"
 
 interface ObservationPanelProps {
   slug: string

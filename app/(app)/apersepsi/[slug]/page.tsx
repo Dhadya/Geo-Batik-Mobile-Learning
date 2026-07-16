@@ -57,7 +57,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
           <Button
             variant="default"
             size="lg"
-            className="!rounded-none px-8 py-3 md:px-12 md:py-4 font-black text-lg md:text-2xl shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all uppercase gap-3 md:gap-4"
+            className="px-8 py-3 md:px-12 md:py-4 font-black text-lg md:text-2xl shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all uppercase gap-3 md:gap-4"
           >
             Baik, Ayo Belajar
             <ArrowRight className="size-6 md:size-8" />
