@@ -4,7 +4,6 @@ import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
 import { PercobaanInstruction } from "./PercobaanInstruction"
-import { PercobaanUraianList } from "./PercobaanUraianList"
 import type { KoordinatItem, UraianItem, SectionItem, GarisTranslasiTable, SectionBlock } from "@/features/modules/types"
 
 interface PercobaanGarisViewProps {
