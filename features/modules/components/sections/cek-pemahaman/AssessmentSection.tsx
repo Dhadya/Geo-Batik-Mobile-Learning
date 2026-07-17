@@ -7,8 +7,8 @@ import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
-import { useAnswerStore } from "../../store/answerStore"
-import type { AssessmentQuestion } from "../../types"
+import { useAnswerStore } from "../../../store/answerStore"
+import type { AssessmentQuestion } from "../../../types"
 
 const LABELS = ["A", "B", "C", "D", "E", "F"]
 

@@ -258,14 +258,12 @@ interface PageContent {
 
 ### Database Tables
 
-| Table               | Purpose                                     |
-| ------------------- | ------------------------------------------- |
-| `users`             | Extended Clerk profile                      |
-| `subtopic_progress` | Tracks step/observation completion per user |
-| `quiz_results`      | Per-attempt scores + answers                |
-| `batik_creations`   | Saved Lab Batik artwork                     |
-| `chat_messages`     | AI scaffolding conversation history         |
-| `page_content`      | Seeded curriculum data (10 rows)            |
+| Table              | Purpose                                            |
+| ------------------ | -------------------------------------------------- |
+| `user`             | BetterAuth user account                            |
+| `section_progress` | Per-section answer attempts + AI feedback + scores |
+| `tab_progress`     | Tab unlock/completion state per module             |
+| `quiz_results`     | Quiz attempt results with per-question two-attempt |
 
 ---
 

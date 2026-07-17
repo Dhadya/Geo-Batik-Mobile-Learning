@@ -2,11 +2,11 @@
 export { ModuleContent } from "./components/ModuleContent"
 export { ModuleTabNav } from "./components/navigation/ModuleTabNav"
 export { InteractiveWorkspace } from "./components/workspace/InteractiveWorkspace"
-export { ObservationPanel } from "./components/observation/ObservationPanel"
-export { PengamatanGarisForm } from "./components/observation/PengamatanGarisForm"
-export { UrutkanInput } from "./components/observation/UrutkanInput"
-export { ConclusionArea } from "./components/conclusion/ConclusionArea"
-export { AssessmentSection } from "./components/assessment/AssessmentSection"
+export { ObservationPanel } from "./components/sections/pengamatan/ObservationPanel"
+export { PengamatanGarisForm } from "./components/sections/pengamatan/PengamatanGarisForm"
+export { UrutkanInput } from "./components/shared/UrutkanInput"
+export { ConclusionArea } from "./components/sections/penyimpulan/ConclusionArea"
+export { AssessmentSection } from "./components/sections/cek-pemahaman/AssessmentSection"
 
 // Data + helpers
 export { MODULE_TABS, getModuleTabs, getModuleTab } from "./data"

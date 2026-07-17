@@ -73,8 +73,7 @@ See `StyleGuide.md` and `DESIGN.md` for the full reference.
 - Dynamic params: use `params: Promise<{ slug: string }>` pattern with
   `const { slug } = await props.params`
 - Module tabs: defined in `MODULE_TABS` in `modul/[slug]/layout.tsx`
-- Curriculum data: stored in `page_content` table (Supabase) and
-  `data/curriculumData.ts`
+- Curriculum data: stored in `features/modules/data/` (static TypeScript files, not DB)
 - Icons inside buttons: use `lucide-react` components, e.g. `<ArrowRight
 className="!size-10" />`
 
