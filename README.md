@@ -11,7 +11,7 @@
 
 **Geometric transformations are inherently abstract.** Students struggle to visualize how points, lines, and shapes move across a coordinate plane. GEMATRI bridges that gap by embedding mathematical concepts within the rich geometric patterns of Indonesian Batik — turning abstract formulas into something tangible, cultural, and engaging.
 
-**Built for pedagogy, not just technology.** Every interaction follows the van Hiele theory of geometric reasoning, scaffolding students from visual recognition to formal deduction. A sequential locking system ensures mastery at each step before progression.
+**Built for pedagogy, not just technology.** Every interaction follows the van Hiele theory of geometric reasoning, scaffolding students from visual recognition (level 0) through analysis (level 1) to informal deduction (level 2). A sequential locking system ensures mastery at each step before progression.
 
 ---
 
@@ -29,19 +29,18 @@ Tab 2 (Garis)  →  Submit all sections  →  Tab 3 (Bangun) unlocks
 
 ### Learning Modules
 
-| Module        | Tabs                                          | Batik Motifs                                                            |
-| ------------- | --------------------------------------------- | ----------------------------------------------------------------------- |
-| **Translasi** | Titik, Garis, Bangun                          | Kawung, Parang Rusak, Megamendung                                       |
-| **Refleksi**  | Sumbu-X, Sumbu-Y, O(0,0), y=x, y=-x, x=h, y=k | Kawung, Parang, Megamendung, Truntum, Sidomukti, Sekar Jagad, Gentongan |
+| Module        | Tabs                                          |
+| ------------- | --------------------------------------------- |
+| **Translasi** | Titik, Garis, Bangun                          |
+| **Refleksi**  | Sumbu-X, Sumbu-Y, O(0,0), y=x, y=-x, x=h, y=k |
 
 Each tab follows an inquiry-based flow:
 
-1. **Budaya** — Learn the Batik motif's cultural significance
-2. **Kanvas Interaktif** — Experiment with GeoGebra-powered visualizations
-3. **Percobaan** — Guided experiment with AI-checked submission
-4. **Pengamatan** — Record observations with AI-checked submission
-5. **Penyimpulan** — Draw conclusions with AI-checked submission
-6. **Cek Pemahaman** — Verify understanding with AI-checked submission
+1. **Kanvas Interaktif** — Experiment with GeoGebra-powered visualizations
+2. **Percobaan** — Guided experiment with AI-checked submission
+3. **Pengamatan** — Record observations with AI-checked submission
+4. **Penyimpulan** — Draw conclusions with AI-checked submission
+5. **Cek Pemahaman** — Verify understanding with AI-checked submission
 
 ### Two-Attempt AI Feedback System
 

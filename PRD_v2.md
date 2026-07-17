@@ -51,7 +51,7 @@ An interactive web application that:
 - Visualizes geometric transformations through an interactive coordinate canvas
 - Embeds **Indonesian Batik motifs** as geometric objects to be transformed
 - Provides **constructivist activities** (observation → pattern → conclusion → verification)
-- Follows **van Hiele theory** for scaffolding from visualization to formal reasoning
+- Follows **van Hiele theory** (levels 0–2) for scaffolding from visualization to informal deduction
 - Integrates **AI scaffolding** via Gemini API for personalized per-section feedback
 - Implements a **sequential unlocking system** ensuring mastery before progression
 
@@ -264,7 +264,6 @@ Each module has tabs that must be completed sequentially. Each tab contains inqu
 
 ```
 Tab Structure:
-  ├── Budaya (Cultural Context) — Batik motif significance + video
   ├── Kanvas (Interactive Canvas) — GeoGebra + coordinate exploration
   ├── Percobaan (Experiment) — Input field + submit → AI feedback
   ├── Pengamatan (Observation) — Input field + submit → AI feedback
@@ -274,23 +273,23 @@ Tab Structure:
 
 **Translasi Module (3 tabs):**
 
-| Tab    | Batik Motif  | Concept                   |
-| ------ | ------------ | ------------------------- |
-| Titik  | Kawung       | Point translation T[a,b]  |
-| Garis  | Parang Rusak | Line translation          |
-| Bangun | Megamendung  | Polygon/shape translation |
+| Tab    | Concept                   |
+| ------ | ------------------------- |
+| Titik  | Point translation T[a,b]  |
+| Garis  | Line translation          |
+| Bangun | Polygon/shape translation |
 
 **Refleksi Module (7 tabs):**
 
-| Tab        | Batik Motif | Formula          |
-| ---------- | ----------- | ---------------- |
-| Sumbu-X    | Kawung      | (x,y) → (x,-y)   |
-| Sumbu-Y    | Parang      | (x,y) → (-x,y)   |
-| Titik Asal | Megamendung | (x,y) → (-x,-y)  |
-| Garis y=x  | Truntum     | (x,y) → (y,x)    |
-| Garis y=-x | Sidomukti   | (x,y) → (-y,-x)  |
-| Garis x=h  | Sekar Jagad | (x,y) → (2h-x,y) |
-| Garis y=k  | Gentongan   | (x,y) → (x,2k-y) |
+| Tab        | Formula          |
+| ---------- | ---------------- |
+| Sumbu-X    | (x,y) → (x,-y)   |
+| Sumbu-Y    | (x,y) → (-x,y)   |
+| Titik Asal | (x,y) → (-x,-y)  |
+| Garis y=x  | (x,y) → (y,x)    |
+| Garis y=-x | (x,y) → (-y,-x)  |
+| Garis x=h  | (x,y) → (2h-x,y) |
+| Garis y=k  | (x,y) → (x,2k-y) |
 
 #### F5 & F7: Quiz System
 
@@ -553,29 +552,13 @@ Section Page
 
 ---
 
-## 14. Batik Motif Mapping
-
-| Motif        | Geometric Concept | Module               |
-| ------------ | ----------------- | -------------------- |
-| Kawung       | Titik, Sumbu X    | Translasi + Refleksi |
-| Parang Rusak | Garis, Sumbu Y    | Translasi + Refleksi |
-| Megamendung  | Bangun, O(0,0)    | Translasi + Refleksi |
-| Truntum      | y=x reflection    | Refleksi             |
-| Sidomukti    | y=-x reflection   | Refleksi             |
-| Sekar Jagad  | x=h reflection    | Refleksi             |
-| Gentongan    | y=k reflection    | Refleksi             |
-
----
-
-## 15. Van Hiele Levels
+## 14. Van Hiele Levels
 
 | Level | Name               | Implementation                            |
 | ----- | ------------------ | ----------------------------------------- |
-| 0     | Visualization      | Batik motifs displayed, shape recognition |
+| 0     | Visualization      | Shapes displayed on coordinate plane      |
 | 1     | Analysis           | Properties observed in interactive canvas |
 | 2     | Informal Deduction | Patterns recognized in inquiry steps      |
-| 3     | Formal Deduction   | Matrix formulas, algebraic notation       |
-| 4     | Rigor              | Student conclusions, comprehension checks |
 
 ---
 
