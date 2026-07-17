@@ -1,9 +1,9 @@
-# GEMATRI — Geometri Batik Interaktif
+# GEMATRI — Gemakan Mahir Transformasi Geometri
 
-![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat-square) ![TypeScript](https://img.shields.io/badge/TypeScript-5-strict-blue?style=flat-square) ![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square) ![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?style=flat-square) ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat-square) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?style=flat-square) ![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square) ![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?style=flat-square) ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 
-> **Geometri transformasi bertemu warisan Batik Nusantara.**  
-> Sebuah media pembelajaran interaktif untuk siswa SMP Kelas IX yang mengajarkan translasi dan refleksi geometri melalui eksplorasi visual berbasis motif Batik Indonesia.
+> **Geometric transformation meets Nusantara Batik heritage.**  
+> An interactive learning medium for Grade IX SMP students that teaches translation and reflection through visual exploration of Indonesian Batik motifs, with AI-powered per-section feedback and sequential mastery-based progression.
 
 ---
 
@@ -11,33 +11,52 @@
 
 **Geometric transformations are inherently abstract.** Students struggle to visualize how points, lines, and shapes move across a coordinate plane. GEMATRI bridges that gap by embedding mathematical concepts within the rich geometric patterns of Indonesian Batik — turning abstract formulas into something tangible, cultural, and engaging.
 
-**Built for pedagogy, not just technology.** Every interaction follows the van Hiele theory of geometric reasoning, scaffolding students from visual recognition to formal deduction. The result is a learning experience that's both culturally grounded and pedagogically sound.
+**Built for pedagogy, not just technology.** Every interaction follows the van Hiele theory of geometric reasoning, scaffolding students from visual recognition to formal deduction. A sequential locking system ensures mastery at each step before progression.
 
 ---
 
-## Features
+## Key Features
+
+### Sequential Module Learning
+
+Each module tab must be completed in order. Every section within a tab (Percobaan, Pengamatan, Penyimpulan, Cek Pemahaman) requires submission before the next unlocks:
+
+```
+Tab 1 (Titik)  →  Submit all sections  →  Tab 2 (Garis) unlocks
+Tab 2 (Garis)  →  Submit all sections  →  Tab 3 (Bangun) unlocks
+...            →  All tabs complete     →  Quiz unlocks
+```
 
 ### Learning Modules
 
-| Module        | Subtopics                                     | Batik Motifs                                                            |
+| Module        | Tabs                                          | Batik Motifs                                                            |
 | ------------- | --------------------------------------------- | ----------------------------------------------------------------------- |
-| **Translasi** | Titik, Garis, Bidang                          | Kawung, Parang Rusak, Megamendung                                       |
+| **Translasi** | Titik, Garis, Bangun                          | Kawung, Parang Rusak, Megamendung                                       |
 | **Refleksi**  | Sumbu-X, Sumbu-Y, O(0,0), y=x, y=-x, x=h, y=k | Kawung, Parang, Megamendung, Truntum, Sidomukti, Sekar Jagad, Gentongan |
 
-Each subtopic follows an inquiry-based flow:
+Each tab follows an inquiry-based flow:
 
-1. **Eksplorasi Budaya** — Learn the Batik motif's cultural significance
+1. **Budaya** — Learn the Batik motif's cultural significance
 2. **Kanvas Interaktif** — Experiment with GeoGebra-powered visualizations
-3. **Langkah Inkuiri** — Guided discovery through observation and pattern recognition
-4. **Rumus & Matriks** — Formalize findings algebraically
-5. **Cek Pemahaman** — Verify understanding with comprehension checks
+3. **Percobaan** — Guided experiment with AI-checked submission
+4. **Pengamatan** — Record observations with AI-checked submission
+5. **Penyimpulan** — Draw conclusions with AI-checked submission
+6. **Cek Pemahaman** — Verify understanding with AI-checked submission
 
-### Quiz System
+### Two-Attempt AI Feedback System
 
-- Per-module quizzes with multiple question types
-- Immediate feedback on each answer
-- Score breakdown by subtopic
-- AI-powered step-by-step explanations for incorrect answers
+Every section and quiz question follows a structured two-attempt flow:
+
+- **Attempt 1 (Correct)** → Full AI explanation, section marked complete
+- **Attempt 1 (Wrong)** → AI hint (no answer revealed), "Coba Lagi" button appears
+- **Attempt 2 (Wrong)** → Detailed AI feedback with answer key, input permanently locked
+- **Scoring** → 0–100 per section based on question type (MC, essay, numeric, all-correct)
+
+### Question Bank
+
+- All questions created **manually** by the research team — no AI-generated content
+- 4 question type variations: Pilihan Ganda, Uraian, Angka/Matematika, Campuran
+- Module quizzes are separate from pre-test/post-test evaluation instruments
 
 ### Lab Batik (Creative Sandbox)
 
@@ -47,13 +66,6 @@ Free-form creative workspace where students:
 - Apply transformations (translate, reflect, clone)
 - Choose from authentic Batik colors
 - Save creations and export as PNG
-
-### Coming Soon
-
-- AI chatbot for personalized scaffolding
-- Student progress dashboard
-- Teacher analytics dashboard
-- Stepped learning with completion tracking
 
 ---
 
@@ -69,7 +81,7 @@ Free-form creative workspace where students:
 | **State**     | Zustand + TanStack Query | Minimal client state + server caching   |
 | **Auth**      | BetterAuth               | Self-hosted, session-based, OAuth-ready |
 | **Viz**       | GeoGebra Web API         | Interactive geometry applets            |
-| **AI**        | Gemini API               | Chatbot, answer checking                |
+| **AI**        | Gemini API               | Per-section answer evaluation           |
 | **Deploy**    | Vercel                   | Edge network, serverless                |
 
 ---
@@ -86,7 +98,8 @@ app/
 │   ├── lab/              # Lab Batik creative sandbox
 │   ├── apersepsi/[slug]  # Module introductions
 │   └── modul/[slug]/     # Learning modules
-│       ├── [tab]/        # Per-subtopic learning pages
+│       ├── layout.tsx    # Tab navigation with locking logic
+│       ├── [tab]/page.tsx # Per-tab sections with submit/AI feedback
 │       └── kuis/         # Quiz flow (questions → results)
 └── api/auth/             # BetterAuth handler
 
@@ -97,11 +110,12 @@ features/
 ├── apersepsi/            # Module intro components
 ├── modules/              # Core learning engine
 │   ├── data/             # Static curriculum (translasi, refleksi)
-│   ├── hooks/            # Per-hook learning logic
-│   ├── store/            # Zustand stores
+│   ├── hooks/            # Submission, locking, AI feedback hooks
+│   ├── store/            # Zustand stores (progress, locking)
 │   ├── types/            # Shared TypeScript types
 │   └── components/
 │       ├── sections/     # percobaan, pengamatan, penyimpulan, cek-pemahaman
+│       ├── feedback/     # AI feedback display per section
 │       └── shared/       # Reusable form primitives
 ├── quiz/                 # Quiz engine + components
 └── lab/                  # Lab Batik canvas + tools
@@ -135,7 +149,7 @@ Full reference: [StyleGuide.md](./StyleGuide.md) | [DESIGN.md](./DESIGN.md)
 - npm / bun
 - Supabase project (or local instance)
 - BetterAuth credentials
-- (Optional) Gemini API key for AI features
+- (Optional) Gemini API key for AI feedback features
 
 ### Installation
 
@@ -174,60 +188,41 @@ npm run db:migrate   # Apply migration
 ### Inquiry-Based Learning Flow
 
 ```
-Setiap subtopik mengikuti 4 langkah inkuiri:
-  ■ Percobaan    → Interact with the GeoGebra canvas
-  ■ Pengamatan   → Record observations in structured forms
-  ■ Penyimpulan  → Draw conclusions from observed patterns
-  ■ Cek Paham    → Verify understanding with quick checks
+Each section follows the submit + AI evaluation flow:
+
+  ■ Percobaan    → Interact with canvas → Submit → AI feedback
+  ■ Pengamatan   → Record observations  → Submit → AI feedback
+  ■ Penyimpulan  → Draw conclusions     → Submit → AI feedback
+  ■ Cek Paham    → Quick check          → Submit → AI feedback
+
+  2 attempts per section. Input locks after attempt 2.
+  All progress persisted to database per section.
 ```
 
-### Design System
+### Tab Locking System
 
-All UI components live in `components/retroui/` — a bespoke NeoBrutalism kit built on `@base-ui/react`. Every component enforces the design system:
+Tabs are locked by default. Unlock conditions are validated both client-side (UI) and server-side (route protection + database checks). Each tab tracks which sections have been submitted, scored, and completed.
 
-- `Button` — variants: default, outline, ghost; always `!rounded-none`
-- `Card` — `Card.Header`, `Card.Title`, `Card.Content` sub-components
-- `Tabs` — `Tabs.List`, `Tabs.Trigger`, `Tabs.Content` with uppercase labels
-- `Input` / `Textarea` / `Select` — utility-based, `border-2 border-border`
+### Data Persistence
 
-### State Management
+Every answer, score, and feedback entry across all attempts is stored in the `section_progress` table, enabling detailed progress tracking.
 
-- **Zustand** stores for client-side state (auth, quiz in-progress, UI toggles)
-- **TanStack Query** for server state (progress, quiz results, chat history)
-- **Drizzle ORM** for type-safe database access
+### Scoring Formulas
 
-### Database Security
-
-Row Level Security (RLS) on all Supabase tables ensures users can only read/write their own data. API routes are protected by BetterAuth session middleware.
-
----
-
-## Module Content Architecture
-
-Curriculum data is structured as typed static objects in `features/modules/data/`. Each translation and reflection subtopic has its own tab specification:
-
-```typescript
-export interface ModuleTab {
-  label: string; // Display label
-  value: string; // URL slug
-  title: string; // Page heading
-  instruction: string; // Inquiry prompt
-  materialId: string; // GeoGebra material ID
-  formula: { prefix: string; suffix: string; placeholders: string[] };
-  sections: SectionBlock[]; // Percobaan → Pengamatan → Penyimpulan → Cek Paham
-}
-```
+| Question Type    | Scoring Method                                                |
+| ---------------- | ------------------------------------------------------------- |
+| Pilihan Ganda    | (Correct / Total) × 100                                       |
+| Uraian (Essay)   | AI compares semantics, intent, and reasoning (not exact text) |
+| Angka/Matematika | Flexible validation — accepts equivalent values/formats       |
+| All Correct      | Automatic 100                                                 |
 
 ---
 
 ## References
 
-- [PRD.md](./PRD.md) — Product Requirements Document v1
-- [PRD_v2.md](./PRD_v2.md) — Product Requirements Document v2 (Draft)
+- [PRD_v2.md](./PRD_v2.md) — Product Requirements Document v2
 - [StyleGuide.md](./StyleGuide.md) — Design system reference
 - [DESIGN.md](./DESIGN.md) — Color palette & tokens
-- [docs/MODULE_CONTENT_PLAN.md](./docs/MODULE_CONTENT_PLAN.md) — Content development plan
-- [docs/phase-1-plan.md](./docs/phase-1-plan.md) — Phase 1 implementation plan
 
 ---
 
@@ -237,4 +232,4 @@ MIT — see [LICENSE](./LICENSE) (if applicable).
 
 ---
 
-_Dibangun dengan ❤️ untuk pendidikan matematika Indonesia._
+_Built with ❤️ for Indonesian mathematics education._

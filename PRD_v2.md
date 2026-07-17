@@ -1,9 +1,9 @@
 # Product Requirements Document v2
 
-## GEMATRI — Geometri Batik Interaktif
+## GEMATRI — Gemakan Mahir Transformasi Geometri
 
-**Product:** GEMATRI (Geometri Batik Interaktif)
-**Version:** 2.0 (Draft)
+**Product:** GEMATRI (Gemakan Mahir Transformasi Geometri)
+**Version:** 2.0
 **Last Updated:** 2026-07-16
 
 ---
@@ -12,22 +12,22 @@
 
 ### 1.1 Vision
 
-Menjadi media pembelajaran interaktif definitif untuk geometri transformasi dalam pendidikan Indonesia, menjembatani abstraksi matematika dengan warisan budaya melalui teknologi.
+To make students proficient in geometric transformation (Gemakan Mahir Transformasi Geometri) through an interactive learning medium that bridges mathematical abstraction with Indonesian Batik cultural heritage.
 
 ### 1.2 Mission
 
-- Menyajikan konsep geometri transformasi (translasi, refleksi) secara visual dan interaktif
-- Membumikan matematika abstrak melalui konteks budaya Batik Nusantara
-- Mendukung pedagogi konstruktivistik dengan scaffolding adaptif berbasis AI
-- Membantu guru menyampaikan materi yang selama ini sulit divisualisasikan
+- Present geometric transformation concepts (translation, reflection) visually and interactively
+- Ground abstract mathematics in the cultural context of Nusantara Batik motifs
+- Support constructivist pedagogy with adaptive AI-based scaffolding
+- Help teachers deliver material that has traditionally been difficult to visualize
 
 ### 1.3 Target Users
 
 | User                   | Role        | Description                                                      |
 | ---------------------- | ----------- | ---------------------------------------------------------------- |
-| **Siswa SMP Kelas IX** | Learner     | Mempelajari translasi dan refleksi melalui eksplorasi interaktif |
-| **Guru Matematika**    | Facilitator | Mengintegrasikan media ke dalam pembelajaran di kelas            |
-| **Peneliti**           | Evaluator   | Mengukur validitas, kepraktisan, dan keefektifan produk          |
+| **Siswa SMP Kelas IX** | Learner     | Study translation and reflection through interactive exploration |
+| **Guru Matematika**    | Facilitator | Integrate the media into classroom learning                      |
+| **Peneliti**           | Evaluator   | Measure product validity, practicality, and effectiveness        |
 
 ---
 
@@ -35,53 +35,210 @@ Menjadi media pembelajaran interaktif definitif untuk geometri transformasi dala
 
 ### 2.1 Core Problem
 
-Siswa kesulitan memahami konsep **transformasi geometri** karena materi bersifat **abstrak**. Vektor translasi, sumbu refleksi, dan pemetaan koordinat sulit dikaitkan dengan pengalaman sehari-hari siswa.
+Students struggle to understand **geometric transformation** concepts because the material is inherently **abstract**. Translation vectors, reflection axes, and coordinate mapping are difficult to connect with students' daily experience.
 
 ### 2.2 Contributing Factors
 
-1. **Abstraction gap** — Siswa tidak dapat memvisualisasikan bagaimana titik, garis, dan bangun bergerak dalam ruang koordinat
-2. **Cultural disconnect** — Soal geometri standar menggunakan bentuk generik tanpa relevansi budaya
-3. **Passive learning** — Instruksi tradisional berpusat pada guru, bukan eksplorasi siswa
-4. **Missing scaffolding** — Tidak ada progresi bertahap dari konkret ke abstrak
+1. **Abstraction gap** — Students cannot visualize how points, lines, and shapes move in a coordinate space
+2. **Cultural disconnect** — Standard geometry problems use generic shapes with no cultural relevance
+3. **Passive learning** — Traditional instruction is teacher-centered, not student-exploratory
+4. **Missing scaffolding** — No gradual progression from concrete to abstract
 
 ### 2.3 Solution Approach
 
-Aplikasi web interaktif yang:
+An interactive web application that:
 
-- Memvisualisasikan transformasi geometri melalui kanvas koordinat interaktif
-- Membenamkan **motif Batik Indonesia** sebagai objek geometri yang ditransformasi
-- Menyediakan aktivitas **konstruktivistik** (observasi → pola → kesimpulan → verifikasi)
-- Mengikuti teori **van Hiele** untuk scaffolding dari visualisasi ke penalaran formal
-- Mengintegrasikan **AI scaffolding** via Gemini API untuk umpan balik personal
+- Visualizes geometric transformations through an interactive coordinate canvas
+- Embeds **Indonesian Batik motifs** as geometric objects to be transformed
+- Provides **constructivist activities** (observation → pattern → conclusion → verification)
+- Follows **van Hiele theory** for scaffolding from visualization to formal reasoning
+- Integrates **AI scaffolding** via Gemini API for personalized per-section feedback
+- Implements a **sequential unlocking system** ensuring mastery before progression
 
 ---
 
-## 3. Feature Requirements
+## 3. Learning Flow & Access Control
 
-### 3.1 Feature Roadmap
+### 3.1 Sequential Module Progression
 
-| #   | Feature                          | Priority | Notes                                              |
-| --- | -------------------------------- | -------- | -------------------------------------------------- |
-| F1  | Authentication (Login/Register)  | P0       | BetterAuth, email + Google OAuth                   |
-| F2  | Landing & Apersepsi              | P0       | Brand hero, coordinate explorer, module navigation |
-| F3  | Prerequisite Material            | P1       | Cartesian recap with interactive canvas            |
-| F4  | Translation Module (3 subtopics) | P0       | Titik, Garis, Bidang with inquiry flow             |
-| F5  | Translation Quiz                 | P0       | 10+ questions, multiple types, scoring             |
-| F6  | Reflection Module (7 subtopics)  | P0       | Sumbu-X through y=k with inquiry flow              |
-| F7  | Reflection Quiz                  | P0       | 15+ questions, same quiz engine                    |
-| F8  | Lab Batik (Creative Sandbox)     | P1       | Free creation with stamp, transform, save/export   |
-| F9  | AI Chatbot Scaffolding           | P1       | Gemini-powered, context-aware                      |
-| F10 | AI Answer Checking & Feedback    | P1       | Auto-evaluation + step-by-step explanation         |
-| F11 | Student Progress Tracking        | P1       | Subtopic completion, quiz scores, time tracking    |
-| F12 | Stepped Learning                 | P1       | Step-by-step inquiry with completion tracking      |
-| F13 | Teacher Dashboard                | P2       | Class analytics, progress reports                  |
-| F14 | Student Dashboard                | P2       | Overview, strengths/weaknesses, history            |
+Users must complete each module tab sequentially. Each tab contains multiple sections that must be submitted before the next tab unlocks.
 
-### 3.2 Feature Details
+```
+Modul Page
+  ├── Tab 1 (Titik)        →  Locked until user opens module
+  ├── Tab 2 (Garis)        →  Locked until Tab 1 is fully completed
+  ├── Tab 3 (Bangun)       →  Locked until Tab 2 is fully completed
+  └── Kuis                  →  Locked until all tabs are completed
+```
+
+### 3.2 Section-Based Submission Flow
+
+Each tab contains structured sections that must be completed in order:
+
+```
+Tab Content
+  ├── Percobaan (Experiment)        → Input + Submit required
+  ├── Pengamatan (Observation)      → Input + Submit required
+  ├── Penyimpulan (Conclusion)      → Input + Submit required
+  └── Cek Pemahaman (Comprehension) → Input + Submit required
+```
+
+- Each section requires the user to complete and submit their answer before the next section unlocks
+- All sections within a tab must be submitted before the next tab becomes accessible
+- Progress is persisted in the database after each submission
+
+### 3.3 Tab Locking Mechanism
+
+| State         | Visual    | Behavior                                                 |
+| ------------- | --------- | -------------------------------------------------------- |
+| **Locked**    | 🔒 Greyed | Tab not clickable; shows tooltip with unlock requirement |
+| **Available** | Active    | Tab is accessible for learning                           |
+| **Completed** | Checkmark | Tab shows completion status; user can revisit to review  |
+
+- Unlocking condition: all sections in the previous tab must be submitted and evaluated
+- Once unlocked, tabs remain accessible (no re-locking)
+
+---
+
+## 4. Content & Question Bank Specifications
+
+### 4.1 Manual Creation
+
+All question banks and quiz content are created **manually by the research team** to ensure quality, validity, and material relevance. The system does **not** use AI-generated quizzes or auto-generated questions.
+
+### 4.2 Instrument Separation
+
+Questions within the learning modules serve purely as **daily learning progress tracking** for students. They are **completely separate** from the main evaluation instruments (pre-test and post-test).
+
+### 4.3 Four Question Type Variations
+
+The question bank is divided into four question type variations:
+
+| Type                   | Description                                                         | Answer Mechanism               |
+| ---------------------- | ------------------------------------------------------------------- | ------------------------------ |
+| **Pilihan Ganda**      | Multiple choice with single or multiple correct answers             | Select from predefined options |
+| **Uraian (Essay)**     | Open-ended written response requiring explanation or reasoning      | Free text input                |
+| **Angka / Matematika** | Numeric or mathematical equation input (coordinates, vectors, etc.) | Structured math input field    |
+| **Campuran / Semua**   | Mixed-type or all-correct sections where full credit is automatic   | Varies; auto-100 on completion |
+
+---
+
+## 5. Answer Attempt & AI Feedback Flow
+
+### 5.1 Trigger
+
+The flow initiates when the user completes their answer input and clicks the **"Periksa Jawaban"** (Check Answer) button. The AI provides feedback per-section at the bottom of the relevant section area.
+
+### 5.2 Attempt 1
+
+| Condition           | Behavior                                                                                                                                                                                                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Correct**         | Status immediately marked as **Benar**.<br>"Coba Lagi" button does **not** appear.<br>AI provides full explanation and discussion of the answer.                                                                                                                                         |
+| **Wrong / Partial** | AI provides a short hint guiding the student on what to reconsider.<br>AI is **strictly prohibited** from revealing the final answer, final numbers, or calculation steps at this stage.<br>System shows **"Coba Lagi"** (Try Again) button, allowing the user to re-enter their answer. |
+
+### 5.3 Attempt 2
+
+| Condition          | Behavior                                                                                                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **User resubmits** | User corrects their answer and clicks submit for the second time                                                                                                                  |
+| **Still wrong**    | AI provides **clearer, more detailed, and deeper** feedback than attempt 1<br>Feedback may approach the correct answer or display the **official answer key** for self-evaluation |
+
+### 5.4 Post-Attempt 2
+
+- The answer input is **permanently locked** after the second attempt
+- The user cannot reset or retry further
+- Scoring is finalized
+
+### 5.5 Feedback Placement
+
+AI feedback is rendered **dynamically below each respective section** (not at the bottom of the page). Each section has its own feedback area.
+
+---
+
+## 6. Scoring System (AI Evaluation)
+
+After the attempt quota is exhausted (or if the answer is correct on first try), the AI evaluates and assigns a score from **0–100** per section based on question type:
+
+### 6.1 Multiple Choice / Similar
+
+$$
+\text{Score} = \left( \frac{\text{Number of Correct Answers}}{\text{Total Questions}} \right) \times 100
+$$
+
+Scored exactly based on correct/total ratio.
+
+### 6.2 Essay (Uraian)
+
+- AI evaluates **objectively** by comparing against the official answer
+- AI analyzes: sentence intent, essay essence, and the student's reasoning pattern
+- Does **not** require 100% textual match; semantic equivalence is accepted
+
+### 6.3 Numeric / Math Input
+
+- AI performs **flexible validation** of the submitted value
+- Differences in formatting (spaces, variable order, symbol format) are accepted as long as the **mathematical value is substantively valid**
+
+### 6.4 All Correct (Benar Semua)
+
+- Automatically receives a score of **100**
+
+---
+
+## 7. Data Management & Progress Tracking
+
+### 7.1 Storage Requirements
+
+Every score, answer submission, and feedback history for each section (Percobaan, Pengamatan, Penyimpulan, Cek Pemahaman) must be **immediately persisted to the database** after evaluation is complete.
+
+### 7.2 Per-Section Data
+
+| Field                | Description                                             |
+| -------------------- | ------------------------------------------------------- |
+| `section_type`       | The section type (Percobaan, Pengamatan, etc.)          |
+| `tab_slug`           | The tab identifier (titik, garis, etc.)                 |
+| `module_slug`        | The module identifier (translasi, refleksi)             |
+| `user_id`            | The submitting user                                     |
+| `attempt_1_answer`   | First attempt answer content                            |
+| `attempt_1_feedback` | AI feedback for attempt 1                               |
+| `attempt_1_score`    | Score after attempt 1                                   |
+| `attempt_2_answer`   | Second attempt answer content (if applicable)           |
+| `attempt_2_feedback` | AI feedback for attempt 2                               |
+| `attempt_2_score`    | Score after attempt 2 (final)                           |
+| `final_score`        | The final score (0–100)                                 |
+| `status`             | `correct`, `wrong_attempt1`, `wrong_attempt2`, `locked` |
+| `completed_at`       | Timestamp of completion                                 |
+
+### 7.3 Progress Calculation
+
+- Tab completion: all sections within the tab have `final_score` recorded
+- Module completion: all tabs are completed
+- Quiz is separate and has its own completion tracking
+
+---
+
+## 8. Feature Requirements
+
+### 8.1 Feature Roadmap
+
+| #   | Feature                         | Priority | Notes                                                    |
+| --- | ------------------------------- | -------- | -------------------------------------------------------- |
+| F1  | Authentication (Login/Register) | P0       | BetterAuth, email + Google OAuth                         |
+| F2  | Landing & Apersepsi             | P0       | Brand hero, coordinate explorer, module navigation       |
+| F3  | Prerequisite Material           | P1       | Cartesian recap with interactive canvas                  |
+| F4  | Translation Module (3 tabs)     | P0       | Titik, Garis, Bangun with locking + section submission   |
+| F5  | Translation Quiz                | P0       | 5+ questions, 4 types, two-attempt, manual question bank |
+| F6  | Reflection Module (7 tabs)      | P0       | Sumbu-X through y=k with locking + section submission    |
+| F7  | Reflection Quiz                 | P0       | 5+ questions, 4 types, two-attempt, manual question bank |
+| F8  | Lab Batik (Creative Sandbox)    | P1       | Free creation with stamp, transform, save/export         |
+| F9  | Section-Based AI Feedback       | P0       | Per-section AI evaluation with two-attempt system        |
+| F10 | Tab Locking & Sequential Access | P0       | Lock/unlock tabs based on per-section completion         |
+| F11 | Per-Section Progress Tracking   | P1       | Answer, score, feedback history persisted per section    |
+
+### 8.2 Feature Details
 
 #### F1: Authentication
 
-- BetterAuth dengan email/password dan Google OAuth
+- BetterAuth with email/password and Google OAuth
 - Session cookie-based, persistent across browser sessions
 - Route protection: unauthenticated users redirected to `/login`
 - Register flow with email + password + name
@@ -101,56 +258,49 @@ Aplikasi web interaktif yang:
 - Self-check quiz on prerequisite concepts
 - Progress indicator showing prerequisite completion status
 
-#### F4: Translation Module
+#### F4 & F6: Learning Modules (Translasi & Refleksi)
 
-Three subtopics mapped to Batik motifs:
+Each module has tabs that must be completed sequentially. Each tab contains inquiry sections:
 
-| Subtopic         | Batik Motif  | Concept                   |
-| ---------------- | ------------ | ------------------------- |
-| Translasi Titik  | Kawung       | Point translation T[a,b]  |
-| Translasi Garis  | Parang Rusak | Line translation          |
-| Translasi Bidang | Megamendung  | Polygon/shape translation |
+```
+Tab Structure:
+  ├── Budaya (Cultural Context) — Batik motif significance + video
+  ├── Kanvas (Interactive Canvas) — GeoGebra + coordinate exploration
+  ├── Percobaan (Experiment) — Input field + submit → AI feedback
+  ├── Pengamatan (Observation) — Input field + submit → AI feedback
+  ├── Penyimpulan (Conclusion) — Input field + submit → AI feedback
+  └── Cek Pemahaman (Comprehension Check) — Input field + submit → AI feedback
+```
 
-Each subtopic includes:
+**Translasi Module (3 tabs):**
 
-- **Cultural context** — Batik motif significance + video
-- **Interactive canvas** — GeoGebra + custom canvas with coordinate readout
-- **Inquiry-based learning** — Observation → Pattern recognition → Conclusion
-- **Matrix formula** — Algebraic explanation
-- **Comprehension check** — Verify understanding
-- **Conclusion notepad** — Student saves findings
+| Tab    | Batik Motif  | Concept                   |
+| ------ | ------------ | ------------------------- |
+| Titik  | Kawung       | Point translation T[a,b]  |
+| Garis  | Parang Rusak | Line translation          |
+| Bangun | Megamendung  | Polygon/shape translation |
 
-#### F5: Translation Quiz
+**Refleksi Module (7 tabs):**
 
-- Route: `/modul/translasi/kuis` (intro) → `/modul/translasi/kuis/[nomor]` (questions) → `/modul/translasi/kuis/hasil` (results)
-- 10+ questions across 3 subtopics
-- Question types: multiple choice, coordinate input, drag-and-drop, ordering
-- Immediate per-question feedback (correct/incorrect)
-- Final score display with subtopic breakdown
-- AI-powered feedback on incorrect answers
+| Tab        | Batik Motif | Formula          |
+| ---------- | ----------- | ---------------- |
+| Sumbu-X    | Kawung      | (x,y) → (x,-y)   |
+| Sumbu-Y    | Parang      | (x,y) → (-x,y)   |
+| Titik Asal | Megamendung | (x,y) → (-x,-y)  |
+| Garis y=x  | Truntum     | (x,y) → (y,x)    |
+| Garis y=-x | Sidomukti   | (x,y) → (-y,-x)  |
+| Garis x=h  | Sekar Jagad | (x,y) → (2h-x,y) |
+| Garis y=k  | Gentongan   | (x,y) → (x,2k-y) |
+
+#### F5 & F7: Quiz System
+
+- Route: `/modul/[slug]/kuis` → `/modul/[slug]/kuis/[nomor]` → `/modul/[slug]/kuis/hasil`
+- 5+ questions per module, manually created by research team
+- 4 question type variations: Pilihan Ganda, Uraian, Angka/Matematika, Campuran
+- Two-attempt system per question (same as section AI feedback flow)
+- Immediate AI scoring with per-question feedback
+- Final score display with tab breakdown
 - Results persisted to database
-
-#### F6: Reflection Module
-
-Seven subtopics mapped to Batik motifs:
-
-| Subtopic                  | Batik Motif | Formula          |
-| ------------------------- | ----------- | ---------------- |
-| Refleksi Sumbu X          | Kawung      | (x,y) → (x,-y)   |
-| Refleksi Sumbu Y          | Parang      | (x,y) → (-x,y)   |
-| Refleksi Titik Asal (0,0) | Megamendung | (x,y) → (-x,-y)  |
-| Refleksi Garis y=x        | Truntum     | (x,y) → (y,x)    |
-| Refleksi Garis y=-x       | Sidomukti   | (x,y) → (-y,-x)  |
-| Refleksi Garis x=h        | Sekar Jagad | (x,y) → (2h-x,y) |
-| Refleksi Garis y=k        | Gentongan   | (x,y) → (x,2k-y) |
-
-Same structure as Translation module (cultural context, canvas, inquiry, formula, conclusion).
-
-#### F7: Reflection Quiz
-
-- Route: `/modul/refleksi/kuis` → `/modul/refleksi/kuis/[nomor]` → `/modul/refleksi/kuis/hasil`
-- 15+ questions across 7 subtopics
-- Same quiz engine and feedback pattern as Translation Quiz
 
 #### F8: Lab Batik (Creative Sandbox)
 
@@ -162,57 +312,34 @@ Same structure as Translation module (cultural context, canvas, inquiry, formula
 - Export to PNG
 - Clear canvas + undo/redo
 
-#### F9: AI Chatbot Scaffolding
+#### F9: Section-Based AI Feedback
 
-- Gemini-powered chatbot accessible from any learning page
-- Context-aware: knows current subtopic and student progress
-- Explains concepts in simple Indonesian
-- Provides hints without giving away answers
-- Chat interface with message history
-- Offline fallback with static FAQ
+- Per-section AI evaluation (Percobaan, Pengamatan, Penyimpulan, Cek Pemahaman)
+- Two-attempt system as defined in Section 5
+- Scoring as defined in Section 6
+- AI response rendered dynamically below each section
+- History of both attempts and feedback stored in database
 
-#### F10: AI Answer Checking & Feedback
+#### F10: Tab Locking & Sequential Access
 
-- AI evaluates student answers on quiz questions
-- Constructive feedback on incorrect answers
-- Step-by-step solution explanation
-- Tracks common mistakes for teacher reporting
+- Tabs locked by default; unlock condition: all preceding tab sections submitted
+- Visual indicators (locked, available, completed)
+- Tooltip on locked tabs explaining unlock requirements
+- Server-side validation prevents access to locked tab routes
 
-#### F11: Student Progress Tracking
+#### F11: Per-Section Progress Tracking
 
-- Subtopic completion tracking (inquiry steps, observations, conclusions)
-- Quiz score history
-- Time spent per module
-- Data persisted in database
+- Each section submission persists answer, score, feedback, and timestamp
+- Tab completion calculated from all section statuses
+- Module completion calculated from all tab statuses
 - Visual progress indicators throughout learning flow
-
-#### F12: Stepped Learning
-
-- Structured inquiry steps per subtopic (4-5 steps each)
-- Step-by-step progression with completion marking
-- Observations checklist per subtopic
-- Conclusion writing with save functionality
-- Visual progress per step within each subtopic
-
-#### F13: Teacher Dashboard
-
-- Class overview with student progress data
-- Per-module completion statistics
-- Common mistakes analysis
-- Progress report export (CSV/PDF)
-
-#### F14: Student Dashboard
-
-- Overall progress overview across all modules
-- Per-subtopic completion status and scores
-- Quiz score history with dates
-- Strengths and weaknesses identification
+- Data used for progress visualization
 
 ---
 
-## 4. Technical Architecture
+## 9. Technical Architecture
 
-### 4.1 Tech Stack
+### 9.1 Tech Stack
 
 | Layer             | Technology            | Purpose                          |
 | ----------------- | --------------------- | -------------------------------- |
@@ -226,10 +353,10 @@ Same structure as Translation module (cultural context, canvas, inquiry, formula
 | **Validation**    | Zod                   | Schema validation                |
 | **Auth**          | BetterAuth            | Authentication & sessions        |
 | **Visualization** | GeoGebra (Web API)    | Interactive geometry applets     |
-| **AI**            | Gemini API            | Chatbot, answer checking         |
+| **AI**            | Gemini API            | Per-section answer evaluation    |
 | **Hosting**       | Vercel                | Deployment                       |
 
-### 4.2 Project Structure
+### 9.2 Project Structure
 
 ```
 app/
@@ -241,27 +368,28 @@ app/
 │   ├── lab/page.tsx             # Lab Batik sandbox
 │   ├── apersepsi/[slug]         # Module introspection
 │   └── modul/[slug]/
-│       ├── layout.tsx           # Tab navigation + footer
-│       ├── [tab]/page.tsx       # Per-subtopic learning page
+│       ├── layout.tsx           # Tab navigation + locking logic + footer
+│       ├── [tab]/page.tsx       # Per-tab sections with submit/AI feedback
 │       └── kuis/[nomor] + hasil # Quiz flow
 ├── api/auth/[...all]            # BetterAuth handler
 └── globals.css                  # Design tokens
 
 features/
-├── auth/     # Authentication components + hooks
-├── menu/     # Menu components + data
-├── prasyarat/ # Prerequisite components + hooks
-├── apersepsi/ # Apersepsi components + hooks
-├── modules/  # Learning modules (core)
+├── auth/         # Authentication components + hooks
+├── menu/         # Menu components + data
+├── prasyarat/    # Prerequisite components + hooks
+├── apersepsi/    # Apersepsi components + hooks
+├── modules/      # Learning modules (core)
 │   ├── data/           # Static curriculum data
-│   ├── hooks/          # Learning hooks
+│   ├── hooks/          # Learning hooks, submission logic
 │   ├── types/          # TypeScript types
-│   ├── store/          # Zustand stores
+│   ├── store/          # Zustand stores (progress, locking)
 │   └── components/
 │       ├── sections/   # percobaan, pengamatan, penyimpulan, cek-pemahaman
+│       ├── feedback/   # AI feedback display per section
 │       └── shared/     # Reusable form inputs
-├── quiz/     # Quiz components + hooks
-└── lab/      # Lab Batik canvas
+├── quiz/        # Quiz components + hooks
+└── lab/         # Lab Batik canvas
 
 components/
 ├── retroui/   # NeoBrutalism UI primitives
@@ -272,9 +400,9 @@ components/
 
 ---
 
-## 5. Design System
+## 10. Design System
 
-### 5.1 Design Language
+### 10.1 Design Language
 
 **Nusantara Rebel** — Indonesian heritage meets NeoBrutalism.
 
@@ -286,7 +414,7 @@ components/
 - **High contrast** — black text on warm paper background
 - **Interactive press** — element shifts into its shadow on click
 
-### 5.2 Color Palette
+### 10.2 Color Palette
 
 | Token          | Hex       | Usage                        |
 | -------------- | --------- | ---------------------------- |
@@ -298,7 +426,7 @@ components/
 | `--tertiary`   | `#ae2f34` | Errors, reflection module    |
 | `--border`     | `#000`    | All borders (always black)   |
 
-### 5.3 Typography
+### 10.3 Typography
 
 - **Font:** Space Grotesk (300–700), `next/font/google`
 - **Icons:** `lucide-react`
@@ -307,65 +435,109 @@ components/
 
 ---
 
-## 6. Data Model
+## 11. Data Model
 
-### 6.1 Core Entities
+### 11.1 Database Tables
 
-| Entity                | Table               | Purpose                                    |
-| --------------------- | ------------------- | ------------------------------------------ |
-| **User**              | `users`             | Managed by BetterAuth                      |
-| **Subtopic Progress** | `subtopic_progress` | Tracks completion per student per subtopic |
-| **Quiz Result**       | `quiz_results`      | Score, answers, AI feedback                |
-| **Batik Creation**    | `batik_creations`   | Saved Lab Batik canvas data                |
-| **Chat Message**      | `chat_messages`     | AI chatbot conversation history            |
+Only **3 app tables** are persisted in Supabase, plus the 4 BetterAuth auth tables. All curriculum data is static and lives in code (see `features/modules/data/`).
 
-### 6.2 Subtopic Progress Schema
+| Table              | Purpose                                                            |
+| ------------------ | ------------------------------------------------------------------ |
+| `section_progress` | Per-section answer attempts, AI feedback, scores (two-attempt log) |
+| `tab_progress`     | Tab unlock/completion state per user per module                    |
+| `quiz_results`     | Quiz attempt results with per-question two-attempt data            |
+
+### 11.2 Section Progress Schema
 
 ```typescript
-interface SubtopicProgress {
+interface SectionProgress {
   id: string;
   userId: string;
   module: "translasi" | "refleksi";
-  subtopic: string; // 'titik', 'garis', 'sumbu-x', dll.
-  stepsCompleted: string[]; // ["step1", "step2", ...]
-  observations: number[]; // [0, 1, 2]
-  conclusion: string;
+  tab: string; // 'titik', 'garis', 'bangun', 'sumbu-x', etc.
+  sectionType: "percobaan" | "pengamatan" | "penyimpulan" | "cek-pemahaman";
+  attempt1Answer: string | null;
+  attempt1Feedback: string | null;
+  attempt1Score: number | null;
+  attempt2Answer: string | null;
+  attempt2Feedback: string | null;
+  attempt2Score: number | null;
+  finalScore: number | null;
+  status:
+    | "unsubmitted"
+    | "correct"
+    | "wrong_attempt1"
+    | "wrong_attempt2"
+    | "locked";
+  completedAt: string | null;
+}
+```
+
+### 11.3 Tab Progress Schema
+
+```typescript
+interface TabProgress {
+  id: string;
+  userId: string;
+  module: "translasi" | "refleksi";
+  tab: string;
+  unlocked: boolean;
   completed: boolean;
-  timeSpentMs: number;
+  updatedAt: string;
 }
 ```
 
 ---
 
-## 7. User Flows
+## 12. User Flows
 
-### 7.1 Primary Learning Flow
+### 12.1 Primary Learning Flow
 
 ```
 Landing → Login → Menu
   ├── Prasyarat (optional)
   ├── Translasi Module
-  │   ├── Apersepsi → Titik → Garis → Bidang → Quiz → Hasil
-  │   └── Each subtopic: Budaya → Canvas → Inkuiri → Rumus → Cek
+  │   ├── Apersepsi → Tab 1 (Titik) → Submit all sections
+  │   │                             → Tab unlocks
+  │   │                             → Tab 2 (Garis) → Submit all sections
+  │   │                             → Tab unlocks
+  │   │                             → Tab 3 (Bangun) → Submit all sections
+  │   │                             → Quiz unlocks
+  │   │                             → Quiz → Hasil
   ├── Refleksi Module
-  │   ├── Apersepsi → Sumbu-X → Sumbu-Y → ... → y=k → Quiz → Hasil
-  │   └── Each subtopic: Same inquiry flow
+  │   ├── Apersepsi → Tab 1 (Sumbu-X) → Submit all sections
+  │   │                              → Tab unlocks → ... → Tab 7 (y=k)
+  │   │                              → Quiz unlocks → Quiz → Hasil
   └── Lab Batik (free exploration)
 ```
 
-### 7.2 AI Interaction Flow
+### 12.2 Per-Section Submission Flow
 
 ```
-Student on Learning Page
-  ├── Opens Chat Widget
-  │   └── Asks question → Gemini API (context-aware) → Response
-  └── Submits Quiz Answer
-      └── AI evaluates → Correct/Incorrect → Step-by-step feedback
+Section Page
+  ├── User reads material / interacts with canvas
+  ├── User fills answer input
+  ├── Clicks "Periksa Jawaban"
+  │   ├── Correct (Attempt 1)
+  │   │   ├── Score recorded
+  │   │   ├── AI shows full explanation
+  │   │   ├── Section marked complete → proceed
+  │   │   └── No "Coba Lagi" button
+  │   └── Wrong (Attempt 1)
+  │       ├── AI shows hint (no answer)
+  │       ├── "Coba Lagi" button appears
+  │       └── User edits answer → clicks submit
+  │           ├── Correct → Score recorded, full explanation
+  │           └── Wrong (Attempt 2)
+  │               ├── AI shows detailed feedback + answer key
+  │               ├── Input permanently locked
+  │               └── Final score recorded
+  └── Progress saved to database
 ```
 
 ---
 
-## 8. Non-Functional Requirements
+## 13. Non-Functional Requirements
 
 | Metric                 | Target                                                          |
 | ---------------------- | --------------------------------------------------------------- |
@@ -374,20 +546,20 @@ Student on Learning Page
 | Canvas FPS             | ≥ 60fps                                                         |
 | Gemini API Response    | < 5s                                                            |
 | Initial Bundle         | < 250KB gzipped                                                 |
-| Responsiveness         | Mobile (<640px) → Tablet (640-1024px) → Desktop (>1024px)       |
+| Responsiveness         | Mobile (<640px) → Tablet (640–1024px) → Desktop (>1024px)       |
 | Accessibility          | WCAG AA (contrast ≥ 4.5:1, keyboard nav, ARIA labels)           |
 | Browser Support        | Chrome 90+, Firefox 88+, Safari 14+, Edge 90+                   |
 | Security               | BetterAuth sessions, Supabase RLS, environment-isolated secrets |
 
 ---
 
-## 9. Batik Motif Mapping
+## 14. Batik Motif Mapping
 
 | Motif        | Geometric Concept | Module               |
 | ------------ | ----------------- | -------------------- |
 | Kawung       | Titik, Sumbu X    | Translasi + Refleksi |
 | Parang Rusak | Garis, Sumbu Y    | Translasi + Refleksi |
-| Megamendung  | Bidang, O(0,0)    | Translasi + Refleksi |
+| Megamendung  | Bangun, O(0,0)    | Translasi + Refleksi |
 | Truntum      | y=x reflection    | Refleksi             |
 | Sidomukti    | y=-x reflection   | Refleksi             |
 | Sekar Jagad  | x=h reflection    | Refleksi             |
@@ -395,7 +567,7 @@ Student on Learning Page
 
 ---
 
-## 10. Van Hiele Levels
+## 15. Van Hiele Levels
 
 | Level | Name               | Implementation                            |
 | ----- | ------------------ | ----------------------------------------- |
@@ -407,7 +579,7 @@ Student on Learning Page
 
 ---
 
-## 11. Development Phases
+## 16. Development Phases
 
 ### Phase 1: Foundation
 
@@ -417,43 +589,43 @@ Student on Learning Page
 - NeoBrutalism design system + base components
 - Layout components (navbar, footer)
 
-### Phase 2: Learning Modules
+### Phase 2: Core Learning Engine
+
+- Section progress schema + tab progress schema
+- Section submission system (Percobaan, Pengamatan, Penyimpulan, Cek Pemahaman)
+- Tab locking mechanism (client + server validation)
+- AI evaluation API route (Gemini integration)
+- Two-attempt feedback flow
+- Per-section scoring logic
+
+### Phase 3: Learning Modules
 
 - Apersepsi with coordinate explorer
 - Prerequisite material
-- Translation module (3 subtopics) with inquiry flow
-- Reflection module (7 subtopics) with inquiry flow
+- Translation module (3 tabs) with full section flow + locking
+- Reflection module (7 tabs) with full section flow + locking
 - Interactive canvas components
 - Cultural context + video content
 
-### Phase 3: Quiz System
+### Phase 4: Quiz System
 
-- Quiz data structure + question bank
-- Translation quiz (10+ questions)
-- Reflection quiz (15+ questions)
-- Quiz UI (multiple choice, coordinate input, drag-and-drop)
+- Quiz data structure + manual question bank
+- Translation quiz (5+ questions, 4 types)
+- Reflection quiz (5+ questions, 4 types)
+- Quiz UI with two-attempt per question
 - Scoring + result display
-- AI answer evaluation
+- AI evaluation per question
 
-### Phase 4: AI Integration
-
-- Gemini API setup (Next.js API route)
-- Chatbot widget with context awareness
-- AI answer checking + step-by-step feedback
-- Offline fallback
-
-### Phase 5: Lab Batik & Progress
+### Phase 5: Lab Batik & Data Layer
 
 - Creative sandbox canvas with stamp tools
 - Batch transformation tools
 - Save/load creations
-- Student progress tracking
-- Time tracking
+- Per-section progress persistence
+- Per-module progress overview
 
-### Phase 6: Polish & Dashboard
+### Phase 6: Polish & Production
 
-- Teacher dashboard with class analytics
-- Student dashboard with progress overview
 - Performance optimization
 - Accessibility audit
 - Research instrumentation
@@ -462,7 +634,7 @@ Student on Learning Page
 
 ---
 
-## 12. Success Criteria
+## 17. Success Criteria
 
 | Criterion                       | Target      |
 | ------------------------------- | ----------- |

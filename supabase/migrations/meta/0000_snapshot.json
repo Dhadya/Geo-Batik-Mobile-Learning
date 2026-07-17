@@ -1,5 +1,5 @@
 {
-  "id": "2b467c2d-7ec0-43f7-9fe4-32c84dd54f47",
+  "id": "aebe481b-3c62-438d-a18c-46690b3da0da",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -113,340 +113,16 @@
         }
       },
       "foreignKeys": {
-        "account_user_id_users_id_fk": {
-          "name": "account_user_id_users_id_fk",
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.batik_creations": {
-      "name": "batik_creations",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "canvas_data": {
-          "name": "canvas_data",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "thumbnail_url": {
-          "name": "thumbnail_url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "idx_batik_creations_user": {
-          "name": "idx_batik_creations_user",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "batik_creations_user_id_users_id_fk": {
-          "name": "batik_creations_user_id_users_id_fk",
-          "tableFrom": "batik_creations",
-          "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.chat_messages": {
-      "name": "chat_messages",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "session_id": {
-          "name": "session_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "role": {
-          "name": "role",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "context_page": {
-          "name": "context_page",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "metadata": {
-          "name": "metadata",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "idx_chat_messages_session": {
-          "name": "idx_chat_messages_session",
-          "columns": [
-            {
-              "expression": "session_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_chat_messages_user": {
-          "name": "idx_chat_messages_user",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_chat_messages_created": {
-          "name": "idx_chat_messages_created",
-          "columns": [
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "chat_messages_user_id_users_id_fk": {
-          "name": "chat_messages_user_id_users_id_fk",
-          "tableFrom": "chat_messages",
-          "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.page_content": {
-      "name": "page_content",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "module": {
-          "name": "module",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "sort_order": {
-          "name": "sort_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "batik_concept": {
-          "name": "batik_concept",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "batik_description": {
-          "name": "batik_description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "interactive_title": {
-          "name": "interactive_title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "instructions": {
-          "name": "instructions",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "geogebra_url": {
-          "name": "geogebra_url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "inquiry_steps": {
-          "name": "inquiry_steps",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "observations": {
-          "name": "observations",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "matrix_formula": {
-          "name": "matrix_formula",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "matrix_explanation": {
-          "name": "matrix_explanation",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "idx_page_content_module": {
-          "name": "idx_page_content_module",
-          "columns": [
-            {
-              "expression": "module",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "sort_order",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -475,18 +151,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "score": {
-          "name": "score",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "total_questions": {
-          "name": "total_questions",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
         "answers": {
           "name": "answers",
           "type": "jsonb",
@@ -494,11 +158,11 @@
           "notNull": true,
           "default": "'[]'::jsonb"
         },
-        "ai_feedback": {
-          "name": "ai_feedback",
-          "type": "text",
+        "total_score": {
+          "name": "total_score",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "completed_at": {
           "name": "completed_at",
@@ -538,12 +202,154 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        }
+      },
+      "foreignKeys": {
+        "quiz_results_user_id_user_id_fk": {
+          "name": "quiz_results_user_id_user_id_fk",
+          "tableFrom": "quiz_results",
+          "tableTo": "user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.section_progress": {
+      "name": "section_progress",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
         },
-        "idx_quiz_results_completed": {
-          "name": "idx_quiz_results_completed",
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "module": {
+          "name": "module",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tab": {
+          "name": "tab",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "section_type": {
+          "name": "section_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "attempt_1_answer": {
+          "name": "attempt_1_answer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attempt_1_feedback": {
+          "name": "attempt_1_feedback",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attempt_1_score": {
+          "name": "attempt_1_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attempt_2_answer": {
+          "name": "attempt_2_answer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attempt_2_feedback": {
+          "name": "attempt_2_feedback",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attempt_2_score": {
+          "name": "attempt_2_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "final_score": {
+          "name": "final_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'unsubmitted'"
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "uq_user_module_tab_section": {
+          "name": "uq_user_module_tab_section",
           "columns": [
             {
-              "expression": "completed_at",
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "module",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tab",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "section_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_section_progress_user": {
+          "name": "idx_section_progress_user",
+          "columns": [
+            {
+              "expression": "user_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -556,10 +362,10 @@
         }
       },
       "foreignKeys": {
-        "quiz_results_user_id_users_id_fk": {
-          "name": "quiz_results_user_id_users_id_fk",
-          "tableFrom": "quiz_results",
-          "tableTo": "users",
+        "section_progress_user_id_user_id_fk": {
+          "name": "section_progress_user_id_user_id_fk",
+          "tableFrom": "section_progress",
+          "tableTo": "user",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -660,10 +466,10 @@
         }
       },
       "foreignKeys": {
-        "session_user_id_users_id_fk": {
-          "name": "session_user_id_users_id_fk",
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -682,8 +488,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.subtopic_progress": {
-      "name": "subtopic_progress",
+    "public.tab_progress": {
+      "name": "tab_progress",
       "schema": "",
       "columns": {
         "id": {
@@ -704,31 +510,18 @@
           "primaryKey": false,
           "notNull": true
         },
-        "subtopic": {
-          "name": "subtopic",
+        "tab": {
+          "name": "tab",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "steps_completed": {
-          "name": "steps_completed",
-          "type": "jsonb",
+        "unlocked": {
+          "name": "unlocked",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "observations": {
-          "name": "observations",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
-        },
-        "conclusion": {
-          "name": "conclusion",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
+          "default": false
         },
         "completed": {
           "name": "completed",
@@ -736,13 +529,6 @@
           "primaryKey": false,
           "notNull": true,
           "default": false
-        },
-        "time_spent_ms": {
-          "name": "time_spent_ms",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
         },
         "updated_at": {
           "name": "updated_at",
@@ -753,8 +539,8 @@
         }
       },
       "indexes": {
-        "uq_user_module_subtopic": {
-          "name": "uq_user_module_subtopic",
+        "uq_user_module_tab": {
+          "name": "uq_user_module_tab",
           "columns": [
             {
               "expression": "user_id",
@@ -769,7 +555,7 @@
               "nulls": "last"
             },
             {
-              "expression": "subtopic",
+              "expression": "tab",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -780,26 +566,11 @@
           "method": "btree",
           "with": {}
         },
-        "idx_subtopic_progress_user": {
-          "name": "idx_subtopic_progress_user",
+        "idx_tab_progress_user": {
+          "name": "idx_tab_progress_user",
           "columns": [
             {
               "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_subtopic_progress_module": {
-          "name": "idx_subtopic_progress_module",
-          "columns": [
-            {
-              "expression": "module",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -812,10 +583,10 @@
         }
       },
       "foreignKeys": {
-        "subtopic_progress_user_id_users_id_fk": {
-          "name": "subtopic_progress_user_id_users_id_fk",
-          "tableFrom": "subtopic_progress",
-          "tableTo": "users",
+        "tab_progress_user_id_user_id_fk": {
+          "name": "tab_progress_user_id_user_id_fk",
+          "tableFrom": "tab_progress",
+          "tableTo": "user",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -828,8 +599,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.users": {
-      "name": "users",
+    "public.user": {
+      "name": "user",
       "schema": "",
       "columns": {
         "id": {
@@ -882,8 +653,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "users_email_unique": {
-          "name": "users_email_unique",
+        "user_email_unique": {
+          "name": "user_email_unique",
           "nullsNotDistinct": false,
           "columns": ["email"]
         }
