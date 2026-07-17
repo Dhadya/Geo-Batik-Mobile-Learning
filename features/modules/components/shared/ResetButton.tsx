@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { RotateCcw } from "lucide-react"
 import { Dialog } from "@/components/retroui/Dialog"
-import { useAnswerStore } from "../store/answerStore"
+import { useAnswerStore } from "../../store/answerStore"
 
 /** FAB button that resets all module answers with confirmation dialog. */
 export function ResetButton() {
