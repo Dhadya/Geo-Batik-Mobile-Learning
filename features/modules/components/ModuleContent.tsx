@@ -1,5 +1,8 @@
+"use client"
+
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import { useEffect } from "react"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { ArrowLeft, ArrowRight } from "lucide-react"
@@ -11,6 +14,8 @@ import { AssessmentSection } from "./sections/cek-pemahaman/AssessmentSection"
 import { ModuleTabNav } from "./navigation/ModuleTabNav"
 import { ResetButton } from "./shared/ResetButton"
 import { getModuleTabs, getModuleTab } from "../data"
+import { useAnswerStore } from "../store/answerStore"
+import { syncTabProgress } from "../lib/progressSync"
 import type { PilihanGandaItem } from "../types"
 
 /** Main module content orchestrator — composes all sections for a given slug and tab. */
@@ -50,6 +55,39 @@ export function ModuleContent({
 
   // Fallback to legacy assessment prop if no sections defined
   const questions = cekPemahamanQuestions.length > 0 ? cekPemahamanQuestions : tabConfig.assessment
+
+  // Sync server progress into stores on mount
+  useEffect(() => {
+    syncTabProgress(slug)
+
+    fetch(`/api/modul/${slug}/section?tab=${decodedTab}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (!json.ok || !json.data?.sections) return
+        const store = useAnswerStore.getState()
+        for (const s of json.data.sections) {
+          const sectionKey = s.sectionType === "cek-pemahaman" ? "cekPemahaman" : s.sectionType
+          if (s.status === "unsubmitted" || s.status === "locked") continue
+          if (!s.attempt1Answer) continue
+
+          if (s.sectionType === "cek-pemahaman") {
+            const parsed = JSON.parse(s.attempt1Answer)
+            if (Array.isArray(parsed.selections)) {
+              store.setSelections(slug, decodedTab, parsed.selections)
+            }
+          } else {
+            const parsed = JSON.parse(s.attempt1Answer) as Record<string, Record<string, string>>
+            for (const [itemId, fields] of Object.entries(parsed)) {
+              for (const [fieldKey, value] of Object.entries(fields)) {
+                store.setField(slug, decodedTab, sectionKey as "percobaan", itemId, fieldKey, value)
+              }
+            }
+          }
+          store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
+        }
+      })
+      .catch(() => {})
+  }, [slug, decodedTab])
 
   return (
     <div className="space-y-3 md:space-y-6">

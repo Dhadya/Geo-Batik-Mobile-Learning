@@ -1,5 +1,6 @@
 // Components
 export { ModuleContent } from "./components/ModuleContent"
+export { ProgressSyncWrapper } from "./components/ProgressSyncWrapper"
 export { ModuleTabNav } from "./components/navigation/ModuleTabNav"
 export { InteractiveWorkspace } from "./components/workspace/InteractiveWorkspace"
 export { ObservationPanel } from "./components/sections/pengamatan/ObservationPanel"
