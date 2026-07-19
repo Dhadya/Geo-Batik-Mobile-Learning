@@ -14,6 +14,12 @@ export { MODULE_TABS, getModuleTabs, getModuleTab } from "./data"
 // Store
 export { useAnswerStore } from "./store/answerStore"
 export type { SectionAnswers, CekPemahamanAnswers, TabAnswers } from "./store/answerStore"
+export { useTabProgressStore } from "./store/tabProgressStore"
+export type { TabProgressEntry } from "./store/tabProgressStore"
+
+// Lib
+export { syncTabProgress, syncSectionAttempt } from "./lib/progressSync"
+export type { SectionSyncInput } from "./lib/progressSync"
 
 // Types
 export type {

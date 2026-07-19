@@ -3,7 +3,8 @@ import { toast } from "sonner"
 import { useAnswerStore, emptyTab } from "../store/answerStore"
 import { getModuleTab } from "../data"
 import { validateSection } from "../lib/validation"
-import type { SectionItem, SectionBlock } from "../types"
+import { syncSectionAttempt } from "../lib/progressSync"
+import type { SectionItem, SectionBlock, ModuleSlug } from "../types"
 
 type SectionName = "percobaan" | "pengamatan" | "penyimpulan"
 
@@ -84,7 +85,16 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     } else {
       toast.error(result.summary)
     }
-  }, [items, fields, boundSetChecked])
+
+    syncSectionAttempt(slug as ModuleSlug, {
+      tab,
+      sectionType: section,
+      attempt: 1,
+      answer: fields as Record<string, unknown>,
+      score: result.isCorrect ? 100 : 0,
+      status: result.isCorrect ? "correct" : "wrong_attempt1",
+    })
+  }, [items, fields, boundSetChecked, slug, tab, section])
 
   return {
     items,
