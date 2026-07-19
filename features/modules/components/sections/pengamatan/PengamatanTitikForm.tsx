@@ -6,6 +6,7 @@ import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
 import { Select } from "@/components/retroui/Select"
 import { useSection } from "@/features/modules/hooks/useObservation"
+import { AttemptFeedback } from "../../shared/AttemptFeedback"
 import type { UraianItem, MemasangkanItem } from "@/features/modules/types"
 
 interface PengamatanTitikFormProps {
@@ -18,6 +19,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, setChecked, setErrors, block,
+    isLocked, showCobaLagi, setShowCobaLagi,
   } = useSection(slug, tab, "pengamatan")
 
   const handleClick = useCallback(() => {
@@ -29,6 +31,12 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
       handleSubmit()
     }
   }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  const handleCobaLagi = useCallback(() => {
+    setShowCobaLagi(false)
+    setChecked(false)
+    setErrors({})
+  }, [setShowCobaLagi, setChecked, setErrors])
 
   return (
     <form className="space-y-3 md:space-y-4">
@@ -141,6 +149,12 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>
+
+      <AttemptFeedback
+        showCobaLagi={showCobaLagi}
+        onCobaLagi={handleCobaLagi}
+        isLocked={isLocked}
+      />
     </form>
   )
 }

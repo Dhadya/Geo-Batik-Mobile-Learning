@@ -5,6 +5,7 @@ import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useObservation"
+import { AttemptFeedback } from "../../shared/AttemptFeedback"
 import { UrutkanInput } from "../../shared/UrutkanInput"
 import type { UraianItem, PilihanGandaItem, UrutkanItem as UrutkanItemType } from "@/features/modules/types"
 
@@ -18,6 +19,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, setChecked, setErrors, block,
+    isLocked, showCobaLagi, setShowCobaLagi,
   } = useSection(slug, tab, "pengamatan")
 
   const handleClick = useCallback(() => {
@@ -28,6 +30,12 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
       handleSubmit()
     }
   }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  const handleCobaLagi = useCallback(() => {
+    setShowCobaLagi(false)
+    setChecked(false)
+    setErrors({})
+  }, [setShowCobaLagi, setChecked, setErrors])
 
   return (
     <div className="space-y-3 md:space-y-4">
@@ -148,6 +156,12 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>
+
+      <AttemptFeedback
+        showCobaLagi={showCobaLagi}
+        onCobaLagi={handleCobaLagi}
+        isLocked={isLocked}
+      />
     </div>
   )
 }

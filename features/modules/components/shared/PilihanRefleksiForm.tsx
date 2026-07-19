@@ -6,6 +6,7 @@ import { Button } from "@/components/retroui/Button"
 import { Input } from "@/components/retroui/Input"
 import { Select } from "@/components/retroui/Select"
 import { useSection, allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
+import { AttemptFeedback } from "./AttemptFeedback"
 import type { PilihanRefleksiItem } from "@/features/modules/types"
 
 interface PilihanRefleksiFormProps {
@@ -18,6 +19,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, setChecked, setErrors,
+    isLocked, showCobaLagi, setShowCobaLagi,
   } = useSection(slug, tab, "percobaan")
 
   const handleClick = useCallback(() => {
@@ -28,6 +30,12 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
       handleSubmit()
     }
   }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  const handleCobaLagi = useCallback(() => {
+    setShowCobaLagi(false)
+    setChecked(false)
+    setErrors({})
+  }, [setShowCobaLagi, setChecked, setErrors])
 
   // Find the PilihanRefleksiItem
   const refleksiItem = items.find((i): i is PilihanRefleksiItem => i.type === "pilihan_refleksi")
@@ -145,6 +153,12 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
+
+      <AttemptFeedback
+        showCobaLagi={showCobaLagi}
+        onCobaLagi={handleCobaLagi}
+        isLocked={isLocked}
+      />
     </section>
   )
 }

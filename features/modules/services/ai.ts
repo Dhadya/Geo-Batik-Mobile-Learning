@@ -18,7 +18,7 @@ export interface EvaluateSectionOutput {
   errors: Record<string, string>;
 }
 
-/** Describe a single item and its correct answer for the prompt. */
+/** Describe a single item for the prompt. */
 function describeItem(item: SectionItem): string {
   switch (item.type) {
     case "matriks":
@@ -42,7 +42,17 @@ function describeItem(item: SectionItem): string {
   }
 }
 
-/** Build a prompt for Gemini to evaluate a section's answers. */
+/** Format student answers for the prompt. */
+function describeAnswers(items: SectionItem[], answers: Record<string, Record<string, string>>): string {
+  return items
+    .map((item) => {
+      const ans = answers[String(item.id)] ?? {};
+      return `  Soal ${item.id}: ${JSON.stringify(ans)}`;
+    })
+    .join("\n");
+}
+
+/** Build a prompt for Gemini based on attempt number and correctness handling. */
 export function buildPrompt(
   module: string,
   sectionType: string,
@@ -51,33 +61,52 @@ export function buildPrompt(
   attempt: 1 | 2,
 ): string {
   const itemDescriptions = items.map(describeItem).join("\n");
+  const studentAnswers = describeAnswers(items, answers);
+  const sectionLabel = sectionType.replace(/_/g, " ");
 
-  const studentAnswers = items
-    .map((item) => {
-      const ans = answers[String(item.id)] ?? {};
-      return `  Soal ${item.id}: ${JSON.stringify(ans)}`;
-    })
-    .join("\n");
+  if (attempt === 2) {
+    return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
+Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module}.
+Ini adalah percobaan kedua (terakhir).
 
-  const instruction =
-    attempt === 1
-      ? `- Jika BENAR SEMUA: isi "isCorrect": true, "feedback": penjelasan singkat, "errors": {}
-- Jika ADA YANG SALAH: isi "isCorrect": false, beri petunjuk (JANGAN sebut jawaban akhir), "errors" berisi field yang salah`
-      : `- Jika BENAR SEMUA: skor penuh
-- Jika ADA YANG SALAH: feedback lengkap + langkah penyelesaian + jawaban benar`;
-
-  return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
-Bagian: ${sectionType}
-Modul: ${module}
-
-SOAL:
+Soal:
 ${itemDescriptions}
 
-JAWABAN SISWA:
+Jawaban siswa:
 ${studentAnswers}
 
-INSTRUKSI (percobaan ke-${attempt}):
-${instruction}
+INSTRUKSI:
+- Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri semangat
+- Jika ada yang salah: isi "isCorrect": false, berikan feedback mendalam
+- Jelaskan langkah demi langkah penyelesaiannya
+- Tampilkan jawaban yang benar sebagai bahan evaluasi
+- Gunakan bahasa Indonesia yang sederhana
+- Berikan semangat untuk terus belajar
+
+Keluarkan JSON SAJA (tanpa markdown) dengan format:
+{
+  "isCorrect": boolean,
+  "score": number (0-100) atau null,
+  "feedback": "string dalam Bahasa Indonesia",
+  "errors": { "fieldKey": "alasan kesalahan" }
+}`;
+  }
+
+  return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
+Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module}.
+
+Soal:
+${itemDescriptions}
+
+Jawaban siswa:
+${studentAnswers}
+
+INSTRUKSI PENTING:
+- Jika semua jawaban benar: isi "isCorrect": true, "score": 100, "feedback": pujian singkat, "errors": {}
+- Jika ada yang salah: isi "isCorrect": false, beri petunjuk singkat (1-2 kalimat) yang mengarahkan siswa pada letak kekurangan mereka
+- JANGAN menyebutkan jawaban akhir
+- JANGAN memberikan angka atau langkah perhitungan
+- Gunakan bahasa Indonesia yang sederhana
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {

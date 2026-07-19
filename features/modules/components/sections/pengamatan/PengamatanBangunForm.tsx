@@ -4,6 +4,7 @@ import { useCallback } from "react"
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useObservation"
+import { AttemptFeedback } from "../../shared/AttemptFeedback"
 import type { PilihanGandaItem } from "@/features/modules/types"
 
 interface PengamatanBangunFormProps {
@@ -16,6 +17,7 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, setChecked, setErrors, block,
+    isLocked, showCobaLagi, setShowCobaLagi,
   } = useSection(slug, tab, "pengamatan")
 
   const handleClick = useCallback(() => {
@@ -27,6 +29,12 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
       handleSubmit()
     }
   }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  const handleCobaLagi = useCallback(() => {
+    setShowCobaLagi(false)
+    setChecked(false)
+    setErrors({})
+  }, [setShowCobaLagi, setChecked, setErrors])
 
   /* Only render pilihan_ganda items (binary choice questions) */
   const pgItems = items.filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
@@ -102,6 +110,12 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>
+
+      <AttemptFeedback
+        showCobaLagi={showCobaLagi}
+        onCobaLagi={handleCobaLagi}
+        isLocked={isLocked}
+      />
     </form>
   )
 }

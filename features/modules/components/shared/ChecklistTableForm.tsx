@@ -5,6 +5,7 @@ import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { Checkbox } from "@/components/retroui/Checkbox"
 import { useSection } from "@/features/modules/hooks/useObservation"
+import { AttemptFeedback } from "./AttemptFeedback"
 import type { ChecklistTableItem } from "@/features/modules/types"
 
 interface ChecklistTableFormProps {
@@ -17,6 +18,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, setChecked, setErrors,
+    isLocked, showCobaLagi, setShowCobaLagi,
   } = useSection(slug, tab, "pengamatan")
 
   const handleClick = useCallback(() => {
@@ -27,6 +29,12 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
       handleSubmit()
     }
   }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  const handleCobaLagi = useCallback(() => {
+    setShowCobaLagi(false)
+    setChecked(false)
+    setErrors({})
+  }, [setShowCobaLagi, setChecked, setErrors])
 
   // Find the ChecklistTableItem
   const checklistItem = items.find((i): i is ChecklistTableItem => i.type === "checklist_table")
@@ -103,6 +111,12 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
+
+      <AttemptFeedback
+        showCobaLagi={showCobaLagi}
+        onCobaLagi={handleCobaLagi}
+        isLocked={isLocked}
+      />
     </section>
   )
 }

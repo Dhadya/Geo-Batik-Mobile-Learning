@@ -6,6 +6,7 @@ import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useObservation"
+import { AttemptFeedback } from "../../shared/AttemptFeedback"
 import type { KoordinatItem, UraianItem } from "@/features/modules/types"
 
 interface PengamatanMockFormProps {
@@ -17,13 +18,20 @@ interface PengamatanMockFormProps {
 export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
   const {
     items, fields, errors, isChecked, isFilled,
-    setField, handleSubmit,
+    setField, handleSubmit, setChecked, setErrors,
+    isLocked, showCobaLagi, setShowCobaLagi,
   } = useSection(slug, tab, "pengamatan")
 
   const handleClick = useCallback(() => {
     /* Direct submit — no toggle since mock form doesn't use "Periksa Lagi" pattern */
     handleSubmit()
   }, [handleSubmit])
+
+  const handleCobaLagi = useCallback(() => {
+    setShowCobaLagi(false)
+    setChecked(false)
+    setErrors({})
+  }, [setShowCobaLagi, setChecked, setErrors])
 
   return (
     <form onSubmit={handleClick} className="space-y-3 md:space-y-4">
@@ -110,6 +118,12 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>
+
+      <AttemptFeedback
+        showCobaLagi={showCobaLagi}
+        onCobaLagi={handleCobaLagi}
+        isLocked={isLocked}
+      />
     </form>
   )
 }

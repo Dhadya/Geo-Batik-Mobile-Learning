@@ -114,6 +114,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const setSelections = useAnswerStore((s) => s.setSelections)
   const setChecked = useAnswerStore((s) => s.setChecked)
 
+
+
   const allAnswered = useMemo(() =>
     questions.every((q, qi) => {
       if (q.multiSelect) return true // multi-select always "answered"
@@ -162,6 +164,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       setChecked(slug, tab, "cekPemahaman" as unknown as "percobaan", true)
     }
   }, [isChecked, setChecked, slug, tab])
+
+
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
@@ -314,6 +318,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
           {isChecked ? "Periksa Lagi" : "Submit Jawaban"}
         </Button>
       </div>
+
     </section>
   )
 }

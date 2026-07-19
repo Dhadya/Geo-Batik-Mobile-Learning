@@ -1,9 +1,11 @@
+import { toast } from "sonner"
 import { validateSection } from "./validation"
 import type { SectionItem } from "../types"
 
 /**
  * Client-side AI evaluation caller with local validation fallback.
  * Posts to /api/ai/evaluate-section; falls back to validateSection() on network or API error.
+ * Shows toast notification when falling back to local validation.
  */
 export async function evaluateSection(
   slug: string,
@@ -28,11 +30,12 @@ export async function evaluateSection(
     if (!json.ok) throw new Error(json.error?.message ?? "AI evaluation failed")
     return json.data
   } catch {
+    toast.error("Gagal memuat feedback AI, menggunakan penilaian lokal")
     const local = validateSection(items, fields, undefined)
     return {
       isCorrect: local.isCorrect,
       score: local.isCorrect ? 100 : 0,
-      feedback: local.isCorrect ? "Jawaban benar (penilaian lokal)" : "Coba periksa kembali jawabanmu",
+      feedback: local.isCorrect ? "Jawaban benar" : "Coba periksa kembali jawabanmu",
       errors: local.errors ?? {},
     }
   }

@@ -4,6 +4,7 @@ import { useCallback } from "react"
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useObservation"
+import { AttemptFeedback } from "../../shared/AttemptFeedback"
 import type { UraianItem } from "@/features/modules/types"
 
 import { PercobaanInstruction } from "./PercobaanInstruction"
@@ -22,6 +23,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, setChecked, setErrors, block,
+    isLocked, showCobaLagi, setShowCobaLagi,
   } = useSection(slug, tab, "percobaan")
 
   const handleClick = useCallback(() => {
@@ -32,6 +34,12 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
       handleSubmit()
     }
   }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  const handleCobaLagi = useCallback(() => {
+    setShowCobaLagi(false)
+    setChecked(false)
+    setErrors({})
+  }, [setShowCobaLagi, setChecked, setErrors])
 
   if (items.length === 0) return null
 
@@ -60,6 +68,12 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           isChecked={isChecked}
           isFilled={isFilled}
           onClick={handleClick}
+        />
+
+        <AttemptFeedback
+          showCobaLagi={showCobaLagi}
+          onCobaLagi={handleCobaLagi}
+          isLocked={isLocked}
         />
       </div>
     )
@@ -125,6 +139,12 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         isChecked={isChecked}
         isFilled={isFilled}
         onClick={handleClick}
+      />
+
+      <AttemptFeedback
+        showCobaLagi={showCobaLagi}
+        onCobaLagi={handleCobaLagi}
+        isLocked={isLocked}
       />
     </div>
   )

@@ -2,9 +2,9 @@ import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { useAnswerStore, emptyTab } from "../store/answerStore"
 import { getModuleTab } from "../data"
-import { validateSection } from "../lib/validation"
-import { syncSectionAttempt } from "../lib/progressSync"
-import type { SectionItem, SectionBlock, ModuleSlug } from "../types"
+import { evaluateSection } from "../lib/evaluateSection"
+import { persistSectionAttempt } from "../lib/persistSectionAttempt"
+import type { SectionItem, SectionBlock } from "../types"
 
 type SectionName = "percobaan" | "pengamatan" | "penyimpulan"
 
@@ -40,7 +40,7 @@ function isSectionFilled(items: SectionItem[], fields: Record<string, Record<str
   })
 }
 
-/** Generic hook for reading/writing/validating any section from answerStore. */
+/** Generic hook for reading/writing/validating any section from answerStore with two-attempt AI flow. */
 export function useSection(slug: string, tab: string, section: SectionName) {
   const tabConfig = getModuleTab(slug, tab)
 
@@ -60,6 +60,9 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const aiFeedback = sectionAnswers?.aiFeedback
 
   const [errors, setErrors_] = useState<Record<string, string>>({})
+  const [attempt, setAttempt] = useState<1 | 2>(1)
+  const [isLocked, setIsLocked] = useState(false)
+  const [showCobaLagi, setShowCobaLagi] = useState(false)
 
   const boundSetField = useCallback(
     (itemId: string, fieldKey: string, value: string) => {
@@ -73,28 +76,52 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     [setChecked, slug, tab, section],
   )
 
+  const boundSetAIFeedback = useCallback(
+    (feedback: string) => setAIFeedback(slug, tab, section, feedback),
+    [setAIFeedback, slug, tab, section],
+  )
+
   const isFilled = isSectionFilled(items, fields)
 
   const handleSubmit = useCallback(async () => {
-    const result = validateSection(items, fields, undefined)
+    if (isLocked) return
+
+    const result = await evaluateSection(slug, tab, section, items, fields, attempt)
     setErrors_(result.errors)
-    boundSetChecked(true)
+    boundSetAIFeedback(result.feedback)
 
     if (result.isCorrect) {
-      toast.success(result.summary)
+      boundSetChecked(true)
+      setIsLocked(true)
+      setShowCobaLagi(false)
+      toast.success("Jawaban benar!")
+      await persistSectionAttempt({
+        slug, tab, sectionType: section, attempt,
+        answer: fields, feedback: result.feedback, score: result.score,
+        status: "correct",
+      })
+    } else if (attempt === 1) {
+      boundSetChecked(true)
+      setShowCobaLagi(true)
+      setAttempt(2)
+      toast.error("Belum tepat, coba lagi")
+      await persistSectionAttempt({
+        slug, tab, sectionType: section, attempt,
+        answer: fields, feedback: result.feedback, score: result.score,
+        status: "wrong_attempt1",
+      })
     } else {
-      toast.error(result.summary)
+      boundSetChecked(true)
+      setIsLocked(true)
+      setShowCobaLagi(false)
+      toast.info("Berikut pembahasan lengkapnya")
+      await persistSectionAttempt({
+        slug, tab, sectionType: section, attempt,
+        answer: fields, feedback: result.feedback, score: result.score,
+        status: "wrong_attempt2",
+      })
     }
-
-    syncSectionAttempt(slug as ModuleSlug, {
-      tab,
-      sectionType: section,
-      attempt: 1,
-      answer: fields as Record<string, unknown>,
-      score: result.isCorrect ? 100 : 0,
-      status: result.isCorrect ? "correct" : "wrong_attempt1",
-    })
-  }, [items, fields, boundSetChecked, slug, tab, section])
+  }, [attempt, isLocked, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
 
   return {
     items,
@@ -103,6 +130,10 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     isChecked,
     isFilled,
     aiFeedback,
+    attempt,
+    isLocked,
+    showCobaLagi,
+    setShowCobaLagi,
     setField: boundSetField,
     setAIFeedback,
     setChecked: boundSetChecked,

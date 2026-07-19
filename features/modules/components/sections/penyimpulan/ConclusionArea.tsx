@@ -7,6 +7,7 @@ import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
 import { UrutkanInput } from "../../shared/UrutkanInput"
+import { AttemptFeedback } from "../../shared/AttemptFeedback"
 import { useSection } from "../../../hooks/useObservation"
 import type { UraianItem, UrutkanItem as UrutkanItemType } from "../../../types"
 
@@ -20,6 +21,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, setChecked, setErrors,
+    isLocked, showCobaLagi, setShowCobaLagi,
   } = useSection(slug, tab, "penyimpulan")
 
   // Map tab to reflection label for conclusion table
@@ -46,6 +48,13 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
       handleSubmit()
     }
   }, [isChecked, setChecked, setErrors, handleSubmit])
+
+  const handleCobaLagi = useCallback(() => {
+    setShowCobaLagi(false)
+    setChecked(false)
+    setErrors({})
+    setItem11Err("")
+  }, [setShowCobaLagi, setChecked, setErrors])
 
   const validateItem11 = (aVal: string, bVal: string) => {
     if (!aVal.trim() && !bVal.trim()) {
@@ -308,6 +317,12 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
         >
           {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
         </Button>
+
+        <AttemptFeedback
+          showCobaLagi={showCobaLagi}
+          onCobaLagi={handleCobaLagi}
+          isLocked={isLocked}
+        />
       </div>
     </section>
   )
