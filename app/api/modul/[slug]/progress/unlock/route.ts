@@ -4,6 +4,7 @@ import { handleError } from "@/lib/api/errors";
 import { unlockNextTab } from "@/features/modules/services/progress";
 import type { ModuleSlug } from "@/features/modules/types";
 
+/** POST /api/modul/[slug]/progress/unlock — unlock the next tab after completing all 4 sections of the current tab. */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },

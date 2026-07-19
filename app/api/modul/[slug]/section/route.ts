@@ -4,6 +4,7 @@ import { handleError } from "@/lib/api/errors";
 import { saveSectionSchema, saveSectionAttempt, getSectionProgress } from "@/features/modules/services/section";
 import type { ModuleSlug } from "@/features/modules/types";
 
+/** POST /api/modul/[slug]/section — save a student's section attempt (percobaan/pengamatan/penyimpulan/cek-pemahaman). */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
@@ -39,6 +40,7 @@ export async function POST(
   }
 }
 
+/** GET /api/modul/[slug]/section — fetch section progress, optionally filtered by tab and/or sectionType query params. */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
