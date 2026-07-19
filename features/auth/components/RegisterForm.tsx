@@ -1,6 +1,6 @@
 "use client"
 
-import { User, ArrowRight } from "lucide-react"
+import { User, ArrowRight, Check } from "lucide-react"
 import Image from "next/image"
 import { Loader } from "@/components/retroui/Loader"
 import { Button } from "@/components/retroui/Button"
@@ -35,7 +35,7 @@ export function RegisterForm() {
     return (
       <div className="text-center space-y-4 py-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary border-4 border-black neubrutal-shadow-sm">
-          <span className="text-2xl">✓</span>
+          <Check className="size-8 text-black" />
         </div>
         <h2 className="text-xl font-black uppercase">Berhasil Daftar!</h2>
         <p className="text-sm">Anda akan dialihkan ke halaman login...</p>

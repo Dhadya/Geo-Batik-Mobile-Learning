@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useEffect } from "react"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
+import { Badge } from "@/components/retroui/Badge"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { QuizBreadcrumb } from "@/features/quiz"
 import { InteractiveWorkspace } from "./workspace/InteractiveWorkspace"
@@ -96,16 +97,31 @@ export function ModuleContent({
       .catch(() => {})
   }, [slug, decodedTab])
 
+  // Calculate section progress for this tab
+  const tabAnswers = useAnswerStore((s) => s.answers[`${slug}-${decodedTab}`])
+  const activeSections = slug === "refleksi" && decodedTab === "bangun"
+    ? ["pengamatan", "percobaan", "cekPemahaman"]
+    : ["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"]
+  const completedCount = activeSections.filter((sec) => {
+    if (sec === "cekPemahaman") {
+      return tabAnswers?.cekPemahaman?.isChecked ?? false
+    }
+    return tabAnswers?.[sec as "percobaan"]?.isChecked ?? false
+  }).length
+
   return (
     <div className="space-y-3 md:space-y-6">
       {/* Breadcrumb navigation */}
       <QuizBreadcrumb slug={slug} label={label} path="modul" />
 
       {/* Module title banner */}
-      <div className="bg-white border-4 border-black p-3 md:p-4 text-center shadow-[4px_4px_0_0_black] uppercase">
+      <div className="bg-white border-4 border-black p-3 md:p-4 text-center shadow-[4px_4px_0_0_black] uppercase flex flex-col sm:flex-row items-center justify-between gap-2">
         <Text as="h2" className="text-lg md:text-xl font-black text-black">
           {tabConfig.title.toUpperCase()}
         </Text>
+        <Badge variant="solid" size="sm" className="bg-secondary text-white font-black text-xs md:text-sm">
+          SELESAI {completedCount}/{activeSections.length} BAGIAN
+        </Badge>
       </div>
 
       {/* Tab navigation bar */}
