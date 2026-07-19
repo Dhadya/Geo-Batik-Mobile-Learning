@@ -60,10 +60,41 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const aiFeedback = sectionAnswers?.aiFeedback
 
   const [errors, setErrors_] = useState<Record<string, string>>({})
-  const [attempt, setAttempt] = useState<1 | 2>(1)
-  const [isLocked, setIsLocked] = useState(false)
-  const [showCobaLagi, setShowCobaLagi] = useState(false)
-  const [isCorrectEvaluation, setIsCorrectEvaluation] = useState<boolean | null>(null)
+
+  // Derive evaluation state directly from the persisted store state
+  const { isLocked, attempt, showCobaLagi, isCorrectEvaluation } = useMemo(() => {
+    const status = sectionAnswers?.status
+    if (status === "correct") {
+      return {
+        isLocked: true,
+        attempt: (sectionAnswers.attempt ?? 1) as 1 | 2,
+        showCobaLagi: false,
+        isCorrectEvaluation: true as boolean | null,
+      }
+    }
+    if (status === "wrong_attempt2") {
+      return {
+        isLocked: true,
+        attempt: 2 as 1 | 2,
+        showCobaLagi: false,
+        isCorrectEvaluation: false as boolean | null,
+      }
+    }
+    if (status === "wrong_attempt1") {
+      return {
+        isLocked: false,
+        attempt: 2 as 1 | 2,
+        showCobaLagi: true,
+        isCorrectEvaluation: false as boolean | null,
+      }
+    }
+    return {
+      isLocked: false,
+      attempt: 1 as 1 | 2,
+      showCobaLagi: false,
+      isCorrectEvaluation: null as boolean | null,
+    }
+  }, [sectionAnswers])
 
   const boundSetField = useCallback(
     (itemId: string, fieldKey: string, value: string) => {
@@ -90,12 +121,10 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     const result = await evaluateSection(slug, tab, section, items, fields, attempt)
     setErrors_(result.errors)
     boundSetAIFeedback(result.feedback)
-    setIsCorrectEvaluation(result.isCorrect)
 
     if (result.isCorrect) {
       boundSetChecked(true)
-      setIsLocked(true)
-      setShowCobaLagi(false)
+      useAnswerStore.getState().setSectionStatus(slug, tab, section, "correct", attempt)
       toast.success("Jawaban kamu benar, selamat!")
       await persistSectionAttempt({
         slug, tab, sectionType: section, attempt,
@@ -104,8 +133,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
       })
     } else if (attempt === 1) {
       boundSetChecked(true)
-      setShowCobaLagi(true)
-      setAttempt(2)
+      useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt1", 2)
       toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
       await persistSectionAttempt({
         slug, tab, sectionType: section, attempt,
@@ -114,8 +142,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
       })
     } else {
       boundSetChecked(true)
-      setIsLocked(true)
-      setShowCobaLagi(false)
+      useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt2", 2)
       toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
       await persistSectionAttempt({
         slug, tab, sectionType: section, attempt,
@@ -136,7 +163,6 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     isLocked,
     showCobaLagi,
     isCorrectEvaluation,
-    setShowCobaLagi,
     setField: boundSetField,
     setAIFeedback,
     setChecked: boundSetChecked,

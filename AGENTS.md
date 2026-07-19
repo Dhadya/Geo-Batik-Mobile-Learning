@@ -59,6 +59,7 @@ See `StyleGuide.md` and `DESIGN.md` for the full reference.
 - **Always use RetroUI `<Button>`** from `@/components/retroui/Button` —
   never plain `<button>`
 - **Priority: Material Symbols** via `@/components/common/MaterialIcon` (e.g. `<MaterialIcon name="arrow_forward" />`); fallback to `lucide-react` if symbol unavailable
+- **Never use emojis in the codebase** — always use appropriate icons (Material Symbols or fallback Lucide icons)
 - **Labels and headings are always `font-black uppercase`**
 - **Buttons and cards are always square** — RetroUI components already have `rounded-none`, never add `rounded-*` classes
 - **Shadows are hard offset** (no blur): `shadow`, `shadow-lg`,

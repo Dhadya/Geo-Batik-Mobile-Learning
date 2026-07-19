@@ -7,6 +7,8 @@ export interface SectionAnswers {
   fields: Record<string, Record<string, string>>
   isChecked: boolean
   aiFeedback?: string
+  status?: "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2" | "locked"
+  attempt?: 1 | 2
 }
 
 export interface CekPemahamanAnswers {
@@ -43,6 +45,13 @@ interface AnswerStore {
   setSelections: (slug: string, tab: string, selections: (number | null)[]) => void
   setChecked: (slug: string, tab: string, section: SectionName, checked: boolean) => void
   setAIFeedback: (slug: string, tab: string, section: SectionName, feedback: string) => void
+  setSectionStatus: (
+    slug: string,
+    tab: string,
+    section: SectionName,
+    status: SectionAnswers["status"],
+    attempt: 1 | 2,
+  ) => void
   getTabAnswers: (slug: string, tab: string) => TabAnswers
   resetTab: (slug: string, tab: string) => void
   resetAll: () => void
@@ -53,9 +62,9 @@ export function emptyTab(slug: string, tab: string): TabAnswers {
   return {
     slug,
     tab,
-    percobaan: { fields: {}, isChecked: false },
-    pengamatan: { fields: {}, isChecked: false },
-    penyimpulan: { fields: {}, isChecked: false },
+    percobaan: { fields: {}, isChecked: false, status: "unsubmitted", attempt: 1 },
+    pengamatan: { fields: {}, isChecked: false, status: "unsubmitted", attempt: 1 },
+    penyimpulan: { fields: {}, isChecked: false, status: "unsubmitted", attempt: 1 },
     cekPemahaman: { selections: [], isChecked: false },
   }
 }
@@ -136,6 +145,25 @@ export const useAnswerStore = create<AnswerStore>()(
               [section]: {
                 ...current[section] as SectionAnswers,
                 aiFeedback: feedback,
+              },
+            },
+          },
+        })
+      },
+
+      setSectionStatus: (slug, tab, section, status, attempt) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              [section]: {
+                ...current[section] as SectionAnswers,
+                status,
+                attempt,
               },
             },
           },

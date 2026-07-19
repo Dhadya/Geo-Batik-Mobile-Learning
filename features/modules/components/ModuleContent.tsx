@@ -82,6 +82,13 @@ export function ModuleContent({
                 store.setField(slug, decodedTab, sectionKey as "percobaan", itemId, fieldKey, value)
               }
             }
+            store.setSectionStatus(
+              slug,
+              decodedTab,
+              sectionKey as "percobaan",
+              s.status,
+              s.attempt2Answer ? 2 : 1
+            )
           }
           store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
         }
