@@ -4,6 +4,7 @@ import { sectionProgress } from "@/drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { appError } from "@/lib/api/errors";
 
+/** Validates a section attempt payload: which tab/section, attempt number, answer data, score, and final status. */
 export const saveSectionSchema = z.object({
   tab: z.string().min(1),
   sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
@@ -13,8 +14,14 @@ export const saveSectionSchema = z.object({
   status: z.enum(["correct", "wrong_attempt1", "wrong_attempt2"]).optional(),
 });
 
+/** Inferred input type for saving a section attempt. */
 export type SaveSectionInput = z.infer<typeof saveSectionSchema>;
 
+/**
+ * Persists a student's answer for a section (percobaan/pengamatan/penyimpulan/cek-pemahaman).
+ * Prevents re-submission if the section is already in a terminal state (correct or wrong_attempt2).
+ * On attempt 2, requires a prior attempt 1 row to exist.
+ */
 export async function saveSectionAttempt(
   userId: string,
   module: "translasi" | "refleksi",
@@ -78,6 +85,7 @@ export async function saveSectionAttempt(
   return { id: inserted[0].id, status: inserted[0].status, finalScore: inserted[0].finalScore };
 }
 
+/** Fetches section-level progress for a module, optionally filtered by tab and/or section type. */
 export async function getSectionProgress(
   userId: string,
   module: "translasi" | "refleksi",

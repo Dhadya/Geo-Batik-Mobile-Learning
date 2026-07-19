@@ -5,6 +5,7 @@ import { appError } from "@/lib/api/errors";
 import { MODULE_TABS } from "@/features/modules/data";
 import type { ModuleSlug } from "@/features/modules/types";
 
+/** Returns the student's tab-level progress for a module, seeding initial locked/unlocked state if none exists yet. */
 export async function getTabProgress(userId: string, module: ModuleSlug) {
   const db = getDb();
 
