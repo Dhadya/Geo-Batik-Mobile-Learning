@@ -13,18 +13,18 @@ Indonesian heritage meets NeoBrutalism.
 
 ## Tech Stack
 
-| Layer         | Technology                                      |
-| ------------- | ----------------------------------------------- |
-| Framework     | Next.js 16.2.9 (App Router)                     |
-| Language      | TypeScript strict                               |
-| Styling       | Tailwind CSS v4 + shadcn v4 + `tw-animate-css`  |
-| UI Primitives | RetroUI (`@/components/retroui/`) — custom set  |
-| Icons         | `lucide-react`                                  |
-| Font          | Space Grotesk (variable via `next/font/google`) |
-| Auth          | BetterAuth                                      |
-| Database      | Supabase (PostgreSQL)                           |
-| AI            | Gemini API                                      |
-| Hosting       | Vercel                                          |
+| Layer         | Technology                                                                          |
+| ------------- | ----------------------------------------------------------------------------------- |
+| Framework     | Next.js 16.2.9 (App Router)                                                         |
+| Language      | TypeScript strict                                                                   |
+| Styling       | Tailwind CSS v4 + shadcn v4 + `tw-animate-css`                                      |
+| UI Primitives | RetroUI (`@/components/retroui/`) — custom set                                      |
+| Icons         | Material Symbols (via `@/components/common/MaterialIcon`) — fallback `lucide-react` |
+| Font          | Space Grotesk (variable via `next/font/google`)                                     |
+| Auth          | BetterAuth                                                                          |
+| Database      | Supabase (PostgreSQL)                                                               |
+| AI            | Gemini API                                                                          |
+| Hosting       | Vercel                                                                              |
 
 ## Routing Architecture
 
@@ -57,10 +57,10 @@ See `StyleGuide.md` and `DESIGN.md` for the full reference.
 - **Always use Tailwind semantic classes** (`bg-primary`, `text-foreground`,
   `border-border`), never raw hex colors
 - **Always use RetroUI `<Button>`** from `@/components/retroui/Button` —
-  never plain `<button>`. Add `!rounded-none`
-- **Always use `lucide-react`** for icons (not Material Symbols)
+  never plain `<button>`
+- **Priority: Material Symbols** via `@/components/common/MaterialIcon` (e.g. `<MaterialIcon name="arrow_forward" />`); fallback to `lucide-react` if symbol unavailable
 - **Labels and headings are always `font-black uppercase`**
-- **Buttons and cards are always square** (`!rounded-none`)
+- **Buttons and cards are always square** — RetroUI components already have `rounded-none`, never add `rounded-*` classes
 - **Shadows are hard offset** (no blur): `shadow`, `shadow-lg`,
   `.neubrutal-shadow`, `.hover-shift`, `.active-shift`
 - **4px solid black borders** on interactive/containing elements
@@ -68,14 +68,109 @@ See `StyleGuide.md` and `DESIGN.md` for the full reference.
 
 ## Key Conventions
 
+- **No native HTML elements** — always use RetroUI components: `Card`, `Checkbox`, `Dialog`, `Input`, `Radio`, `Select`, `Skeleton`, `Toaster`, etc.
+- **Always use `Skeleton`** from `@/components/retroui/Skeleton` for loading states — match the same size, layout, and position as the content it replaces
+- **Install new RetroUI components** in `D:\Freelance\geobatik-v2\batik-geometry\components\retroui` — never create a separate `ui/` folder
+
 - Client components: `"use client"` at the top (only when needed — prefer
   server components)
 - Dynamic params: use `params: Promise<{ slug: string }>` pattern with
   `const { slug } = await props.params`
 - Module tabs: defined in `MODULE_TABS` in `modul/[slug]/layout.tsx`
 - Curriculum data: stored in `features/modules/data/` (static TypeScript files, not DB)
-- Icons inside buttons: use `lucide-react` components, e.g. `<ArrowRight
-className="!size-10" />`
+- Icons inside buttons: use `@/components/common/MaterialIcon`, e.g. `<MaterialIcon
+className="!size-10" name="arrow_forward" />`
+
+## Responsive Design Guide
+
+Apply these rules to every page and component. Always use a minimum of 2 breakpoints (`md:` and up).
+
+### Text sizing
+
+Reduce one level under `md` vs `md+`:
+
+- `text-xs md:text-sm`
+- `text-sm md:text-base`
+- `text-base md:text-lg`
+- `text-lg md:text-xl`
+- `text-xl md:text-2xl`
+- `text-2xl md:text-3xl`
+
+### Spacing (padding, margin, gap, size)
+
+Use ~3/4 of `md+` value under `md`, rounding to the nearest valid Tailwind size:
+
+| md+       | under md |
+| --------- | -------- |
+| `p-8`     | `p-6`    |
+| `p-6`     | `p-4`    |
+| `p-4`     | `p-3`    |
+| `p-3`     | `p-2`    |
+| `gap-8`   | `gap-6`  |
+| `gap-6`   | `gap-4`  |
+| `size-12` | `size-9` |
+| `size-10` | `size-8` |
+
+### Layout
+
+- All pages and components: `max-w-384 mx-auto`
+- Top page padding: `pt-6 md:pt-8`
+- Bottom page padding: `pb-16 md:pb-20`
+- Ensure no overflow or horizontal scrolling (`overflow-hidden` where needed)
+- Max `tracking-wide` — never use `tracking-wider` or `tracking-widest`
+
+### Font weight consistency
+
+Check neighbouring elements in the same component — keep font weights consistent within the same type of heading or body text. Within a page, use the same weight for all `h1`, all `h2`, all labels, etc.
+
+---
+
+## Conventional Commits
+
+This project follows [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.md).
+
+- Before committing, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed
+- Propose the commit message in chat for approval — never commit without confirmation
+
+```
+<type>(<scope>): <description>
+
+- bullet points for body
+```
+
+Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
+Scopes: `api`, `web`, `ui`, `db`, `shared`
+
+---
+
+## Layered Architecture (3-Layer Rule)
+
+See [docs/GEMATRI_CONVENTIONS_REFERENCE.md](./docs/GEMATRI_CONVENTIONS_REFERENCE.md) for full reference.
+
+```
+Layer 1 — Route Handler (app/api/.../route.ts)
+  Parse request → Zod validate → call service → respond
+  Error: catch → handleError()
+  Imports from Layer 2 only (services)
+
+Layer 2 — Service (features/modules/services/*.ts)
+  Plain async functions — NO Next.js imports
+  Business logic + AppError throws
+  Calls getDb() lazily
+
+Layer 3 — Database (lib/db.ts + drizzle/schema)
+  Lazy getDb() singleton — never at module level
+  Drizzle ORM (camelCase JS → snake_case SQL)
+```
+
+API conventions:
+
+- `lib/api/errors.ts` — `AppError` + 11 typed codes + `handleError()`
+- `lib/api/auth-utils.ts` — `requireAuth()` via BetterAuth
+- `lib/api/handler.ts` — `apiHandler()` wrapper for route handlers
+- `features/modules/services/*.ts` — service functions (plain async)
+
+---
 
 ## Commands
 
@@ -85,6 +180,9 @@ npm run build        # Build for production
 npm run lint         # ESLint check
 npx tsc --noEmit     # TypeScript check
 npm start            # Start production server
+git commit -m "feat(scope): description"
+
+# - bullet body
 ```
 
 ## Folder Structure

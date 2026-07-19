@@ -10,8 +10,9 @@ tasks:
   - Implement quiz flow with scoring and AI feedback
   - Style UI with RetroUI primitives and Tailwind v4
   - Write or update database schema and seed data
-  - Implement authentication with Clerk
-  - Set up Supabase queries with Drizzle
+  - Implement API route handlers with AppError + service layer
+  - Implement authentication with BetterAuth
+  - Set up Supabase queries with Drizzle ORM
 ---
 
 # GEMATRI Skill — Agent Instructions
@@ -26,18 +27,20 @@ Indonesian SMP students. The product uses Batik motifs as geometric context.
 
 ## 1. Stack & Versions
 
-| Layer      | Version / Package                              |
-| ---------- | ---------------------------------------------- |
-| Next.js    | `16.2.9` (App Router, Turbopack)               |
-| React      | `19.2.4`                                       |
-| TypeScript | Strict mode, `@/*` path alias                  |
-| Styling    | Tailwind CSS v4 + shadcn v4 + `tw-animate-css` |
-| Base UI    | `@base-ui/react` ^1.6.0 (via RetroUI)          |
-| Icons      | `lucide-react` ^1.21.0                         |
-| CVA        | `class-variance-authority` for variants        |
-| Auth       | Clerk (future integration)                     |
-| Database   | Supabase (PostgreSQL) + Drizzle ORM            |
-| AI         | Gemini API (future integration)                |
+| Layer      | Version / Package                                      |
+| ---------- | ------------------------------------------------------ |
+| Next.js    | `16.2.9` (App Router, Turbopack)                       |
+| React      | `19.2.4`                                               |
+| TypeScript | Strict mode, `@/*` path alias                          |
+| Styling    | Tailwind CSS v4 + shadcn v4 + `tw-animate-css`         |
+| Base UI    | `@base-ui/react` ^1.6.0 (via RetroUI)                  |
+| Icons      | `lucide-react` ^1.21.0                                 |
+| CVA        | `class-variance-authority` for variants                |
+| Auth       | BetterAuth                                             |
+| Database   | Supabase (PostgreSQL) + Drizzle ORM                    |
+| AI         | Gemini API                                             |
+| API Layer  | AppError codes + handleError() + requireAuth()         |
+| Services   | Plain async functions under features/modules/services/ |
 
 ---
 
@@ -45,51 +48,46 @@ Indonesian SMP students. The product uses Batik motifs as geometric context.
 
 ```
 app/                          # Next.js App Router
-├── (app)/layout.tsx          # App shell — GEMATRI header
-├── (app)/menu/               # Main menu (3-card grid)
-├── (app)/prasyarat/          # Prerequisite material
-├── (app)/lab/                # Lab Batik sandbox
-├── (app)/apersepsi/[slug]/   # Module intro (translasi | refleksi)
 ├── (app)/modul/[slug]/       # Learning module shell
-│   ├── layout.tsx            # Tab bar + footer (Kembali / Kuis)
-│   ├── page.tsx              # Redirect to first tab
+│   ├── layout.tsx            # Tab bar + footer
 │   ├── [tab]/page.tsx        # Tab content per subtopic
-│   ├── kuis/page.tsx         # Quiz intro
-│   ├── kuis/[nomor]/page.tsx # Per-question (1–5)
-│   └── kuis/hasil/page.tsx   # Score + pembahasan
+│   └── kuis/                 # Quiz flow (intro, per-question, results)
+├── api/                      # API route handlers (Layer 1)
+│   ├── modul/[slug]/         # Module + quiz API endpoints
+│   └── ai/                   # Gemini evaluation endpoints
 ├── (auth)/login/             # Login page
 ├── (auth)/register/          # Register page
 ├── (landing)/page.tsx        # Landing / hero page
 ├── layout.tsx                # Root layout (Space Grotesk)
 └── globals.css               # Design tokens + utilities
 
-components/
-├── retroui/                  # NeoBrutalism primitives
-│   ├── Button.tsx            # CVA-based, always use this over <button>
-│   ├── Card.tsx              # Card with Header/Title/Content
-│   ├── Tab.tsx               # Tabs with List/Trigger/Content
-│   ├── Input.tsx             # Styled input
-│   ├── Text.tsx              # Typography component
-│   ├── Progress.tsx          # Progress bar
-│   └── ... (Alert, Dialog, Select, Checkbox, etc.)
-├── auth/                     # Auth shell + form field
-│   ├── AuthLayout.tsx        # Branding + watermark + footer
-│   └── AuthFormField.tsx     # Label + input + icon/toggle
-├── batik/                    # Batik decorative components
-│   ├── KawungStamp.tsx
-│   ├── BatikWatermark.tsx
-│   └── LandingFooter.tsx
-└── common/
-    └── AmbientCircles.tsx
+features/
+├── modules/
+│   ├── services/             # Layer 2 — plain async service functions
+│   │   ├── section.ts        # saveSectionAttempt, getSectionProgress
+│   │   ├── progress.ts       # getTabProgress, unlockNextTab
+│   │   ├── quiz.ts           # saveQuizResult, getLatestQuizResult
+│   │   └── ai.ts             # evaluateSection, evaluateQuizQuestion
+│   ├── store/                # Zustand stores (answerStore, tabProgressStore)
+│   ├── lib/                  # Client-side utils (evaluateSection, persistSectionAttempt)
+│   ├── components/           # Section UI components
+│   └── data/                 # Static curriculum data
+├── quiz/                     # Quiz data, types, components, hooks
+└── auth/                     # LoginForm, RegisterForm
 
-supabase/
-└── schema.sql                # Full DDL + seed data (6 tables)
+lib/
+├── api/                      # Layer 1 shared primitives
+│   ├── errors.ts             # AppError + typed codes + handleError()
+│   ├── auth-utils.ts         # requireAuth() via BetterAuth
+│   └── handler.ts            # apiHandler wrapper
+├── auth.ts                   # BetterAuth server config
+├── auth-client.ts            # BetterAuth browser client
+├── db.ts                     # Drizzle + getDb() lazy accessor
+├── supabase/                 # Supabase client (client, server, middleware)
+└── utils.ts                  # Shared utilities
 
-data/                         # Static curriculum data (future)
-lib/                          # Clients (future)
-stores/                       # Zustand stores (future)
-hooks/                        # Custom hooks (future)
-types/                        # TS types (future)
+drizzle/
+└── schema.ts                 # All DB tables (section_progress, tab_progress, quiz_results)
 ```
 
 ---
@@ -267,7 +265,49 @@ interface PageContent {
 
 ---
 
-## 6. Testing & Quality
+## 6. API Conventions
+
+See [docs/GEMATRI_CONVENTIONS_REFERENCE.md](./docs/GEMATRI_CONVENTIONS_REFERENCE.md).
+
+### Response Envelope
+
+```typescript
+{ ok: true, data: T } | { ok: false, error: { code: string, message: string } }
+```
+
+### 3-Layer Architecture
+
+| Layer             | Location                          | Rules                                                                                 |
+| ----------------- | --------------------------------- | ------------------------------------------------------------------------------------- |
+| 1 — Route Handler | `app/api/.../route.ts`            | Thin: parse → Zod validate → call service → respond. `catch → handleError()`          |
+| 2 — Service       | `features/modules/services/*.ts`  | Plain async. No Next.js imports. Business logic + `AppError` throws. `getDb()` lazily |
+| 3 — Database      | `lib/db.ts` + `drizzle/schema.ts` | Lazy `getDb()`. Never at module level. Drizzle ORM                                    |
+
+### Error Handling
+
+```typescript
+import { appError, handleError } from "@/lib/api/errors";
+
+// In service:
+throw appError("TAB_LOCKED");
+
+// In route handler:
+catch (e) { return handleError(e); }
+```
+
+### Commit Messages
+
+```
+<type>(<scope>): <description>
+
+- bullet for body
+```
+
+See [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.md).
+
+---
+
+## 7. Testing & Quality
 
 ### Commands
 
@@ -291,7 +331,7 @@ npx tsc --noEmit     # TypeScript check
 
 ---
 
-## 7. Common Pitfalls
+## 8. Common Pitfalls
 
 1. **Plain `<button>` elements** — always use `@/components/retroui/Button`.
    Even icon-only toggles (password visibility, etc.) must use `<Button>`.
