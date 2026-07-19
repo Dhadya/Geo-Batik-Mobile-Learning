@@ -13,7 +13,7 @@ export function ResetButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* FAB trigger — reset icon button fixed to bottom-left */}
-      <Dialog.Trigger className="fixed bottom-4 md:bottom-6 left-4 md:left-6 z-40 w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center bg-white cursor-pointer rounded-none border-2 border-black font-bold hover:shadow-[2px_2px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150">
+      <Dialog.Trigger className="fixed bottom-4 md:bottom-6 left-4 md:left-6 z-40 w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center bg-white cursor-pointer  border-2 border-black font-bold hover:shadow-[2px_2px_0_0_black] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150">
         <RotateCcw className="size-4 md:size-5" />
       </Dialog.Trigger>
 
@@ -38,11 +38,11 @@ export function ResetButton() {
 
         {/* Footer: Batal (cancel) and Reset (confirm) buttons */}
         <Dialog.Footer>
-          <Dialog.Close className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer rounded-none border-2 border-black bg-white hover:shadow-[2px_2px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150">
+          <Dialog.Close className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer  border-2 border-black bg-white hover:shadow-[2px_2px_0_0_black] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150">
             Batal
           </Dialog.Close>
           <Dialog.Close
-            className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer rounded-none border-2 border-destructive bg-destructive text-destructive-foreground hover:shadow-[2px_2px_0_0_#000] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150"
+            className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer  border-2 border-destructive bg-destructive text-destructive-foreground hover:shadow-[2px_2px_0_0_black] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150"
             onClick={() => {
               resetAll()
               setOpen(false)

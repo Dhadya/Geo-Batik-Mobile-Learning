@@ -514,7 +514,7 @@ app/
 │           ├── [tab]/page.tsx   # Tab content rendered by slug+tab
 │           └── kuis/
 │               ├── page.tsx     # Quiz intro
-│               ├── [nomor]/page.tsx  # Per-question (1–5) with prev/next
+│               ├── [nomor]/page.tsx  # Per-question (1–10) with prev/next
 │               └── hasil/page.tsx    # Score + pembahasan
 ├── (landing)/
 │   └── page.tsx                 # Landing page — full brand hero
@@ -1012,7 +1012,7 @@ export const chatMessageSchema = z.object({
   │          Inquiry Steps → Observations → Conclusion → Comprehension Check
   │          /modul/translasi/garis   → [same flow]
   │          /modul/translasi/bangun   → [same flow]
-  │          └──→ /modul/translasi/kuis → /modul/translasi/kuis/1…5
+  │          └──→ /modul/translasi/kuis → /modul/translasi/kuis/1…10
   │               → /modul/translasi/kuis/hasil → /menu
   │
   ├──→ /apersepsi/refleksi
@@ -1020,7 +1020,7 @@ export const chatMessageSchema = z.object({
   │          /modul/refleksi/sumbu-y → [same flow]
   │          /modul/refleksi/garis   → [same flow]
   │          /modul/refleksi/bangun  → [same flow]
-  │          └──→ /modul/refleksi/kuis → /modul/refleksi/kuis/1…5
+  │          └──→ /modul/refleksi/kuis → /modul/refleksi/kuis/1…10
   │               → /modul/refleksi/kuis/hasil → /menu
   │
   └──→ /lab → Place Stamps → Transform → Save → Share

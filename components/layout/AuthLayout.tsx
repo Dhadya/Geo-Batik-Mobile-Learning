@@ -38,7 +38,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
             </Card.Title>
             {/* Optional subtitle */}
             {subtitle && (
-              <p className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
+              <p className="text-xs font-bold uppercase text-muted-foreground tracking-wide">
                 {subtitle}
               </p>
             )}

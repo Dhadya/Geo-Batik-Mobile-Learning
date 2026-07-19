@@ -34,7 +34,7 @@ export function AuthFormField({
     /* Field wrapper with spacing */
     <div className="space-y-2">
       {/* Field label */}
-      <label className="text-xs font-bold uppercase">{label}</label>
+      <label className="text-xs font-black uppercase">{label}</label>
       {/* Input container — relative for icon positioning */}
       <div className="relative">
         {/* Styled input with NeoBrutalism border */}

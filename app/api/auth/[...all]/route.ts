@@ -2,10 +2,10 @@ import { auth } from "@/lib/auth";
 import { toNextJsHandler } from "better-auth/next-js";
 import { NextResponse } from "next/server";
 
-// BetterAuth handler for all /api/auth/* routes
+/** BetterAuth handler for all /api/auth/* routes (login, register, logout, session, OAuth). */
 const handler = toNextJsHandler(auth);
 
-// Wraps handler with try/catch to return JSON errors instead of crashing
+/** Wraps BetterAuth handler with try/catch to return JSON error responses instead of crashing. */
 async function safeHandler(request: Request, method: "GET" | "POST") {
   try {
     if (method === "GET") {
@@ -22,12 +22,12 @@ async function safeHandler(request: Request, method: "GET" | "POST") {
   }
 }
 
-// GET handler — session lookup, OAuth callbacks
+/** GET /api/auth/* — session lookup, OAuth callbacks. */
 export async function GET(request: Request) {
   return safeHandler(request, "GET");
 }
 
-// POST handler — sign in, sign up, sign out, OAuth
+/** POST /api/auth/* — sign in, sign up, sign out, OAuth. */
 export async function POST(request: Request) {
   return safeHandler(request, "POST");
 }

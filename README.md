@@ -11,7 +11,7 @@
 
 **Geometric transformations are inherently abstract.** Students struggle to visualize how points, lines, and shapes move across a coordinate plane. GEMATRI bridges that gap by embedding mathematical concepts within the rich geometric patterns of Indonesian Batik — turning abstract formulas into something tangible, cultural, and engaging.
 
-**Built for pedagogy, not just technology.** Every interaction follows the van Hiele theory of geometric reasoning, scaffolding students from visual recognition to formal deduction. A sequential locking system ensures mastery at each step before progression.
+**Built for pedagogy, not just technology.** Every interaction follows the van Hiele theory of geometric reasoning, scaffolding students from visual recognition (level 0) through analysis (level 1) to informal deduction (level 2). A sequential locking system ensures mastery at each step before progression.
 
 ---
 
@@ -29,19 +29,18 @@ Tab 2 (Garis)  →  Submit all sections  →  Tab 3 (Bangun) unlocks
 
 ### Learning Modules
 
-| Module        | Tabs                                          | Batik Motifs                                                            |
-| ------------- | --------------------------------------------- | ----------------------------------------------------------------------- |
-| **Translasi** | Titik, Garis, Bangun                          | Kawung, Parang Rusak, Megamendung                                       |
-| **Refleksi**  | Sumbu-X, Sumbu-Y, O(0,0), y=x, y=-x, x=h, y=k | Kawung, Parang, Megamendung, Truntum, Sidomukti, Sekar Jagad, Gentongan |
+| Module        | Tabs                                          |
+| ------------- | --------------------------------------------- |
+| **Translasi** | Titik, Garis, Bangun                          |
+| **Refleksi**  | Sumbu-X, Sumbu-Y, O(0,0), y=x, y=-x, x=h, y=k |
 
 Each tab follows an inquiry-based flow:
 
-1. **Budaya** — Learn the Batik motif's cultural significance
-2. **Kanvas Interaktif** — Experiment with GeoGebra-powered visualizations
-3. **Percobaan** — Guided experiment with AI-checked submission
-4. **Pengamatan** — Record observations with AI-checked submission
-5. **Penyimpulan** — Draw conclusions with AI-checked submission
-6. **Cek Pemahaman** — Verify understanding with AI-checked submission
+1. **Kanvas Interaktif** — Experiment with GeoGebra-powered visualizations
+2. **Percobaan** — Guided experiment with AI-checked submission
+3. **Pengamatan** — Record observations with AI-checked submission
+4. **Penyimpulan** — Draw conclusions with AI-checked submission
+5. **Cek Pemahaman** — Verify understanding with AI-checked submission
 
 ### Two-Attempt AI Feedback System
 
@@ -90,39 +89,48 @@ Free-form creative workspace where students:
 
 ```
 app/
-├── (landing)/            # Brand hero landing page
-├── (auth)/               # Login & register flows
-├── (app)/
-│   ├── menu/             # Main navigation grid
-│   ├── prasyarat/        # Prerequisite material
-│   ├── lab/              # Lab Batik creative sandbox
-│   ├── apersepsi/[slug]  # Module introductions
-│   └── modul/[slug]/     # Learning modules
-│       ├── layout.tsx    # Tab navigation with locking logic
+├── (app)/                 # App shell (header + nav)
+│   ├── menu/              # Main menu — 3-card nav grid
+│   ├── prasyarat/         # Prerequisite material
+│   ├── lab/               # Lab Batik creative sandbox
+│   ├── apersepsi/[slug]/  # Module intro (translasi | refleksi)
+│   └── modul/[slug]/      # Learning modules
 │       ├── [tab]/page.tsx # Per-tab sections with submit/AI feedback
-│       └── kuis/         # Quiz flow (questions → results)
-└── api/auth/             # BetterAuth handler
+│       └── kuis/          # Quiz flow (questions → results)
+├── (auth)/                # Login & register flows (no app shell)
+├── (landing)/             # Brand hero landing page (no app shell)
+├── api/auth/[...all]/     # BetterAuth handler
+├── layout.tsx             # Root layout — font + globals
+└── globals.css            # Nusantara Rebel palette + utilities
 
-features/
-├── auth/                 # Authentication UI + hooks
-├── menu/                 # Menu components
-├── prasyarat/            # Prerequisite canvas + controls
-├── apersepsi/            # Module intro components
-├── modules/              # Core learning engine
-│   ├── data/             # Static curriculum (translasi, refleksi)
-│   ├── hooks/            # Submission, locking, AI feedback hooks
-│   ├── store/            # Zustand stores (progress, locking)
-│   ├── types/            # Shared TypeScript types
+features/                  # Feature-based modular architecture
+├── auth/                  # Authentication UI + hooks
+├── menu/                  # Menu components
+├── prasyarat/             # Prerequisite canvas + controls
+├── modules/               # Core learning engine
+│   ├── services/          # Layer 2 — async service functions (saveSectionAttempt, getTabProgress, etc.)
+│   ├── data/              # Static curriculum data
+│   ├── hooks/             # Submission, locking, AI feedback hooks
+│   ├── store/             # Zustand stores (progress, locking)
+│   ├── types/             # Shared TypeScript types
 │   └── components/
-│       ├── sections/     # percobaan, pengamatan, penyimpulan, cek-pemahaman
-│       ├── feedback/     # AI feedback display per section
-│       └── shared/       # Reusable form primitives
-├── quiz/                 # Quiz engine + components
-└── lab/                  # Lab Batik canvas + tools
+│       ├── sections/      # percobaan, pengamatan, penyimpulan, cek-pemahaman
+│       └── shared/        # Reusable form primitives
+├── quiz/                  # Quiz engine + components
+└── lab/                   # Lab Batik canvas + tools
 
-components/retroui/        # NeoBrutalism UI primitives
+components/                # Shared React components
+├── retroui/               # NeoBrutalism primitives (Button, Card, Skeleton, Sonner, etc.)
+├── batik/                 # KawungStamp, BatikWatermark
+├── common/                # AmbientCircles, MaterialIcon
+└── layout/                # AuthLayout, LandingFooter, ProfileDropdown
+
 lib/                       # Auth, DB, utility clients
-drizzle/                   # Database schema + migrations
+├── api/                   # Layer 1 primitives (AppError, requireAuth, apiHandler)
+└── supabase/              # Supabase client (client, server, middleware)
+
+drizzle/                   # Database schema (Drizzle ORM)
+supabase/                  # Database migrations
 ```
 
 ---

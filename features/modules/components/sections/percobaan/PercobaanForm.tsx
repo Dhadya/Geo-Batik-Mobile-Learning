@@ -136,7 +136,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 function AiFeedbackBanner({ aiFeedback, isChecked }: { aiFeedback?: string; isChecked: boolean }) {
   if (!isChecked || !aiFeedback) return null
   return (
-    <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+    <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 ">
       <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
     </div>
   )
@@ -149,7 +149,7 @@ function SubmitButton({ isChecked, isFilled, onClick }: { isChecked: boolean; is
       onClick={onClick}
       disabled={!isFilled && !isChecked}
       variant={isChecked ? "secondary" : "default"}
-      className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
+      className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black] "
     >
       {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
     </Button>

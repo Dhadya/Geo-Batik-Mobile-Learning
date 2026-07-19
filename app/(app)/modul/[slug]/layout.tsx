@@ -11,7 +11,7 @@ export default async function ModulLayout(props: {
   if (!tabs) notFound()
 
   return (
-    <div className="max-w-[96rem] mx-auto px-4 md:px-12 py-6 md:py-8 space-y-6">
+    <div className="max-w-384 mx-auto px-4 md:px-12 py-6 md:py-8 space-y-6">
       {props.children}
     </div>
   )

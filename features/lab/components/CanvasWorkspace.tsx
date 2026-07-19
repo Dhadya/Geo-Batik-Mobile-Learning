@@ -28,7 +28,7 @@ export function CanvasWorkspace({ selectedMotif }: CanvasWorkspaceProps) {
       <div className="flex-1 relative flex items-center justify-center kawung-pattern overflow-hidden">
         {/* Watermark */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <h1 className="text-6xl font-black text-black/5 uppercase tracking-widest text-center select-none">
+          <h1 className="text-6xl font-black text-black/5 uppercase tracking-wide text-center select-none">
             GEOGEBRA
             <br />
             CANVAS
