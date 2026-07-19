@@ -1,12 +1,10 @@
 "use client"
 
-import { useCallback } from "react"
 import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
-import { Button } from "@/components/retroui/Button"
 import { Select } from "@/components/retroui/Select"
 import { useSection } from "@/features/modules/hooks/useObservation"
-import { AttemptFeedback } from "../../shared/AttemptFeedback"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import type { UraianItem, MemasangkanItem } from "@/features/modules/types"
 
 interface PengamatanTitikFormProps {
@@ -18,25 +16,9 @@ interface PengamatanTitikFormProps {
 export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors, block,
-    isLocked, showCobaLagi, setShowCobaLagi,
+    setField, handleSubmit, block,
+    isLocked, showCobaLagi, isCorrectEvaluation,
   } = useSection(slug, tab, "pengamatan")
-
-  const handleClick = useCallback(() => {
-    /* Toggle: check answers or switch back to edit mode */
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
-
-  const handleCobaLagi = useCallback(() => {
-    setShowCobaLagi(false)
-    setChecked(false)
-    setErrors({})
-  }, [setShowCobaLagi, setChecked, setErrors])
 
   return (
     <form className="space-y-3 md:space-y-4">
@@ -140,20 +122,14 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
         </div>
       )}
 
-      {/* Submit / Re-check button */}
-      <Button
-        onClick={handleClick}
-        disabled={!isFilled && !isChecked}
-        variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black] "
-      >
-        {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-      </Button>
-
-      <AttemptFeedback
-        showCobaLagi={showCobaLagi}
-        onCobaLagi={handleCobaLagi}
+      <SectionSubmitButton
+        isChecked={isChecked}
+        isFilled={isFilled}
+        isCorrect={isCorrectEvaluation}
         isLocked={isLocked}
+        showCobaLagi={showCobaLagi}
+        onSubmit={handleSubmit}
+        requireConfirmation={slug === "translasi" && tab === "titik"}
       />
     </form>
   )

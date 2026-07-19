@@ -1,13 +1,12 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { Lightbulb } from "lucide-react"
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
-import { Button } from "@/components/retroui/Button"
 import { UrutkanInput } from "../../shared/UrutkanInput"
-import { AttemptFeedback } from "../../shared/AttemptFeedback"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import { useSection } from "../../../hooks/useObservation"
 import type { UraianItem, UrutkanItem as UrutkanItemType } from "../../../types"
 
@@ -20,8 +19,8 @@ interface ConclusionAreaProps {
 export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors,
-    isLocked, showCobaLagi, setShowCobaLagi,
+    setField, handleSubmit,
+    isLocked, showCobaLagi, isCorrectEvaluation,
   } = useSection(slug, tab, "penyimpulan")
 
   // Map tab to reflection label for conclusion table
@@ -39,22 +38,6 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
   const [item11Err, setItem11Err] = useState<string>("")
 
-  const handleClick = useCallback(() => {
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-      setItem11Err("")
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
-
-  const handleCobaLagi = useCallback(() => {
-    setShowCobaLagi(false)
-    setChecked(false)
-    setErrors({})
-    setItem11Err("")
-  }, [setShowCobaLagi, setChecked, setErrors])
 
   const validateItem11 = (aVal: string, bVal: string) => {
     if (!aVal.trim() && !bVal.trim()) {
@@ -309,19 +292,14 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
           </div>
         )}
 
-        <Button
-          onClick={handleClick}
-          disabled={!isFilled && !isChecked}
-          variant={isChecked ? "secondary" : "default"}
-          className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black]"
-        >
-          {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-        </Button>
-
-        <AttemptFeedback
-          showCobaLagi={showCobaLagi}
-          onCobaLagi={handleCobaLagi}
+        <SectionSubmitButton
+          isChecked={isChecked}
+          isFilled={isFilled}
+          isCorrect={isCorrectEvaluation}
           isLocked={isLocked}
+          showCobaLagi={showCobaLagi}
+          onSubmit={handleSubmit}
+          requireConfirmation={slug === "translasi" && tab === "titik"}
         />
       </div>
     </section>

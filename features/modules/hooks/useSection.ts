@@ -63,6 +63,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const [attempt, setAttempt] = useState<1 | 2>(1)
   const [isLocked, setIsLocked] = useState(false)
   const [showCobaLagi, setShowCobaLagi] = useState(false)
+  const [isCorrectEvaluation, setIsCorrectEvaluation] = useState<boolean | null>(null)
 
   const boundSetField = useCallback(
     (itemId: string, fieldKey: string, value: string) => {
@@ -89,12 +90,13 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     const result = await evaluateSection(slug, tab, section, items, fields, attempt)
     setErrors_(result.errors)
     boundSetAIFeedback(result.feedback)
+    setIsCorrectEvaluation(result.isCorrect)
 
     if (result.isCorrect) {
       boundSetChecked(true)
       setIsLocked(true)
       setShowCobaLagi(false)
-      toast.success("Jawaban benar!")
+      toast.success("Jawaban kamu benar, selamat!")
       await persistSectionAttempt({
         slug, tab, sectionType: section, attempt,
         answer: fields, feedback: result.feedback, score: result.score,
@@ -104,7 +106,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
       boundSetChecked(true)
       setShowCobaLagi(true)
       setAttempt(2)
-      toast.error("Belum tepat, coba lagi")
+      toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
       await persistSectionAttempt({
         slug, tab, sectionType: section, attempt,
         answer: fields, feedback: result.feedback, score: result.score,
@@ -114,7 +116,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
       boundSetChecked(true)
       setIsLocked(true)
       setShowCobaLagi(false)
-      toast.info("Berikut pembahasan lengkapnya")
+      toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
       await persistSectionAttempt({
         slug, tab, sectionType: section, attempt,
         answer: fields, feedback: result.feedback, score: result.score,
@@ -133,6 +135,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     attempt,
     isLocked,
     showCobaLagi,
+    isCorrectEvaluation,
     setShowCobaLagi,
     setField: boundSetField,
     setAIFeedback,

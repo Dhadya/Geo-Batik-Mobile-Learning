@@ -1,10 +1,8 @@
 "use client"
 
-import { useCallback } from "react"
 import { Text } from "@/components/retroui/Text"
-import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useObservation"
-import { AttemptFeedback } from "../../shared/AttemptFeedback"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import type { UraianItem } from "@/features/modules/types"
 
 import { PercobaanInstruction } from "./PercobaanInstruction"
@@ -22,24 +20,9 @@ interface PercobaanFormProps {
 export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors, block,
-    isLocked, showCobaLagi, setShowCobaLagi,
+    setField, handleSubmit, block,
+    isLocked, showCobaLagi, isCorrectEvaluation,
   } = useSection(slug, tab, "percobaan")
-
-  const handleClick = useCallback(() => {
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
-
-  const handleCobaLagi = useCallback(() => {
-    setShowCobaLagi(false)
-    setChecked(false)
-    setErrors({})
-  }, [setShowCobaLagi, setChecked, setErrors])
 
   if (items.length === 0) return null
 
@@ -64,16 +47,13 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 
         <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
 
-        <SubmitButton
+        <SectionSubmitButton
           isChecked={isChecked}
           isFilled={isFilled}
-          onClick={handleClick}
-        />
-
-        <AttemptFeedback
-          showCobaLagi={showCobaLagi}
-          onCobaLagi={handleCobaLagi}
+          isCorrect={isCorrectEvaluation}
           isLocked={isLocked}
+          showCobaLagi={showCobaLagi}
+          onSubmit={handleSubmit}
         />
       </div>
     )
@@ -135,17 +115,15 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 
       <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
 
-      <SubmitButton
-        isChecked={isChecked}
-        isFilled={isFilled}
-        onClick={handleClick}
-      />
-
-      <AttemptFeedback
-        showCobaLagi={showCobaLagi}
-        onCobaLagi={handleCobaLagi}
-        isLocked={isLocked}
-      />
+        <SectionSubmitButton
+          isChecked={isChecked}
+          isFilled={isFilled}
+          isCorrect={isCorrectEvaluation}
+          isLocked={isLocked}
+          showCobaLagi={showCobaLagi}
+          onSubmit={handleSubmit}
+          requireConfirmation={slug === "translasi" && tab === "titik"}
+        />
     </div>
   )
 }
@@ -162,16 +140,4 @@ function AiFeedbackBanner({ aiFeedback, isChecked }: { aiFeedback?: string; isCh
   )
 }
 
-/** Periksa Jawaban / Periksa Lagi toggle button. */
-function SubmitButton({ isChecked, isFilled, onClick }: { isChecked: boolean; isFilled: boolean; onClick: () => void }) {
-  return (
-    <Button
-      onClick={onClick}
-      disabled={!isFilled && !isChecked}
-      variant={isChecked ? "secondary" : "default"}
-      className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black] "
-    >
-      {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-    </Button>
-  )
-}
+

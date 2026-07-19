@@ -1,12 +1,11 @@
 "use client"
 
-import { useCallback } from "react"
+
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
-import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useObservation"
-import { AttemptFeedback } from "../../shared/AttemptFeedback"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import type { KoordinatItem, UraianItem } from "@/features/modules/types"
 
 interface PengamatanMockFormProps {
@@ -18,23 +17,12 @@ interface PengamatanMockFormProps {
 export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
   const {
     items, fields, errors, isChecked, isFilled,
-    setField, handleSubmit, setChecked, setErrors,
-    isLocked, showCobaLagi, setShowCobaLagi,
+    setField, handleSubmit,
+    isLocked, showCobaLagi, isCorrectEvaluation,
   } = useSection(slug, tab, "pengamatan")
 
-  const handleClick = useCallback(() => {
-    /* Direct submit — no toggle since mock form doesn't use "Periksa Lagi" pattern */
-    handleSubmit()
-  }, [handleSubmit])
-
-  const handleCobaLagi = useCallback(() => {
-    setShowCobaLagi(false)
-    setChecked(false)
-    setErrors({})
-  }, [setShowCobaLagi, setChecked, setErrors])
-
   return (
-    <form onSubmit={handleClick} className="space-y-3 md:space-y-4">
+    <form onSubmit={(e) => e.preventDefault()} className="space-y-3 md:space-y-4">
       {/* Static instruction for all mock tabs */}
       <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
         Amati visualisasi GeoGebra di samping, lalu jawab pertanyaan berikut.
@@ -109,20 +97,14 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
         })}
       </div>
 
-      {/* Submit / Re-check button */}
-      <Button
-        type="submit"
-        disabled={!isFilled}
-        variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 mt-1 md:mt-2 shadow-[2px_2px_0_0_black] uppercase"
-      >
-        {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-      </Button>
-
-      <AttemptFeedback
-        showCobaLagi={showCobaLagi}
-        onCobaLagi={handleCobaLagi}
+      <SectionSubmitButton
+        isChecked={isChecked}
+        isFilled={isFilled}
+        isCorrect={isCorrectEvaluation}
         isLocked={isLocked}
+        showCobaLagi={showCobaLagi}
+        onSubmit={handleSubmit}
+        requireConfirmation={slug === "translasi" && tab === "titik"}
       />
     </form>
   )
