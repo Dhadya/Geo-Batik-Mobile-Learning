@@ -1,16 +1,19 @@
+import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { sectionProgress } from "@/drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { appError } from "@/lib/api/errors";
 
-export interface SaveSectionInput {
-  tab: string;
-  sectionType: "percobaan" | "pengamatan" | "penyimpulan" | "cek-pemahaman";
-  attempt: 1 | 2;
-  answer: Record<string, unknown>;
-  score?: number | null;
-  status?: "correct" | "wrong_attempt1" | "wrong_attempt2";
-}
+export const saveSectionSchema = z.object({
+  tab: z.string().min(1),
+  sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
+  attempt: z.union([z.literal(1), z.literal(2)]),
+  answer: z.record(z.string(), z.unknown()),
+  score: z.number().int().min(0).max(100).nullable().optional(),
+  status: z.enum(["correct", "wrong_attempt1", "wrong_attempt2"]).optional(),
+});
+
+export type SaveSectionInput = z.infer<typeof saveSectionSchema>;
 
 export async function saveSectionAttempt(
   userId: string,
@@ -36,27 +39,28 @@ export async function saveSectionAttempt(
     throw appError("SECTION_NOT_FOUND");
   }
 
-  const isAttempt1 = input.attempt === 1;
+  const attemptField = input.attempt === 1 ? "attempt1" : "attempt2";
+  const answerStr = JSON.stringify(input.answer);
 
   const base = {
     userId,
     module,
     tab: input.tab,
     sectionType: input.sectionType,
-    status: input.status ?? "unsubmitted" as const,
+    status: input.status ?? ("unsubmitted" as const),
   };
 
-  const answerStr = JSON.stringify(input.answer);
+  const patch = {
+    [`${attemptField}Answer`]: answerStr,
+    [`${attemptField}Score`]: input.score ?? null,
+  };
 
-  if (existing) {
-    const patch = isAttempt1
-      ? { attempt1Answer: answerStr, attempt1Score: input.score ?? null }
-      : { attempt2Answer: answerStr, attempt2Score: input.score ?? null };
-
-    const finalize = (input.status === "correct" || input.status === "wrong_attempt2")
+  const finalize =
+    input.status === "correct" || input.status === "wrong_attempt2"
       ? { completedAt: new Date(), finalScore: input.score }
       : {};
 
+  if (existing) {
     const updated = await db
       .update(sectionProgress)
       .set({ ...base, ...patch, ...finalize })
@@ -66,17 +70,11 @@ export async function saveSectionAttempt(
     return { id: updated[0].id, status: updated[0].status, finalScore: updated[0].finalScore };
   }
 
-  const insertData = {
-    ...base,
-    ...(isAttempt1
-      ? { attempt1Answer: answerStr, attempt1Score: input.score ?? null }
-      : { attempt2Answer: answerStr, attempt2Score: input.score ?? null }),
-    ...(input.status === "correct" || input.status === "wrong_attempt2"
-      ? { completedAt: new Date(), finalScore: input.score }
-      : {}),
-  };
+  const inserted = await db
+    .insert(sectionProgress)
+    .values({ ...base, ...patch, ...finalize })
+    .returning();
 
-  const inserted = await db.insert(sectionProgress).values(insertData).returning();
   return { id: inserted[0].id, status: inserted[0].status, finalScore: inserted[0].finalScore };
 }
 
@@ -92,7 +90,13 @@ export async function getSectionProgress(
     eq(sectionProgress.module, module),
   ];
   if (tab) conditions.push(eq(sectionProgress.tab, tab));
-  if (sectionType && (sectionType === "percobaan" || sectionType === "pengamatan" || sectionType === "penyimpulan" || sectionType === "cek-pemahaman")) {
+  if (
+    sectionType &&
+    (sectionType === "percobaan" ||
+      sectionType === "pengamatan" ||
+      sectionType === "penyimpulan" ||
+      sectionType === "cek-pemahaman")
+  ) {
     conditions.push(eq(sectionProgress.sectionType, sectionType));
   }
 
