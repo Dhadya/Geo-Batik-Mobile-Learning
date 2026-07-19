@@ -27,20 +27,20 @@ Indonesian SMP students. The product uses Batik motifs as geometric context.
 
 ## 1. Stack & Versions
 
-| Layer      | Version / Package                                      |
-| ---------- | ------------------------------------------------------ |
-| Next.js    | `16.2.9` (App Router, Turbopack)                       |
-| React      | `19.2.4`                                               |
-| TypeScript | Strict mode, `@/*` path alias                          |
-| Styling    | Tailwind CSS v4 + shadcn v4 + `tw-animate-css`         |
-| Base UI    | `@base-ui/react` ^1.6.0 (via RetroUI)                  |
-| Icons      | `lucide-react` ^1.21.0                                 |
-| CVA        | `class-variance-authority` for variants                |
-| Auth       | BetterAuth                                             |
-| Database   | Supabase (PostgreSQL) + Drizzle ORM                    |
-| AI         | Gemini API                                             |
-| API Layer  | AppError codes + handleError() + requireAuth()         |
-| Services   | Plain async functions under features/modules/services/ |
+| Layer      | Version / Package                                                                   |
+| ---------- | ----------------------------------------------------------------------------------- |
+| Next.js    | `16.2.9` (App Router, Turbopack)                                                    |
+| React      | `19.2.4`                                                                            |
+| TypeScript | Strict mode, `@/*` path alias                                                       |
+| Styling    | Tailwind CSS v4 + shadcn v4 + `tw-animate-css`                                      |
+| Base UI    | `@base-ui/react` ^1.6.0 (via RetroUI)                                               |
+| Icons      | Material Symbols (via `@/components/common/MaterialIcon`) — fallback `lucide-react` |
+| CVA        | `class-variance-authority` for variants                                             |
+| Auth       | BetterAuth                                                                          |
+| Database   | Supabase (PostgreSQL) + Drizzle ORM                                                 |
+| AI         | Gemini API                                                                          |
+| API Layer  | AppError codes + handleError() + requireAuth()                                      |
+| Services   | Plain async functions under features/modules/services/                              |
 
 ---
 
@@ -48,46 +48,86 @@ Indonesian SMP students. The product uses Batik motifs as geometric context.
 
 ```
 app/                          # Next.js App Router
-├── (app)/modul/[slug]/       # Learning module shell
-│   ├── layout.tsx            # Tab bar + footer
-│   ├── [tab]/page.tsx        # Tab content per subtopic
-│   └── kuis/                 # Quiz flow (intro, per-question, results)
-├── api/                      # API route handlers (Layer 1)
-│   ├── modul/[slug]/         # Module + quiz API endpoints
-│   └── ai/                   # Gemini evaluation endpoints
-├── (auth)/login/             # Login page
-├── (auth)/register/          # Register page
-├── (landing)/page.tsx        # Landing / hero page
-├── layout.tsx                # Root layout (Space Grotesk)
-└── globals.css               # Design tokens + utilities
+├── (app)/                    # App shell (header + nav)
+│   ├── menu/                 # Main menu — 3-card nav grid
+│   ├── prasyarat/            # Prerequisite material
+│   ├── lab/                  # Lab Batik creative sandbox
+│   ├── apersepsi/[slug]/     # Module intro (translasi | refleksi)
+│   ├── modul/[slug]/         # Learning modules
+│   │   ├── layout.tsx        # Tab navigation + footer
+│   │   ├── page.tsx          # Redirects to first tab
+│   │   ├── [tab]/page.tsx    # Tab content (titik|garis|bangun|sumbu-x|...)
+│   │   └── kuis/             # Quiz flow
+│   │       ├── [nomor]/      # Per-question (1–5) with prev/next
+│   │       └── hasil/        # Score + pembahasan
+│   └── layout.tsx            # App shell layout
+├── (auth)/                   # Auth pages (no app shell)
+│   ├── login/
+│   └── register/
+├── (landing)/                # Landing page hero (no app shell)
+├── api/auth/[...all]/        # BetterAuth API handler
+├── layout.tsx                # Root layout — font + globals
+└── globals.css               # Nusantara Rebel palette + utilities
 
-features/
-├── modules/
+features/                     # Feature-based modular architecture
+├── auth/                     # Auth feature
+│   ├── components/           # LoginForm, RegisterForm, AuthFormField
+│   └── hooks/                # useLoginForm, useRegisterForm
+├── menu/                     # Menu page feature
+│   ├── components/           # ModuleCard, LabCard, MenuHeader, ModuleGrid, BackLink
+│   ├── data.ts               # Menu module data
+│   └── index.ts              # Barrel exports
+├── prasyarat/                # Prerequisite material feature
+│   ├── components/           # InteractiveCanvas, GeoGebraCanvas, ControlPanel, ConceptCard, VideoEmbed
+│   ├── hooks/                # useGeoGebra, useToggleControls
+│   ├── data.ts               # Prerequisite concept data
+│   ├── toggles.ts            # Toggle config and accordion groups
+│   ├── types.ts              # GGBApplet, GGBWindow, GeoGebraToggle types
+│   └── index.ts              # Barrel exports
+├── modules/                  # Core learning engine
 │   ├── services/             # Layer 2 — plain async service functions
 │   │   ├── section.ts        # saveSectionAttempt, getSectionProgress
 │   │   ├── progress.ts       # getTabProgress, unlockNextTab
 │   │   ├── quiz.ts           # saveQuizResult, getLatestQuizResult
 │   │   └── ai.ts             # evaluateSection, evaluateQuizQuestion
 │   ├── store/                # Zustand stores (answerStore, tabProgressStore)
-│   ├── lib/                  # Client-side utils (evaluateSection, persistSectionAttempt)
-│   ├── components/           # Section UI components
-│   └── data/                 # Static curriculum data
-├── quiz/                     # Quiz data, types, components, hooks
-└── auth/                     # LoginForm, RegisterForm
+│   ├── lib/                  # Client-side utils
+│   ├── hooks/                # useSection, useObservation, useQuiz
+│   ├── types/                # Shared TypeScript types
+│   └── components/           # Section UI components
+└── quiz/                     # Quiz data, types, components, hooks
 
-lib/
+components/                   # Shared React components
+├── retroui/                  # NeoBrutalism primitives (Button, Card, Toggle, Accordion, Skeleton, Sonner, etc.)
+├── batik/                    # KawungStamp, BatikWatermark
+├── common/                   # AmbientCircles, MaterialIcon
+└── layout/                   # AuthLayout, LandingFooter, ProfileDropdown
+
+lib/                          # Utilities and clients
 ├── api/                      # Layer 1 shared primitives
 │   ├── errors.ts             # AppError + typed codes + handleError()
 │   ├── auth-utils.ts         # requireAuth() via BetterAuth
 │   └── handler.ts            # apiHandler wrapper
+├── supabase/                 # Supabase client (client, server, middleware)
 ├── auth.ts                   # BetterAuth server config
 ├── auth-client.ts            # BetterAuth browser client
 ├── db.ts                     # Drizzle + getDb() lazy accessor
-├── supabase/                 # Supabase client (client, server, middleware)
-└── utils.ts                  # Shared utilities
+├── utils.ts                  # Utility functions
+├── validate-redirect.ts      # Redirect URL validation
+└── validators.ts             # Form validation
 
-drizzle/
-└── schema.ts                 # All DB tables (section_progress, tab_progress, quiz_results)
+drizzle/                      # Drizzle ORM schema
+└── schema.ts                 # All DB tables
+
+supabase/                     # Database migrations & schema
+├── migrations/
+└── schema.sql
+
+public/                       # Static assets
+├── icons/                    # SVG icons (google.svg)
+└── images/                   # Module preview images
+
+Root config files: AGENTS.md, CLAUDE.md, SKILL.md, DESIGN.md, StyleGuide.md, PRD.md, PRD_v2.md
 ```
 
 ---
@@ -150,27 +190,28 @@ Tabs are defined in `modul/[slug]/layout.tsx` via the `MODULE_TABS` constant.
 
 ### Component Usage
 
-**DO NOT use raw `<button>`. Always import `Button` from RetroUI:**
+**Do not use native HTML elements. Always use RetroUI components:**
 
 ```tsx
 import { Button } from "@/components/retroui/Button"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 // Primary CTA
 <Button variant="default" size="lg"
   className="neubrutal-shadow hover-shift active-shift"
   onClick={...}>
   MASUK
-  <ArrowRight className="!size-10" />
+  <MaterialIcon className="!size-10" name="arrow_forward" />
 </Button>
 
 // Outline
-<Button variant="outline" size="md" className="!rounded-none">
+<Button variant="outline" size="md">
   KEMBALI
 </Button>
 
 // Ghost icon
-<Button variant="ghost" size="icon" className="!rounded-none">
-  <Eye className="size-5" />
+<Button variant="ghost" size="icon">
+  <MaterialIcon name="visibility" className="size-5" />
 </Button>
 ```
 
@@ -199,16 +240,27 @@ import { Tabs } from "@/components/retroui/Tab";
 </Tabs>;
 ```
 
-**Icons — always lucide-react:**
+**Icons — priority Material Symbols, fallback lucide-react:**
 
 ```tsx
-import { ArrowRight, Eye, EyeOff, Check, X, Menu } from "lucide-react";
+import { MaterialIcon } from "@/components/common/MaterialIcon";
+
+// Preferred — Material Symbols
+<MaterialIcon name="arrow_forward" />
+<MaterialIcon name="visibility" />
+<MaterialIcon name="check" />
+<MaterialIcon name="close" />
+<MaterialIcon name="menu" />
 ```
 
 ### Uppercase Rule
 
 All labels, headings, and button text are `font-black uppercase`. Body text
 is never uppercase.
+
+### Buttons and cards
+
+RetroUI components already have `rounded-none` baked in — never add `rounded-*` classes.
 
 ### Shadows
 
@@ -223,11 +275,11 @@ is never uppercase.
 
 ## 5. Data Model
 
-### Subtopic Slugs (10 total)
+### Subtopic Slugs
 
 ```
 translasi: titik, garis, bangun
-refleksi:  sumbu-x, sumbu-y, titik-asal, garis-y-x, garis-y-neg-x, garis-x-h, garis-y-k
+refleksi:  sumbu-x, sumbu-y, garis, bangun
 ```
 
 ### Key Types
@@ -297,17 +349,72 @@ catch (e) { return handleError(e); }
 
 ### Commit Messages
 
+After every task, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed. Always propose the commit message in chat for approval — never commit without confirmation.
+
 ```
 <type>(<scope>): <description>
 
-- bullet for body
+- bullet points for body
 ```
+
+Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
+Scopes: `api`, `web`, `ui`, `db`, `shared`
 
 See [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.md).
 
 ---
 
-## 7. Testing & Quality
+## 7. Responsive Design Guide
+
+Apply these rules to every page and component. Always use a minimum of 2 breakpoints (`md:` and up).
+
+### Text sizing
+
+Reduce one level under `md` vs `md+`:
+
+- `text-xs md:text-sm`
+- `text-sm md:text-base`
+- `text-base md:text-lg`
+- `text-lg md:text-xl`
+- `text-xl md:text-2xl`
+- `text-2xl md:text-3xl`
+
+### Spacing (padding, margin, gap, size)
+
+Use ~3/4 of `md+` value under `md`, rounding to the nearest valid Tailwind size:
+
+| md+       | under md |
+| --------- | -------- |
+| `p-8`     | `p-6`    |
+| `p-6`     | `p-4`    |
+| `p-4`     | `p-3`    |
+| `p-3`     | `p-2`    |
+| `gap-8`   | `gap-6`  |
+| `gap-6`   | `gap-4`  |
+| `size-12` | `size-9` |
+| `size-10` | `size-8` |
+
+### Layout
+
+- All pages and components: `max-w-384 mx-auto`
+- Top page padding: `pt-6 md:pt-8`
+- Bottom page padding: `pb-16 md:pb-20`
+- Ensure no overflow or horizontal scrolling (`overflow-hidden` where needed)
+- Max `tracking-wide` — never use `tracking-wider` or `tracking-widest`
+
+### Font weight consistency
+
+Check neighbouring elements in the same component — keep font weights consistent within the same type of heading or body text. Within a page, use the same weight for all `h1`, all `h2`, all labels, etc.
+
+---
+
+## 8. Code Documentation
+
+Always add TSDoc/JSDoc comments on exported functions, components, interfaces, and types — describe the _why_ (purpose, behavior), not the _what_ (implementation). Use `@param` and `@returns` where non-obvious. Keep comments concise.
+
+---
+
+## 9. Testing & Quality
 
 ### Commands
 
@@ -331,16 +438,19 @@ npx tsc --noEmit     # TypeScript check
 
 ---
 
-## 8. Common Pitfalls
+## 10. Common Pitfalls
 
-1. **Plain `<button>` elements** — always use `@/components/retroui/Button`.
-   Even icon-only toggles (password visibility, etc.) must use `<Button>`.
+1. **Plain `<button>` or other native HTML** — always use RetroUI components
+   (`Button`, `Card`, `Input`, `Checkbox`, `Dialog`, `Radio`, `Select`, etc.).
+   Even icon-only toggles must use `<Button>`.
 2. **Raw hex colors** — always use Tailwind semantic classes
    (`bg-primary`, `text-foreground`, `border-border`).
-3. **Rounded buttons/cards** — add `!rounded-none` to override any defaults.
+3. **Rounded-\* on RetroUI components** — RetroUI already has `rounded-none`
+   baked in. Never add `rounded-*` or `!rounded-none`.
 4. **Dynamic params** — always use `params: Promise<...>` + `await props.params`
    (Next.js 16 pattern, not the old sync pattern).
 5. **`"use client"** — add only when needed (hooks, state, event handlers).
    Default to server components.
-6. **Material Symbols** — don't use them. All icons are `lucide-react`.
+6. **Material Symbols priority** — use `@/components/common/MaterialIcon`
+   as first choice. Fall back to `lucide-react` only if the symbol doesn't exist.
 7. **Teacher role** — does not exist. All users are students.
