@@ -16,14 +16,14 @@ export default function LandingPage() {
       <BatikWatermark />
       <AmbientCircles />
 
-      <main className="relative z-10 w-full max-w-[96rem] flex flex-col items-center text-center">
+      <main className="relative z-10 w-full max-w-384 flex flex-col items-center text-center">
         <div className="mb-8 md:mb-12 animate-float">
           <KawungStamp />
         </div>
 
         <div className="space-y-4">
           <div className="inline-block border-4 border-black px-4 py-1.5 md:px-6 md:py-2 bg-card">
-            <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-foreground">
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-wide text-foreground">
               PLATFORM BELAJAR GEOMETRI
             </span>
           </div>

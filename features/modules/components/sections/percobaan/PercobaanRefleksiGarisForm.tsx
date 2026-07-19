@@ -49,7 +49,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
           onValueChange={(val) => { if (val) setField(String(refleksiItem.id), "selected", val) }}
           disabled={isChecked}
         >
-          <Select.Trigger className="w-full border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)] text-xs md:text-sm font-medium">
+          <Select.Trigger className="w-full border-2 border-black shadow-[2px_2px_0_0_black] text-xs md:text-sm font-medium">
             <Select.Value placeholder="Pilih opsi refleksi" />
           </Select.Trigger>
           <Select.Content>
@@ -110,7 +110,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
         onClick={handleClick}
         disabled={!isFilled && !isChecked}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black]"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>

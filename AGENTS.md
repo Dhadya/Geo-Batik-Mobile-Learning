@@ -129,8 +129,8 @@ Check neighbouring elements in the same component — keep font weights consiste
 
 This project follows [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.md).
 
-- Before committing, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed
-- Propose the commit message in chat for approval — never commit without confirmation
+- After every task, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed
+- Always propose a commit message in chat for approval — never commit without confirmation
 
 ```
 <type>(<scope>): <description>
@@ -140,6 +140,17 @@ This project follows [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.
 
 Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 Scopes: `api`, `web`, `ui`, `db`, `shared`
+
+Example proposal format (copy-paste ready, no backticks around the message):
+
+```
+feat(ui): add Skeleton and Sonner Retroui components
+
+- add Skeleton with Skeleton.tsx
+- add Sonner with Sonner.tsx
+- removed rounded-none overrides, use Material Symbols, add Responsive Design Guide
+- updated AGENTS.md rules (native HTMl, Skeleton, ui folder, commit convention)
+```
 
 ---
 

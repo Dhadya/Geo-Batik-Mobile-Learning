@@ -298,7 +298,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
       {/* AI-generated feedback banner */}
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 mt-4 md:mt-6 rounded-none">
+        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 mt-4 md:mt-6 ">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
@@ -309,7 +309,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
           onClick={handleClick}
           disabled={!allAnswered && !isChecked}
           variant="default"
-          className="font-black uppercase tracking-wide rounded-none text-xs md:text-lg px-4 md:px-8 py-1.5 md:py-3"
+          className="font-black uppercase tracking-wide  text-xs md:text-lg px-4 md:px-8 py-1.5 md:py-3"
         >
           {isChecked ? "Periksa Lagi" : "Submit Jawaban"}
         </Button>

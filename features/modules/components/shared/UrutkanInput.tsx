@@ -64,7 +64,7 @@ function SortableItem({ id, label, disabled }: SortableItemProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`flex items-center gap-2 border-2 border-black px-2 py-1.5 bg-white cursor-grab active:cursor-grabbing touch-none select-none shadow-[2px_2px_0_0_#000] ${isDragging ? "shadow-[4px_4px_0_0_#000] z-10" : ""}`}
+      className={`flex items-center gap-2 border-2 border-black px-2 py-1.5 bg-white cursor-grab active:cursor-grabbing touch-none select-none shadow-[2px_2px_0_0_black] ${isDragging ? "shadow-[4px_4px_0_0_#000] z-10" : ""}`}
       tabIndex={disabled ? -1 : 0}
     >
       <GripVertical className="size-4 text-muted-foreground shrink-0" />

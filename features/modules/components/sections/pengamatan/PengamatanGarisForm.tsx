@@ -64,7 +64,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
                           variant={isSelected ? "default" : "outline"}
                           disabled={isChecked}
                           onClick={() => setField(String(pg.id), "selected", String(oi))}
-                          className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs rounded-none text-black ${
+                          className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs  text-black ${
                             isCorrect ? "border-green-600 bg-green-100 text-green-800" : ""
                           } ${isWrong ? "border-destructive bg-destructive/10" : ""}`}
                         >
@@ -134,7 +134,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
       </div>
 
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 ">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
@@ -144,7 +144,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
         onClick={handleClick}
         disabled={!isFilled && !isChecked}
         variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none text-black"
+        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black]  text-black"
       >
         {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
       </Button>
