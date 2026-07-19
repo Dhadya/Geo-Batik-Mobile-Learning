@@ -226,9 +226,9 @@ Every score, answer submission, and feedback history for each section (Percobaan
 | F2  | Landing & Apersepsi             | P0       | Brand hero, coordinate explorer, module navigation       |
 | F3  | Prerequisite Material           | P1       | Cartesian recap with interactive canvas                  |
 | F4  | Translation Module (3 tabs)     | P0       | Titik, Garis, Bangun with locking + section submission   |
-| F5  | Translation Quiz                | P0       | 5+ questions, 4 types, two-attempt, manual question bank |
+| F5  | Translation Quiz                | P0       | 10 questions, 4 types, two-attempt, manual question bank |
 | F6  | Reflection Module (7 tabs)      | P0       | Sumbu-X through y=k with locking + section submission    |
-| F7  | Reflection Quiz                 | P0       | 5+ questions, 4 types, two-attempt, manual question bank |
+| F7  | Reflection Quiz                 | P0       | 10 questions, 4 types, two-attempt, manual question bank |
 | F8  | Lab Batik (Creative Sandbox)    | P1       | Free creation with stamp, transform, save/export         |
 | F9  | Section-Based AI Feedback       | P0       | Per-section AI evaluation with two-attempt system        |
 | F10 | Tab Locking & Sequential Access | P0       | Lock/unlock tabs based on per-section completion         |
@@ -294,7 +294,7 @@ Tab Structure:
 #### F5 & F7: Quiz System
 
 - Route: `/modul/[slug]/kuis` → `/modul/[slug]/kuis/[nomor]` → `/modul/[slug]/kuis/hasil`
-- 5+ questions per module, manually created by research team
+- 10 questions per module, manually created by research team
 - 4 question type variations: Pilihan Ganda, Uraian, Angka/Matematika, Campuran
 - Two-attempt system per question (same as section AI feedback flow)
 - Immediate AI scoring with per-question feedback
@@ -593,8 +593,8 @@ Section Page
 ### Phase 4: Quiz System
 
 - Quiz data structure + manual question bank
-- Translation quiz (5+ questions, 4 types)
-- Reflection quiz (5+ questions, 4 types)
+- Translation quiz (10 questions, 4 types)
+- Reflection quiz (10 questions, 4 types)
 - Quiz UI with two-attempt per question
 - Scoring + result display
 - AI evaluation per question

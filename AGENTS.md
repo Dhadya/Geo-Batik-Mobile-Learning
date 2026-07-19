@@ -40,7 +40,7 @@ app/
 │       ├── page.tsx        # Redirects to first tab
 │       ├── [tab]/page.tsx  # Tab content (titik|garis|bangun|sumbu-x|...)
 │       ├── kuis/           # Quiz intro
-│       │   ├── [nomor]/    # Per-question (1–5) with prev/next
+│       │   ├── [nomor]/    # Per-question (1–10) with prev/next
 │       │   └── hasil/      # Score + pembahasan
 ├── (landing)/       # Landing page hero (no app shell)
 ├── layout.tsx       # Root layout — font + globals
@@ -130,7 +130,7 @@ Check neighbouring elements in the same component — keep font weights consiste
 
 This project follows [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.md).
 
-- After every task, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed
+- After every task, provide a concise **progress summary** to the developer explaining what was done and why, then inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed
 - Always propose a commit message in chat for approval — never commit without confirmation
 
 ```
@@ -208,7 +208,7 @@ git commit -m "feat(scope): description"
 │   │   ├── modul/[slug]/       # Learning modules
 │   │   │   ├── [tab]/page.tsx  # Tab content (titik|garis|bangun|sumbu-x|...)
 │   │   │   ├── kuis/           # Quiz intro
-│   │   │   │   ├── [nomor]/    # Per-question (1–5) with prev/next
+│   │   │   │   ├── [nomor]/    # Per-question (1–10) with prev/next
 │   │   │   │   └── hasil/      # Score + pembahasan
 │   │   │   ├── layout.tsx      # Tab navigation + footer
 │   │   │   └── page.tsx        # Redirects to first tab

@@ -58,7 +58,7 @@ app/                          # Next.js App Router
 │   │   ├── page.tsx          # Redirects to first tab
 │   │   ├── [tab]/page.tsx    # Tab content (titik|garis|bangun|sumbu-x|...)
 │   │   └── kuis/             # Quiz flow
-│   │       ├── [nomor]/      # Per-question (1–5) with prev/next
+│   │       ├── [nomor]/      # Per-question (1–10) with prev/next
 │   │       └── hasil/        # Score + pembahasan
 │   └── layout.tsx            # App shell layout
 ├── (auth)/                   # Auth pages (no app shell)
@@ -164,7 +164,7 @@ Tabs are defined in `modul/[slug]/layout.tsx` via the `MODULE_TABS` constant.
 
 ```
 /modul/[slug]/kuis          → Intro / first question
-/modul/[slug]/kuis/1…5      → Per-question with prev/next
+/modul/[slug]/kuis/1…10     → Per-question with prev/next
 /modul/[slug]/kuis/hasil    → Results + pembahasan
 ```
 
