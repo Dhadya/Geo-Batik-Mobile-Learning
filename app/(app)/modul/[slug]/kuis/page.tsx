@@ -41,9 +41,7 @@ export default async function KuisIntroPage(props: {
 
     if (!allCompleted) {
       const firstIncomplete = tabs.find((t) => !t.completed)
-      if (firstIncomplete) {
-        redirect(`/modul/${slug}/${firstIncomplete.tab}`)
-      }
+      redirect(firstIncomplete ? `/modul/${slug}/${firstIncomplete.tab}` : `/modul/${slug}`)
     }
   }
 

@@ -1,3 +1,4 @@
+import { getSectionsForTab } from "../data"
 import { useTabProgressStore, type TabProgressEntry } from "../store/tabProgressStore"
 import { useAnswerStore } from "../store/answerStore"
 
@@ -30,9 +31,7 @@ export async function syncTabProgress(slug: string): Promise<TabProgressEntry[] 
 export async function triggerTabUnlockIfComplete(slug: string, tab: string): Promise<void> {
   const tabAnswers = useAnswerStore.getState().getTabAnswers(slug, tab)
 
-  const sections = slug === "refleksi" && tab === "bangun"
-    ? (["pengamatan", "percobaan", "cekPemahaman"] as const)
-    : (["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"] as const)
+  const sections = getSectionsForTab(slug, tab)
 
   const allDone = sections.every((s) => {
     if (s === "cekPemahaman") {

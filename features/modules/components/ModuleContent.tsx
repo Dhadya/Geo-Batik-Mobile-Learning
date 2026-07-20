@@ -14,9 +14,8 @@ import { ConclusionArea } from "./sections/penyimpulan/ConclusionArea"
 import { AssessmentSection } from "./sections/cek-pemahaman/AssessmentSection"
 import { ModuleTabNav } from "./navigation/ModuleTabNav"
 import { ResetButton } from "./shared/ResetButton"
-import { getModuleTabs, getModuleTab } from "../data"
+import { getModuleTabs, getModuleTab, getSectionsForTab } from "../data"
 import { useAnswerStore } from "../store/answerStore"
-import { syncTabProgress } from "../lib/progressSync"
 import type { PilihanGandaItem } from "../types"
 
 /** Main module content orchestrator — composes all sections for a given slug and tab. */
@@ -59,8 +58,6 @@ export function ModuleContent({
 
   // Sync server progress into stores on mount
   useEffect(() => {
-    syncTabProgress(slug)
-
     fetch(`/api/modul/${slug}/section?tab=${decodedTab}`)
       .then((res) => res.json())
       .then((json) => {
@@ -105,9 +102,7 @@ export function ModuleContent({
 
   // Calculate section progress for this tab
   const tabAnswers = useAnswerStore((s) => s.answers[`${slug}-${decodedTab}`])
-  const activeSections = slug === "refleksi" && decodedTab === "bangun"
-    ? ["pengamatan", "percobaan", "cekPemahaman"]
-    : ["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"]
+  const activeSections = getSectionsForTab(slug, decodedTab)
   const completedCount = activeSections.filter((sec) => {
     if (sec === "cekPemahaman") {
       const cpStatus = tabAnswers?.cekPemahaman?.status

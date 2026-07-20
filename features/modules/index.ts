@@ -10,7 +10,7 @@ export { ConclusionArea } from "./components/sections/penyimpulan/ConclusionArea
 export { AssessmentSection } from "./components/sections/cek-pemahaman/AssessmentSection"
 
 // Data + helpers
-export { MODULE_TABS, getModuleTabs, getModuleTab } from "./data"
+export { MODULE_TABS, getModuleTabs, getModuleTab, getSectionsForTab, getExpectedSectionCount } from "./data"
 
 // Store
 export { useAnswerStore } from "./store/answerStore"
