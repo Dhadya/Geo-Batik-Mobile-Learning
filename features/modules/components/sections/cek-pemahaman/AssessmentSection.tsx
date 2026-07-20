@@ -9,6 +9,7 @@ import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import { useAnswerStore } from "../../../store/answerStore"
+import { triggerTabUnlockIfComplete } from "../../../lib/progressSync"
 import type { AssessmentQuestion } from "../../../types"
 
 const LABELS = ["A", "B", "C", "D", "E", "F"]
@@ -153,10 +154,38 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     setSelections(slug, tab, next)
   }, [isChecked, selections, setSelections, slug, tab, questions])
 
-  /** Submit answers — sets isChecked to trigger local validation */
+  /** Submit answers — persist to server + unlock next tab if complete */
   const doSubmit = useCallback(() => {
+    const errs: Record<string, boolean> = {}
+    questions.forEach((q, qi) => {
+      if (q.multiSelect && q.correctIndices) {
+        const bitmap = Number(selections[qi] ?? 0)
+        const correct = q.correctIndices.every((ci) => bitmap & (1 << ci)) &&
+          q.correctIndices.length === countBits(bitmap)
+        if (!correct) errs[`${q.id}`] = true
+      } else if (selections[qi] !== q.correctIndex) {
+        errs[`${q.id}`] = true
+      }
+    })
+    const hasErr = Object.keys(errs).length > 0
+
     setChecked(slug, tab, "cekPemahaman" as unknown as "percobaan", true)
-  }, [setChecked, slug, tab])
+
+    fetch(`/api/modul/${slug}/section`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        tab,
+        sectionType: "cek-pemahaman",
+        attempt: 1,
+        answer: { selections },
+        score: hasErr ? 0 : 100,
+        status: hasErr ? "wrong_attempt2" : "correct",
+      }),
+    }).catch(() => {})
+
+    triggerTabUnlockIfComplete(slug, tab)
+  }, [setChecked, slug, tab, questions, selections])
 
   const hasErrors = Object.keys(validationErrors).length > 0
   const isCorrect = isChecked ? !hasErrors : null

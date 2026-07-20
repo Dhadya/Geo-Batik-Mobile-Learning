@@ -19,8 +19,7 @@ export { useTabProgressStore } from "./store/tabProgressStore"
 export type { TabProgressEntry } from "./store/tabProgressStore"
 
 // Lib
-export { syncTabProgress, syncSectionAttempt } from "./lib/progressSync"
-export type { SectionSyncInput } from "./lib/progressSync"
+export { syncTabProgress, triggerTabUnlockIfComplete } from "./lib/progressSync"
 
 // Types
 export type {

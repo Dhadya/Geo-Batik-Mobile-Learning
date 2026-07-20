@@ -1,5 +1,5 @@
 import { useTabProgressStore, type TabProgressEntry } from "../store/tabProgressStore"
-import type { ModuleSlug } from "../types"
+import { useAnswerStore } from "../store/answerStore"
 
 /** Base path for module API routes. */
 const MODUL_API = "/api/modul"
@@ -23,34 +23,38 @@ export async function syncTabProgress(slug: string): Promise<TabProgressEntry[] 
   }
 }
 
-export interface SectionSyncInput {
-  tab: string
-  sectionType: "percobaan" | "pengamatan" | "penyimpulan" | "cek-pemahaman"
-  attempt: 1 | 2
-  answer: Record<string, unknown>
-  score?: number | null
-  status?: "correct" | "wrong_attempt1" | "wrong_attempt2"
-}
-
 /**
- * POSTs a section attempt to the server for persistence.
- * Returns the saved result or null on failure.
+ * Checks if all sections in the given tab are in terminal state.
+ * If yes, POSTs to /api/modul/[slug]/progress/unlock and updates the local store.
  */
-export async function syncSectionAttempt(
-  slug: ModuleSlug,
-  input: SectionSyncInput,
-): Promise<{ id: string; status: string; finalScore: number | null } | null> {
+export async function triggerTabUnlockIfComplete(slug: string, tab: string): Promise<void> {
+  const tabAnswers = useAnswerStore.getState().getTabAnswers(slug, tab)
+
+  const sections = slug === "refleksi" && tab === "bangun"
+    ? (["pengamatan", "percobaan", "cekPemahaman"] as const)
+    : (["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"] as const)
+
+  const allDone = sections.every((s) => {
+    if (s === "cekPemahaman") return tabAnswers.cekPemahaman.isChecked
+    const sec = tabAnswers[s]
+    return sec.status === "correct" || sec.status === "wrong_attempt2"
+  })
+
+  if (!allDone) return
+
   try {
-    const res = await fetch(`${MODUL_API}/${slug}/section`, {
+    const res = await fetch(`${MODUL_API}/${slug}/progress/unlock`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ completedTab: tab }),
     })
-    if (!res.ok) return null
     const json = await res.json()
-    if (!json.ok) return null
-    return json.data
+    if (!json.ok) return
+
+    if (json.data?.progress) {
+      useTabProgressStore.getState().setProgress(slug, json.data.progress)
+    }
   } catch {
-    return null
+    // best-effort — never blocks the user
   }
 }

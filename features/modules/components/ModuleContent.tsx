@@ -106,7 +106,8 @@ export function ModuleContent({
     if (sec === "cekPemahaman") {
       return tabAnswers?.cekPemahaman?.isChecked ?? false
     }
-    return tabAnswers?.[sec as "percobaan"]?.isChecked ?? false
+    const s = tabAnswers?.[sec as "percobaan"]
+    return s?.status === "correct" || s?.status === "wrong_attempt2"
   }).length
 
   return (
