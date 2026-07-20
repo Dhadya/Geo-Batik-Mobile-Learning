@@ -3,16 +3,15 @@
 import { useMemo } from "react"
 import { useQuizStore } from "../store"
 import { getQuizModule } from "../data"
-import type { QuizQuestion } from "../types"
+import type { PilihanGandaQuestion } from "../types"
 
 /** Quiz logic hook — derives all state from zustand store + route params. */
 export function useQuiz(slug: string, nomor: number) {
   const quiz = getQuizModule(slug)
   const total = quiz?.questions.length ?? 0
-  const question: QuizQuestion | undefined = quiz?.questions[nomor - 1]
+  const question: PilihanGandaQuestion | undefined = quiz?.questions[nomor - 1]
   const storeAnswers = useQuizStore((s) => s.answers)
   const selectAnswer = useQuizStore((s) => s.selectAnswer)
-  const setFreeformAnswer = useQuizStore((s) => s.setFreeformAnswer)
   const resetAnswers = useQuizStore((s) => s.resetAnswers)
   const attempts = useQuizStore((s) => s.attempts)
 
@@ -29,7 +28,6 @@ export function useQuiz(slug: string, nomor: number) {
   const score = useMemo(() => {
     if (!quiz) return 0
     return quiz.questions.reduce((acc, q) => {
-      if (q.type !== "pilihan_ganda") return acc
       return storeAnswers[q.id] === q.correctIndex ? acc + 1 : acc
     }, 0)
   }, [quiz, storeAnswers])
@@ -91,7 +89,6 @@ export function useQuiz(slug: string, nomor: number) {
     isCorrectEvaluation,
     showCobaLagi,
     selectAnswer,
-    setFreeformAnswer,
     resetAnswers,
   }
 }

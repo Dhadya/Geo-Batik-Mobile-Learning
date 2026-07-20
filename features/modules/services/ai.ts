@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { appError } from "@/lib/api/errors";
 import type { SectionItem } from "@/features/modules/types";
-import type { QuizQuestion } from "@/features/quiz/types";
+import type { PilihanGandaQuestion } from "@/features/quiz/types";
 
 export interface EvaluateSectionInput {
   module: string;
@@ -171,7 +171,7 @@ export async function evaluateSection(
 // ── Quiz question evaluation ──────────────────────────────────────
 
 export interface EvaluateQuizQuestionInput {
-  question: QuizQuestion;
+  question: PilihanGandaQuestion;
   answer: unknown;
   attempt: 1 | 2;
 }
@@ -183,23 +183,13 @@ export interface EvaluateQuizQuestionOutput {
 }
 
 /** Describe a quiz question for the prompt. */
-function describeQuizQuestion(question: QuizQuestion): string {
-  switch (question.type) {
-    case "pilihan_ganda":
-      return `Soal ${question.id} (Pilihan Ganda): ${question.question}\nOpsi: ${question.options.join(" | ")}\nJawaban benar: opsi ${question.correctIndex}`;
-    case "uraian":
-      return `Soal ${question.id} (Uraian): ${question.question}\nJawaban benar (acuan): ${question.answer}`;
-    case "angka":
-      return `Soal ${question.id} (Angka): ${question.question}\nJawaban benar: ${JSON.stringify(question.answer)}`;
-    case "campuran":
-      const subs = question.subQuestions.map((sq) => `  - ${sq.question}`).join("\n");
-      return `Soal ${question.id} (Campuran):\n${subs}`;
-  }
+function describeQuizQuestion(question: PilihanGandaQuestion): string {
+  return `Soal ${question.id} (Pilihan Ganda): ${question.question}\nOpsi: ${question.options.join(" | ")}\nJawaban benar: opsi ${question.correctIndex}`;
 }
 
 /** Build a prompt for Gemini to evaluate a single quiz question. */
 function buildQuizPrompt(
-  question: QuizQuestion,
+  question: PilihanGandaQuestion,
   answer: unknown,
   attempt: 1 | 2,
 ): string {

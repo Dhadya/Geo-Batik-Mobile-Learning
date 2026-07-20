@@ -4,14 +4,12 @@ import type { QuizAnswers, QuizQuestionAttempt } from "./types"
 interface QuizState {
   /** User answers keyed by question id (1-based). */
   answers: QuizAnswers
-  /** Snapshot of answers submitted for the current attempt (persists after reset). */
+  /** Snapshot of answers submitted for the current attempt. */
   submittedAnswers: QuizAnswers
   /** Per-question two-attempt tracking. */
   attempts: Record<number, QuizQuestionAttempt>
   /** Select an answer for a question. */
   selectAnswer: (questionId: number, optionIndex: number) => void
-  /** Set a free-form answer (for uraian/angka types). */
-  setFreeformAnswer: (questionId: number, answer: unknown) => void
   /** Submit current answers — snapshots them then clears in-progress state. */
   submitAnswers: () => void
   /** Record a completed attempt for a single question. */
@@ -27,10 +25,6 @@ export const useQuizStore = create<QuizState>((set) => ({
   selectAnswer: (questionId, optionIndex) =>
     set((state) => ({
       answers: { ...state.answers, [questionId]: optionIndex },
-    })),
-  setFreeformAnswer: (questionId, answer) =>
-    set((state) => ({
-      answers: { ...state.answers, [questionId]: answer as number },
     })),
   submitAnswers: () =>
     set((state) => ({

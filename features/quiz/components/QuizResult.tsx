@@ -49,15 +49,12 @@ export function QuizResult({
 
   const total = quiz.questions.length
 
-  // Calculate correct count (pilihan_ganda only for backward compat)
-  const storeCorrect = quiz.questions.filter((q) => {
-    if (q.type !== "pilihan_ganda") return false
-    return submittedAnswers[q.id] === q.correctIndex
-  }).length
+  // Calculate correct count from store or attempts
+  const storeCorrect = quiz.questions.filter((q) =>
+    submittedAnswers[q.id] === q.correctIndex
+  ).length
 
-  // Use attempts-based scoring if available
-  const attemptScores = Object.values(attempts)
-  const correctFromAttempts = attemptScores.filter(
+  const correctFromAttempts = Object.values(attempts).filter(
     (a) => a.status === "correct_attempt1"
   ).length
   const correctCount = correctFromAttempts > 0 ? correctFromAttempts : storeCorrect

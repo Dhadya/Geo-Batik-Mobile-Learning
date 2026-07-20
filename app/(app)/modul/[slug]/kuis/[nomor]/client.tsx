@@ -46,7 +46,6 @@ export function KuisSoalClient({
     isCorrectEvaluation,
     showCobaLagi,
     selectAnswer,
-    setFreeformAnswer,
   } = useQuiz(slug, nomor)
 
   const label = MODULE_LABELS[slug] ?? slug
@@ -231,19 +230,12 @@ export function KuisSoalClient({
                   )}
                 </div>
 
-                {/* Dynamic input based on question type */}
+                  {/* MCQ answer options */}
                 <QuestionRenderer
                   question={question}
                   selectedAnswer={selectedOption}
-                  isChecked={!!(localFeedback || feedback)}
-                  showCobaLagi={effectiveShowCobaLagi}
-                  onAnswer={(answer) => {
-                    if (question.type === "pilihan_ganda") {
-                      selectAnswer(question.id, answer as number)
-                    } else {
-                      setFreeformAnswer(question.id, answer)
-                    }
-                  }}
+                  disabled={!!(localFeedback || feedback) && !effectiveShowCobaLagi}
+                  onAnswer={(answer) => selectAnswer(question.id, answer)}
                 />
 
                 {/* AI feedback display */}

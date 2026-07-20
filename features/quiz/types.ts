@@ -1,19 +1,10 @@
-/** Supported quiz question types. */
-export const QUIZ_QUESTION_TYPES = ["pilihan_ganda", "uraian", "angka", "campuran"] as const
-export type QuizQuestionType = (typeof QUIZ_QUESTION_TYPES)[number]
-
-/** Base fields shared by every question type. */
-interface BaseQuizQuestion {
+/** Multiple-choice question. */
+export interface PilihanGandaQuestion {
   id: number
-  type: QuizQuestionType
+  type: "pilihan_ganda"
   question: string
   module: string
   tab?: string
-}
-
-/** Multiple-choice question with selectable options. */
-export interface PilihanGandaQuestion extends BaseQuizQuestion {
-  type: "pilihan_ganda"
   options: string[]
   correctIndex: number
   explanation: string
@@ -23,37 +14,12 @@ export interface PilihanGandaQuestion extends BaseQuizQuestion {
   questionSuffix?: string
 }
 
-/** Free-text essay/uraian question. */
-export interface UraianQuestion extends BaseQuizQuestion {
-  type: "uraian"
-  answer: string
-  acceptAnswers?: string[]
-  explanation: string
-}
-
-/** Numeric/coordinate answer question. */
-export interface AngkaQuestion extends BaseQuizQuestion {
-  type: "angka"
-  answer: { x?: number; y?: number; value?: number }
-  acceptFormats?: string[]
-  explanation: string
-}
-
-/** Mixed-type question with sub-questions. */
-export interface CampuranQuestion extends BaseQuizQuestion {
-  type: "campuran"
-  subQuestions: (PilihanGandaQuestion | UraianQuestion | AngkaQuestion)[]
-}
-
-/** Discriminated union of all quiz question types. */
-export type QuizQuestion = PilihanGandaQuestion | UraianQuestion | AngkaQuestion | CampuranQuestion
-
 /** Quiz module configuration per slug. */
 export interface QuizModule {
   slug: string
   title: string
   badge: string
-  questions: QuizQuestion[]
+  questions: PilihanGandaQuestion[]
 }
 
 /** Per-question attempt tracking state. */
@@ -71,5 +37,5 @@ export interface QuizQuestionAttempt {
   status: "unanswered" | "correct_attempt1" | "wrong_attempt1" | "wrong_attempt2"
 }
 
-/** User answer record keyed by question id (backward compat). */
+/** User answer record keyed by question id. */
 export type QuizAnswers = Record<number, number>

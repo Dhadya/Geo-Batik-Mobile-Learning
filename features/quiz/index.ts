@@ -22,13 +22,8 @@ export { QUIZ_MODULES, getQuizModule, getQuizQuestionsByTab } from "./data"
 
 // Types
 export type {
-  QuizQuestion,
   PilihanGandaQuestion,
-  UraianQuestion,
-  AngkaQuestion,
-  CampuranQuestion,
   QuizModule,
   QuizAnswers,
   QuizQuestionAttempt,
-  QuizQuestionType,
 } from "./types"

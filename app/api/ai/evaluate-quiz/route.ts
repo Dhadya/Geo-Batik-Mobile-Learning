@@ -3,17 +3,22 @@ import { z } from "zod";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
 import { evaluateQuizQuestion } from "@/features/modules/services/ai";
-import type { QuizQuestion } from "@/features/quiz/types";
+import type { PilihanGandaQuestion } from "@/features/quiz/types";
 
 const evaluateQuizSchema = z.object({
   question: z.object({
     id: z.number(),
-    type: z.enum(["pilihan_ganda", "uraian", "angka", "campuran"]),
+    type: z.literal("pilihan_ganda"),
     question: z.string(),
+    options: z.array(z.string()),
+    correctIndex: z.number(),
+    explanation: z.string(),
     module: z.string().optional(),
     tab: z.string().optional(),
-  }).passthrough(),
-  answer: z.unknown(),
+    questionMatrix: z.string().optional(),
+    questionSuffix: z.string().optional(),
+  }),
+  answer: z.number(),
   attempt: z.union([z.literal(1), z.literal(2)]),
 });
 
@@ -42,7 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await evaluateQuizQuestion({
-      question: parsed.data.question as unknown as QuizQuestion,
+      question: parsed.data.question as unknown as PilihanGandaQuestion,
       answer: parsed.data.answer,
       attempt: parsed.data.attempt,
     });
