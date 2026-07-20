@@ -63,6 +63,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const [errors, setErrors_] = useState<Record<string, string>>({})
 
   // Derive evaluation state directly from the persisted store state
+  const storedAttempt = sectionAnswers?.attempt ?? 1
   const { isLocked, attempt, showCobaLagi, isCorrectEvaluation } = useMemo(() => {
     const status = sectionAnswers?.status
     if (status === "correct") {
@@ -91,11 +92,11 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     }
     return {
       isLocked: false,
-      attempt: 1 as 1 | 2,
+      attempt: storedAttempt as 1 | 2,
       showCobaLagi: false,
       isCorrectEvaluation: null as boolean | null,
     }
-  }, [sectionAnswers])
+  }, [sectionAnswers, storedAttempt])
 
   const boundSetField = useCallback(
     (itemId: string, fieldKey: string, value: string) => {
@@ -118,7 +119,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
 
   /** Reset evaluation state — called when user clicks "Periksa Jawaban Lagi" (attempt 2). */
   const handleCobaLagi = useCallback(() => {
-    useAnswerStore.getState().setSectionStatus(slug, tab, section, "unsubmitted", 1)
+    useAnswerStore.getState().setSectionStatus(slug, tab, section, "unsubmitted", 2)
     boundSetChecked(false)
     setErrors_({})
   }, [slug, tab, section, boundSetChecked])

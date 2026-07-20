@@ -151,9 +151,10 @@ export async function evaluateSection(
   let result;
   try {
     result = await model.generateContent(prompt);
-  } catch {
-    console.warn("[ai] Gemini API call failed — falling back to client-side validation");
-    throw appError("RATE_LIMITED");
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "AI evaluation failed";
+    console.warn("[ai] Gemini API call failed:", msg);
+    throw new Error(msg);
   }
 
   const response = result.response.text();

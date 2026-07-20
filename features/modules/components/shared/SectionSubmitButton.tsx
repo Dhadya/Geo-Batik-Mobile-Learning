@@ -10,7 +10,7 @@ interface SectionSubmitButtonProps {
   isCorrect: boolean | null
   isLocked: boolean
   showCobaLagi: boolean
-  /** Called when user clicks "Periksa Jawaban" (initial submit or after reset) */
+  /** Called when user clicks "Periksa Jawaban" (initial submit) */
   onSubmit: () => void
   /** Called when user clicks "Periksa Jawaban Lagi" — resets form to edit mode */
   onCobaLagi?: () => void
@@ -21,7 +21,7 @@ interface SectionSubmitButtonProps {
 /**
  * Single submit button cycling through all section states.
  * States: Periksa Jawaban → Periksa Jawaban Lagi → Selesai (disabled) | Kesempatan Habis (disabled).
- * "Periksa Jawaban Lagi" calls onCobaLagi to reset the form, letting the user edit before re-submitting.
+ * Confirmation dialog shown before both initial submit and coba-lagi.
  */
 export function SectionSubmitButton({
   isChecked,
@@ -35,7 +35,6 @@ export function SectionSubmitButton({
 }: SectionSubmitButtonProps) {
   const [open, setOpen] = useState(false)
 
-  // Disabled when: not filled (pre-submit) OR locked and not in coba-lagi state
   const isDisabled = !isChecked ? !isFilled : isLocked && !showCobaLagi
 
   let text: string
@@ -55,16 +54,25 @@ export function SectionSubmitButton({
   }
 
   const handleClick = useCallback(() => {
-    if (showCobaLagi) {
-      onCobaLagi?.()
-    } else if (!isLocked) {
+    if (!isLocked) {
       if (requireConfirmation) {
         setOpen(true)
+      } else if (showCobaLagi) {
+        onCobaLagi?.()
       } else {
         onSubmit()
       }
     }
   }, [isLocked, showCobaLagi, onSubmit, onCobaLagi, requireConfirmation])
+
+  const handleConfirm = useCallback(() => {
+    if (showCobaLagi) {
+      onCobaLagi?.()
+    } else {
+      onSubmit()
+    }
+    setOpen(false)
+  }, [showCobaLagi, onCobaLagi, onSubmit])
 
   const buttonElement = (
     <Button
@@ -84,50 +92,44 @@ export function SectionSubmitButton({
     <Dialog open={open} onOpenChange={setOpen}>
       {buttonElement}
       <Dialog.Content size="sm">
-        {/* Dialog header bar */}
         <Dialog.Header asChild>
           <div className="flex items-center justify-between border-b-2 px-3 md:px-4 min-h-10 md:min-h-12 bg-primary text-primary-foreground">
             <span className="font-black uppercase text-xs md:text-sm">Kirim Jawaban</span>
           </div>
         </Dialog.Header>
 
-        {/* Confirmation body text */}
-        <div className="p-4 md:p-6 text-center space-y-1.5 md:space-y-2">
-          {!showCobaLagi ? (
-            <>
-              <p className="font-semibold text-sm md:text-base">
-                Yakin ingin mengirimkan jawaban?
-              </p>
-              <p className="text-xs md:text-sm text-muted-foreground">
-                Kamu hanya dapat mengirimkan jawaban maksimal 2 kali. Kamu sekarang punya 2 kesempatan. Periksa jawaban kamu sebelum mengirim.
-              </p>
-            </>
+        <div className="p-4 md:p-6 space-y-2">
+          <p className="font-semibold text-sm md:text-base">
+            Yakin ingin mengirimkan jawaban?
+          </p>
+          {showCobaLagi ? (
+            <p className="text-xs md:text-sm text-gray-600">
+              Ini adalah kesempatan terakhirmu. Jawaban yang telah terkirim tidak dapat diubah lagi. Nilai akan dihitung dari skor terbaik dari kedua kesempatan.
+            </p>
           ) : (
-            <>
-              <p className="font-semibold text-sm md:text-base">
-                Yakin ingin mengirimkan jawaban?
-              </p>
-              <p className="text-xs md:text-sm text-muted-foreground">
-                Ini adalah kesempatan terakhirmu. Jawaban yang telah terkirim tidak dapat diubah lagi. Nilai akan dihitung dari skor terbaik dari kedua kesempatan.
-              </p>
-            </>
+            <p className="text-xs md:text-sm text-gray-600">
+              Kamu hanya dapat mengirimkan jawaban maksimal 2 kali. Kamu sekarang punya 2 kesempatan. Periksa jawaban kamu sebelum mengirim.
+            </p>
           )}
         </div>
 
-        {/* Footer: Batal (cancel) and Kirim (confirm) buttons */}
         <Dialog.Footer>
-          <Dialog.Close className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer border-2 border-black bg-white hover:shadow-[2px_2px_0_0_black] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setOpen(false)}
+            className="shadow-[2px_2px_0_0_black] uppercase font-bold text-xs md:text-sm"
+          >
             Batal
-          </Dialog.Close>
-          <Dialog.Close
-            className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer border-2 border-primary bg-primary text-primary-foreground hover:shadow-[2px_2px_0_0_black] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150"
-            onClick={() => {
-              onSubmit()
-              setOpen(false)
-            }}
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleConfirm}
+            className="shadow-[2px_2px_0_0_black] uppercase font-bold text-xs md:text-sm"
           >
             Kirim
-          </Dialog.Close>
+          </Button>
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog>
