@@ -17,6 +17,10 @@ export interface PilihanGandaQuestion extends BaseQuizQuestion {
   options: string[]
   correctIndex: number
   explanation: string
+  /** Matrix/vector displayed inline in question (format: "a,b" → vertical 2×1). */
+  questionMatrix?: string
+  /** Text appended after the matrix display. */
+  questionSuffix?: string
 }
 
 /** Free-text essay/uraian question. */

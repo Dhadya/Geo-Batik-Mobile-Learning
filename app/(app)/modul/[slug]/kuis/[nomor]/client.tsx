@@ -210,10 +210,26 @@ export function KuisSoalClient({
                   </Badge>
                 )}
 
-                {/* Question text */}
-                <Text as="p" className="font-semibold text-sm md:text-base">
-                  {question.question}
-                </Text>
+                {/* Question text — with optional inline matrix */}
+                <div className="font-semibold text-sm md:text-base">
+                  <Text as="p" className="inline">
+                    {question.question}
+                  </Text>
+                  {"questionMatrix" in question && question.questionMatrix && (
+                    <span className="inline-flex items-center gap-0.5 mx-1 align-middle">
+                      <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
+                      <span className="flex flex-col items-center gap-0 md:gap-0.5 text-xs md:text-sm font-black align-middle">
+                        {question.questionMatrix.split(",").map((part, i) => (
+                          <span key={i} className="leading-none text-center">{part}</span>
+                        ))}
+                      </span>
+                      <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
+                    </span>
+                  )}
+                  {"questionSuffix" in question && question.questionSuffix && (
+                    <span> {question.questionSuffix}</span>
+                  )}
+                </div>
 
                 {/* Dynamic input based on question type */}
                 <QuestionRenderer
