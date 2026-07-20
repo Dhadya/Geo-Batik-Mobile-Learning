@@ -10,8 +10,10 @@ interface SectionSubmitButtonProps {
   isCorrect: boolean | null
   isLocked: boolean
   showCobaLagi: boolean
-  /** Called on first submit and on "Periksa Jawaban Lagi" (attempt 2) */
+  /** Called when user clicks "Periksa Jawaban" (initial submit or after reset) */
   onSubmit: () => void
+  /** Called when user clicks "Periksa Jawaban Lagi" — resets form to edit mode */
+  onCobaLagi?: () => void
   /** If true, requires a confirmation dialog before submitting */
   requireConfirmation?: boolean
 }
@@ -19,7 +21,7 @@ interface SectionSubmitButtonProps {
 /**
  * Single submit button cycling through all section states.
  * States: Periksa Jawaban → Periksa Jawaban Lagi → Selesai (disabled) | Kesempatan Habis (disabled).
- * "Periksa Jawaban Lagi" directly re-submits (attempt 2) without resetting to edit mode.
+ * "Periksa Jawaban Lagi" calls onCobaLagi to reset the form, letting the user edit before re-submitting.
  */
 export function SectionSubmitButton({
   isChecked,
@@ -28,6 +30,7 @@ export function SectionSubmitButton({
   isLocked,
   showCobaLagi,
   onSubmit,
+  onCobaLagi,
   requireConfirmation = false,
 }: SectionSubmitButtonProps) {
   const [open, setOpen] = useState(false)
@@ -39,31 +42,29 @@ export function SectionSubmitButton({
   let variantStyle = ""
 
   if (!isChecked) {
-    // Initial state: not yet submitted
     text = "Periksa Jawaban"
   } else if (showCobaLagi) {
-    // Wrong on attempt 1: offer attempt 2
     text = "Periksa Jawaban Lagi"
     variantStyle = "bg-secondary text-white hover:bg-secondary/90!"
   } else if (isCorrect) {
-    // Correct (attempt 1 or 2): done
     text = "Selesai"
-    variantStyle = "bg-secondary text-white hover:bg-secondary/90!"
+    variantStyle = "bg-green-600 text-white hover:bg-green-700!"
   } else {
-    // Wrong on attempt 2: no more chances
     text = "Kesempatan Habis"
     variantStyle = "bg-gray-300 text-gray-500 border-gray-400!"
   }
 
   const handleClick = useCallback(() => {
-    if (!isLocked || showCobaLagi) {
+    if (showCobaLagi) {
+      onCobaLagi?.()
+    } else if (!isLocked) {
       if (requireConfirmation) {
         setOpen(true)
       } else {
         onSubmit()
       }
     }
-  }, [isLocked, showCobaLagi, onSubmit, requireConfirmation])
+  }, [isLocked, showCobaLagi, onSubmit, onCobaLagi, requireConfirmation])
 
   const buttonElement = (
     <Button

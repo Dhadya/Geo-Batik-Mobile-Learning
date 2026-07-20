@@ -1,12 +1,13 @@
 "use client"
 
 import { useCallback, useMemo } from "react"
-import { CheckCircle } from "lucide-react"
+import { CheckCircle, Check } from "lucide-react"
 import Image from "next/image"
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import { useAnswerStore } from "../../../store/answerStore"
 import type { AssessmentQuestion } from "../../../types"
 
@@ -52,15 +53,13 @@ function ModuleAnswerButton({
   return (
     <Button
       variant={isSelected ? "default" : "outline"}
-      className={`justify-start! flex-row items-center gap-2 md:gap-3 p-2 md:p-3 text-left font-semibold text-xs md:text-base relative ${
-        isCorrect ? "border-green-600 bg-green-50" : isWrong ? "border-destructive bg-destructive/5" : ""
-      }`}
+      className={`justify-start! flex-row items-center gap-2 md:gap-3 p-2 md:p-3 text-left font-semibold text-xs md:text-base relative ${isCorrect ? "border-green-600 bg-green-50" : isWrong ? "border-destructive bg-destructive/5" : ""
+        }`}
       onClick={onSelect}
       disabled={disabled}
     >
-      <span className={`w-5 h-5 md:w-7 md:h-7 border-2 border-black flex items-center justify-center text-[10px] md:text-sm shrink-0 ${
-        isCorrect ? "bg-green-600 text-white" : isWrong ? "bg-destructive text-white" : "bg-foreground text-background"
-      }`}>
+      <span className={`w-5 h-5 md:w-7 md:h-7 border-2 border-black flex items-center justify-center text-[10px] md:text-sm shrink-0 ${isCorrect ? "bg-green-600 text-white" : isWrong ? "bg-destructive text-white" : "bg-foreground text-background"
+        }`}>
         {LABELS[index]}
       </span>
       {imageSrc ? (
@@ -114,14 +113,12 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const setSelections = useAnswerStore((s) => s.setSelections)
   const setChecked = useAnswerStore((s) => s.setChecked)
 
-
-
   const allAnswered = useMemo(() =>
     questions.every((q, qi) => {
       if (q.multiSelect) return true // multi-select always "answered"
       return selections[qi] != null
     }),
-  [questions, selections])
+    [questions, selections])
 
   const validationErrors = useMemo(() => {
     if (!isChecked) return {}
@@ -156,27 +153,25 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     setSelections(slug, tab, next)
   }, [isChecked, selections, setSelections, slug, tab, questions])
 
-  /** Toggle check state: submit answers or allow re-try */
-  const handleClick = useCallback(() => {
-    if (isChecked) {
-      setChecked(slug, tab, "cekPemahaman" as unknown as "percobaan", false)
-    } else {
-      setChecked(slug, tab, "cekPemahaman" as unknown as "percobaan", true)
-    }
-  }, [isChecked, setChecked, slug, tab])
+  /** Submit answers — sets isChecked to trigger local validation */
+  const doSubmit = useCallback(() => {
+    setChecked(slug, tab, "cekPemahaman" as unknown as "percobaan", true)
+  }, [setChecked, slug, tab])
 
-
+  const hasErrors = Object.keys(validationErrors).length > 0
+  const isCorrect = isChecked ? !hasErrors : null
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
       {/* Section header: CheckCircle icon + "Cek Pemahaman" title */}
-      <div className="flex items-center justify-center gap-2 mb-4 md:mb-6">
+      <div className="flex items-center justify-start gap-2 mb-4 md:mb-6">
         <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
           <CheckCircle className="size-4 md:size-6" />
         </div>
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Cek Pemahaman
         </Text>
+        {isChecked && <Check className="size-4 md:size-6 text-green-600" />}
       </div>
 
       {/* Questions loop — renders each as a Card */}
@@ -249,11 +244,10 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
                 {/* Answer options grid — renders ModuleAnswerButton per option */}
                 <div
-                  className={`grid gap-2 md:gap-3 ${
-                    q.options.length >= 5
+                  className={`grid gap-2 md:gap-3 ${q.options.length >= 5
                       ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
                       : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
-                  }`}
+                    }`}
                 >
                   {q.options.map((opt, oi) => {
                     /* Determine if option oi is selected: bitmap for multi, direct compare for single */
@@ -307,16 +301,16 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         </div>
       )}
 
-      {/* Submit / Re-check button */}
-      <div className="mt-4 md:mt-8 flex justify-center">
-        <Button
-          onClick={handleClick}
-          disabled={!allAnswered && !isChecked}
-          variant="default"
-          className="font-black uppercase tracking-wide  text-xs md:text-lg px-4 md:px-8 py-1.5 md:py-3"
-        >
-          {isChecked ? "Periksa Lagi" : "Submit Jawaban"}
-        </Button>
+      <div className="mt-4 md:mt-8">
+        <SectionSubmitButton
+          isChecked={isChecked}
+          isFilled={allAnswered}
+          isCorrect={isCorrect}
+          isLocked={isChecked}
+          showCobaLagi={false}
+          onSubmit={doSubmit}
+          requireConfirmation={slug === "translasi" && tab === "titik"}
+        />
       </div>
 
     </section>

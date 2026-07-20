@@ -17,8 +17,10 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   // Find the ChecklistTableItem
   const checklistItem = items.find((i): i is ChecklistTableItem => i.type === "checklist_table")
@@ -94,7 +96,8 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
         isLocked={isLocked}
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
-        requireConfirmation={slug === "translasi" && tab === "titik"}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
       />
     </section>
   )

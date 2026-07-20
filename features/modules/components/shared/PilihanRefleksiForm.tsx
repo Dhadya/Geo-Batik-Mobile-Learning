@@ -18,8 +18,10 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
   } = useSection(slug, tab, "percobaan")
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   // Find the PilihanRefleksiItem
   const refleksiItem = items.find((i): i is PilihanRefleksiItem => i.type === "pilihan_refleksi")
@@ -136,7 +138,8 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
         isLocked={isLocked}
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
-        requireConfirmation={slug === "translasi" && tab === "titik"}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
       />
     </section>
   )

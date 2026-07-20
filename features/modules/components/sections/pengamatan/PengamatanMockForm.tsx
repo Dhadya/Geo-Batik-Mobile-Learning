@@ -18,7 +18,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
   const {
     items, fields, errors, isChecked, isFilled,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
   } = useSection(slug, tab, "pengamatan")
 
   return (
@@ -104,6 +104,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
         isLocked={isLocked}
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
+        onCobaLagi={handleCobaLagi}
         requireConfirmation={slug === "translasi" && tab === "titik"}
       />
     </form>

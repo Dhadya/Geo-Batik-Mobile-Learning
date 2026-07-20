@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Lightbulb } from "lucide-react"
+import { useCallback, useState } from "react"
+import { Lightbulb, Check } from "lucide-react"
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
@@ -20,8 +20,15 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi: resetState,
   } = useSection(slug, tab, "penyimpulan")
+
+  const [item11Err, setItem11Err] = useState<string>("")
+
+  const handleCobaLagi = useCallback(() => {
+    resetState()
+    setItem11Err("")
+  }, [resetState])
 
   // Map tab to reflection label for conclusion table
   const reflectionLabels: Record<string, string> = {
@@ -35,9 +42,6 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
     "garis": "Ruas Garis",
   }
   const reflectLabel = reflectionLabels[tab] ?? tab
-
-  const [item11Err, setItem11Err] = useState<string>("")
-
 
   const validateItem11 = (aVal: string, bVal: string) => {
     if (!aVal.trim() && !bVal.trim()) {
@@ -60,6 +64,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Penyimpulan
         </Text>
+        {isChecked && <Check className="size-4 md:size-6 text-green-600" />}
       </div>
 
       <div className="space-y-4 md:space-y-6">
@@ -299,6 +304,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
           isLocked={isLocked}
           showCobaLagi={showCobaLagi}
           onSubmit={handleSubmit}
+          onCobaLagi={handleCobaLagi}
           requireConfirmation={slug === "translasi" && tab === "titik"}
         />
       </div>

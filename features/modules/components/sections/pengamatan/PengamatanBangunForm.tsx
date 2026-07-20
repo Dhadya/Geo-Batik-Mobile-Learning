@@ -17,8 +17,10 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   /* Only render pilihan_ganda items (binary choice questions) */
   const pgItems = items.filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
@@ -91,7 +93,8 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
         isLocked={isLocked}
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
-        requireConfirmation={slug === "translasi" && tab === "titik"}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
       />
     </form>
   )

@@ -115,6 +115,13 @@ export function useSection(slug: string, tab: string, section: SectionName) {
 
   const isFilled = isSectionFilled(items, fields)
 
+  /** Reset evaluation state — called when user clicks "Periksa Jawaban Lagi" (attempt 2). */
+  const handleCobaLagi = useCallback(() => {
+    useAnswerStore.getState().setSectionStatus(slug, tab, section, "unsubmitted", 1)
+    boundSetChecked(false)
+    setErrors_({})
+  }, [slug, tab, section, boundSetChecked])
+
   const handleSubmit = useCallback(async () => {
     if (isLocked) return
 
@@ -163,6 +170,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     isLocked,
     showCobaLagi,
     isCorrectEvaluation,
+    handleCobaLagi,
     setField: boundSetField,
     setAIFeedback,
     setChecked: boundSetChecked,

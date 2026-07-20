@@ -19,8 +19,10 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   return (
     <div className="space-y-3 md:space-y-4">
@@ -139,7 +141,8 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
         isLocked={isLocked}
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
-        requireConfirmation={slug === "translasi" && tab === "titik"}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
       />
     </div>
   )

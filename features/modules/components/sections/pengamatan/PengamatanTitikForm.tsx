@@ -17,8 +17,10 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   return (
     <form className="space-y-3 md:space-y-4">
@@ -129,7 +131,8 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
         isLocked={isLocked}
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
-        requireConfirmation={slug === "translasi" && tab === "titik"}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
       />
     </form>
   )

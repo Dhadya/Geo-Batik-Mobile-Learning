@@ -21,7 +21,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
   } = useSection(slug, tab, "percobaan")
 
   if (items.length === 0) return null
@@ -54,6 +54,8 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           isLocked={isLocked}
           showCobaLagi={showCobaLagi}
           onSubmit={handleSubmit}
+          onCobaLagi={handleCobaLagi}
+          requireConfirmation={false}
         />
       </div>
     )
@@ -115,15 +117,16 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 
       <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
 
-        <SectionSubmitButton
-          isChecked={isChecked}
-          isFilled={isFilled}
-          isCorrect={isCorrectEvaluation}
-          isLocked={isLocked}
-          showCobaLagi={showCobaLagi}
-          onSubmit={handleSubmit}
-          requireConfirmation={slug === "translasi" && tab === "titik"}
-        />
+      <SectionSubmitButton
+        isChecked={isChecked}
+        isFilled={isFilled}
+        isCorrect={isCorrectEvaluation}
+        isLocked={isLocked}
+        showCobaLagi={showCobaLagi}
+        onSubmit={handleSubmit}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={slug === "translasi" && tab === "titik"}
+      />
     </div>
   )
 }
@@ -139,5 +142,3 @@ function AiFeedbackBanner({ aiFeedback, isChecked }: { aiFeedback?: string; isCh
     </div>
   )
 }
-
-

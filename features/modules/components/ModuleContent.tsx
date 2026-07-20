@@ -94,7 +94,7 @@ export function ModuleContent({
           store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
         }
       })
-      .catch(() => {})
+      .catch(() => { })
   }, [slug, decodedTab])
 
   // Calculate section progress for this tab
