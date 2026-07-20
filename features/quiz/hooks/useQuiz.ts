@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { useQuizStore } from "../store"
 import { getQuizModule } from "../data"
 import type { QuizQuestion } from "../types"
@@ -11,20 +12,66 @@ export function useQuiz(slug: string, nomor: number) {
   const question: QuizQuestion | undefined = quiz?.questions[nomor - 1]
   const storeAnswers = useQuizStore((s) => s.answers)
   const selectAnswer = useQuizStore((s) => s.selectAnswer)
+  const setFreeformAnswer = useQuizStore((s) => s.setFreeformAnswer)
   const resetAnswers = useQuizStore((s) => s.resetAnswers)
+  const attempts = useQuizStore((s) => s.attempts)
 
-  const selectedOption = question ? storeAnswers[question.id] : undefined
+  const selectedOption = useMemo(() => {
+    if (!question) return undefined
+    return storeAnswers[question.id]
+  }, [storeAnswers, question])
+
   const answeredCount = Object.keys(storeAnswers).length
-  const allAnswered = total > 0 && answeredCount === total
+  const allAnswered = total > 0 && answeredCount >= total
   const isLast = nomor === total
   const isFirst = nomor === 1
 
-  const score = quiz
-    ? quiz.questions.reduce((acc, q) => {
-        if (storeAnswers[q.id] === q.correctIndex) return acc + 1
-        return acc
-      }, 0)
-    : 0
+  const score = useMemo(() => {
+    if (!quiz) return 0
+    return quiz.questions.reduce((acc, q) => {
+      if (q.type !== "pilihan_ganda") return acc
+      return storeAnswers[q.id] === q.correctIndex ? acc + 1 : acc
+    }, 0)
+  }, [quiz, storeAnswers])
+
+  const currentAttempt = useMemo((): 1 | 2 => {
+    if (!question) return 1
+    const a = attempts[question.id]
+    if (!a || a.status === "unanswered") return 1
+    if (a.status === "wrong_attempt1") return 2
+    return 1
+  }, [attempts, question])
+
+  const isLocked = useMemo(() => {
+    if (!question) return false
+    const a = attempts[question.id]
+    return a?.status === "correct_attempt1" || a?.status === "wrong_attempt2"
+  }, [attempts, question])
+
+  const feedback = useMemo(() => {
+    if (!question) return null
+    const a = attempts[question.id]
+    if (!a) return null
+    if (a.status === "correct_attempt1") return a.attempt1Feedback
+    if (a.attempt2Feedback) return a.attempt2Feedback
+    if (a.status === "wrong_attempt1") return a.attempt1Feedback
+    return null
+  }, [attempts, question])
+
+  const isCorrectEvaluation = useMemo(() => {
+    if (!question) return null
+    const a = attempts[question.id]
+    if (!a) return null
+    if (a.status === "correct_attempt1") return true
+    if (a.status === "wrong_attempt2") return false
+    return null
+  }, [attempts, question])
+
+  const showCobaLagi = useMemo(() => {
+    if (!question) return false
+    const a = attempts[question.id]
+    return a?.status === "wrong_attempt1"
+  }, [attempts, question])
 
   return {
     quiz,
@@ -37,7 +84,14 @@ export function useQuiz(slug: string, nomor: number) {
     isFirst,
     score,
     answers: storeAnswers,
+    attempts,
+    currentAttempt,
+    isLocked,
+    feedback,
+    isCorrectEvaluation,
+    showCobaLagi,
     selectAnswer,
+    setFreeformAnswer,
     resetAnswers,
   }
 }

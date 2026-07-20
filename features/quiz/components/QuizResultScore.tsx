@@ -6,9 +6,11 @@ import { Check, X } from "lucide-react"
 export function QuizResultScore({
   correctCount,
   total,
+  score,
 }: {
   correctCount: number
   total: number
+  score?: number | null
 }) {
   const incorrectCount = total - correctCount
 
@@ -20,9 +22,17 @@ export function QuizResultScore({
         </Card.Title>
       </Card.Header>
       <Card.Content className="p-6 md:p-8 space-y-6">
-        <div className="text-center">
-          <span className="text-6xl md:text-7xl font-black">{correctCount}</span>
-          <span className="text-2xl md:text-3xl font-bold text-muted-foreground">/{total}</span>
+        <div className="text-center space-y-1">
+          {score != null && (
+            <div>
+              <span className="text-4xl md:text-5xl font-black">{score}</span>
+              <span className="text-xl md:text-2xl font-bold text-muted-foreground">/100</span>
+            </div>
+          )}
+          <div>
+            <span className="text-6xl md:text-7xl font-black">{correctCount}</span>
+            <span className="text-2xl md:text-3xl font-bold text-muted-foreground">/{total}</span>
+          </div>
         </div>
 
         <div className="flex justify-center gap-6 md:gap-8">

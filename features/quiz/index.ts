@@ -9,6 +9,7 @@ export { QuizResult } from "./components/QuizResult"
 export { QuizResultScore } from "./components/QuizResultScore"
 export { QuizResultExplanation } from "./components/QuizResultExplanation"
 export { QuizResultActions } from "./components/QuizResultActions"
+export { QuestionRenderer } from "./components/QuestionRenderer"
 
 // Hooks
 export { useQuiz } from "./hooks/useQuiz"
@@ -17,7 +18,17 @@ export { useQuiz } from "./hooks/useQuiz"
 export { useQuizStore } from "./store"
 
 // Data + helpers
-export { QUIZ_MODULES, getQuizModule } from "./data"
+export { QUIZ_MODULES, getQuizModule, getQuizQuestionsByTab } from "./data"
 
 // Types
-export type { QuizQuestion, QuizModule, QuizAnswers } from "./types"
+export type {
+  QuizQuestion,
+  PilihanGandaQuestion,
+  UraianQuestion,
+  AngkaQuestion,
+  CampuranQuestion,
+  QuizModule,
+  QuizAnswers,
+  QuizQuestionAttempt,
+  QuizQuestionType,
+} from "./types"

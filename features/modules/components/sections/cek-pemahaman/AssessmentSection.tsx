@@ -1,7 +1,7 @@
 "use client"
 
-import { useCallback, useMemo } from "react"
-import { CheckCircle, Check } from "lucide-react"
+import { useCallback, useMemo, useState } from "react"
+import { CheckCircle, Check, Lock } from "lucide-react"
 import Image from "next/image"
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
@@ -9,8 +9,10 @@ import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import { useAnswerStore } from "../../../store/answerStore"
+import { persistSectionAttempt } from "../../../lib/persistSectionAttempt"
 import { triggerTabUnlockIfComplete } from "../../../lib/progressSync"
-import type { AssessmentQuestion } from "../../../types"
+import { evaluateSection } from "../../../lib/evaluateSection"
+import type { AssessmentQuestion, PilihanGandaItem } from "../../../types"
 
 const LABELS = ["A", "B", "C", "D", "E", "F"]
 
@@ -104,41 +106,32 @@ function ModuleAnswerButton({
   )
 }
 
-/** Assessment section — multiple choice questions matching quiz UI. */
+/** Assessment section — multiple choice questions with two-attempt AI flow. */
 export function AssessmentSection({ slug, tab, questions }: AssessmentSectionProps) {
   const tabKey = useMemo(() => `${slug}-${tab}`, [slug, tab])
   const rawTab = useAnswerStore((s) => s.answers[tabKey])
   const selections = useMemo(() => rawTab?.cekPemahaman?.selections ?? [], [rawTab])
-  const isChecked = useMemo(() => rawTab?.cekPemahaman?.isChecked ?? false, [rawTab])
   const aiFeedback = useMemo(() => rawTab?.cekPemahaman?.aiFeedback, [rawTab])
   const setSelections = useAnswerStore((s) => s.setSelections)
 
+  const [attempt, setAttempt] = useState<1 | 2>(1)
+  const [isLocked, setIsLocked] = useState(false)
+  const [showCobaLagi, setShowCobaLagi] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({})
+  const [submitting, setSubmitting] = useState(false)
+
   const allAnswered = useMemo(() =>
     questions.every((q, qi) => {
-      if (q.multiSelect) return true // multi-select always "answered"
+      if (q.multiSelect) return true
       return selections[qi] != null
     }),
     [questions, selections])
 
-  const validationErrors = useMemo(() => {
-    if (!isChecked) return {}
-    const errors: Record<string, boolean> = {}
-    questions.forEach((q, qi) => {
-      if (q.multiSelect && q.correctIndices) {
-        const bitmap = Number(selections[qi] ?? 0)
-        const correct = q.correctIndices.every((ci) => bitmap & (1 << ci)) &&
-          q.correctIndices.length === countBits(bitmap)
-        if (!correct) errors[`${q.id}`] = true
-      } else if (selections[qi] !== q.correctIndex) {
-        errors[`${q.id}`] = true
-      }
-    })
-    return errors
-  }, [isChecked, questions, selections])
-
   /** Bitmap-encoded selection: toggles option oi on/off for multi-select; stores single index for single-select */
   const handleSelect = useCallback((qi: number, oi: number) => {
-    if (isChecked) return
+    if (isChecked && !showCobaLagi) return
     const next = [...selections]
 
     const q = questions[qi]
@@ -151,48 +144,120 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     }
 
     setSelections(slug, tab, next)
-  }, [isChecked, selections, setSelections, slug, tab, questions])
+  }, [isChecked, showCobaLagi, selections, setSelections, slug, tab, questions])
 
-  /** Submit answers — persist to server + unlock next tab if complete */
-  const doSubmit = useCallback(() => {
+  /** Convert selections to the fields format expected by evaluateSection. */
+  const selectionsToFields = useCallback((sel: (number | null)[]): Record<string, Record<string, string>> => {
+    const fields: Record<string, Record<string, string>> = {}
+    sel.forEach((s, qi) => {
+      if (s != null) {
+        fields[String(qi)] = { selected: String(s) }
+      }
+    })
+    return fields
+  }, [])
+
+  /** Convert AssessmentQuestion[] to PilihanGandaItem[] for AI evaluation. */
+  const toSectionItems = useCallback((qs: AssessmentQuestion[]): PilihanGandaItem[] => {
+    return qs.map((q) => ({
+      id: q.id,
+      type: "pilihan_ganda" as const,
+      question: q.question,
+      options: q.options,
+      correctIndex: q.correctIndex,
+      optionFormat: q.optionFormat,
+      imageOptions: q.imageOptions,
+      multiSelect: q.multiSelect,
+      correctIndices: q.correctIndices,
+      questionImage: q.questionImage,
+      questionMatrix: q.questionMatrix,
+      questionSuffix: q.questionSuffix,
+    }))
+  }, [])
+
+  /** Compute local validation errors for display. */
+  const computeErrors = useCallback((sel: (number | null)[], qs: AssessmentQuestion[]): Record<string, boolean> => {
     const errs: Record<string, boolean> = {}
-    questions.forEach((q, qi) => {
+    qs.forEach((q, qi) => {
       if (q.multiSelect && q.correctIndices) {
-        const bitmap = Number(selections[qi] ?? 0)
+        const bitmap = Number(sel[qi] ?? 0)
         const correct = q.correctIndices.every((ci) => bitmap & (1 << ci)) &&
           q.correctIndices.length === countBits(bitmap)
         if (!correct) errs[`${q.id}`] = true
-      } else if (selections[qi] !== q.correctIndex) {
+      } else if (sel[qi] !== q.correctIndex) {
         errs[`${q.id}`] = true
       }
     })
-    const hasErr = Object.keys(errs).length > 0
+    return errs
+  }, [])
 
-    const status = hasErr ? "wrong_attempt2" : "correct"
-    useAnswerStore.getState().setCekPemahamanStatus(slug, tab, status, 1)
+  /** Submit answers with AI evaluation and two-attempt flow. */
+  const doSubmit = useCallback(async () => {
+    if (submitting) return
+    setSubmitting(true)
 
-    fetch(`/api/modul/${slug}/section`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        tab,
-        sectionType: "cek-pemahaman",
-        attempt: 1,
-        answer: { selections },
-        score: hasErr ? 0 : 100,
-        status,
-      }),
-    }).catch(() => {})
+    // Convert to the format expected by evaluateSection
+    const fields = selectionsToFields(selections)
+    const items = toSectionItems(questions)
 
-    triggerTabUnlockIfComplete(slug, tab)
-  }, [slug, tab, questions, selections])
+    // Perform AI evaluation
+    const result = await evaluateSection(slug, tab, "cek-pemahaman", items, fields, attempt)
+    const localErrors = computeErrors(selections, questions)
 
-  const hasErrors = Object.keys(validationErrors).length > 0
-  const isCorrect = isChecked ? !hasErrors : null
+    // Derive final state
+    const isCorrectResult = result.isCorrect
+    const finalErrors = isCorrectResult ? {} : localErrors
+
+    setIsChecked(true)
+    setValidationErrors(finalErrors)
+    setIsCorrect(isCorrectResult)
+
+    // Store feedback
+    useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
+
+    if (isCorrectResult) {
+      setIsLocked(true)
+      setShowCobaLagi(false)
+      useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "correct", attempt)
+
+      await persistSectionAttempt({
+        slug, tab, sectionType: "cek-pemahaman", attempt,
+        answer: selectionsToFields(selections),
+        feedback: result.feedback, score: result.score,
+        status: "correct",
+      })
+      await triggerTabUnlockIfComplete(slug, tab)
+    } else if (attempt === 1) {
+      setShowCobaLagi(true)
+      setAttempt(2)
+      useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt1", 2)
+
+      await persistSectionAttempt({
+        slug, tab, sectionType: "cek-pemahaman", attempt,
+        answer: selectionsToFields(selections),
+        feedback: result.feedback, score: result.score,
+        status: "wrong_attempt1",
+      })
+    } else {
+      setIsLocked(true)
+      setShowCobaLagi(false)
+      useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt2", 2)
+
+      await persistSectionAttempt({
+        slug, tab, sectionType: "cek-pemahaman", attempt,
+        answer: selectionsToFields(selections),
+        feedback: result.feedback, score: result.score,
+        status: "wrong_attempt2",
+      })
+      await triggerTabUnlockIfComplete(slug, tab)
+    }
+
+    setSubmitting(false)
+  }, [slug, tab, questions, selections, attempt, submitting, selectionsToFields, toSectionItems, computeErrors])
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
-      {/* Section header: CheckCircle icon + "Cek Pemahaman" title */}
+      {/* Section header: CheckCircle icon + "Cek Pemahaman" title + attempt badge */}
       <div className="flex items-center justify-start gap-2 mb-4 md:mb-6">
         <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
           <CheckCircle className="size-4 md:size-6" />
@@ -200,7 +265,13 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Cek Pemahaman
         </Text>
-        {isChecked && <Check className="size-4 md:size-6 text-green-600" />}
+        {isChecked && isCorrect && <Check className="size-4 md:size-6 text-green-600" />}
+        {isLocked && <Lock className="size-4 md:size-6 text-muted-foreground" />}
+        {showCobaLagi && (
+          <Badge variant="solid" size="sm" className="bg-yellow-500 text-white">
+            PERCOBAAN KE-2
+          </Badge>
+        )}
       </div>
 
       {/* Questions loop — renders each as a Card */}
@@ -304,7 +375,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                         isWrong={!!isWrong}
                         onSelect={() => handleSelect(qi, oi)}
                         matrix={q.optionFormat === "matrix"}
-                        disabled={isChecked}
+                        disabled={isChecked && !showCobaLagi}
                         imageSrc={q.imageOptions?.[oi]}
                       />
                     )
@@ -330,17 +401,36 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         </div>
       )}
 
-      <div className="mt-4 md:mt-8">
-        <SectionSubmitButton
-          isChecked={isChecked}
-          isFilled={allAnswered}
-          isCorrect={isCorrect}
-          isLocked={isChecked}
-          showCobaLagi={false}
-          onSubmit={doSubmit}
-          requireConfirmation={slug === "translasi" && tab === "titik"}
-        />
-      </div>
+      {/* Locked state — shown after final submission */}
+      {isLocked && (
+        <div className="border-4 border-black bg-muted p-4 md:p-6 mt-4 md:mt-6">
+          <Text className="text-sm md:text-base font-bold uppercase text-muted-foreground flex items-center gap-2">
+            <Lock className="size-4 md:size-5" />
+            {isCorrect ? "Jawaban benar — terkunci" : "Kesempatan habis — jawaban terkunci"}
+          </Text>
+        </div>
+      )}
+
+      {/* Submit button — cycles through Periksa Jawaban → Periksa Jawaban Lagi → final states */}
+      {!isLocked && (
+        <div className="mt-4 md:mt-8">
+          <SectionSubmitButton
+            isChecked={isChecked}
+            isFilled={allAnswered}
+            isCorrect={isCorrect}
+            isLocked={isLocked}
+            showCobaLagi={showCobaLagi}
+            onSubmit={doSubmit}
+            onCobaLagi={() => {
+              setIsChecked(false)
+              setIsCorrect(null)
+              setValidationErrors({})
+              setShowCobaLagi(false)
+            }}
+            requireConfirmation={slug === "translasi" && tab === "titik"}
+          />
+        </div>
+      )}
 
     </section>
   )

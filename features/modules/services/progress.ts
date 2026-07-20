@@ -67,6 +67,22 @@ export async function unlockNextTab(userId: string, module: ModuleSlug, complete
       ? tabs[currentIndex + 1].value
       : null;
 
+  // Idempotent: skip if the current tab is already marked completed
+  const currentRow = await db.query.tabProgress.findFirst({
+    where: and(
+      eq(tabProgress.userId, userId),
+      eq(tabProgress.module, module),
+      eq(tabProgress.tab, completedTab),
+    ),
+    columns: { completed: true },
+  });
+
+  if (currentRow?.completed) {
+    // Already completed — return current state without re-applying
+    const updated = await getTabProgress(userId, module);
+    return { unlockedTab: nextTab, progress: updated };
+  }
+
   await db
     .update(tabProgress)
     .set({ completed: true, updatedAt: new Date() })

@@ -37,6 +37,7 @@ export function useFormSubmit<T extends Record<string, number>>(
         }
       }
     },
-    [schema, form, setErrors, setChecked, successMsg, errorMsg],
+    // setChecked/setErrors are stable Zustand functions — safe in deps
+    [schema, form, successMsg, errorMsg, setErrors, setChecked],
   )
 }

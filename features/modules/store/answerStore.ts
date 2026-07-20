@@ -15,7 +15,7 @@ export interface CekPemahamanAnswers {
   selections: (number | null)[]
   isChecked: boolean
   aiFeedback?: string
-  status?: "unsubmitted" | "correct" | "wrong_attempt2"
+  status?: "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2"
   attempt?: 1 | 2
 }
 
@@ -47,6 +47,7 @@ interface AnswerStore {
   setSelections: (slug: string, tab: string, selections: (number | null)[]) => void
   setChecked: (slug: string, tab: string, section: SectionName, checked: boolean) => void
   setAIFeedback: (slug: string, tab: string, section: SectionName, feedback: string) => void
+  setCekPemahamanFeedback: (slug: string, tab: string, feedback: string) => void
   setSectionStatus: (
     slug: string,
     tab: string,
@@ -167,6 +168,24 @@ export const useAnswerStore = create<AnswerStore>()(
               ...current,
               [section]: {
                 ...current[section] as SectionAnswers,
+                aiFeedback: feedback,
+              },
+            },
+          },
+        })
+      },
+
+      setCekPemahamanFeedback: (slug, tab, feedback) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              cekPemahaman: {
+                ...current.cekPemahaman,
                 aiFeedback: feedback,
               },
             },

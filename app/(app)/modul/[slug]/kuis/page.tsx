@@ -1,5 +1,8 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
+import { headers } from "next/headers"
 import Link from "next/link"
+import { auth } from "@/lib/auth"
+import { getTabProgress } from "@/features/modules/services/progress"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
@@ -30,6 +33,20 @@ export default async function KuisIntroPage(props: {
 
   const label = MODULE_LABELS[slug] ?? slug
 
+  // Enforce quiz access guard: all tabs must be completed
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (session?.user) {
+    const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
+    const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
+
+    if (!allCompleted) {
+      const firstIncomplete = tabs.find((t) => !t.completed)
+      if (firstIncomplete) {
+        redirect(`/modul/${slug}/${firstIncomplete.tab}`)
+      }
+    }
+  }
+
   return (
     <div className="space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={slug} label={label} />
@@ -42,16 +59,19 @@ export default async function KuisIntroPage(props: {
         </Text>
         <ul className="space-y-2 text-sm md:text-base list-disc list-inside">
           <li>
-            Kuis ini terdiri dari <span className="font-bold">{quiz.questions.length} soal</span> pilihan ganda.
+            Kuis ini terdiri dari <span className="font-bold">{quiz.questions.length} soal</span> dengan berbagai tipe (pilihan ganda, uraian, angka).
           </li>
           <li>
-            Pilih satu jawaban yang paling tepat untuk setiap soal.
+            Setiap soal memiliki <span className="font-bold">2 kesempatan</span> menjawab.
           </li>
           <li>
-            Jawaban akan ditandai <span className="font-bold">&quot;Dipilih&quot;</span> saat kamu memilihnya.
+            Pada kesempatan pertama, kamu akan mendapat petunjuk jika jawaban kurang tepat.
           </li>
           <li>
-            Setelah menjawab semua soal, tombol <span className="font-bold">&quot;Selesai&quot;</span> akan muncul.
+            Pada kesempatan kedua, kamu akan mendapat feedback lengkap dan nilai akhir.
+          </li>
+          <li>
+            Jawaban akan dinilai oleh <span className="font-bold">AI</span> secara otomatis.
           </li>
         </ul>
       </section>

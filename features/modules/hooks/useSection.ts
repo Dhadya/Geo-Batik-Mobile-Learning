@@ -105,6 +105,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     [setField, slug, tab, section],
   )
 
+  // setChecked is a stable Zustand function — safe in deps
   const boundSetChecked = useCallback(
     (checked: boolean) => setChecked(slug, tab, section, checked),
     [setChecked, slug, tab, section],

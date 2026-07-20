@@ -10,6 +10,9 @@ export const appErrorCodes = [
   "TAB_NOT_FOUND",
   "QUIZ_ALREADY_SUBMITTED",
   "INVALID_ANSWER",
+  "INVALID_REQUEST",
+  "VALIDATION_ERROR",
+  "AI_EVALUATION_FAILED",
   "RATE_LIMITED",
   "INTERNAL_ERROR",
 ] as const;
@@ -26,6 +29,9 @@ const appErrorMeta: Record<AppErrorCode, { status: number; message: string }> = 
   TAB_NOT_FOUND:             { status: 404, message: "Tab tidak ditemukan" },
   QUIZ_ALREADY_SUBMITTED:    { status: 409, message: "Kuis sudah dikerjakan" },
   INVALID_ANSWER:            { status: 422, message: "Jawaban tidak valid" },
+  INVALID_REQUEST:           { status: 400, message: "Request tidak valid" },
+  VALIDATION_ERROR:          { status: 422, message: "Data tidak valid" },
+  AI_EVALUATION_FAILED:      { status: 502, message: "Gagal mengevaluasi jawaban" },
   RATE_LIMITED:              { status: 429, message: "Terlalu banyak permintaan" },
   INTERNAL_ERROR:            { status: 500, message: "Terjadi kesalahan" },
 };

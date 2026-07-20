@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { appError } from "@/lib/api/errors";
 import type { SectionItem } from "@/features/modules/types";
+import type { QuizQuestion } from "@/features/quiz/types";
 
 export interface EvaluateSectionInput {
   module: string;
@@ -165,4 +166,132 @@ export async function evaluateSection(
   }
 
   return parseAIResponse(response);
+}
+
+// ── Quiz question evaluation ──────────────────────────────────────
+
+export interface EvaluateQuizQuestionInput {
+  question: QuizQuestion;
+  answer: unknown;
+  attempt: 1 | 2;
+}
+
+export interface EvaluateQuizQuestionOutput {
+  isCorrect: boolean;
+  score: number;
+  feedback: string;
+}
+
+/** Describe a quiz question for the prompt. */
+function describeQuizQuestion(question: QuizQuestion): string {
+  switch (question.type) {
+    case "pilihan_ganda":
+      return `Soal ${question.id} (Pilihan Ganda): ${question.question}\nOpsi: ${question.options.join(" | ")}\nJawaban benar: opsi ${question.correctIndex}`;
+    case "uraian":
+      return `Soal ${question.id} (Uraian): ${question.question}\nJawaban benar (acuan): ${question.answer}`;
+    case "angka":
+      return `Soal ${question.id} (Angka): ${question.question}\nJawaban benar: ${JSON.stringify(question.answer)}`;
+    case "campuran":
+      const subs = question.subQuestions.map((sq) => `  - ${sq.question}`).join("\n");
+      return `Soal ${question.id} (Campuran):\n${subs}`;
+  }
+}
+
+/** Build a prompt for Gemini to evaluate a single quiz question. */
+function buildQuizPrompt(
+  question: QuizQuestion,
+  answer: unknown,
+  attempt: 1 | 2,
+): string {
+  const qDesc = describeQuizQuestion(question);
+  const answerStr = JSON.stringify(answer);
+
+  if (attempt === 2) {
+    return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
+Ini adalah percobaan kedua (terakhir).
+
+${qDesc}
+
+Jawaban siswa: ${answerStr}
+
+INSTRUKSI:
+- Jika jawaban benar: isi "isCorrect": true, "score": 100, "feedback": pujian singkat
+- Jika jawaban salah: isi "isCorrect": false, "score": 0, beri feedback mendalam
+- Jelaskan langkah demi langkah penyelesaiannya
+- Tampilkan jawaban yang benar sebagai bahan evaluasi
+- Gunakan bahasa Indonesia yang sederhana
+- Berikan semangat untuk terus belajar
+
+Keluarkan JSON SAJA (tanpa markdown) dengan format:
+{
+  "isCorrect": boolean,
+  "score": number (0 atau 100),
+  "feedback": "string dalam Bahasa Indonesia"
+}`;
+  }
+
+  return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
+
+${qDesc}
+
+Jawaban siswa: ${answerStr}
+
+INSTRUKSI PENTING:
+- Jika jawaban benar: isi "isCorrect": true, "score": 100, "feedback": pujian singkat
+- Jika jawaban salah: isi "isCorrect": false, "score": 0
+- JANGAN menyebutkan jawaban akhir
+- JANGAN memberikan angka atau langkah perhitungan
+- Beri petunjuk singkat (1-2 kalimat) yang mengarahkan siswa pada letak kekurangan mereka
+- Gunakan bahasa Indonesia yang sederhana
+
+Keluarkan JSON SAJA (tanpa markdown) dengan format:
+{
+  "isCorrect": boolean,
+  "score": number (0 atau 100),
+  "feedback": "string dalam Bahasa Indonesia"
+}`;
+}
+
+/** Parse Gemini quiz evaluation response. */
+function parseQuizAIResponse(response: string): EvaluateQuizQuestionOutput {
+  const cleaned = response.replace(/```(?:json)?\s*/gi, "").trim();
+  try {
+    return JSON.parse(cleaned) as EvaluateQuizQuestionOutput;
+  } catch {
+    const isCorrect = /"isCorrect"\s*:\s*true/i.test(cleaned);
+    const scoreMatch = cleaned.match(/"score"\s*:\s*(\d+)/i);
+    const feedbackMatch = cleaned.match(/"feedback"\s*:\s*"([^"]+)"/);
+    return {
+      isCorrect,
+      score: scoreMatch ? Number(scoreMatch[1]) : 0,
+      feedback: feedbackMatch?.[1] ?? "Feedback tidak tersedia",
+    };
+  }
+}
+
+/** Evaluate a single quiz question using the Gemini API. */
+export async function evaluateQuizQuestion(
+  input: EvaluateQuizQuestionInput,
+): Promise<EvaluateQuizQuestionOutput> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw appError("INTERNAL_ERROR");
+  }
+
+  const prompt = buildQuizPrompt(input.question, input.answer, input.attempt);
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = result.response.text();
+    if (!response) {
+      return { isCorrect: false, score: 0, feedback: "Gagal mendapatkan feedback AI" };
+    }
+    return parseQuizAIResponse(response);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Quiz AI evaluation failed";
+    console.warn("[ai] quiz Gemini API call failed:", msg);
+    return { isCorrect: false, score: 0, feedback: "Gagal mengevaluasi jawaban. Silakan coba lagi." };
+  }
 }
