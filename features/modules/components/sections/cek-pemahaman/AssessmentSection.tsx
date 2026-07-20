@@ -169,7 +169,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     })
     const hasErr = Object.keys(errs).length > 0
 
-    setChecked(slug, tab, "cekPemahaman" as unknown as "percobaan", true)
+    const status = hasErr ? "wrong_attempt2" : "correct"
+    useAnswerStore.getState().setCekPemahamanStatus(slug, tab, status, 1)
 
     fetch(`/api/modul/${slug}/section`, {
       method: "POST",
@@ -180,7 +181,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         attempt: 1,
         answer: { selections },
         score: hasErr ? 0 : 100,
-        status: hasErr ? "wrong_attempt2" : "correct",
+        status,
       }),
     }).catch(() => {})
 

@@ -1,6 +1,7 @@
 /**
  * Client-side helper to persist a section attempt by POSTing to /api/modul/[slug]/section.
- * Errors are swallowed so local UX is never blocked by a failed network request.
+ * - 409 (SECTION_ALREADY_COMPLETED) is silently ignored — already persisted from a prior attempt.
+ * - All other errors are swallowed to ensure local UX is never blocked by a failed network request.
  */
 export async function persistSectionAttempt(data: {
   slug: string
@@ -23,10 +24,16 @@ export async function persistSectionAttempt(data: {
         answer: data.answer as Record<string, unknown>,
         score: data.score,
         status: data.status,
+        feedback: data.feedback,
       }),
     })
+
     if (!response.ok) {
-      console.error("[persistSectionAttempt] failed", await response.json())
+      const json = await response.json().catch(() => null)
+      const code = json?.error?.code
+      // 409 means section already completed — idempotent, safe to ignore
+      if (response.status === 409 || code === "SECTION_ALREADY_COMPLETED") return
+      console.error("[persistSectionAttempt] failed", { status: response.status, code })
     }
   } catch (e) {
     console.error("[persistSectionAttempt] network error", e)

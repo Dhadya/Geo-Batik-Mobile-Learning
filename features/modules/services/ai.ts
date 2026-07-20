@@ -55,6 +55,7 @@ function describeAnswers(items: SectionItem[], answers: Record<string, Record<st
 /** Build a prompt for Gemini based on attempt number and correctness handling. */
 export function buildPrompt(
   module: string,
+  tab: string,
   sectionType: string,
   items: SectionItem[],
   answers: Record<string, Record<string, string>>,
@@ -63,10 +64,11 @@ export function buildPrompt(
   const itemDescriptions = items.map(describeItem).join("\n");
   const studentAnswers = describeAnswers(items, answers);
   const sectionLabel = sectionType.replace(/_/g, " ");
+  const tabLabel = tab.replace(/-/g, " ");
 
   if (attempt === 2) {
     return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
-Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module}.
+Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module} - ${tabLabel}.
 Ini adalah percobaan kedua (terakhir).
 
 Soal:
@@ -93,7 +95,7 @@ Keluarkan JSON SAJA (tanpa markdown) dengan format:
   }
 
   return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
-Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module}.
+Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module} - ${tabLabel}.
 
 Soal:
 ${itemDescriptions}
@@ -144,7 +146,7 @@ export async function evaluateSection(
     throw appError("INTERNAL_ERROR");
   }
 
-  const prompt = buildPrompt(input.module, input.sectionType, input.items, input.answers, input.attempt);
+  const prompt = buildPrompt(input.module, input.tab, input.sectionType, input.items, input.answers, input.attempt);
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 

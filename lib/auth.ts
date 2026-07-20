@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { user, session, account, verification } from "@/drizzle/schema";
 
 function getAuthBaseURL() {
@@ -38,7 +38,7 @@ const trustedOrigins = Array.from(
 export const auth = betterAuth({
   baseURL: authBaseURL,
   trustedOrigins,
-  database: drizzleAdapter(db, {
+  database: drizzleAdapter(getDb(), {
     provider: "pg",
     // Map BetterAuth models to our Drizzle table exports
     schema: {

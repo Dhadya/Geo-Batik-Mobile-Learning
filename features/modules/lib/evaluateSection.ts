@@ -29,9 +29,8 @@ export async function evaluateSection(
     const json = await response.json()
     if (!json.ok) throw new Error(json.error?.message ?? "AI evaluation failed")
     return json.data
-  } catch (err) {
-    const errMsg = err instanceof Error ? err.message : "Gagal memuat feedback AI"
-    toast.error(`${errMsg}, menggunakan penilaian lokal`)
+  } catch {
+    toast.error("Gagal memuat feedback AI, menggunakan penilaian lokal")
     const local = validateSection(items, fields, undefined)
     return {
       isCorrect: local.isCorrect,

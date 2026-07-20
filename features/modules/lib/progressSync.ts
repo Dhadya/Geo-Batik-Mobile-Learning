@@ -35,7 +35,11 @@ export async function triggerTabUnlockIfComplete(slug: string, tab: string): Pro
     : (["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"] as const)
 
   const allDone = sections.every((s) => {
-    if (s === "cekPemahaman") return tabAnswers.cekPemahaman.isChecked
+    if (s === "cekPemahaman") {
+      // cekPemahaman is terminal when status is correct or wrong_attempt2
+      const cp = tabAnswers.cekPemahaman
+      return cp.status === "correct" || cp.status === "wrong_attempt2"
+    }
     const sec = tabAnswers[s]
     return sec.status === "correct" || sec.status === "wrong_attempt2"
   })

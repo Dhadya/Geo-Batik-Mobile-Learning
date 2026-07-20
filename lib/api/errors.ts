@@ -56,9 +56,9 @@ export function handleError(e: unknown) {
     );
   }
   const msg = e instanceof Error ? e.message : "Terjadi kesalahan";
-  console.error("[API]", msg);
+  console.error("[API]", msg, e);
   return NextResponse.json(
-    { ok: false, error: { code: "INTERNAL_ERROR", message: msg } },
+    { ok: false, error: { code: "INTERNAL_ERROR", message: "Terjadi kesalahan pada server" } },
     { status: 500 },
   );
 }

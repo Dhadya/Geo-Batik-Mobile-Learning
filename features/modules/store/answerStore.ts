@@ -15,6 +15,8 @@ export interface CekPemahamanAnswers {
   selections: (number | null)[]
   isChecked: boolean
   aiFeedback?: string
+  status?: "unsubmitted" | "correct" | "wrong_attempt2"
+  attempt?: 1 | 2
 }
 
 export interface TabAnswers {
@@ -50,6 +52,13 @@ interface AnswerStore {
     tab: string,
     section: SectionName,
     status: SectionAnswers["status"],
+    attempt: 1 | 2,
+  ) => void
+  /** Set status/attempt for the cekPemahaman section (separate because it uses CekPemahamanAnswers, not SectionAnswers). */
+  setCekPemahamanStatus: (
+    slug: string,
+    tab: string,
+    status: CekPemahamanAnswers["status"],
     attempt: 1 | 2,
   ) => void
   getTabAnswers: (slug: string, tab: string) => TabAnswers
@@ -110,6 +119,20 @@ export const useAnswerStore = create<AnswerStore>()(
             [id]: {
               ...current,
               cekPemahaman: { ...current.cekPemahaman, selections },
+            },
+          },
+        })
+      },
+
+      setCekPemahamanStatus: (slug, tab, status, attempt) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              cekPemahaman: { ...current.cekPemahaman, status, attempt, isChecked: true },
             },
           },
         })

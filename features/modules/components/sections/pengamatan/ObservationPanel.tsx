@@ -27,8 +27,11 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const isRefleksi = slug === "refleksi"
 
   const tabKey = `${slug}-${tab}`
-  const pengamatanLocked = useAnswerStore((s) => s.answers[tabKey]?.pengamatan?.isChecked ?? false)
-  const percobaanLocked = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.isChecked ?? false)
+  const pengamatanStatus = useAnswerStore((s) => s.answers[tabKey]?.pengamatan?.status)
+  const percobaanStatus = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.status)
+
+  const pengamatanLocked = pengamatanStatus === "correct" || pengamatanStatus === "wrong_attempt2"
+  const percobaanLocked = percobaanStatus === "correct" || percobaanStatus === "wrong_attempt2"
 
   return (
     <div className="h-auto lg:h-full flex flex-col gap-3 md:gap-4">

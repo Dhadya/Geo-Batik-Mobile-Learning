@@ -140,7 +140,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         answer: fields, feedback: result.feedback, score: result.score,
         status: "correct",
       })
-      triggerTabUnlockIfComplete(slug, tab)
+      await triggerTabUnlockIfComplete(slug, tab)
     } else if (attempt === 1) {
       boundSetChecked(true)
       useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt1", 2)
@@ -159,7 +159,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         answer: fields, feedback: result.feedback, score: result.score,
         status: "wrong_attempt2",
       })
-      triggerTabUnlockIfComplete(slug, tab)
+      await triggerTabUnlockIfComplete(slug, tab)
     }
   }, [attempt, isLocked, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
 

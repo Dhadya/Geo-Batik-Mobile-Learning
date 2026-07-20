@@ -76,8 +76,10 @@ export function ModuleContent({
             if (Array.isArray(parsed.selections)) {
               store.setSelections(slug, decodedTab, parsed.selections)
             }
+            store.setCekPemahamanStatus(slug, decodedTab, s.status, 1)
           } else {
-            const parsed = JSON.parse(s.attempt1Answer) as Record<string, Record<string, string>>
+            const isAttempt2 = !!s.attempt2Answer
+            const parsed = JSON.parse(isAttempt2 ? s.attempt2Answer : s.attempt1Answer) as Record<string, Record<string, string>>
             for (const [itemId, fields] of Object.entries(parsed)) {
               for (const [fieldKey, value] of Object.entries(fields)) {
                 store.setField(slug, decodedTab, sectionKey as "percobaan", itemId, fieldKey, value)
@@ -88,10 +90,14 @@ export function ModuleContent({
               decodedTab,
               sectionKey as "percobaan",
               s.status,
-              s.attempt2Answer ? 2 : 1
+              isAttempt2 ? 2 : 1
             )
+            const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
+            if (feedback) {
+              store.setAIFeedback(slug, decodedTab, sectionKey as "percobaan", feedback)
+            }
+            store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
           }
-          store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
         }
       })
       .catch(() => { })
@@ -104,7 +110,8 @@ export function ModuleContent({
     : ["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"]
   const completedCount = activeSections.filter((sec) => {
     if (sec === "cekPemahaman") {
-      return tabAnswers?.cekPemahaman?.isChecked ?? false
+      const cpStatus = tabAnswers?.cekPemahaman?.status
+      return cpStatus === "correct" || cpStatus === "wrong_attempt2"
     }
     const s = tabAnswers?.[sec as "percobaan"]
     return s?.status === "correct" || s?.status === "wrong_attempt2"

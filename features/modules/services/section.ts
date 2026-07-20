@@ -12,6 +12,7 @@ export const saveSectionSchema = z.object({
   answer: z.record(z.string(), z.unknown()),
   score: z.number().int().min(0).max(100).nullable().optional(),
   status: z.enum(["correct", "wrong_attempt1", "wrong_attempt2"]).optional(),
+  feedback: z.string().optional(),
 });
 
 /** Inferred input type for saving a section attempt. */
@@ -57,10 +58,13 @@ export async function saveSectionAttempt(
     status: input.status ?? ("unsubmitted" as const),
   };
 
-  const patch = {
+  const patch: Record<string, unknown> = {
     [`${attemptField}Answer`]: answerStr,
     [`${attemptField}Score`]: input.score ?? null,
   };
+  if (input.feedback) {
+    patch[`${attemptField}Feedback`] = input.feedback;
+  }
 
   const finalize =
     input.status === "correct" || input.status === "wrong_attempt2"
@@ -119,6 +123,9 @@ export async function getSectionProgress(
     finalScore: r.finalScore,
     attempt1Answer: r.attempt1Answer,
     attempt1Feedback: r.attempt1Feedback,
+    attempt1Score: r.attempt1Score,
+    attempt2Answer: r.attempt2Answer,
+    attempt2Feedback: r.attempt2Feedback,
     completedAt: r.completedAt?.toISOString() ?? null,
   }));
 }
