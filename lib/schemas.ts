@@ -24,3 +24,17 @@ export const TranslasiBangunSchema = z.object({
 
 export type TranslasiTitikData = z.infer<typeof TranslasiTitikSchema>;
 export type TranslasiBangunData = z.infer<typeof TranslasiBangunSchema>;
+
+/** Validates a section attempt payload: which tab/section, attempt number, answer data, score, and final status. */
+export const saveSectionSchema = z.object({
+  tab: z.string().min(1),
+  sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
+  attempt: z.union([z.literal(1), z.literal(2)]),
+  answer: z.record(z.string(), z.unknown()),
+  score: z.number().int().min(0).max(100).nullable().optional(),
+  status: z.enum(["correct", "wrong_attempt1", "wrong_attempt2"]).optional(),
+  feedback: z.string().optional(),
+});
+
+/** Inferred input type for saving a section attempt. */
+export type SaveSectionInput = z.infer<typeof saveSectionSchema>;

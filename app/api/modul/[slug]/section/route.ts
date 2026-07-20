@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
-import { saveSectionSchema, saveSectionAttempt, getSectionProgress } from "@/features/modules/services/section";
+import { saveSectionAttempt, getSectionProgress } from "@/features/modules/services/section";
+import { saveSectionSchema } from "@/lib/schemas";
 import type { ModuleSlug } from "@/features/modules/types";
 
 /** POST /api/modul/[slug]/section — save a student's section attempt (percobaan/pengamatan/penyimpulan/cek-pemahaman). */

@@ -112,7 +112,6 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const isChecked = useMemo(() => rawTab?.cekPemahaman?.isChecked ?? false, [rawTab])
   const aiFeedback = useMemo(() => rawTab?.cekPemahaman?.aiFeedback, [rawTab])
   const setSelections = useAnswerStore((s) => s.setSelections)
-  const setChecked = useAnswerStore((s) => s.setChecked)
 
   const allAnswered = useMemo(() =>
     questions.every((q, qi) => {
@@ -186,7 +185,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     }).catch(() => {})
 
     triggerTabUnlockIfComplete(slug, tab)
-  }, [setChecked, slug, tab, questions, selections])
+  }, [slug, tab, questions, selections])
 
   const hasErrors = Object.keys(validationErrors).length > 0
   const isCorrect = isChecked ? !hasErrors : null

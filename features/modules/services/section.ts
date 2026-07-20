@@ -1,22 +1,8 @@
-import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { sectionProgress } from "@/drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { appError } from "@/lib/api/errors";
-
-/** Validates a section attempt payload: which tab/section, attempt number, answer data, score, and final status. */
-export const saveSectionSchema = z.object({
-  tab: z.string().min(1),
-  sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
-  attempt: z.union([z.literal(1), z.literal(2)]),
-  answer: z.record(z.string(), z.unknown()),
-  score: z.number().int().min(0).max(100).nullable().optional(),
-  status: z.enum(["correct", "wrong_attempt1", "wrong_attempt2"]).optional(),
-  feedback: z.string().optional(),
-});
-
-/** Inferred input type for saving a section attempt. */
-export type SaveSectionInput = z.infer<typeof saveSectionSchema>;
+import { type SaveSectionInput } from "@/lib/schemas";
 
 /**
  * Persists a student's answer for a section (percobaan/pengamatan/penyimpulan/cek-pemahaman).
