@@ -7,7 +7,9 @@ import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { UrutkanInput } from "../../shared/UrutkanInput"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { useSection } from "../../../hooks/useObservation"
+import { useAnswerStore } from "../../../store/answerStore"
 import type { UraianItem, UrutkanItem as UrutkanItemType } from "../../../types"
 
 interface ConclusionAreaProps {
@@ -22,6 +24,9 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
     setField, handleSubmit,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi: resetState,
   } = useSection(slug, tab, "penyimpulan")
+
+  const penyimpulanAnswers = useAnswerStore((s) => s.answers[`${slug}-${tab}`]?.penyimpulan)
+  const score = penyimpulanAnswers?.score ?? null
 
   const [item11Err, setItem11Err] = useState<string>("")
 
@@ -64,6 +69,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Penyimpulan
         </Text>
+        <SectionScoreIndicator score={score} />
         {isChecked && <Check className="size-4 md:size-6 text-green-600" />}
       </div>
 

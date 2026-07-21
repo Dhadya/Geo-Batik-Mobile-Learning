@@ -68,12 +68,15 @@ export function ModuleContent({
           if (s.status === "unsubmitted" || s.status === "locked") continue
           if (!s.attempt1Answer) continue
 
+          const finalScore = s.finalScore ?? null
+
           if (s.sectionType === "cek-pemahaman") {
             const parsed = JSON.parse(s.attempt1Answer)
             if (Array.isArray(parsed.selections)) {
               store.setSelections(slug, decodedTab, parsed.selections)
             }
             store.setCekPemahamanStatus(slug, decodedTab, s.status, 1)
+            store.setCekPemahamanScore(slug, decodedTab, finalScore)
           } else {
             const isAttempt2 = !!s.attempt2Answer
             const parsed = JSON.parse(isAttempt2 ? s.attempt2Answer : s.attempt1Answer) as Record<string, Record<string, string>>
@@ -89,6 +92,7 @@ export function ModuleContent({
               s.status,
               isAttempt2 ? 2 : 1
             )
+            store.setSectionScore(slug, decodedTab, sectionKey as "percobaan", finalScore)
             const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
             if (feedback) {
               store.setAIFeedback(slug, decodedTab, sectionKey as "percobaan", feedback)

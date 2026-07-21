@@ -8,6 +8,7 @@ import { Button } from "@/components/retroui/Button"
 import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { useAnswerStore } from "../../../store/answerStore"
 import { persistSectionAttempt } from "../../../lib/persistSectionAttempt"
 import { triggerTabUnlockIfComplete } from "../../../lib/progressSync"
@@ -215,6 +216,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     // Store feedback
     useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
 
+    useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
+
     if (isCorrectResult) {
       setIsLocked(true)
       setShowCobaLagi(false)
@@ -265,6 +268,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Cek Pemahaman
         </Text>
+        <SectionScoreIndicator score={rawTab?.cekPemahaman?.score ?? null} />
         {isChecked && isCorrect && <Check className="size-4 md:size-6 text-green-600" />}
         {isLocked && <Lock className="size-4 md:size-6 text-muted-foreground" />}
         {showCobaLagi && (

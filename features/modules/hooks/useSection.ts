@@ -132,6 +132,8 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     setErrors_(result.errors)
     boundSetAIFeedback(result.feedback)
 
+    useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
+
     if (result.isCorrect) {
       boundSetChecked(true)
       useAnswerStore.getState().setSectionStatus(slug, tab, section, "correct", attempt)

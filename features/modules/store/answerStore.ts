@@ -9,6 +9,8 @@ export interface SectionAnswers {
   aiFeedback?: string
   status?: "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2" | "locked"
   attempt?: 1 | 2
+  /** Numeric score (0–100) from AI evaluation. Only student-visible as color indicator. */
+  score?: number | null
 }
 
 export interface CekPemahamanAnswers {
@@ -17,6 +19,8 @@ export interface CekPemahamanAnswers {
   aiFeedback?: string
   status?: "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2"
   attempt?: 1 | 2
+  /** Numeric score (0–100) from AI evaluation. Only student-visible as color indicator. */
+  score?: number | null
 }
 
 export interface TabAnswers {
@@ -62,6 +66,10 @@ interface AnswerStore {
     status: CekPemahamanAnswers["status"],
     attempt: 1 | 2,
   ) => void
+  /** Set score for a standard section (percobaan/pengamatan/penyimpulan). Score is never shown as raw number — only used for color indicator. */
+  setSectionScore: (slug: string, tab: string, section: SectionName, score: number | null) => void
+  /** Set score for cekPemahaman section. */
+  setCekPemahamanScore: (slug: string, tab: string, score: number | null) => void
   getTabAnswers: (slug: string, tab: string) => TabAnswers
   resetTab: (slug: string, tab: string) => void
   resetAll: () => void
@@ -188,6 +196,37 @@ export const useAnswerStore = create<AnswerStore>()(
                 ...current.cekPemahaman,
                 aiFeedback: feedback,
               },
+            },
+          },
+        })
+      },
+
+      setSectionScore: (slug, tab, section, score) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              [section]: {
+                ...current[section] as SectionAnswers,
+                score,
+              },
+            },
+          },
+        })
+      },
+
+      setCekPemahamanScore: (slug, tab, score) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              cekPemahaman: { ...current.cekPemahaman, score },
             },
           },
         })

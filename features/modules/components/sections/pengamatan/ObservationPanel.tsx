@@ -2,6 +2,7 @@
 
 import { Tabs } from "@/components/retroui/Tab"
 import { useAnswerStore } from "../../../store/answerStore"
+import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { PercobaanForm } from "../percobaan/PercobaanForm"
 import { PilihanRefleksiForm } from "../../shared/PilihanRefleksiForm"
 import { PercobaanRefleksiGarisForm } from "../percobaan/PercobaanRefleksiGarisForm"
@@ -29,6 +30,8 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const tabKey = `${slug}-${tab}`
   const pengamatanStatus = useAnswerStore((s) => s.answers[tabKey]?.pengamatan?.status)
   const percobaanStatus = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.status)
+  const pengamatanScore = useAnswerStore((s) => s.answers[tabKey]?.pengamatan?.score ?? null)
+  const percobaanScore = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.score ?? null)
 
   const pengamatanLocked = pengamatanStatus === "correct" || pengamatanStatus === "wrong_attempt2"
   const percobaanLocked = percobaanStatus === "correct" || percobaanStatus === "wrong_attempt2"
@@ -43,6 +46,7 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
             className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_black] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150 flex items-center justify-center gap-1 md:gap-1.5"
           >
             <span>Pengamatan</span>
+            <SectionScoreIndicator score={pengamatanScore} />
             {pengamatanLocked && <Check className="size-3.5 md:size-4" />}
           </Tabs.Trigger>
           <Tabs.Trigger
@@ -50,6 +54,7 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
             className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_black] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150 flex items-center justify-center gap-1 md:gap-1.5"
           >
             <span>Percobaan</span>
+            <SectionScoreIndicator score={percobaanScore} />
             {percobaanLocked && <Check className="size-3.5 md:size-4" />}
           </Tabs.Trigger>
         </Tabs.List>
