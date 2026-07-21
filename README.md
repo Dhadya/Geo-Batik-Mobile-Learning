@@ -54,7 +54,8 @@ Every section and quiz question follows a structured two-attempt flow:
 ### Question Bank
 
 - All questions created **manually** by the research team — no AI-generated content
-- 4 question type variations: Pilihan Ganda, Uraian, Angka/Matematika, Campuran
+- Single question type: Pilihan Ganda (MCQ) with inline vector notation via `questionMatrix`/`questionSuffix`
+- **Randomized package system** — each student gets assigned Paket 1 (questions 1–10) or Paket 2 (questions 11–20) on first quiz entry, persisted across sessions
 - Module quizzes are separate from pre-test/post-test evaluation instruments
 
 ### Lab Batik (Creative Sandbox)
@@ -111,8 +112,8 @@ features/                  # Feature-based modular architecture
 │   ├── services/          # Layer 2 — async service functions (saveSectionAttempt, getTabProgress, etc.)
 │   ├── data/              # Static curriculum data
 │   ├── hooks/             # Submission, locking, AI feedback hooks
-│   ├── store/             # Zustand stores (progress, locking)
-│   ├── types/             # Shared TypeScript types
+│   ├── store/             # Zustand stores (answerStore, tabProgressStore)
+│   ├── types.ts           # Shared TypeScript types
 │   └── components/
 │       ├── sections/      # percobaan, pengamatan, penyimpulan, cek-pemahaman
 │       └── shared/        # Reusable form primitives
@@ -215,20 +216,25 @@ Tabs are locked by default. Unlock conditions are validated both client-side (UI
 
 Every answer, score, and feedback entry across all attempts is stored in the `section_progress` table, enabling detailed progress tracking.
 
-### Scoring Formulas
+### Scoring
 
-| Question Type    | Scoring Method                                                |
-| ---------------- | ------------------------------------------------------------- |
-| Pilihan Ganda    | (Correct / Total) × 100                                       |
-| Uraian (Essay)   | AI compares semantics, intent, and reasoning (not exact text) |
-| Angka/Matematika | Flexible validation — accepts equivalent values/formats       |
-| All Correct      | Automatic 100                                                 |
+| Scope        | Method                                                            | Student Display       |
+| ------------ | ----------------------------------------------------------------- | --------------------- |
+| Quiz (MCQ)   | (Correct answers / Total questions) × 100                         | Score color indicator |
+| Section (AI) | AI returns 0–100 per attempt; best attempt counts as `finalScore` | Score color indicator |
+
+**Score Color Indicators** (never shown as raw numbers — only colored dots):
+
+- **Red** (0–30) → Perlu Perbaikan
+- **Orange** (31–70) → Cukup
+- **Green** (71–100) → Baik
 
 ---
 
 ## References
 
-- [PRD_v2.md](./PRD_v2.md) — Product Requirements Document v2
+- [PRD_v3.md](./PRD_v3.md) — Product Requirements Document (single source of truth)
+- [PRD.md](./PRD.md) — Product Requirements Document v1 (archived)
 - [StyleGuide.md](./StyleGuide.md) — Design system reference
 - [DESIGN.md](./DESIGN.md) — Color palette & tokens
 
