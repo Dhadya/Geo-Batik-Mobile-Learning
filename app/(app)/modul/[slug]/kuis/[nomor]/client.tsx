@@ -7,7 +7,7 @@ import { Button } from "@/components/retroui/Button"
 import { Card } from "@/components/retroui/Card"
 import { Text } from "@/components/retroui/Text"
 import { Badge } from "@/components/retroui/Badge"
-import { CheckCircle, Lock, ArrowRight } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import {
   QuizBreadcrumb,
   NumberIndicator,
@@ -176,8 +176,8 @@ export function KuisSoalClient({
 
   if (!quiz || !question) {
     return (
-      <div className="space-y-4 md:space-y-6">
-        <p>Soal tidak ditemukan.</p>
+      <div className="max-w-384 mx-auto space-y-4 md:space-y-6">
+        <Text>Soal tidak ditemukan.</Text>
       </div>
     )
   }
@@ -187,10 +187,10 @@ export function KuisSoalClient({
   )
 
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="max-w-384 mx-auto space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={slug} label={label} />
 
-      <div className="bg-surface-container-high border-4 border-black shadow-lg">
+      <div className="bg-surface-container-high border-4 border-black shadow-[4px_4px_0_0_black]">
         <NumberIndicator
           total={total}
           current={nomor}
@@ -204,11 +204,11 @@ export function KuisSoalClient({
           </div>
 
           <div className="grow p-3 md:p-4">
-            <Card className="w-full border-4 border-black shadow-md">
+            <Card className="w-full border-4 border-black shadow-[4px_4px_0_0_black]">
               <Card.Content className="space-y-4 md:space-y-6">
                 {/* Attempt badge */}
                 {effectiveShowCobaLagi && (
-                  <Badge variant="solid" size="sm" className="bg-yellow-500 text-white self-start">
+                  <Badge variant="solid" size="sm" className="bg-secondary text-white self-start">
                     PERCOBAAN KE-2
                   </Badge>
                 )}
@@ -234,7 +234,7 @@ export function KuisSoalClient({
                   )}
                 </div>
 
-                  {/* MCQ answer options */}
+                {/* MCQ answer options */}
                 <QuestionRenderer
                   question={question}
                   selectedAnswer={selectedOption}
@@ -255,7 +255,7 @@ export function KuisSoalClient({
                 {effectiveLocked && (
                   <div className="border-4 border-black bg-muted p-3 md:p-4">
                     <Text className="text-xs md:text-sm font-bold uppercase text-muted-foreground flex items-center gap-2">
-                      <Lock className="size-4" />
+                      <MaterialIcon className="size-4" name="lock" />
                       {localIsCorrect === true || isCorrectEvaluation === true
                         ? "Jawaban benar"
                         : "Kesempatan habis"}
@@ -286,13 +286,13 @@ export function KuisSoalClient({
       </div>
 
       {/* Action buttons */}
-      <div className="flex justify-center gap-3 md:gap-4 pt-4 md:pt-6">
+      <div className="flex flex-wrap justify-center gap-3 md:gap-4 pt-4 md:pt-6">
         {/* "Periksa Jawaban" / "Coba Lagi" — submit current question */}
         {!effectiveLocked && (
           <Button
             variant={effectiveShowCobaLagi ? "secondary" : "default"}
             size="lg"
-            className="px-8 py-4 text-lg font-black uppercase gap-2"
+            className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
             disabled={selectedOption === undefined || evaluating}
             onClick={effectiveShowCobaLagi ? handleCobaLagi : handleSubmit}
           >
@@ -310,10 +310,10 @@ export function KuisSoalClient({
             <Button
               variant="default"
               size="lg"
-              className="px-8 py-4 text-lg font-black uppercase gap-2"
+              className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
             >
               Lanjut
-              <ArrowRight className="size-6" />
+              <MaterialIcon className="size-6" name="arrow_forward" />
             </Button>
           </Link>
         )}
@@ -324,11 +324,11 @@ export function KuisSoalClient({
             <Button
               variant="default"
               size="lg"
-              className="px-8 py-4 text-lg font-black uppercase gap-2"
+              className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
               onClick={handleSelesai}
             >
               Selesai
-              <CheckCircle className="size-6" />
+              <MaterialIcon className="size-6" name="check_circle" />
             </Button>
           ) : null
         )}
@@ -339,7 +339,7 @@ export function KuisSoalClient({
             <Button
               variant="default"
               size="lg"
-              className="px-8 py-4 text-lg font-black uppercase gap-2"
+              className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
             >
               Kembali
             </Button>

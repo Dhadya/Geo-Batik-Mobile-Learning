@@ -27,7 +27,7 @@ export function AnswerButton({
       onClick={onSelect}
       disabled={disabled}
     >
-      <span className="w-8 h-8 md:w-10 md:h-10 border-2 border-black bg-foreground text-background flex items-center justify-center text-sm md:text-base shrink-0">
+      <span className="w-8 h-8 md:w-10 md:h-10 border-4 border-black bg-foreground text-background flex items-center justify-center text-sm md:text-base shrink-0">
         {LABELS[index]}
       </span>
       <span className="grow">{text}</span>
