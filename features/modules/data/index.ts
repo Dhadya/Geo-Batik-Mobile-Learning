@@ -7,32 +7,13 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
   refleksi: refleksiTabs,
 }
 
-/** Ordered list of section types within a tab. */
-export const SECTION_ORDER = [
-  "pengamatan",
-  "percobaan",
-  "penyimpulan",
-  "cek-pemahaman",
-] as const
-
-/** Human-readable labels for each section type. */
-export const SECTION_LABELS: Record<string, string> = {
-  pengamatan: "Pengamatan",
-  percobaan: "Percobaan",
-  penyimpulan: "Penyimpulan",
-  "cek-pemahaman": "Cek Pemahaman",
-}
-
 export type SectionKey = "pengamatan" | "percobaan" | "penyimpulan" | "cekPemahaman"
 
-const REFLEKSI_BANGUN_SECTIONS = ["pengamatan", "percobaan", "cekPemahaman"] as const
-const DEFAULT_SECTIONS = ["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"] as const
+const ALL_SECTIONS = ["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"] as const
 
-/** Returns the active section types for a given module tab (refleksi/bangun has no penyimpulan). */
-export function getSectionsForTab(slug: string, tab: string): readonly SectionKey[] {
-  return slug === "refleksi" && tab === "bangun"
-    ? REFLEKSI_BANGUN_SECTIONS
-    : DEFAULT_SECTIONS
+/** Returns the active section types for a given module tab. */
+export function getSectionsForTab(_slug: string, _tab: string): readonly SectionKey[] {
+  return ALL_SECTIONS
 }
 
 /** Returns the expected number of active sections for a given module tab. */

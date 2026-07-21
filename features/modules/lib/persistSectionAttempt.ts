@@ -1,7 +1,9 @@
+import { toast } from "sonner"
+
 /**
  * Client-side helper to persist a section attempt by POSTing to /api/modul/[slug]/section.
  * - 409 (SECTION_ALREADY_COMPLETED) is silently ignored — already persisted from a prior attempt.
- * - All other errors are swallowed to ensure local UX is never blocked by a failed network request.
+ * - All other errors show a toast notification.
  */
 export async function persistSectionAttempt(data: {
   slug: string
@@ -31,11 +33,12 @@ export async function persistSectionAttempt(data: {
     if (!response.ok) {
       const json = await response.json().catch(() => null)
       const code = json?.error?.code
-      // 409 means section already completed — idempotent, safe to ignore
       if (response.status === 409 || code === "SECTION_ALREADY_COMPLETED") return
       console.error("[persistSectionAttempt] failed", { status: response.status, code })
+      toast.error("Gagal menyimpan jawaban")
     }
   } catch (e) {
     console.error("[persistSectionAttempt] network error", e)
+    toast.error("Gagal menyimpan jawaban — periksa koneksi internet")
   }
 }

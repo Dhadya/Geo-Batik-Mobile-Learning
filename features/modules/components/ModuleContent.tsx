@@ -140,11 +140,9 @@ export function ModuleContent({
         <div className="lg:col-span-8 flex flex-col gap-3 md:gap-6">
           <InteractiveWorkspace materialId={tabConfig.materialId} />
           {/* Penyimpulan: hidden on mobile (shown below grid), visible on lg+ */}
-          {!(slug === "refleksi" && decodedTab === "bangun") && (
-            <div className="hidden lg:block">
-              <ConclusionArea slug={slug} tab={decodedTab} />
-            </div>
-          )}
+          <div className="hidden lg:block">
+            <ConclusionArea slug={slug} tab={decodedTab} />
+          </div>
         </div>
         {/* Right column — observation/pengamatan panel: sticky on lg+ */}
         <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24 lg:self-start">
@@ -156,11 +154,9 @@ export function ModuleContent({
       </div>
 
       {/* Penyimpulan: shown on mobile below observation panel, hidden on lg+ (rendered inside left col) */}
-      {!(slug === "refleksi" && decodedTab === "bangun") && (
-        <div className="lg:hidden">
-          <ConclusionArea slug={slug} tab={decodedTab} />
-        </div>
-      )}
+      <div className="lg:hidden">
+        <ConclusionArea slug={slug} tab={decodedTab} />
+      </div>
 
       {/* Assessment section with multiple choice questions */}
       <AssessmentSection slug={slug} tab={decodedTab} questions={questions} />
