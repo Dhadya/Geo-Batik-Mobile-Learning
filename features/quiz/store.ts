@@ -8,12 +8,18 @@ interface QuizState {
   submittedAnswers: QuizAnswers
   /** Per-question two-attempt tracking. */
   attempts: Record<number, QuizQuestionAttempt>
+  /** Current quiz attempt number (1, 2, 3, ...). */
+  attemptNumber: number
+  /** Assigned package: 0 = Paket 1, 1 = Paket 2. */
+  currentPackage: number
   /** Select an answer for a question. */
   selectAnswer: (questionId: number, optionIndex: number) => void
   /** Submit current answers — snapshots them then clears in-progress state. */
   submitAnswers: () => void
   /** Record a completed attempt for a single question. */
   recordAttempt: (questionId: number, attempt: Partial<QuizQuestionAttempt>) => void
+  /** Set the current attempt number and package. */
+  setQuizMeta: (attemptNumber: number, currentPackage: number) => void
   /** Clear all answers. */
   resetAnswers: () => void
 }
@@ -22,6 +28,8 @@ export const useQuizStore = create<QuizState>((set) => ({
   answers: {},
   submittedAnswers: {},
   attempts: {},
+  attemptNumber: 1,
+  currentPackage: 0,
   selectAnswer: (questionId, optionIndex) =>
     set((state) => ({
       answers: { ...state.answers, [questionId]: optionIndex },
@@ -53,5 +61,7 @@ export const useQuizStore = create<QuizState>((set) => ({
         },
       },
     })),
-  resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {} }),
+  setQuizMeta: (attemptNumber, currentPackage) =>
+    set({ attemptNumber, currentPackage }),
+  resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {}, attemptNumber: 1, currentPackage: 0 }),
 }))

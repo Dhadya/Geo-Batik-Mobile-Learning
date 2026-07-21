@@ -153,6 +153,8 @@ export function KuisSoalClient({
         : 0
     )
 
+    const { attemptNumber, currentPackage } = useQuizStore.getState()
+
     try {
       await fetch(`/api/modul/${slug}/quiz/submit`, {
         method: "POST",
@@ -160,6 +162,8 @@ export function KuisSoalClient({
         body: JSON.stringify({
           answers: allAnswers,
           totalScore,
+          attemptNumber,
+          packageId: currentPackage,
         }),
       })
     } catch {

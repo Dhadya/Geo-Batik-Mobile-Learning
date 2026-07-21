@@ -24,12 +24,14 @@ export const quizAnswerSchema = z.object({
 export const submitQuizSchema = z.object({
   answers: z.array(quizAnswerSchema),
   totalScore: z.number().int().min(0).max(100),
+  attemptNumber: z.number().int().min(1),
+  packageId: z.number().int().min(0).max(1),
 });
 
 /** Inferred input type for submitting quiz results. */
 export type SubmitQuizInput = z.infer<typeof submitQuizSchema>;
 
-/** Persists a completed quiz result for a module. Returns the inserted row id and totalScore. */
+/** Persists a completed quiz result for a module. Returns the inserted row id, totalScore, and attemptNumber. */
 export async function saveQuizResult(userId: string, module: ModuleSlug, input: SubmitQuizInput) {
   const db = getDb();
 
@@ -38,13 +40,15 @@ export async function saveQuizResult(userId: string, module: ModuleSlug, input: 
     .values({
       userId,
       module,
+      attemptNumber: input.attemptNumber,
+      packageId: input.packageId,
       answers: input.answers,
       totalScore: input.totalScore,
       completedAt: new Date(),
     })
-    .returning({ id: quizResults.id, totalScore: quizResults.totalScore });
+    .returning({ id: quizResults.id, totalScore: quizResults.totalScore, attemptNumber: quizResults.attemptNumber });
 
-  return { id: inserted[0].id, totalScore: inserted[0].totalScore };
+  return { id: inserted[0].id, totalScore: inserted[0].totalScore, attemptNumber: inserted[0].attemptNumber };
 }
 
 /** Fetches the most recent quiz result for a module, or null if none exists. */
@@ -63,6 +67,8 @@ export async function getLatestQuizResult(userId: string, module: ModuleSlug) {
 
   return {
     id: row.id,
+    attemptNumber: row.attemptNumber,
+    packageId: row.packageId,
     totalScore: row.totalScore,
     answers: row.answers,
     completedAt: row.completedAt?.toISOString() ?? null,

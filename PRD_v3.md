@@ -800,19 +800,16 @@ Layer 3 — Database (lib/db.ts + drizzle/schema)
 
 #### `quiz_results`
 
-| Column         | Type             | Description                     |
-| -------------- | ---------------- | ------------------------------- |
-| `id`           | `text PK`        | UUID                            |
-| `user_id`      | `text FK → user` | The student                     |
-| `module`       | `text`           | `translasi` or `refleksi`       |
-| `total_score`  | `integer`        | Score 0–100 for this attempt    |
-| `answers`      | `jsonb`          | Per-question attempt data array |
-| `completed_at` | `timestamptz`    | When submitted                  |
-
-**Future additions** (F12–F13):
-
-- `attempt_number` — `integer` (1, 2, 3, ...)
-- `package_id` — `integer` (0 or 1)
+| Column           | Type             | Description                     |
+| ---------------- | ---------------- | ------------------------------- |
+| `id`             | `text PK`        | UUID                            |
+| `user_id`        | `text FK → user` | The student                     |
+| `module`         | `text`           | `translasi` or `refleksi`       |
+| `attempt_number` | `integer`        | 1, 2, 3, ... — which attempt    |
+| `package_id`     | `integer`        | 0 = Paket 1, 1 = Paket 2        |
+| `total_score`    | `integer`        | Score 0–100 for this attempt    |
+| `answers`        | `jsonb`          | Per-question attempt data array |
+| `completed_at`   | `timestamptz`    | When submitted                  |
 
 ### 14.2 Zod Schemas
 
@@ -880,8 +877,8 @@ const evaluateQuizSchema = z.object({
 
 - `answers: Record<number, number>` — in-progress quiz selections
 - `attempts: Record<number, QuizQuestionAttempt>` — per-question attempt tracking
-- Actions: `selectAnswer`, `submitAnswers`, `recordAttempt`, `resetAnswers`
-- **Future:** `currentPackage: number | null` — which package assigned
+- `currentPackage: number | null` — which package assigned (0 = Paket 1, 1 = Paket 2)
+- Actions: `selectAnswer`, `submitAnswers`, `recordAttempt`, `resetAnswers`, `setCurrentPackage`
 
 ---
 

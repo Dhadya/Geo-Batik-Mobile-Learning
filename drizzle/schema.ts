@@ -128,6 +128,8 @@ export const tabProgress = pgTable(
 )
 
 // Quiz results — per-attempt quiz answers and scores
+// Each row represents one quiz attempt (1, 2, 3, ...).
+// package_id: 0 = Paket 1 (questions 1–10), 1 = Paket 2 (questions 11–20)
 export const quizResults = pgTable(
   "quiz_results",
   {
@@ -138,6 +140,8 @@ export const quizResults = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     module: text("module", { enum: ["translasi", "refleksi"] }).notNull(),
+    attemptNumber: integer("attempt_number").notNull(),
+    packageId: integer("package_id").notNull(),
     answers: jsonb("answers").notNull().default([]),
     totalScore: integer("total_score").notNull(),
     completedAt: timestamp("completed_at", { withTimezone: true }).notNull().defaultNow(),
@@ -145,5 +149,6 @@ export const quizResults = pgTable(
   (table) => [
     index("idx_quiz_results_user").on(table.userId),
     index("idx_quiz_results_module").on(table.module),
+    index("idx_quiz_results_attempt").on(table.userId, table.module, table.attemptNumber),
   ],
 )
