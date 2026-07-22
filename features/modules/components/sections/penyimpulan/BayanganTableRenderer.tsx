@@ -4,7 +4,7 @@ import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { getReflectionLabel } from "./conclusionHelpers"
 
-interface Item8RendererProps {
+interface BayanganTableRendererProps {
   slug: string
   tab: string
   fields: Record<string, Record<string, string>>
@@ -13,15 +13,15 @@ interface Item8RendererProps {
   setField: (id: string, subKey: string, value: string) => void
 }
 
-/** Render item 8 — table with formula input for bayangan (image) coordinates. */
-export function Item8Renderer({
+/** Render table with formula input for bayangan (image) coordinates. */
+export function BayanganTableRenderer({
   slug,
   tab,
   fields,
   errors,
   isChecked,
   setField,
-}: Item8RendererProps) {
+}: BayanganTableRendererProps) {
   const val = fields["8"]?.text ?? ""
   const err = errors["8_text"]
   const reflectLabel = getReflectionLabel(tab)

@@ -3,20 +3,20 @@
 import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
 
-interface Item7RendererProps {
+interface MatrixExplanationRendererProps {
   fields: Record<string, Record<string, string>>
   errors: Record<string, string>
   isChecked: boolean
   setField: (id: string, subKey: string, value: string) => void
 }
 
-/** Render item 7 — matrix display (2/1) with a free-text explanation textarea. */
-export function Item7Renderer({
+/** Render matrix (2/1) with a free-text explanation textarea. */
+export function MatrixExplanationRenderer({
   fields,
   errors,
   isChecked,
   setField,
-}: Item7RendererProps) {
+}: MatrixExplanationRendererProps) {
   const val = fields["7"]?.text ?? ""
   const err = errors["7_text"]
 

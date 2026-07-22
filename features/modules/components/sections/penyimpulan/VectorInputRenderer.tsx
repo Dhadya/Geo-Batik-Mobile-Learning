@@ -3,21 +3,21 @@
 import { useState } from "react"
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
-import { validateItem11 } from "./conclusionHelpers"
+import { validateVector } from "./conclusionHelpers"
 
-interface Item11RendererProps {
+interface VectorInputRendererProps {
   fields: Record<string, Record<string, string>>
   isChecked: boolean
   setField: (id: string, subKey: string, value: string) => void
 }
 
-/** Render item 11 — matrix input where student fills translation vector (a, b). */
-export function Item11Renderer({
+/** Render translation vector (a, b) input for penyimpulan section. */
+export function VectorInputRenderer({
   fields,
   isChecked,
   setField,
-}: Item11RendererProps) {
-  const [item11Err, setItem11Err] = useState<string>("")
+}: VectorInputRendererProps) {
+  const [vectorErr, setVectorErr] = useState<string>("")
   const aVal = fields["11"]?.a_val ?? ""
   const bVal = fields["11"]?.b_val ?? ""
 
@@ -47,28 +47,28 @@ export function Item11Renderer({
               value={aVal}
               onChange={(e) => {
                 setField("11", "a_val", e.target.value)
-                validateItem11(e.target.value, bVal, setItem11Err)
+                              validateVector(e.target.value, bVal, setVectorErr)
               }}
               disabled={isChecked}
               placeholder="..."
-              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${item11Err ? "border-destructive" : "border-black"}`}
+              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${vectorErr ? "border-destructive" : "border-black"}`}
             />
             <Input
               type="text"
               value={bVal}
               onChange={(e) => {
                 setField("11", "b_val", e.target.value)
-                validateItem11(aVal, e.target.value, setItem11Err)
+                validateVector(aVal, e.target.value, setVectorErr)
               }}
               disabled={isChecked}
               placeholder="..."
-              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${item11Err ? "border-destructive" : "border-black"}`}
+              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${vectorErr ? "border-destructive" : "border-black"}`}
             />
           </div>
           <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
         </div>
-        {isChecked && item11Err && (
-          <Text className="text-destructive text-[10px] md:text-xs font-medium">{item11Err}</Text>
+{isChecked && vectorErr && (
+              <Text className="text-destructive text-[10px] md:text-xs font-medium">{vectorErr}</Text>
         )}
       </div>
     </div>

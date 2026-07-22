@@ -16,7 +16,7 @@ export function getReflectionLabel(tab: string): string {
 }
 
 /** Validate item 11 matrix input — expects "a" in first field and "b" in second. */
-export function validateItem11(
+export function validateVector(
   aVal: string,
   bVal: string,
   setError: (err: string) => void,

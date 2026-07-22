@@ -9,9 +9,9 @@ import { useSection } from "../../../hooks/useSection"
 import { useAnswerStore } from "../../../store/answerStore"
 import type { UraianItem, UrutkanItem as UrutkanItemType } from "../../../types"
 import { UrutkanRenderer } from "./UrutkanRenderer"
-import { Item11Renderer } from "./Item11Renderer"
-import { Item7Renderer } from "./Item7Renderer"
-import { Item8Renderer } from "./Item8Renderer"
+import { VectorInputRenderer } from "./VectorInputRenderer"
+import { MatrixExplanationRenderer } from "./MatrixExplanationRenderer"
+import { BayanganTableRenderer } from "./BayanganTableRenderer"
 import { StandardUraianRenderer } from "./StandardUraianRenderer"
 
 interface ConclusionAreaProps {
@@ -67,7 +67,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
           if (u.id === 11) {
             return (
-              <Item11Renderer
+              <VectorInputRenderer
                 key={u.id}
                 fields={fields}
                 isChecked={isChecked}
@@ -78,7 +78,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
           if (u.id === 7) {
             return (
-              <Item7Renderer
+              <MatrixExplanationRenderer
                 key={u.id}
                 fields={fields}
                 errors={errors}
@@ -90,7 +90,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
           if (u.id === 8) {
             return (
-              <Item8Renderer
+              <BayanganTableRenderer
                 key={u.id}
                 slug={slug}
                 tab={tab}
