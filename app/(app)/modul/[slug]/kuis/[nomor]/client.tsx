@@ -170,19 +170,21 @@ export function KuisSoalClient({
 
       <div className="flex flex-wrap justify-center gap-3 md:gap-4 pt-4 md:pt-6">
         {!effectiveLocked && (
-          <Button
-            variant={effectiveShowCobaLagi ? "secondary" : "default"}
-            size="lg"
-            className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
-            disabled={selectedOption === undefined || evaluating}
-            onClick={effectiveShowCobaLagi ? handleCobaLagi : () => handleSubmit(selectedOption, localAttempt)}
-          >
-            {evaluating
-              ? "Menilai..."
-              : effectiveShowCobaLagi
-                ? "Periksa Jawaban Lagi"
-                : "Periksa Jawaban"}
-          </Button>
+          <span title={selectedOption === undefined && !evaluating ? "Pilih jawaban terlebih dahulu" : undefined}>
+            <Button
+              variant={effectiveShowCobaLagi ? "secondary" : "default"}
+              size="lg"
+              className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
+              disabled={selectedOption === undefined || evaluating}
+              onClick={effectiveShowCobaLagi ? handleCobaLagi : () => handleSubmit(selectedOption, localAttempt)}
+            >
+              {evaluating
+                ? "Menilai..."
+                : effectiveShowCobaLagi
+                  ? "Periksa Jawaban Lagi"
+                  : "Periksa Jawaban"}
+            </Button>
+          </span>
         )}
 
         {(effectiveLocked || localFeedback) && !isLast && (

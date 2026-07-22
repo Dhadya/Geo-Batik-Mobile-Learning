@@ -173,9 +173,10 @@ This project follows [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.
 
 - After every task, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed
 - Always propose a commit message in chat for approval — never commit without confirmation
-- Follow the <type>(<scope>): <description> format from CONVENTIONAL_COMMITS.md
+- **Follow the `<type>(<scope>): <description>` format** from CONVENTIONAL_COMMITS.md
+- **Never use quotes** (single or double) in commit messages — plain text only
 - **Never use emoji** in commit messages or code
-- **Propose commit messages in plain text** — never wrap in backticks (```or`)
+- **Propose commit messages in plain text** — never wrap in quotes
 - **Never commit yourself** — always propose the message in chat and wait for user approval
 
 ```

@@ -84,13 +84,19 @@ export function SectionSubmitButton({
     </Button>
   )
 
+  const wrappedButton = isDisabled ? (
+    <div className="inline-block w-full" title="Lengkapi semua jawaban terlebih dahulu">
+      {buttonElement}
+    </div>
+  ) : buttonElement
+
   if (!requireConfirmation) {
-    return buttonElement
+    return wrappedButton
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {buttonElement}
+      {wrappedButton}
       <Dialog.Content size="sm">
         <Dialog.Header asChild>
           <div className="flex items-center justify-between border-b-2 px-3 md:px-4 min-h-10 md:min-h-12 bg-primary text-primary-foreground">

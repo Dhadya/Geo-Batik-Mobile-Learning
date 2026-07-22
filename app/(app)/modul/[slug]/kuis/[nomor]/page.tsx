@@ -1,9 +1,10 @@
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { getTabProgress } from "@/features/modules/services/progress"
 import { getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
 import { KuisSoalClient } from "./client"
+import { LockOverlay } from "@/features/modules/components/LockOverlay"
 
 export default async function KuisSoalPage(props: {
   params: Promise<{ slug: string; nomor: string }>
@@ -23,8 +24,12 @@ export default async function KuisSoalPage(props: {
     const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
 
     if (!allCompleted) {
-      const firstIncomplete = tabs.find((t) => !t.completed)
-      redirect(firstIncomplete ? `/modul/${slug}/${firstIncomplete.tab}` : `/modul/${slug}`)
+      return (
+        <LockOverlay
+          title="Kuis Belum Terbuka"
+          description="Selesaikan semua materi terlebih dahulu sebelum mengerjakan kuis."
+        />
+      )
     }
   }
 

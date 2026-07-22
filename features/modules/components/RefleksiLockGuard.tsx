@@ -10,7 +10,7 @@ export async function RefleksiLockGuard({ children }: { children: React.ReactNod
   if (session?.user) {
     const translasiDone = await hasModuleAttempt(session.user.id, "translasi")
     if (!translasiDone) {
-      return <LockOverlay slug="refleksi" />
+      return <LockOverlay />
     }
   }
 

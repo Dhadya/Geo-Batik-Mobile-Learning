@@ -353,6 +353,9 @@ catch (e) { return handleError(e); }
 
 After every task, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed. Always propose the commit message in chat for approval — never commit without confirmation.
 
+- Never use quotes (single or double) in commit messages — plain text only
+- Never use emoji in commit messages
+
 ```
 <type>(<scope>): <description>
 

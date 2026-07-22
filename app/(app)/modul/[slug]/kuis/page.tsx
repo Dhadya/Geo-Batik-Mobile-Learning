@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { getTabProgress } from "@/features/modules/services/progress"
@@ -6,6 +6,7 @@ import { Text } from "@/components/retroui/Text"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { QuizBreadcrumb, QuizHeader, getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
 import { KuisStartButton } from "./KuisStartButton"
+import { LockOverlay } from "@/features/modules/components/LockOverlay"
 
 const MODULE_LABELS: Record<string, string> = {
   translasi: "Translasi",
@@ -38,8 +39,12 @@ export default async function KuisIntroPage(props: {
     const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
 
     if (!allCompleted) {
-      const firstIncomplete = tabs.find((t) => !t.completed)
-      redirect(firstIncomplete ? `/modul/${slug}/${firstIncomplete.tab}` : `/modul/${slug}`)
+      return (
+        <LockOverlay
+          title="Kuis Belum Terbuka"
+          description="Selesaikan semua materi terlebih dahulu sebelum mengerjakan kuis."
+        />
+      )
     }
   }
 

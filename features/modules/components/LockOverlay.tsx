@@ -6,9 +6,14 @@ import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { Text } from "@/components/retroui/Text"
 
 /** Full-screen overlay shown when a module is locked. Blocks all interaction and provides a "Ke Menu" button. */
-export function LockOverlay({ slug }: { slug: string }) {
+export function LockOverlay({
+  title = "Modul Belum Terbuka",
+  description = "Selesaikan dulu Kuis Translasi untuk membuka modul ini.",
+}: {
+  title?: string
+  description?: string
+}) {
   const router = useRouter()
-  void slug // reserved for dynamic module name in messaging
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
@@ -21,10 +26,10 @@ export function LockOverlay({ slug }: { slug: string }) {
           />
         </div>
         <Text as="h2" className="text-xl md:text-2xl font-black uppercase">
-          Modul Belum Terbuka
+          {title}
         </Text>
         <Text className="text-sm md:text-base font-medium">
-          Selesaikan dulu Kuis Translasi untuk membuka modul ini.
+          {description}
         </Text>
         <Button
           variant="default"
