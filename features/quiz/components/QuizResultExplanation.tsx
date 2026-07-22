@@ -8,18 +8,16 @@ import {
   AccordionTrigger,
 } from "@/components/retroui/Accordion"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
-import type { PilihanGandaQuestion, QuizAnswers, QuizQuestionAttempt } from "../types"
+import type { PilihanGandaQuestion, QuizAnswers } from "../types"
 
 const LABELS = ["A", "B", "C", "D", "E", "F"]
 
 export function QuizResultExplanation({
   questions,
   answers,
-  attempts,
 }: {
   questions: PilihanGandaQuestion[]
   answers: QuizAnswers
-  attempts?: Record<number, QuizQuestionAttempt>
 }) {
   return (
     <section className="space-y-3 md:space-y-4">
@@ -30,9 +28,8 @@ export function QuizResultExplanation({
       <Accordion multiple defaultValue={questions.map((q) => `q-${q.id}`)}>
         {questions.map((q, i) => {
           const userAnswer = answers[q.id]
-          const attempt = attempts?.[q.id]
           const isCorrect = userAnswer === q.correctIndex
-          const isAnswered = userAnswer !== undefined || attempt != null
+          const isAnswered = userAnswer !== undefined
 
           let statusClass = ""
           let statusIcon = null
@@ -52,16 +49,6 @@ export function QuizResultExplanation({
                 <span className="flex items-center gap-3">
                   {statusIcon}
                   <span className="font-bold">Soal {i + 1}</span>
-                  {attempt?.status === "wrong_attempt1" && (
-                    <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 font-bold">
-                      PERCOBAAN 1
-                    </span>
-                  )}
-                  {attempt?.status === "wrong_attempt2" && (
-                    <span className="text-xs bg-destructive text-destructive-foreground px-2 py-0.5 font-bold">
-                      PERCOBAAN 2
-                    </span>
-                  )}
                 </span>
               </AccordionTrigger>
               <AccordionContent>
@@ -96,38 +83,11 @@ export function QuizResultExplanation({
                     })}
                   </div>
 
-                  {/* AI feedback from attempts */}
-                  {attempt?.attempt1Feedback && (
-                    <div className="border-t-2 border-black pt-3 mt-3">
-                      {attempt.attempt2Feedback ? (
-                        <>
-                          <div className="mb-2">
-                            <Text className="font-bold text-sm text-muted-foreground">
-                              Feedback Percobaan 1:
-                            </Text>
-                            <Text className="text-sm">{attempt.attempt1Feedback}</Text>
-                          </div>
-                          <div>
-                            <Text className="font-bold text-sm text-muted-foreground">
-                              Feedback Percobaan 2:
-                            </Text>
-                            <Text className="text-sm">{attempt.attempt2Feedback}</Text>
-                          </div>
-                        </>
-                      ) : (
-                        <Text className="text-sm">
-                          <span className="font-bold">Feedback: </span>
-                          {attempt.attempt1Feedback}
-                        </Text>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Static explanation */}
+                  {/* Pembahasan — static explanation from key answer */}
                   {q.explanation && (
                     <div className="border-t-2 border-black pt-3 mt-3">
                       <Text as="p" className="font-medium">
-                        <span className="font-bold">Penjelasan: </span>
+                        <span className="font-bold">Pembahasan: </span>
                         {q.explanation}
                       </Text>
                     </div>

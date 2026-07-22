@@ -39,12 +39,10 @@ export function QuizResult({
 }) {
   const router = useRouter()
   const submittedAnswers = useQuizStore((s) => s.submittedAnswers)
-  const attempts = useQuizStore((s) => s.attempts)
   const quiz = getQuizModule(slug)
 
   const isEmpty = !quiz || (Object.keys(submittedAnswers).length === 0 && serverScore == null)
   if (isEmpty && typeof window !== "undefined") {
-    // Only redirect client-side if no results from either source
     router.replace(`/modul/${slug}/kuis`)
     return null
   }
@@ -53,15 +51,11 @@ export function QuizResult({
 
   const total = quiz.questions.length
 
-  // Calculate correct count from store or attempts
-  const storeCorrect = quiz.questions.filter((q) =>
-    submittedAnswers[q.id] === q.correctIndex
+  // Calculate correct count from submitted answers
+  const correctCount = quiz.questions.filter((q) =>
+    submittedAnswers[q.id] === q.correctIndex,
   ).length
 
-  const correctFromAttempts = Object.values(attempts).filter(
-    (a) => a.status === "correct_attempt1"
-  ).length
-  const correctCount = correctFromAttempts > 0 ? correctFromAttempts : storeCorrect
   const displayScore = serverScore ?? Math.round((correctCount / Math.max(total, 1)) * 100)
 
   const ratio = correctCount / Math.max(total, 1)
@@ -76,8 +70,6 @@ export function QuizResult({
     description = `Ayo semangat! ${description} Jangan menyerah, coba ulangi dan pelajari lagi materinya.`
   }
 
-  const hasTabBreakdown = tabBreakdown && tabBreakdown.length > 0
-
   return (
     <div className="space-y-6 md:space-y-8">
       <QuizHeader title={title} badge={badge} icon={icon} bgColor={bgColor} description={description} />
@@ -86,8 +78,7 @@ export function QuizResult({
       {attemptNumber != null && totalAttempts != null && totalAttempts > 0 && (
         <div className="border-4 border-black bg-white p-3 md:p-4 text-center shadow-[4px_4px_0_0_black]">
           <Text className="text-sm md:text-base font-bold uppercase">
-            Percobaan Ke-{attemptNumber}
-            {attemptNumber === 1 ? " — Nilai Akhir" : " — Latihan"}
+            Percobaan Ke-{attemptNumber} — {attemptNumber === 1 ? "Nilai Akhir" : "Latihan"}
           </Text>
         </div>
       )}
@@ -95,16 +86,15 @@ export function QuizResult({
       <QuizResultScore correctCount={correctCount} total={total} score={displayScore} />
 
       {/* Per-tab breakdown */}
-      {hasTabBreakdown && (
+      {tabBreakdown && tabBreakdown.length > 0 && (
         <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-6">
           <Text as="h2" className="text-lg md:text-xl font-black uppercase mb-4">
             Rincian Per Tab
           </Text>
           <div className="space-y-2">
-            {tabBreakdown!.map((tb) => {
+            {tabBreakdown.map((tb) => {
               const correctInTab = tb.questions.filter((q) => {
-                const a = attempts[q.id]
-                return a?.status === "correct_attempt1"
+                return submittedAnswers[q.id] === quiz.questions.find((qq) => qq.id === q.id)?.correctIndex
               }).length
               return (
                 <div key={tb.tab} className="flex items-center justify-between border-4 border-black p-2 md:p-3">
@@ -124,7 +114,7 @@ export function QuizResult({
         </section>
       )}
 
-      <QuizResultExplanation questions={quiz.questions} answers={submittedAnswers} attempts={attempts} />
+      <QuizResultExplanation questions={quiz.questions} answers={submittedAnswers} />
       <QuizResultActions slug={slug} />
     </div>
   )

@@ -6,7 +6,6 @@ import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Card } from "@/components/retroui/Card"
 import { Text } from "@/components/retroui/Text"
-import { Badge } from "@/components/retroui/Badge"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { MODULE_LABELS } from "@/features/modules/data/moduleConfig"
 import {
@@ -17,10 +16,9 @@ import {
   QuizArrowNext,
   useQuiz,
 } from "@/features/quiz"
-import { useQuizQuestion } from "./useQuizQuestion"
 import { useQuizSubmit } from "./useQuizSubmit"
 
-/** Client-side quiz question page — two-attempt flow with AI feedback. */
+/** Client-side quiz question page — user selects answer and navigates forward. Pembahasan shown only on result page after submit. */
 export function KuisSoalClient({
   slug,
   nomor,
@@ -38,30 +36,10 @@ export function KuisSoalClient({
     isLast,
     isFirst,
     answers,
-    currentAttempt,
-    isLocked,
-    feedback,
-    isCorrectEvaluation,
-    showCobaLagi,
     selectAnswer,
   } = useQuiz(slug, nomor)
 
-  const {
-    evaluating,
-    localFeedback,
-    localIsCorrect,
-    localAttempt,
-    localLocked,
-    localShowCobaLagi,
-    handleSubmit,
-    handleCobaLagi,
-  } = useQuizQuestion(question, currentAttempt, isLocked, showCobaLagi)
-
   const { handleSelesai, isSubmitting } = useQuizSubmit(slug)
-
-  const effectiveLocked = localLocked || isLocked
-  const effectiveFeedback = localFeedback ?? feedback
-  const effectiveShowCobaLagi = localShowCobaLagi || showCobaLagi
 
   const handleNumberSelect = useCallback(
     (n: number) => router.push(`/modul/${slug}/kuis/${n}`),
@@ -102,12 +80,6 @@ export function KuisSoalClient({
           <div className="grow p-3 md:p-4">
             <Card className="w-full border-4 border-black shadow-[4px_4px_0_0_black]">
               <Card.Content className="space-y-4 md:space-y-6">
-                {effectiveShowCobaLagi && (
-                  <Badge variant="solid" size="sm" className="bg-secondary text-white self-start">
-                    PERCOBAAN KE-2
-                  </Badge>
-                )}
-
                 <div className="font-semibold text-sm md:text-base">
                   <Text as="p" className="inline">
                     {question.question}
@@ -131,28 +103,9 @@ export function KuisSoalClient({
                 <QuestionRenderer
                   question={question}
                   selectedAnswer={selectedOption}
-                  disabled={!!(localFeedback || feedback) && !effectiveShowCobaLagi}
+                  disabled={false}
                   onAnswer={(answer) => selectAnswer(question.id, answer)}
                 />
-
-                {effectiveFeedback && (
-                  <div className="border-4 border-primary bg-primary/5 p-3 md:p-4">
-                    <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">
-                      {effectiveFeedback}
-                    </Text>
-                  </div>
-                )}
-
-                {effectiveLocked && (
-                  <div className="border-4 border-black bg-muted p-3 md:p-4">
-                    <Text className="text-xs md:text-sm font-bold uppercase text-muted-foreground flex items-center gap-2">
-                      <MaterialIcon className="size-4" name="lock" />
-                      {localIsCorrect === true || isCorrectEvaluation === true
-                        ? "Jawaban benar"
-                        : "Kesempatan habis"}
-                    </Text>
-                  </div>
-                )}
               </Card.Content>
             </Card>
           </div>
@@ -169,51 +122,40 @@ export function KuisSoalClient({
       </div>
 
       <div className="flex flex-wrap justify-center gap-3 md:gap-4 pt-4 md:pt-6">
-        {!effectiveLocked && (
-          <span title={selectedOption === undefined && !evaluating ? "Pilih jawaban terlebih dahulu" : undefined}>
-            <Button
-              variant={effectiveShowCobaLagi ? "secondary" : "default"}
-              size="lg"
-              className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
-              disabled={selectedOption === undefined || evaluating}
-              onClick={effectiveShowCobaLagi ? handleCobaLagi : () => handleSubmit(selectedOption, localAttempt)}
-            >
-              {evaluating
-                ? "Menilai..."
-                : effectiveShowCobaLagi
-                  ? "Periksa Jawaban Lagi"
-                  : "Periksa Jawaban"}
-            </Button>
-          </span>
-        )}
-
-        {(effectiveLocked || localFeedback) && !isLast && (
-          <Link href={`/modul/${slug}/kuis/${nomor + 1}`}>
+        {/* Lanjut — next question */}
+        {!isLast && (
+          <span title={selectedOption === undefined ? "Pilih jawaban terlebih dahulu" : undefined}>
             <Button
               variant="default"
               size="lg"
               className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
+              disabled={selectedOption === undefined}
+              onClick={() => router.push(`/modul/${slug}/kuis/${nomor + 1}`)}
             >
               Lanjut
               <MaterialIcon className="size-6" name="arrow_forward" />
             </Button>
-          </Link>
+          </span>
         )}
 
-        {(effectiveLocked || localFeedback) && isLast && (
-          <Button
-            variant="default"
-            size="lg"
-            className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
-            onClick={handleSelesai}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Menyimpan..." : "Selesai"}
-            <MaterialIcon className="size-6" name="check_circle" />
-          </Button>
+        {/* Selesai — submit all answers */}
+        {isLast && (
+          <span title={selectedOption === undefined ? "Pilih jawaban terlebih dahulu" : undefined}>
+            <Button
+              variant="default"
+              size="lg"
+              className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
+              disabled={selectedOption === undefined || isSubmitting}
+              onClick={handleSelesai}
+            >
+              {isSubmitting ? "Menyimpan..." : "Selesai"}
+              <MaterialIcon className="size-6" name="check_circle" />
+            </Button>
+          </span>
         )}
 
-        {!localFeedback && !effectiveLocked && isFirst && (
+        {/* Kembali — only shown on first question */}
+        {isFirst && (
           <Link href={`/modul/${slug}/kuis`}>
             <Button
               variant="default"
