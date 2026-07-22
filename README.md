@@ -71,18 +71,18 @@ Free-form creative workspace where students:
 
 ## Tech Stack
 
-| Layer         | Choice                   | Why                                     |
-| ------------- | ------------------------ | --------------------------------------- |
-| **Framework** | Next.js 16 (App Router)  | SSR, API routes, file-based routing     |
-| **Language**  | TypeScript (strict)      | Type safety across the stack            |
-| **Styling**   | Tailwind CSS v4          | Utility-first, design tokens            |
-| **Database**  | Supabase (PostgreSQL)    | Persistence, RLS, real-time             |
-| **ORM**       | Drizzle                  | Type-safe, lightweight, fast migrations |
-| **State**     | Zustand + TanStack Query | Minimal client state + server caching   |
-| **Auth**      | BetterAuth               | Self-hosted, session-based, OAuth-ready |
-| **Viz**       | GeoGebra Web API         | Interactive geometry applets            |
-| **AI**        | Gemini API               | Per-section answer evaluation           |
-| **Deploy**    | Vercel                   | Edge network, serverless                |
+| Layer         | Choice                   | Why                                                      |
+| ------------- | ------------------------ | -------------------------------------------------------- |
+| **Framework** | Next.js 16 (App Router)  | SSR, API routes, file-based routing                      |
+| **Language**  | TypeScript (strict)      | Type safety across the stack                             |
+| **Styling**   | Tailwind CSS v4          | Utility-first, design tokens                             |
+| **Database**  | Supabase (PostgreSQL)    | Persistence, RLS, real-time                              |
+| **ORM**       | Drizzle                  | Type-safe, lightweight, fast migrations                  |
+| **State**     | Zustand + TanStack Query | Client state (Zustand) + server caching (TanStack Query) |
+| **Auth**      | BetterAuth               | Self-hosted, session-based, OAuth-ready                  |
+| **Viz**       | GeoGebra Web API         | Interactive geometry applets                             |
+| **AI**        | Gemini API               | Per-section answer evaluation                            |
+| **Deploy**    | Vercel                   | Edge network, serverless                                 |
 
 ---
 
@@ -101,23 +101,26 @@ app/
 ├── (auth)/                # Login & register flows (no app shell)
 ├── (landing)/             # Brand hero landing page (no app shell)
 ├── api/auth/[...all]/     # BetterAuth handler
+├── providers.tsx          # QueryClientProvider + other providers
 ├── layout.tsx             # Root layout — font + globals
 └── globals.css            # Nusantara Rebel palette + utilities
 
 features/                  # Feature-based modular architecture
-├── auth/                  # Authentication UI + hooks
-├── menu/                  # Menu components
-├── prasyarat/             # Prerequisite canvas + controls
+├── auth/                  # LoginForm, RegisterForm, AuthFormField, hooks
+├── menu/                  # ModuleCard, LabCard, MenuHeader, data
 ├── modules/               # Core learning engine
-│   ├── services/          # Layer 2 — async service functions (saveSectionAttempt, getTabProgress, etc.)
-│   ├── data/              # Static curriculum data
-│   ├── hooks/             # Submission, locking, AI feedback hooks
-│   ├── store/             # Zustand stores (answerStore, tabProgressStore)
-│   ├── types.ts           # Shared TypeScript types
-│   └── components/
-│       ├── sections/      # percobaan, pengamatan, penyimpulan, cek-pemahaman
-│       └── shared/        # Reusable form primitives
-├── quiz/                  # Quiz engine + components
+│   ├── components/        # ConclusionArea, AssessmentSection, etc.
+│   ├── hooks/             # TanStack Query hooks (useSectionSubmission, useTabProgress, useEvaluateSection)
+│   ├── data/              # Shared constants (moduleConfig.ts)
+│   ├── lib/               # Client-side utils (shuffle.ts)
+│   ├── services/          # Layer 2 — async service functions
+│   └── index.ts           # Barrel exports
+├── quiz/                  # Quiz engine
+│   ├── components/        # QuizResult, QuizNavigation, etc.
+│   ├── hooks/             # TanStack Query hooks (useSubmitQuiz, useQuizResult, useEvaluateQuiz)
+│   ├── data/              # Question bank (translasi.ts, refleksi.ts)
+│   └── index.ts           # Barrel exports
+├── prasyarat/             # Prerequisite canvas + controls
 └── lab/                   # Lab Batik canvas + tools
 
 components/                # Shared React components
@@ -127,8 +130,16 @@ components/                # Shared React components
 └── layout/                # AuthLayout, LandingFooter, ProfileDropdown
 
 lib/                       # Auth, DB, utility clients
-├── api/                   # Layer 1 primitives (AppError, requireAuth, apiHandler)
-└── supabase/              # Supabase client (client, server, middleware)
+├── query/                 # TanStack Query setup
+│   └── client.ts          # Singleton QueryClient factory
+├── api/                   # Layer 1 primitives (AppError, requireAuth)
+├── supabase/              # Supabase client (client, server, middleware)
+├── auth.ts                # BetterAuth server config
+├── auth-client.ts         # BetterAuth browser client
+├── db.ts                  # Drizzle + getDb() lazy accessor
+├── utils.ts               # Utility functions
+├── validate-redirect.ts   # Redirect URL validation
+└── validators.ts          # Form validation
 
 drizzle/                   # Database schema (Drizzle ORM)
 supabase/                  # Database migrations
@@ -207,6 +218,10 @@ Each section follows the submit + AI evaluation flow:
   2 attempts per section. Input locks after attempt 2.
   All progress persisted to database per section.
 ```
+
+### Data Fetching (TanStack Query)
+
+All API calls go through typed TanStack Query hooks co-located with their feature in `features/*/hooks/`. No raw `fetch()` or `useEffect`-based data loading in components. Singleton `QueryClient` at `lib/query/client.ts`, provided via `app/providers.tsx`.
 
 ### Tab Locking System
 

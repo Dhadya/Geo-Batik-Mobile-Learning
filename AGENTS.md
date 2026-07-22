@@ -4,6 +4,8 @@
 
 # GEMATRI — Agent Instructions
 
+**IMPORTANT: Always read this file (AGENTS.md) before implementing any task.**
+
 ## Project Overview
 
 GEMATRI (Gemakan Mahir Transformasi Geometri) is a Next.js learning app for
@@ -83,6 +85,43 @@ See `StyleGuide.md` and `DESIGN.md` for the full reference.
 className="size-10" name="arrow_forward" />`
 - **Always add TSDoc/JSDoc comments** on exported functions, components, interfaces, and types — describe the _why_ (purpose, behavior), not the _what_ (implementation). Use `@param` and `@returns` where non-obvious. Keep comments concise.
 
+## Code Architecture Standards
+
+### File structure rules
+
+- **Max 300 lines per file** — split into sub-components, hooks, or helpers when exceeded
+- **Single responsibility** — one exported component/function per file; extract helpers to separate files
+- **No inline constants** — extract to `features/*/data/` files (e.g. `moduleConfig.ts` for labels, icons, colors)
+- **Data co-location** — constants, types, and mock data live in `features/*/data/`, never in page/component files
+- **No inline shuffle/random logic** — extract to `features/*/lib/` for testability
+
+### Data-access layer (TanStack Query)
+
+- **All API calls go through TanStack Query hooks** — no raw `fetch()` or `useEffect` with fetch in components
+- **Query hooks live in `features/*/hooks/`** co-located with the feature, named by domain:
+  - `useSubmitQuiz.ts`, `useQuizResult.ts`, `useEvaluateQuiz.ts`
+  - `useSectionSubmission.ts`, `useTabProgress.ts`, `useEvaluateSection.ts`
+- **Each hook wraps a single fetch call** — one query or mutation per hook file
+- **QueryClient provider** in `app/providers.tsx`, injected in root layout
+- **Client setup** in `lib/query/client.ts` — singleton `QueryClient` factory
+
+### Naming & conventions
+
+- **Descriptive component names** — never numbered names like `Item7Renderer`, `Step3Form`. Use meaningful names:
+  - `MatrixExplanationRenderer` (not `Item7Renderer`)
+  - `BayanganTableRenderer` (not `Item8Renderer`)
+  - `VectorInputRenderer` (not `Item11Renderer`)
+- **No `lucide-react`** — use `@/components/common/MaterialIcon` exclusively
+- **No emoji in app code** (`🎉`, `✅`, etc.) — use MaterialIcon instead
+- **No native HTML** when a RetroUI component exists (`<textarea>` → `<Textarea>`, `<button>` → `<Button>`)
+- **No Tailwind `!` prefix** (e.g. `!size-5`, `bg-white!`, `justify-start!`) — use standard specificity
+- **No dead code** — files with zero imports must be deleted (e.g. unused barrel files, deprecated hooks)
+
+### Barrel exports
+
+- Every feature folder has `index.ts` with re-exports
+- Only re-export what is consumed outside the feature — internal helpers stay private
+
 ## Responsive Design Guide
 
 Apply these rules to every page and component. Always use a minimum of 2 breakpoints (`md:` and up).
@@ -129,10 +168,14 @@ Check neighbouring elements in the same component — keep font weights consiste
 
 ## Conventional Commits
 
-This project follows [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.md).
+This project follows [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.md) — read it for the full spec.
 
-- After every task, provide a concise **progress summary** to the developer explaining what was done and why, then inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed
+- After every task, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed
 - Always propose a commit message in chat for approval — never commit without confirmation
+- Follow the <type>(<scope>): <description> format from CONVENTIONAL_COMMITS.md
+- **Never use emoji** in commit messages or code
+- **Propose commit messages in plain text** — never wrap in backticks (```or`)
+- **Never commit yourself** — always propose the message in chat and wait for user approval
 
 ```
 <type>(<scope>): <description>
@@ -140,19 +183,17 @@ This project follows [docs/CONVENTIONAL_COMMITS.md](./docs/CONVENTIONAL_COMMITS.
 - bullet points for body
 ```
 
-Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
-Scopes: `api`, `web`, `ui`, `db`, `shared`
+Types: feat, fix, docs, refactor, test, chore
+Scopes: api, web, ui, db, shared
 
-Example proposal format (copy-paste ready, no backticks around the message):
+Example proposal format (plain text, no backticks):
 
-```
 feat(ui): add Skeleton and Sonner Retroui components
 
 - add Skeleton with Skeleton.tsx
 - add Sonner with Sonner.tsx
 - removed rounded-none overrides, use Material Symbols, add Responsive Design Guide
 - updated AGENTS.md rules (native HTMl, Skeleton, ui folder, commit convention)
-```
 
 ---
 
@@ -180,7 +221,6 @@ API conventions:
 
 - `lib/api/errors.ts` — `AppError` + 11 typed codes + `handleError()`
 - `lib/api/auth-utils.ts` — `requireAuth()` via BetterAuth
-- `lib/api/handler.ts` — `apiHandler()` wrapper for route handlers
 - `features/modules/services/*.ts` — service functions (plain async)
 
 ---
@@ -220,6 +260,7 @@ git commit -m "feat(scope): description"
 │   │   └── register/
 │   ├── (landing)/    # Landing page (no app shell)
 │   ├── api/auth/[...all]/  # BetterAuth API handler
+│   ├── providers.tsx # QueryClientProvider + other providers
 │   ├── layout.tsx    # Root layout — font + globals
 │   └── globals.css   # Nusantara Rebel palette + utilities
 ├── components/       # Shared React components
@@ -235,6 +276,18 @@ git commit -m "feat(scope): description"
 │   │   ├── components/  # ModuleCard, LabCard, MenuHeader, ModuleGrid, BackLink
 │   │   ├── data.ts      # Menu module data
 │   │   └── index.ts     # Barrel exports
+│   ├── modules/      # Core learning engine
+│   │   ├── components/  # ConclusionArea, AssessmentSection, etc.
+│   │   ├── hooks/       # TanStack Query hooks (useSectionSubmission, useTabProgress, useEvaluateSection)
+│   │   ├── data/        # Shared constants (moduleConfig.ts)
+│   │   ├── lib/         # Client-side utils (shuffle.ts)
+│   │   ├── services/    # Layer 2 — plain async service functions
+│   │   └── index.ts     # Barrel exports
+│   ├── quiz/         # Quiz feature
+│   │   ├── components/  # QuizResult, QuizNavigation, etc.
+│   │   ├── hooks/       # TanStack Query hooks (useSubmitQuiz, useQuizResult, useEvaluateQuiz)
+│   │   ├── data/        # Question bank (translasi.ts, refleksi.ts)
+│   │   └── index.ts     # Barrel exports
 │   └── prasyarat/    # Prerequisite material feature
 │       ├── components/  # InteractiveCanvas, GeoGebraCanvas, ControlPanel, ConceptCard, VideoEmbed
 │       ├── hooks/       # useGeoGebra, useToggleControls
@@ -243,7 +296,12 @@ git commit -m "feat(scope): description"
 │       ├── types.ts     # GGBApplet, GGBWindow, GeoGebraToggle types
 │       └── index.ts     # Barrel exports
 ├── lib/              # Utilities and clients
+│   ├── query/        # TanStack Query setup
+│   │   └── client.ts # Singleton QueryClient factory
 │   ├── supabase/     # Supabase client (client, server, middleware)
+│   ├── api/          # Layer 1 shared primitives
+│   │   ├── errors.ts # AppError + typed codes + handleError()
+│   │   └── auth-utils.ts # requireAuth() via BetterAuth
 │   ├── auth.ts       # BetterAuth server config
 │   ├── auth-client.ts # BetterAuth browser client
 │   ├── db.ts         # Drizzle database instance

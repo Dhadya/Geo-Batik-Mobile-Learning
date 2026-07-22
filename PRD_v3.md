@@ -585,7 +585,7 @@ Tab Structure:
 | **Database**      | Supabase (PostgreSQL)   | Data persistence                                |
 | **ORM**           | Drizzle                 | Type-safe database queries, migrations          |
 | **State Mgmt**    | Zustand                 | Client-side state management                    |
-| **Data Fetching** | TanStack Query (future) | Server state, caching, optimistic updates       |
+| **Data Fetching** | TanStack Query          | Server state, caching, optimistic updates       |
 | **Validation**    | Zod                     | Schema validation (forms, API, DB)              |
 | **Auth**          | BetterAuth              | Authentication & session management             |
 | **Visualization** | GeoGebra (Web API)      | Interactive geometry applets                    |
@@ -652,16 +652,27 @@ app/
 │       └── kuis/         # Quiz flow (intro → questions → results)
 ├── (landing)/            # Landing page hero (no app shell)
 ├── api/auth/[...all]/    # BetterAuth API handler
+├── providers.tsx         # QueryClientProvider + other providers
 ├── layout.tsx            # Root layout — font + globals
 └── globals.css           # Nusantara Rebel palette + utilities
 
 features/                  # Feature-based modular architecture
-├── auth/                 # Authentication (LoginForm, RegisterForm, hooks)
-├── menu/                 # Menu page (ModuleCard, LabCard, MenuHeader)
-├── prasyarat/            # Prerequisite canvas + controls
-├── modules/              # Core learning engine (services, data, hooks, store, components)
-├── quiz/                 # Quiz engine (components, hooks, store, data, types)
-├── lab/                  # Lab Batik canvas + tools (future — P1)
+├── auth/                 # LoginForm, RegisterForm, AuthFormField, hooks
+├── menu/                 # ModuleCard, LabCard, MenuHeader, data, hooks
+├── modules/              # Core learning engine
+│   ├── components/       # ConclusionArea, AssessmentSection, etc.
+│   ├── hooks/            # TanStack Query hooks (useSectionSubmission, useTabProgress, useEvaluateSection)
+│   ├── data/             # Shared constants (moduleConfig.ts)
+│   ├── lib/              # Client-side utils (shuffle.ts)
+│   ├── services/         # Layer 2 — plain async service functions
+│   └── index.ts          # Barrel exports
+├── quiz/                 # Quiz engine
+│   ├── components/       # QuizResult, QuizNavigation, etc.
+│   ├── hooks/            # TanStack Query hooks (useSubmitQuiz, useQuizResult, useEvaluateQuiz)
+│   ├── data/             # Question bank (translasi.ts, refleksi.ts)
+│   └── index.ts          # Barrel exports
+├── prasyarat/            # InteractiveCanvas, GeoGebraCanvas, ControlPanel, ConceptCard, VideoEmbed
+└── lab/                  # Lab Batik canvas + tools (future — P1)
 
 components/                # Shared React components
 ├── retroui/              # NeoBrutalism RetroUI primitives (30+ components)
@@ -670,25 +681,24 @@ components/                # Shared React components
 └── layout/               # AuthLayout, LandingFooter, ProfileDropdown
 
 lib/                       # Auth, DB, utility clients
-├── api/                  # Layer 1 primitives (AppError, requireAuth, apiHandler)
+├── query/                # TanStack Query setup
+│   └── client.ts         # Singleton QueryClient factory
+├── api/                  # Layer 1 primitives (AppError, requireAuth)
 ├── supabase/             # Supabase client (client, server, middleware)
 ├── auth.ts               # BetterAuth server config
 ├── auth-client.ts        # BetterAuth browser client
 ├── db.ts                 # Lazy getDb() singleton
 ├── utils.ts              # Utility functions
-├── schemas.ts            # Zod schemas
+├── validate-redirect.ts  # Redirect URL validation
 └── validators.ts         # Form validation
 
 drizzle/                   # Database schema (Drizzle ORM)
-└── schema.ts             # All 7 tables
+└── schema.ts             # All DB tables
 
 supabase/                  # Database migrations
 ├── migrations/
 └── schema.sql
 
-docs/                      # Implementation documentation (gitignored)
-├── 00_ROADMAP.md → 07_QUIZ_PLAYER.md
-└── GEMATRI_CONVENTIONS_REFERENCE.md
 ```
 
 ### 12.4 Three-Layer Architecture
@@ -722,7 +732,7 @@ Layer 3 — Database (lib/db.ts + drizzle/schema)
 - **Uppercase** labels and headings (`font-black uppercase`)
 - **Space Grotesk** for all text (variable weight 300–700)
 - **High contrast** — black text on warm paper background `#fff8ef`
-- **Icons:** Material Symbols (primary), `lucide-react` (fallback)
+- **Icons:** Material Symbols exclusively (via `@/components/common/MaterialIcon`)
 
 ### 13.2 Color Palette
 
@@ -741,7 +751,7 @@ Layer 3 — Database (lib/db.ts + drizzle/schema)
 ### 13.3 Typography
 
 - **Font:** Space Grotesk (weights 300–700), loaded via `next/font/google`
-- **Icons:** Priority to Material Symbols via `@/components/common/MaterialIcon`; fallback to `lucide-react`
+- **Icons:** Material Symbols via `@/components/common/MaterialIcon` (exclusive — no `lucide-react`)
 - **Labels/headings:** `font-black uppercase`
 - **Body:** `font-medium`
 
@@ -1138,8 +1148,6 @@ Chrome 90+, Firefox 88+, Safari 14+, Edge 90+.
 
 - [StyleGuide.md](./StyleGuide.md) — Visual design system reference
 - [DESIGN.md](./DESIGN.md) — Color palette & tokens
-- [GEMATRI_CONVENTIONS_REFERENCE.md](./docs/GEMATRI_CONVENTIONS_REFERENCE.md) — Architecture conventions
-- [06_MODULES_INTEGRATION.md](./docs/06_MODULES_INTEGRATION.md) — Gap analysis, data flow, file map
 
 ### C. Document History
 
