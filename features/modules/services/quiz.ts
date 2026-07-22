@@ -74,3 +74,25 @@ export async function getLatestQuizResult(userId: string, module: ModuleSlug) {
     completedAt: row.completedAt?.toISOString() ?? null,
   };
 }
+
+/** Fetches all quiz results for a module, ordered by attempt number. */
+export async function getAllQuizResults(userId: string, module: ModuleSlug) {
+  const db = getDb();
+
+  const rows = await db.query.quizResults.findMany({
+    where: and(
+      eq(quizResults.userId, userId),
+      eq(quizResults.module, module),
+    ),
+    orderBy: [quizResults.attemptNumber],
+  });
+
+  return rows.map((r) => ({
+    id: r.id,
+    attemptNumber: r.attemptNumber,
+    packageId: r.packageId,
+    totalScore: r.totalScore,
+    answers: r.answers,
+    completedAt: r.completedAt?.toISOString() ?? null,
+  }));
+}

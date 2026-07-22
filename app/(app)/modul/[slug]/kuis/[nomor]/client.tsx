@@ -148,9 +148,7 @@ export function KuisSoalClient({
     }))
 
     const totalScore = Math.round(
-      attempts[1]
-        ? Object.values(attempts).reduce((sum, a) => sum + (a.finalScore ?? 0), 0) / Math.max(Object.keys(attempts).length, 1)
-        : 0
+      Object.values(attempts).reduce((sum, a) => sum + (a.finalScore ?? 0), 0) / Math.max(Object.keys(attempts).length, 1)
     )
 
     const { attemptNumber, currentPackage } = useQuizStore.getState()

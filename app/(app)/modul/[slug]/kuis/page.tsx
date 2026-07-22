@@ -1,13 +1,11 @@
 import { notFound, redirect } from "next/navigation"
 import { headers } from "next/headers"
-import Link from "next/link"
 import { auth } from "@/lib/auth"
 import { getTabProgress } from "@/features/modules/services/progress"
-import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
-import { ArrowRight } from "lucide-react"
-import { QuizBreadcrumb, QuizHeader, getQuizModule } from "@/features/quiz"
+import { QuizBreadcrumb, QuizHeader, getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
+import { KuisStartButton } from "./KuisStartButton"
 
 const MODULE_LABELS: Record<string, string> = {
   translasi: "Translasi",
@@ -51,13 +49,13 @@ export default async function KuisIntroPage(props: {
 
       <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />} />
 
-      <section className="border-4 border-black bg-white shadow-lg p-6 md:p-8 space-y-4">
+      <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-6 md:p-8 space-y-4">
         <Text as="h2" className="text-lg md:text-xl font-black uppercase">
           Petunjuk Kuis
         </Text>
         <ul className="space-y-2 text-sm md:text-base list-disc list-inside">
           <li>
-            Kuis ini terdiri dari <span className="font-bold">{quiz.questions.length} soal</span> dengan berbagai tipe (pilihan ganda, uraian, angka).
+            Kuis terdiri dari <span className="font-bold">{PACKAGE_SIZE} soal per paket</span> dengan berbagai tipe (pilihan ganda, uraian, angka).
           </li>
           <li>
             Setiap soal memiliki <span className="font-bold">2 kesempatan</span> menjawab.
@@ -71,20 +69,14 @@ export default async function KuisIntroPage(props: {
           <li>
             Jawaban akan dinilai oleh <span className="font-bold">AI</span> secara otomatis.
           </li>
+          <li>
+            Hanya <span className="font-bold">percobaan ke-1</span> yang dihitung sebagai nilai final — percobaan berikutnya untuk latihan.
+          </li>
         </ul>
       </section>
 
       <div className="flex justify-center pt-4 md:pt-6">
-        <Link href={`/modul/${slug}/kuis/1`}>
-          <Button
-            variant="default"
-            size="lg"
-            className="px-10 md:px-16 py-5 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
-          >
-            Mulai Kuis
-            <ArrowRight className="size-7 md:size-8" />
-          </Button>
-        </Link>
+        <KuisStartButton slug={slug} />
       </div>
     </div>
   )

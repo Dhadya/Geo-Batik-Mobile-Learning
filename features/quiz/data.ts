@@ -1,5 +1,8 @@
 import type { QuizModule } from "./types"
 
+/** Number of questions per package. */
+export const PACKAGE_SIZE = 10
+
 export const QUIZ_MODULES: Record<string, QuizModule> = {
   translasi: {
     slug: "translasi",

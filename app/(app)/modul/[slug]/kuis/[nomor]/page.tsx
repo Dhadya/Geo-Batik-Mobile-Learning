@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { getTabProgress } from "@/features/modules/services/progress"
-import { getQuizModule } from "@/features/quiz"
+import { getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
 import { KuisSoalClient } from "./client"
 
 export default async function KuisSoalPage(props: {
@@ -14,7 +14,7 @@ export default async function KuisSoalPage(props: {
 
   const quiz = getQuizModule(slug)
   if (!quiz) notFound()
-  if (nomorNum > quiz.questions.length) notFound()
+  if (nomorNum > PACKAGE_SIZE) notFound()
 
   // Enforce quiz access guard: all tabs must be completed
   const session = await auth.api.getSession({ headers: await headers() })

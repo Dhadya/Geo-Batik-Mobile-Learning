@@ -4,7 +4,7 @@
 
 **Product:** GEMATRI (Gemakan Mahir Transformasi Geometri)
 **Version:** 3.0
-**Last Updated:** 2026-07-21
+**Last Updated:** 2026-07-22
 
 ---
 
@@ -449,8 +449,8 @@ Every score, answer submission, and feedback history for each section (Percobaan
 | F9  | Section-Based AI Feedback                 | P0       | ✅             |
 | F10 | Tab Locking & Sequential Access           | P0       | ✅             |
 | F11 | Per-Section Progress Tracking             | P1       | ✅             |
-| F12 | Quiz Package Randomization                | P0       | 🚧 Planned     |
-| F13 | Two-Attempt Quiz System                   | P0       | 🚧 Planned     |
+| F12 | Quiz Package Randomization                | P0       | ✅             |
+| F13 | Two-Attempt Quiz System                   | P0       | ✅             |
 | F14 | Cross-Module Locking (Translasi→Refleksi) | P0       | 🚧 Planned     |
 | F15 | Page Overlay Lock                         | P0       | 🚧 Planned     |
 | F16 | Score Color Indicators                    | P1       | ✅             |
@@ -1060,7 +1060,7 @@ Chrome 90+, Firefox 88+, Safari 14+, Edge 90+.
 - Interactive canvas components (GeoGebra)
 - Cultural context + video content
 
-### Phase 4: Quiz System ✅ (core)
+### Phase 4: Quiz System ✅
 
 - MCQ-only question bank (40 questions, 2 packages × 20)
 - Two-attempt per question AI evaluation
@@ -1068,9 +1068,9 @@ Chrome 90+, Firefox 88+, Safari 14+, Edge 90+.
 - Results page with per-tab breakdown + score color indicator
 - Quiz persistence (`quiz_results` table)
 - Access guard — all tabs must be completed
-- 🚧 **Package randomization** (F12)
-- 🚧 **Two-attempt at module level** (F13)
-- 🚧 **All quiz history in DB** (attempt_number, package_id)
+- Package randomization (F12) — random assignment on first entry, opposite on attempt 2
+- Two-attempt at module level (F13) — attempt 1 counts, attempt 2+ practice
+- All quiz history in DB (attempt_number, package_id)
 
 ### Phase 5: Cross-Module Locking 🚧
 

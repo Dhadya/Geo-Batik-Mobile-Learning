@@ -18,7 +18,7 @@ export { useQuiz } from "./hooks/useQuiz"
 export { useQuizStore } from "./store"
 
 // Data + helpers
-export { QUIZ_MODULES, getQuizModule, getQuizQuestionsByTab } from "./data"
+export { QUIZ_MODULES, PACKAGE_SIZE, getQuizModule, getQuizQuestionsByTab } from "./data"
 
 // Types
 export type {

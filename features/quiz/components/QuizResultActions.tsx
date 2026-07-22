@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
-import { RefreshCw, Home } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { useQuizStore } from "../store"
 
 export function QuizResultActions({ slug }: { slug: string }) {
@@ -23,7 +23,7 @@ export function QuizResultActions({ slug }: { slug: string }) {
         className="px-8 py-4 text-lg font-black uppercase gap-2"
         onClick={handleUlangi}
       >
-        <RefreshCw className="size-6" />
+        <MaterialIcon className="!size-6" name="refresh" />
         Ulangi
       </Button>
       <Link href="/menu">
@@ -32,7 +32,7 @@ export function QuizResultActions({ slug }: { slug: string }) {
           size="lg"
           className="px-8 py-4 text-lg font-black uppercase gap-2"
         >
-          <Home className="size-6" />
+          <MaterialIcon className="!size-6" name="home" />
           Kembali ke Menu
         </Button>
       </Link>

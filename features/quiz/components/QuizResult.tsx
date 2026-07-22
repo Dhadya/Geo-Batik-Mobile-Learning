@@ -9,7 +9,7 @@ import { QuizResultScore } from "./QuizResultScore"
 import { QuizResultExplanation } from "./QuizResultExplanation"
 import { QuizResultActions } from "./QuizResultActions"
 import { Text } from "@/components/retroui/Text"
-import { Check } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 interface TabBreakdownEntry {
   tab: string
@@ -24,6 +24,8 @@ export function QuizResult({
   bgColor,
   serverScore,
   tabBreakdown,
+  attemptNumber,
+  totalAttempts,
 }: {
   slug: string
   title: string
@@ -32,6 +34,8 @@ export function QuizResult({
   bgColor?: string
   serverScore?: number | null
   tabBreakdown?: TabBreakdownEntry[]
+  attemptNumber?: number | null
+  totalAttempts?: number
 }) {
   const router = useRouter()
   const submittedAnswers = useQuizStore((s) => s.submittedAnswers)
@@ -77,11 +81,22 @@ export function QuizResult({
   return (
     <div className="space-y-6 md:space-y-8">
       <QuizHeader title={title} badge={badge} icon={icon} bgColor={bgColor} description={description} />
+
+      {/* Attempt info banner */}
+      {attemptNumber != null && totalAttempts != null && totalAttempts > 0 && (
+        <div className="border-4 border-black bg-white p-3 md:p-4 text-center shadow-[4px_4px_0_0_black]">
+          <Text className="text-sm md:text-base font-bold uppercase">
+            Percobaan Ke-{attemptNumber}
+            {attemptNumber === 1 ? " — Nilai Akhir" : " — Latihan"}
+          </Text>
+        </div>
+      )}
+
       <QuizResultScore correctCount={correctCount} total={total} score={displayScore} />
 
       {/* Per-tab breakdown */}
       {hasTabBreakdown && (
-        <section className="border-4 border-black bg-white shadow-lg p-4 md:p-6">
+        <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-6">
           <Text as="h2" className="text-lg md:text-xl font-black uppercase mb-4">
             Rincian Per Tab
           </Text>
@@ -92,14 +107,14 @@ export function QuizResult({
                 return a?.status === "correct_attempt1"
               }).length
               return (
-                <div key={tb.tab} className="flex items-center justify-between border-2 border-black p-2 md:p-3">
+                <div key={tb.tab} className="flex items-center justify-between border-4 border-black p-2 md:p-3">
                   <span className="font-bold uppercase text-xs md:text-sm">{tb.tab}</span>
                   <span className="flex items-center gap-2">
                     <span className="font-black text-sm md:text-base">
                       {correctInTab}/{tb.questions.length}
                     </span>
                     {correctInTab === tb.questions.length && (
-                      <Check className="size-4 text-green-600" />
+                      <MaterialIcon className="!size-4 text-green-600" name="check" />
                     )}
                   </span>
                 </div>

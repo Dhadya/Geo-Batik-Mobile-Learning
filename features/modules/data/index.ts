@@ -9,12 +9,14 @@ export const MODULE_TABS: Record<ModuleSlug, ModuleTab[]> = {
 
 export type SectionKey = "pengamatan" | "percobaan" | "penyimpulan" | "cekPemahaman"
 
-const ALL_SECTIONS = ["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"] as const
+const REFLEKSI_BANGUN_SECTIONS = ["pengamatan", "percobaan", "cekPemahaman"] as const
+const DEFAULT_SECTIONS = ["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"] as const
 
-/** Returns the active section types for a given module tab. */
+/** Returns the active section types for a given module tab (refleksi/bangun has no penyimpulan). */
 export function getSectionsForTab(slug: string, tab: string): readonly SectionKey[] {
-  void slug; void tab
-  return ALL_SECTIONS
+  return slug === "refleksi" && tab === "bangun"
+    ? REFLEKSI_BANGUN_SECTIONS
+    : DEFAULT_SECTIONS
 }
 
 /** Returns the expected number of active sections for a given module tab. */

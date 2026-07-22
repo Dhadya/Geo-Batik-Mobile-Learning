@@ -3,7 +3,7 @@ import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { QuizBreadcrumb, QuizResult, getQuizModule, getQuizQuestionsByTab } from "@/features/quiz"
-import { getLatestQuizResult } from "@/features/modules/services/quiz"
+import { getAllQuizResults } from "@/features/modules/services/quiz"
 import { getTabProgress } from "@/features/modules/services/progress"
 import type { ModuleSlug } from "@/features/modules/types"
 
@@ -31,12 +31,14 @@ export default async function KuisHasilPage(props: {
 
   const label = MODULE_LABELS[slug] ?? slug
 
-  // Fetch latest result from API (server-side)
+  // Fetch all results — attempt 1 score is final, others are practice
   const session = await auth.api.getSession({ headers: await headers() })
-  let serverResult: Awaited<ReturnType<typeof getLatestQuizResult>> = null
+  let allResults: Awaited<ReturnType<typeof getAllQuizResults>> = []
   if (session?.user) {
-    serverResult = await getLatestQuizResult(session.user.id, slug as ModuleSlug)
+    allResults = await getAllQuizResults(session.user.id, slug as ModuleSlug)
   }
+
+  const latestResult = allResults.length > 0 ? allResults[allResults.length - 1] : null
 
   // Get tabs for per-tab breakdown
   const tabs = await getTabProgress(session?.user?.id ?? "", slug as ModuleSlug)
@@ -59,8 +61,10 @@ export default async function KuisHasilPage(props: {
         badge={quiz.badge}
         icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl! md:text-3xl!" />}
         bgColor={MODULE_BG[slug] ?? "bg-primary"}
-        serverScore={serverResult?.totalScore ?? null}
+        serverScore={latestResult?.totalScore ?? null}
         tabBreakdown={activeTabs}
+        attemptNumber={latestResult?.attemptNumber ?? null}
+        totalAttempts={allResults.length}
       />
     </div>
   )
