@@ -11,7 +11,7 @@ import { PengamatanBangunForm } from "./PengamatanBangunForm"
 import { PengamatanGarisForm } from "./PengamatanGarisForm"
 import { PengamatanMockForm } from "./PengamatanMockForm"
 import { ChecklistTableForm } from "../../shared/ChecklistTableForm"
-import { Check } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 interface ObservationPanelProps {
   slug: string
@@ -47,7 +47,7 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
           >
             <span>Pengamatan</span>
             <SectionScoreIndicator score={pengamatanScore} />
-            {pengamatanLocked && <Check className="size-3.5 md:size-4" />}
+            {pengamatanLocked && <MaterialIcon className="size-5" name="check" />}
           </Tabs.Trigger>
           <Tabs.Trigger
             value="percobaan"
@@ -55,7 +55,7 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
           >
             <span>Percobaan</span>
             <SectionScoreIndicator score={percobaanScore} />
-            {percobaanLocked && <Check className="size-3.5 md:size-4" />}
+            {percobaanLocked && <MaterialIcon className="size-5" name="check" />}
           </Tabs.Trigger>
         </Tabs.List>
 

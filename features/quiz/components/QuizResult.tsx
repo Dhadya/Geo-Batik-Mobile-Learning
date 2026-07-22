@@ -114,7 +114,7 @@ export function QuizResult({
                       {correctInTab}/{tb.questions.length}
                     </span>
                     {correctInTab === tb.questions.length && (
-                      <MaterialIcon className="!size-4 text-green-600" name="check" />
+                      <MaterialIcon className="size-4 text-green-600" name="check" />
                     )}
                   </span>
                 </div>

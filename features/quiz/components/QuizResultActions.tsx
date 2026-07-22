@@ -23,7 +23,7 @@ export function QuizResultActions({ slug }: { slug: string }) {
         className="px-8 py-4 text-lg font-black uppercase gap-2"
         onClick={handleUlangi}
       >
-        <MaterialIcon className="!size-6" name="refresh" />
+        <MaterialIcon className="size-6" name="refresh" />
         Ulangi
       </Button>
       <Link href="/menu">
@@ -32,7 +32,7 @@ export function QuizResultActions({ slug }: { slug: string }) {
           size="lg"
           className="px-8 py-4 text-lg font-black uppercase gap-2"
         >
-          <MaterialIcon className="!size-6" name="home" />
+          <MaterialIcon className="size-6" name="home" />
           Kembali ke Menu
         </Button>
       </Link>

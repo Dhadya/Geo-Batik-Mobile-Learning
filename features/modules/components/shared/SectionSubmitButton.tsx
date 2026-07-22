@@ -44,13 +44,13 @@ export function SectionSubmitButton({
     text = "Periksa Jawaban"
   } else if (showCobaLagi) {
     text = "Periksa Jawaban Lagi"
-    variantStyle = "bg-secondary text-white hover:bg-secondary/90!"
+    variantStyle = "bg-secondary text-white hover:bg-secondary/90"
   } else if (isCorrect) {
     text = "Selesai"
-    variantStyle = "bg-green-600 text-white hover:bg-green-700!"
+    variantStyle = "bg-green-600 text-white hover:bg-green-700"
   } else {
     text = "Kesempatan Habis"
-    variantStyle = "bg-gray-300 text-gray-500 border-gray-400!"
+    variantStyle = "bg-gray-300 text-gray-500 border-gray-400"
   }
 
   const handleClick = useCallback(() => {

@@ -6,7 +6,7 @@ import { useEffect } from "react"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { Badge } from "@/components/retroui/Badge"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { QuizBreadcrumb } from "@/features/quiz"
 import { InteractiveWorkspace } from "./workspace/InteractiveWorkspace"
 import { ObservationPanel } from "./sections/pengamatan/ObservationPanel"
@@ -15,6 +15,7 @@ import { AssessmentSection } from "./sections/cek-pemahaman/AssessmentSection"
 import { ModuleTabNav } from "./navigation/ModuleTabNav"
 import { ResetButton } from "./shared/ResetButton"
 import { getModuleTabs, getModuleTab, getSectionsForTab } from "../data"
+import { useSectionProgress } from "../hooks/useSectionSubmission"
 import { useAnswerStore } from "../store/answerStore"
 import type { PilihanGandaItem } from "../types"
 
@@ -37,75 +38,98 @@ export function ModuleContent({
   const label = slug === "translasi" ? "Translasi" : "Refleksi"
 
   // Derive MCQ questions from cekPemahaman section (backward compat with AssessmentQuestion)
-  const cekPemahamanQuestions = (tabConfig.sections?.cekPemahaman.items ?? [])
-    .filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
-    .map((i) => ({
-      id: i.id,
-      question: i.question,
-      options: i.options,
-      correctIndex: i.correctIndex,
-      optionFormat: i.optionFormat,
-      imageOptions: i.imageOptions,
-      multiSelect: i.multiSelect,
-      correctIndices: i.correctIndices,
-      questionImage: i.questionImage,
-      questionMatrix: i.questionMatrix,
-      questionSuffix: i.questionSuffix,
-    }))
+  const cekPemahamanQuestions =
+    (tabConfig.sections?.cekPemahaman.items ?? [])
+      .filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
+      .map((i) => ({
+        id: i.id,
+        question: i.question,
+        options: i.options,
+        correctIndex: i.correctIndex,
+        optionFormat: i.optionFormat,
+        imageOptions: i.imageOptions,
+        multiSelect: i.multiSelect,
+        correctIndices: i.correctIndices,
+        questionImage: i.questionImage,
+        questionMatrix: i.questionMatrix,
+        questionSuffix: i.questionSuffix,
+      }))
 
   // Fallback to legacy assessment prop if no sections defined
-  const questions = cekPemahamanQuestions.length > 0 ? cekPemahamanQuestions : tabConfig.assessment
+  const questions =
+    cekPemahamanQuestions.length > 0
+      ? cekPemahamanQuestions
+      : tabConfig.assessment
 
-  // Sync server progress into stores on mount
+  // Sync server progress into stores via TanStack Query
+  const { data: sections } = useSectionProgress(slug, { tab: decodedTab })
+
   useEffect(() => {
-    fetch(`/api/modul/${slug}/section?tab=${decodedTab}`)
-      .then((res) => res.json())
-      .then((json) => {
-        if (!json.ok || !json.data?.sections) return
-        const store = useAnswerStore.getState()
-        for (const s of json.data.sections) {
-          const sectionKey = s.sectionType === "cek-pemahaman" ? "cekPemahaman" : s.sectionType
-          if (s.status === "unsubmitted" || s.status === "locked") continue
-          if (!s.attempt1Answer) continue
+    if (!sections) return
+    const store = useAnswerStore.getState()
+    for (const s of sections) {
+      const sectionKey =
+        s.sectionType === "cek-pemahaman" ? "cekPemahaman" : s.sectionType
+      if (s.status === "unsubmitted" || s.status === "locked") continue
+      if (!s.attempt1Answer) continue
 
-          const finalScore = s.finalScore ?? null
+      const finalScore = s.finalScore ?? null
 
-          if (s.sectionType === "cek-pemahaman") {
-            const parsed = JSON.parse(s.attempt1Answer)
-            if (Array.isArray(parsed.selections)) {
-              store.setSelections(slug, decodedTab, parsed.selections)
-            }
-            store.setCekPemahamanStatus(slug, decodedTab, s.status, 1)
-            store.setCekPemahamanScore(slug, decodedTab, finalScore)
-          } else {
-            const isAttempt2 = !!s.attempt2Answer
-            const parsed = JSON.parse(isAttempt2 ? s.attempt2Answer : s.attempt1Answer) as Record<string, Record<string, string>>
-            for (const [itemId, fields] of Object.entries(parsed)) {
-              for (const [fieldKey, value] of Object.entries(fields)) {
-                store.setField(slug, decodedTab, sectionKey as "percobaan", itemId, fieldKey, value)
-              }
-            }
-            store.setSectionStatus(
+      if (s.sectionType === "cek-pemahaman") {
+        const parsed = JSON.parse(s.attempt1Answer)
+        if (Array.isArray(parsed.selections)) {
+          store.setSelections(slug, decodedTab, parsed.selections)
+        }
+        store.setCekPemahamanStatus(slug, decodedTab, s.status as "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2", 1)
+        store.setCekPemahamanScore(slug, decodedTab, finalScore)
+      } else {
+        const isAttempt2 = !!s.attempt2Answer
+        const parsed = JSON.parse(
+          isAttempt2 ? s.attempt2Answer! : s.attempt1Answer,
+        ) as Record<string, Record<string, string>>
+        for (const [itemId, fields] of Object.entries(parsed)) {
+          for (const [fieldKey, value] of Object.entries(fields)) {
+            store.setField(
               slug,
               decodedTab,
               sectionKey as "percobaan",
-              s.status,
-              isAttempt2 ? 2 : 1
+              itemId,
+              fieldKey,
+              value,
             )
-            store.setSectionScore(slug, decodedTab, sectionKey as "percobaan", finalScore)
-            const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
-            if (feedback) {
-              store.setAIFeedback(slug, decodedTab, sectionKey as "percobaan", feedback)
-            }
-            store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
           }
         }
-      })
-      .catch(() => { })
-  }, [slug, decodedTab])
+        store.setSectionStatus(
+          slug,
+          decodedTab,
+          sectionKey as "percobaan",
+          s.status as "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2" | "locked",
+          isAttempt2 ? 2 : 1,
+        )
+        store.setSectionScore(
+          slug,
+          decodedTab,
+          sectionKey as "percobaan",
+          finalScore,
+        )
+        const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
+        if (feedback) {
+          store.setAIFeedback(
+            slug,
+            decodedTab,
+            sectionKey as "percobaan",
+            feedback,
+          )
+        }
+        store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
+      }
+    }
+  }, [sections, slug, decodedTab])
 
   // Calculate section progress for this tab
-  const tabAnswers = useAnswerStore((s) => s.answers[`${slug}-${decodedTab}`])
+  const tabAnswers = useAnswerStore(
+    (s) => s.answers[`${slug}-${decodedTab}`],
+  )
   const activeSections = getSectionsForTab(slug, decodedTab)
   const completedCount = activeSections.filter((sec) => {
     if (sec === "cekPemahaman") {
@@ -126,7 +150,11 @@ export function ModuleContent({
         <Text as="h2" className="text-lg md:text-xl font-black text-black">
           {tabConfig.title.toUpperCase()}
         </Text>
-        <Badge variant="solid" size="sm" className="bg-secondary text-white font-black text-xs md:text-sm">
+        <Badge
+          variant="solid"
+          size="sm"
+          className="bg-secondary text-white font-black text-xs md:text-sm"
+        >
           SELESAI {completedCount}/{activeSections.length} BAGIAN
         </Badge>
       </div>
@@ -148,10 +176,7 @@ export function ModuleContent({
         </div>
         {/* Right column — observation/pengamatan panel: sticky on lg+ */}
         <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24 lg:self-start">
-          <ObservationPanel
-            slug={slug}
-            tab={decodedTab}
-          />
+          <ObservationPanel slug={slug} tab={decodedTab} />
         </div>
       </div>
 
@@ -163,20 +188,32 @@ export function ModuleContent({
       )}
 
       {/* Assessment section with multiple choice questions */}
-      <AssessmentSection slug={slug} tab={decodedTab} questions={questions} />
+      <AssessmentSection
+        slug={slug}
+        tab={decodedTab}
+        questions={questions}
+      />
 
       {/* Navigation buttons — back to apersepsi or forward to quiz */}
       <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
         <Link href={`/apersepsi/${slug}`}>
-          <Button variant="outline" size="lg" className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
-            <ArrowLeft className="size-4 md:size-6" />
+          <Button
+            variant="outline"
+            size="lg"
+            className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
+          >
+            <MaterialIcon className="size-4 md:size-6" name="arrow_back" />
             KEMBALI
           </Button>
         </Link>
         <Link href={`/modul/${slug}/kuis`}>
-          <Button variant="default" size="lg" className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2">
+          <Button
+            variant="default"
+            size="lg"
+            className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
+          >
             KERJAKAN KUIS
-            <ArrowRight className="size-4 md:size-6" />
+            <MaterialIcon className="size-4 md:size-6" name="arrow_forward" />
           </Button>
         </Link>
       </div>

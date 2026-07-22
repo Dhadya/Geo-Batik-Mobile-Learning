@@ -1,7 +1,8 @@
 "use client"
 
 import { Input } from "@/components/retroui/Input"
-import { allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
+import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
+import { REFLECTION_LABELS } from "@/features/modules/data/moduleConfig"
 import type { KoordinatItem, SectionItem, RefleksiGroup } from "@/features/modules/types"
 
 interface PercobaanRefleksiTableProps {
@@ -11,17 +12,6 @@ interface PercobaanRefleksiTableProps {
   setField: (itemId: string, fieldKey: string, value: string) => void
   tab: string
   refleksiGroups?: RefleksiGroup[]
-}
-
-/** Reflection labels for the middle column by tab slug. */
-const REFLECTION_LABELS: Record<string, string> = {
-  "sumbu-x": "Sumbu X",
-  "sumbu-y": "Sumbu Y",
-  "titik": "Titik (0,0)",
-  "garis-x=y": "Garis x=y",
-  "garis-x=-y": "Garis x=-y",
-  "garis-x=h": "Garis x=h",
-  "garis-y=h": "Garis y=h",
 }
 
 /** Refleksi table with Titik Awal → Refleksi → Titik Bayangan and rowSpan grouping. */

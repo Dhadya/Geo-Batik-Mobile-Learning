@@ -1,7 +1,7 @@
 "use client"
 
 import { Text } from "@/components/retroui/Text"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import type { UraianItem } from "@/features/modules/types"
 

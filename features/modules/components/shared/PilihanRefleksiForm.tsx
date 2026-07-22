@@ -4,7 +4,8 @@
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Select } from "@/components/retroui/Select"
-import { useSection, allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
+import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
 import { SectionSubmitButton } from "./SectionSubmitButton"
 import type { PilihanRefleksiItem } from "@/features/modules/types"
 

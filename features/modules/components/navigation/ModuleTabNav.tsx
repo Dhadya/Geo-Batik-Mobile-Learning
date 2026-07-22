@@ -5,7 +5,7 @@ import { Button } from "@/components/retroui/Button"
 import { cn } from "@/lib/utils"
 import type { ModuleTab } from "../../types"
 import { useTabProgressStore } from "../../store/tabProgressStore"
-import { Lock, Check } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 /** Horizontal scrollable tab bar for navigating module sub-sections. */
 export function ModuleTabNav({
@@ -34,9 +34,9 @@ export function ModuleTabNav({
                 variant="outline"
                 disabled
                 size="sm"
-                className="opacity-40 cursor-not-allowed font-bold uppercase whitespace-nowrap w-full text-xs md:text-sm lg:text-base p-1.5 md:p-3 bg-white! flex items-center justify-center gap-1 md:gap-1.5"
+                className="opacity-40 cursor-not-allowed font-bold uppercase whitespace-nowrap w-full text-xs md:text-sm lg:text-base p-1.5 md:p-3 bg-white flex items-center justify-center gap-1 md:gap-1.5"
               >
-                <Lock className="size-3.5 md:size-4" />
+                <MaterialIcon className="size-5" name="lock" />
                 {slug === "translasi" ? `TRANSLASI ${t.label}` : t.label}
               </Button>
             </div>
@@ -50,11 +50,11 @@ export function ModuleTabNav({
               size="sm"
               className={cn(
                 "font-bold uppercase whitespace-nowrap w-full text-xs md:text-sm lg:text-base p-1.5 md:p-3 flex items-center justify-center gap-1 md:gap-1.5",
-                t.value !== currentTab && "bg-white!"
+                t.value !== currentTab && "bg-white"
               )}
             >
               <span>{slug === "translasi" ? `TRANSLASI ${t.label}` : t.label}</span>
-              {completed && <Check className="size-3.5 md:size-4" />}
+              {completed && <MaterialIcon className="size-5" name="check" />}
             </Button>
           </Link>
         )

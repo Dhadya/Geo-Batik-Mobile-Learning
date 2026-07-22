@@ -16,7 +16,7 @@ export function useTitikForm() {
     form as Partial<Record<keyof TranslasiTitikData, string>>,
     setErrors,
     setChecked,
-    "Hebat! Semua jawaban Anda benar! 🎉",
+    "Hebat! Semua jawaban Anda benar!",
     "Ada beberapa jawaban yang masih belum tepat.",
   )
 

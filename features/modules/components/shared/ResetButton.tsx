@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { RotateCcw } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { Dialog } from "@/components/retroui/Dialog"
 import { useAnswerStore } from "../../store/answerStore"
 
@@ -14,7 +14,7 @@ export function ResetButton() {
     <Dialog open={open} onOpenChange={setOpen}>
       {/* FAB trigger — reset icon button fixed to bottom-left */}
       <Dialog.Trigger className="fixed bottom-4 md:bottom-6 left-4 md:left-6 z-40 w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center bg-white cursor-pointer  border-2 border-black font-bold hover:shadow-[2px_2px_0_0_black] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150">
-        <RotateCcw className="size-4 md:size-5" />
+        <MaterialIcon className="size-5" name="refresh" />
       </Dialog.Trigger>
 
       {/* Confirmation dialog — asks user to confirm reset */}

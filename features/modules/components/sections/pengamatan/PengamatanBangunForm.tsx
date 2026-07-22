@@ -3,7 +3,7 @@
 
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import type { PilihanGandaItem } from "@/features/modules/types"
 

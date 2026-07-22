@@ -3,7 +3,7 @@
 import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Select } from "@/components/retroui/Select"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import type { UraianItem, MemasangkanItem } from "@/features/modules/types"
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/retroui/Card"
-import { Check, X } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 export function QuizResultScore({
   correctCount,
@@ -38,13 +38,13 @@ export function QuizResultScore({
         <div className="flex justify-center gap-6 md:gap-8">
           <div className="flex items-center gap-2 md:gap-3">
             <div className="size-8 md:size-10 bg-secondary border-2 border-black flex items-center justify-center">
-              <Check className="size-5 md:size-6 text-secondary-foreground" />
+              <MaterialIcon className="size-5" name="check" />
             </div>
             <span className="font-bold text-base md:text-lg">{correctCount} Benar</span>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
             <div className="size-8 md:size-10 bg-destructive border-2 border-black flex items-center justify-center">
-              <X className="size-5 md:size-6 text-destructive-foreground" />
+              <MaterialIcon className="size-5" name="close" />
             </div>
             <span className="font-bold text-base md:text-lg">{incorrectCount} Salah</span>
           </div>

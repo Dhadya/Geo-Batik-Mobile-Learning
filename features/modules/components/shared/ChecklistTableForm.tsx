@@ -3,7 +3,7 @@
 
 import { Text } from "@/components/retroui/Text"
 import { Checkbox } from "@/components/retroui/Checkbox"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "./SectionSubmitButton"
 import type { ChecklistTableItem } from "@/features/modules/types"
 
