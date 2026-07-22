@@ -12,7 +12,8 @@ export type SectionKey = "pengamatan" | "percobaan" | "penyimpulan" | "cekPemaha
 const ALL_SECTIONS = ["pengamatan", "percobaan", "penyimpulan", "cekPemahaman"] as const
 
 /** Returns the active section types for a given module tab. */
-export function getSectionsForTab(_slug: string, _tab: string): readonly SectionKey[] {
+export function getSectionsForTab(slug: string, tab: string): readonly SectionKey[] {
+  void slug; void tab
   return ALL_SECTIONS
 }
 

@@ -80,7 +80,7 @@ See `StyleGuide.md` and `DESIGN.md` for the full reference.
 - Module tabs: defined in `MODULE_TABS` in `modul/[slug]/layout.tsx`
 - Curriculum data: stored in `features/modules/data/` (static TypeScript files, not DB)
 - Icons inside buttons: use `@/components/common/MaterialIcon`, e.g. `<MaterialIcon
-className="!size-10" name="arrow_forward" />`
+className="size-10" name="arrow_forward" />`
 - **Always add TSDoc/JSDoc comments** on exported functions, components, interfaces, and types — describe the _why_ (purpose, behavior), not the _what_ (implementation). Use `@param` and `@returns` where non-obvious. Keep comments concise.
 
 ## Responsive Design Guide

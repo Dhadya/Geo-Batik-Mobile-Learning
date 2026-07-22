@@ -201,7 +201,7 @@ import { MaterialIcon } from "@/components/common/MaterialIcon"
   className="neubrutal-shadow hover-shift active-shift"
   onClick={...}>
   MASUK
-  <MaterialIcon className="!size-10" name="arrow_forward" />
+  <MaterialIcon className="size-10" name="arrow_forward" />
 </Button>
 
 // Outline

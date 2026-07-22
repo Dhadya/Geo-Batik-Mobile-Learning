@@ -7,7 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/retroui/Accordion"
-import { Check, X } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import type { PilihanGandaQuestion, QuizAnswers, QuizQuestionAttempt } from "../types"
 
 const LABELS = ["A", "B", "C", "D", "E", "F"]
@@ -39,10 +39,10 @@ export function QuizResultExplanation({
           if (isAnswered) {
             if (isCorrect) {
               statusClass = "data-[open]:bg-secondary data-[open]:text-secondary-foreground"
-              statusIcon = <Check className="size-4 shrink-0 text-secondary" />
+              statusIcon = <MaterialIcon className="size-4 shrink-0 text-secondary" name="check" />
             } else {
               statusClass = "data-[open]:bg-destructive data-[open]:text-destructive-foreground"
-              statusIcon = <X className="size-4 shrink-0 text-destructive" />
+              statusIcon = <MaterialIcon className="size-4 shrink-0 text-destructive" name="close" />
             }
           }
 
@@ -53,13 +53,13 @@ export function QuizResultExplanation({
                   {statusIcon}
                   <span className="font-bold">Soal {i + 1}</span>
                   {attempt?.status === "wrong_attempt1" && (
-                    <span className="text-xs bg-yellow-500 text-white px-2 py-0.5 font-bold">
-                      ATTEMPT 1
+                    <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 font-bold">
+                      PERCOBAAN 1
                     </span>
                   )}
                   {attempt?.status === "wrong_attempt2" && (
-                    <span className="text-xs bg-destructive text-white px-2 py-0.5 font-bold">
-                      ATTEMPT 2
+                    <span className="text-xs bg-destructive text-destructive-foreground px-2 py-0.5 font-bold">
+                      PERCOBAAN 2
                     </span>
                   )}
                 </span>
@@ -75,7 +75,7 @@ export function QuizResultExplanation({
                     {q.options.map((opt, optIdx) => {
                       const isUserAnswer = userAnswer === optIdx
                       const isCorrectAnswer = q.correctIndex === optIdx
-                      let className = "border-2 border-black px-3 py-2 font-medium "
+                      let className = "border-4 border-black px-3 py-2 font-medium "
 
                       if (isCorrectAnswer) {
                         className += " bg-secondary text-secondary-foreground"
@@ -89,8 +89,8 @@ export function QuizResultExplanation({
                         <div key={optIdx} className={className}>
                           <span className="font-bold mr-2">{LABELS[optIdx]}.</span>
                           {opt}
-                          {isCorrectAnswer && <Check className="inline size-4 ml-2" />}
-                          {isUserAnswer && !isCorrectAnswer && <X className="inline size-4 ml-2" />}
+                          {isCorrectAnswer && <MaterialIcon className="size-4 ml-2" name="check" />}
+                          {isUserAnswer && !isCorrectAnswer && <MaterialIcon className="size-4 ml-2" name="close" />}
                         </div>
                       )
                     })}
