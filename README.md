@@ -44,12 +44,14 @@ Each tab follows an inquiry-based flow:
 
 ### Two-Attempt AI Feedback System
 
-Every section and quiz question follows a structured two-attempt flow:
+Section exercises (pengamatan, percobaan, penyimpulan, cek pemahaman) follow a structured two-attempt flow:
 
 - **Attempt 1 (Correct)** → Full AI explanation, section marked complete
 - **Attempt 1 (Wrong)** → AI hint (no answer revealed), "Coba Lagi" button appears
 - **Attempt 2 (Wrong)** → Detailed AI feedback with answer key, input permanently locked
 - **Scoring** → 0–100 per section based on question type (MC, essay, numeric, all-correct)
+
+The **quiz** (module-level evaluation) uses a single-attempt per-question flow: students select answers and submit all at once with "Selesai". Correctness is calculated locally from the answer key. Pembahasan is shown only in the result page as a static explanation.
 
 ### Question Bank
 

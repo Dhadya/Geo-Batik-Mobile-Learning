@@ -64,6 +64,29 @@ export default async function KuisIntroPage(props: {
 
       <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />} />
 
+      <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-6 md:p-8 space-y-4">
+        <Text as="h2" className="text-lg md:text-xl font-black uppercase">
+          Petunjuk Kuis
+        </Text>
+        <ul className="space-y-2 text-sm md:text-base list-disc list-inside">
+          <li>
+            Kuis terdiri dari <span className="font-bold">{PACKAGE_SIZE} soal pilihan ganda</span> per paket.
+          </li>
+          <li>
+            Pilih jawaban untuk setiap soal, lalu klik <span className="font-bold">Lanjut</span> ke soal berikutnya.
+          </li>
+          <li>
+            Pada soal terakhir, klik <span className="font-bold">Selesai</span> untuk mengirim semua jawaban.
+          </li>
+          <li>
+            Hasil dan pembahasan akan ditampilkan setelah semua jawaban dikirim.
+          </li>
+          <li>
+            Hanya <span className="font-bold">percobaan ke-1</span> yang dihitung sebagai nilai final — percobaan berikutnya untuk latihan.
+          </li>
+        </ul>
+      </section>
+
       {allResults.length > 0 && (
         <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-6 space-y-3">
           <Text as="h2" className="text-base md:text-lg font-black uppercase">
@@ -104,32 +127,6 @@ export default async function KuisIntroPage(props: {
           </div>
         </section>
       )}
-
-      <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-6 md:p-8 space-y-4">
-        <Text as="h2" className="text-lg md:text-xl font-black uppercase">
-          Petunjuk Kuis
-        </Text>
-        <ul className="space-y-2 text-sm md:text-base list-disc list-inside">
-          <li>
-            Kuis terdiri dari <span className="font-bold">{PACKAGE_SIZE} soal per paket</span> dengan berbagai tipe (pilihan ganda, uraian, angka).
-          </li>
-          <li>
-            Setiap soal memiliki <span className="font-bold">2 kesempatan</span> menjawab.
-          </li>
-          <li>
-            Pada kesempatan pertama, kamu akan mendapat petunjuk jika jawaban kurang tepat.
-          </li>
-          <li>
-            Pada kesempatan kedua, kamu akan mendapat feedback lengkap dan nilai akhir.
-          </li>
-          <li>
-            Jawaban akan dinilai oleh <span className="font-bold">AI</span> secara otomatis.
-          </li>
-          <li>
-            Hanya <span className="font-bold">percobaan ke-1</span> yang dihitung sebagai nilai final — percobaan berikutnya untuk latihan.
-          </li>
-        </ul>
-      </section>
 
       <div className="flex justify-center pt-4 md:pt-6">
         <KuisStartButton slug={slug} />

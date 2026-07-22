@@ -296,28 +296,22 @@ The quiz system uses **Pilihan Ganda (MCQ)** questions with a two-attempt struct
 ### 8.3 Per-Question Flow (Within Quiz)
 
 ```
-Student selects answer → clicks "Periksa Jawaban"
-  → POST /api/ai/evaluate-quiz
-  → Correct (attempt 1):
-    - Green highlight on correct option
-    - Show explanation
-    - Lock question
-  → Wrong (attempt 1):
-    - AI hint (no answer key)
-    - "Coba Lagi" button
-    - Student edits → resubmits as attempt 2
-  → Wrong (attempt 2):
-    - Full feedback + answer key
-    - Lock question permanently
+Student selects answer → "Lanjut" to next question
+  → All answers saved locally
+  → On last question, "Selesai" submits all answers
+  → Correctness calculated locally (correctIndex from question data)
+  → Pembahasan (static explanation from key answer) shown in result page
+  → Result page: numeric score + color indicator (green/orange/red dot)
+  → Attempt history displayed on intro page with "Lihat Detail" per attempt
 ```
 
 ### 8.4 Quiz Routes
 
-| Route                        | Purpose                                                       |
-| ---------------------------- | ------------------------------------------------------------- |
-| `/modul/[slug]/kuis`         | Intro page — access guard + package assignment + "Mulai Kuis" |
-| `/modul/[slug]/kuis/[nomor]` | Per-question with two-attempt AI evaluation                   |
-| `/modul/[slug]/kuis/hasil`   | Score color indicator + per-tab breakdown + attempt history   |
+| Route                        | Purpose                                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| `/modul/[slug]/kuis`         | Intro page — access guard + attempt history + "Mulai Kuis"                                  |
+| `/modul/[slug]/kuis/[nomor]` | Per-question answer selection → Lanjut → Selesai                                            |
+| `/modul/[slug]/kuis/hasil`   | Score numeric + color indicator + per-tab breakdown + pembahasan accordion (default closed) |
 
 ### 8.5 Grading Model
 
@@ -952,7 +946,8 @@ Section Page
 
 ```
 /kuis (intro page)
-  ├── Access guard: all tabs completed?
+  ├── Access guard: all tabs completed? (else LockOverlay)
+  ├── Attempt history: list past attempts with score + "Lihat Detail"
   ├── Attempt 1: randomize package → assign → store in localStorage
   ├── Attempt 2: opposite package → assign → store in localStorage
   ├── Attempt 3+: random package
@@ -960,16 +955,15 @@ Section Page
 
 /kuis/[nomor] (per-question)
   ├── MCQ with answer button grid
-  ├── "Periksa Jawaban" → AI evaluation
-  ├── Correct → explanation, lock
-  ├── Wrong attempt 1 → hint, "Coba Lagi"
-  ├── Wrong attempt 2 → answer key, lock
-  └── "Lanjut" → /kuis/[nomor+1] or "Selesai" → submit
+  ├── Select answer → automatically saved locally
+  ├── "Lanjut" → /kuis/[nomor+1] (disabled until answer selected)
+  └── "Selesai" (last question) → submit all answers
 
 /kuis/hasil (results)
-  ├── Total score (0–100) as color indicator
+  ├── Attempt banner (Percobaan Ke-N / Nilai Akhir or Latihan)
+  ├── Total score (numeric + color dot indicator)
   ├── Per-tab breakdown
-  ├── Pembahasan (accordion per question)
+  ├── Pembahasan (accordion per question, default closed)
   ├── "Ulangi Kuis" (next attempt) — COUNTS as attempt 2, 3, etc.
   └── "Kembali ke Menu"
 ```
