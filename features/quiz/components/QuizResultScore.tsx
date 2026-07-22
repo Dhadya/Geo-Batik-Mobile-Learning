@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/retroui/Card"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
+import { getScoreConfig } from "@/features/modules/lib/scoreColors"
 
 export function QuizResultScore({
   correctCount,
@@ -13,6 +14,7 @@ export function QuizResultScore({
   score?: number | null
 }) {
   const incorrectCount = total - correctCount
+  const config = getScoreConfig(score)
 
   return (
     <Card className="w-full border-4 border-black shadow-lg">
@@ -24,9 +26,12 @@ export function QuizResultScore({
       <Card.Content className="p-6 md:p-8 space-y-6">
         <div className="text-center space-y-1">
           {score != null && (
-            <div>
-              <span className="text-4xl md:text-5xl font-black">{score}</span>
-              <span className="text-xl md:text-2xl font-bold text-muted-foreground">/100</span>
+            <div className="flex items-center justify-center gap-4">
+              <span className={`inline-block size-6 md:size-8 rounded-full ${config.bgClass} border-4 border-black`} />
+              <span>
+                <span className="text-4xl md:text-5xl font-black">{score}</span>
+                <span className="text-xl md:text-2xl font-bold text-muted-foreground">/100</span>
+              </span>
             </div>
           )}
           <div>

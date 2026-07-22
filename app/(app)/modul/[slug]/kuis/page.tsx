@@ -1,12 +1,17 @@
 import { notFound } from "next/navigation"
+import Link from "next/link"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { getTabProgress } from "@/features/modules/services/progress"
+import { getAllQuizResults } from "@/features/modules/services/quiz"
 import { Text } from "@/components/retroui/Text"
+import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { QuizBreadcrumb, QuizHeader, getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
 import { KuisStartButton } from "./KuisStartButton"
 import { LockOverlay } from "@/features/modules/components/LockOverlay"
+import { getScoreConfig } from "@/features/modules/lib/scoreColors"
+import type { ModuleSlug } from "@/features/modules/types"
 
 const MODULE_LABELS: Record<string, string> = {
   translasi: "Translasi",
@@ -48,11 +53,57 @@ export default async function KuisIntroPage(props: {
     }
   }
 
+  // Fetch past attempt history
+  const allResults = session?.user
+    ? await getAllQuizResults(session.user.id, slug as ModuleSlug)
+    : []
+
   return (
     <div className="space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={slug} label={label} />
 
       <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />} />
+
+      {allResults.length > 0 && (
+        <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-6 space-y-3">
+          <Text as="h2" className="text-base md:text-lg font-black uppercase">
+            Riwayat Percobaan
+          </Text>
+          <div className="space-y-2">
+            {allResults.map((r) => {
+              const config = getScoreConfig(r.totalScore)
+              return (
+                <div key={r.attemptNumber} className="flex items-center justify-between border-4 border-black p-2 md:p-3">
+                  <div className="flex items-center gap-3">
+                    <span className={`inline-block size-3 md:size-4 rounded-full ${config.bgClass} border-2 border-black shrink-0`} />
+                    <span className="font-bold text-xs md:text-sm uppercase">
+                      Percobaan Ke-{r.attemptNumber}
+                    </span>
+                    <span className="font-black text-xs md:text-sm">
+                      {r.totalScore}/100
+                    </span>
+                    {r.attemptNumber === 1 && (
+                      <span className="text-[10px] md:text-xs bg-secondary text-white px-1.5 py-0.5 font-bold uppercase">
+                        Nilai Akhir
+                      </span>
+                    )}
+                  </div>
+                  <Link href={`/modul/${slug}/kuis/hasil?attempt=${r.attemptNumber}`}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="font-bold uppercase text-xs gap-1 shadow-[2px_2px_0_0_black]"
+                    >
+                      Lihat Detail
+                      <MaterialIcon className="size-3.5" name="arrow_forward" />
+                    </Button>
+                  </Link>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-6 md:p-8 space-y-4">
         <Text as="h2" className="text-lg md:text-xl font-black uppercase">

@@ -25,7 +25,7 @@ export function QuizResultExplanation({
         Pembahasan
       </Text>
 
-      <Accordion multiple defaultValue={questions.map((q) => `q-${q.id}`)}>
+      <Accordion multiple>
         {questions.map((q, i) => {
           const userAnswer = answers[q.id]
           const isCorrect = userAnswer === q.correctIndex

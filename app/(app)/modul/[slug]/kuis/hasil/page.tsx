@@ -24,8 +24,10 @@ const MODULE_BG: Record<string, string> = {
 
 export default async function KuisHasilPage(props: {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ attempt?: string }>
 }) {
   const { slug } = await props.params
+  const { attempt: attemptParam } = await props.searchParams
   const quiz = getQuizModule(slug)
   if (!quiz) notFound()
 
@@ -38,7 +40,12 @@ export default async function KuisHasilPage(props: {
     allResults = await getAllQuizResults(session.user.id, slug as ModuleSlug)
   }
 
-  const latestResult = allResults.length > 0 ? allResults[allResults.length - 1] : null
+  // Show specific attempt if ?attempt= provided, otherwise latest
+  const targetResult = attemptParam
+    ? allResults.find((r) => r.attemptNumber === Number(attemptParam)) ?? null
+    : allResults.length > 0
+      ? allResults[allResults.length - 1]
+      : null
 
   // Get tabs for per-tab breakdown
   const tabs = await getTabProgress(session?.user?.id ?? "", slug as ModuleSlug)
@@ -61,9 +68,9 @@ export default async function KuisHasilPage(props: {
         badge={quiz.badge}
         icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />}
         bgColor={MODULE_BG[slug] ?? "bg-primary"}
-        serverScore={latestResult?.totalScore ?? null}
+        serverScore={targetResult?.totalScore ?? null}
         tabBreakdown={activeTabs}
-        attemptNumber={latestResult?.attemptNumber ?? null}
+        attemptNumber={targetResult?.attemptNumber ?? null}
         totalAttempts={allResults.length}
       />
     </div>
