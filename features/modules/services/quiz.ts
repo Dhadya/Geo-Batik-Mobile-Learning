@@ -75,6 +75,21 @@ export async function getLatestQuizResult(userId: string, module: ModuleSlug) {
   };
 }
 
+/** Checks if a user has any quiz attempt for the given module. */
+export async function hasModuleAttempt(userId: string, module: ModuleSlug): Promise<boolean> {
+  const db = getDb();
+
+  const row = await db.query.quizResults.findFirst({
+    where: and(
+      eq(quizResults.userId, userId),
+      eq(quizResults.module, module),
+    ),
+    columns: { id: true },
+  });
+
+  return !!row;
+}
+
 /** Fetches all quiz results for a module, ordered by attempt number. */
 export async function getAllQuizResults(userId: string, module: ModuleSlug) {
   const db = getDb();

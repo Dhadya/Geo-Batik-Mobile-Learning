@@ -5,6 +5,7 @@
 # GEMATRI — Agent Instructions
 
 **IMPORTANT: Always read this file (AGENTS.md) before implementing any task.**
+**Also read [docs/CODE_DO_AND_DONTS.md](./docs/CODE_DO_AND_DONTS.md) — it contains code-level patterns enforced in reviews.**
 
 ## Project Overview
 
