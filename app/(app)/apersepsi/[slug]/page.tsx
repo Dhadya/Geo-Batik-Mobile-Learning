@@ -5,6 +5,7 @@ import { Button } from "@/components/retroui/Button"
 import { ArrowRight } from "lucide-react"
 import { ApersepsiHeader, RichParagraph, ShapeStamps, apersepsiData } from "@/features/apersepsi"
 import { QuizBreadcrumb } from "@/features/quiz"
+import { RefleksiLockGuard } from "@/features/modules/components/RefleksiLockGuard"
 import type { ApersepsiSlug } from "@/features/apersepsi"
 
 export default async function ApersepsiPage(props: { params: Promise<{ slug: string }> }) {
@@ -17,7 +18,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
   const firstTab = data.slug === "translasi" ? "titik" : "sumbu-x"
   const label = data.slug === "translasi" ? "Translasi" : "Refleksi"
 
-  return (
+  const content = (
     <div className="max-w-384 mx-auto px-4 md:px-12 py-6 md:py-8 space-y-4 md:space-y-6">
       <QuizBreadcrumb slug={data.slug} label={label} path="apersepsi" />
 
@@ -65,5 +66,11 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
         </Link>
       </div>
     </div>
+  )
+
+  return slug === "refleksi" ? (
+    <RefleksiLockGuard>{content}</RefleksiLockGuard>
+  ) : (
+    content
   )
 }

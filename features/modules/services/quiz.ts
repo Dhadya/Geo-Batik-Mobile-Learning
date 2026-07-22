@@ -75,7 +75,7 @@ export async function getLatestQuizResult(userId: string, module: ModuleSlug) {
   };
 }
 
-/** Checks if a user has any quiz attempt for the given module. */
+/** Checks if a user has any quiz attempt for the given module. Used by RefleksiLockGuard for cross-module locking. */
 export async function hasModuleAttempt(userId: string, module: ModuleSlug): Promise<boolean> {
   const db = getDb();
 

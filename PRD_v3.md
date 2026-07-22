@@ -451,8 +451,8 @@ Every score, answer submission, and feedback history for each section (Percobaan
 | F11 | Per-Section Progress Tracking             | P1       | ✅             |
 | F12 | Quiz Package Randomization                | P0       | ✅             |
 | F13 | Two-Attempt Quiz System                   | P0       | ✅             |
-| F14 | Cross-Module Locking (Translasi→Refleksi) | P0       | 🚧 Planned     |
-| F15 | Page Overlay Lock                         | P0       | 🚧 Planned     |
+| F14 | Cross-Module Locking (Translasi→Refleksi) | P0       | ✅             |
+| F15 | Page Overlay Lock                         | P0       | ✅             |
 | F16 | Score Color Indicators                    | P1       | ✅             |
 
 ### 11.2 Feature Details
@@ -550,17 +550,17 @@ Tab Structure:
 - Unlimited subsequent attempts
 - Each attempt stored as separate `quiz_results` row
 
-#### F14: Cross-Module Locking (Translasi→Refleksi)
+#### F14: Cross-Module Locking (Translasi→Refleksi) ✅
 
 - Refleksi module entirely locked until Translasi quiz attempt 1 completed
-- Check: server-side query for `quiz_results WHERE module = 'translasi'`
-- Applied to all Refleksi routes: apersepsi, modul, quiz
+- Check: server-side `hasModuleAttempt()` queries `quiz_results WHERE module = 'translasi''
+- Applied to all Refleksi routes: apersepsi, modul, quiz via `RefleksiLockGuard` server component
 
-#### F15: Page Overlay Lock
+#### F15: Page Overlay Lock ✅
 
-- Locked pages show full-screen overlay instead of redirect
-- Overlay blocks all interaction on the page
-- Shows clear message + unlock condition + navigation button
+- Locked pages show full-screen `LockOverlay` component instead of redirect
+- Overlay blocks all interaction on the page (fixed z-50 backdrop)
+- Shows lock icon, "Modul Belum Terbuka" message, and "Ke Menu" navigation button
 - URL preserved so student knows where they are
 
 #### F16: Score Color Indicators
@@ -1082,14 +1082,14 @@ Chrome 90+, Firefox 88+, Safari 14+, Edge 90+.
 - Two-attempt at module level (F13) — attempt 1 counts, attempt 2+ practice
 - All quiz history in DB (attempt_number, package_id)
 
-### Phase 5: Cross-Module Locking 🚧
+### Phase 5: Cross-Module Locking ✅
 
-- 🚧 Server-side query for Translasi quiz completion (F14)
-- 🚧 Page overlay component (F15)
-- 🚧 All Refleksi routes render overlay when locked
-- 🚧 Integration with tab locking system
+- Server-side query for Translasi quiz completion (F14) — `hasModuleAttempt()` in `features/modules/services/quiz.ts`
+- Page overlay component (F15) — `LockOverlay` with NeoBrutalism styling
+- All Refleksi routes render overlay when locked — via `RefleksiLockGuard` in layout + apersepsi page
+- Integration with tab locking system — guard checks `quiz_results` table directly
 
-### Phase 6: Lab Batik & Polish 🔧
+### Phase 6: Lab Batik & Polish 🚧
 
 - 🚧 Creative sandbox canvas with stamp tools (P1)
 - 🚧 Batch transformation tools (P1)
