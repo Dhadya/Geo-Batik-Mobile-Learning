@@ -339,7 +339,6 @@ All of the following Refleksi routes are inaccessible until unlocked:
 
 - `/apersepsi/refleksi`
 - `/modul/refleksi/*` (all tabs + quiz)
-- `/prasyarat` (if navigated from Refleksi context)
 
 ### 9.3 Locking Mechanism
 

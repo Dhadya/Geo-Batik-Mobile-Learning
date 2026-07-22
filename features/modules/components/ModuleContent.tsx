@@ -13,6 +13,7 @@ import { ObservationPanel } from "./sections/pengamatan/ObservationPanel"
 import { ConclusionArea } from "./sections/penyimpulan/ConclusionArea"
 import { AssessmentSection } from "./sections/cek-pemahaman/AssessmentSection"
 import { ModuleTabNav } from "./navigation/ModuleTabNav"
+import { ForwardButton } from "./navigation/ForwardButton"
 import { ResetButton } from "./shared/ResetButton"
 import { getModuleTabs, getModuleTab, getSectionsForTab } from "../data"
 import { useSectionProgress } from "../hooks/useSectionSubmission"
@@ -194,7 +195,7 @@ export function ModuleContent({
         questions={questions}
       />
 
-      {/* Navigation buttons — back to apersepsi or forward to quiz */}
+      {/* Navigation buttons — back to apersepsi or forward to next tab / quiz */}
       <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
         <Link href={`/apersepsi/${slug}`}>
           <Button
@@ -206,16 +207,13 @@ export function ModuleContent({
             KEMBALI
           </Button>
         </Link>
-        <Link href={`/modul/${slug}/kuis`}>
-          <Button
-            variant="default"
-            size="lg"
-            className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
-          >
-            KERJAKAN KUIS
-            <MaterialIcon className="size-4 md:size-6" name="arrow_forward" />
-          </Button>
-        </Link>
+        <ForwardButton
+          slug={slug}
+          tab={decodedTab}
+          tabs={tabs}
+          completedCount={completedCount}
+          activeSections={activeSections}
+        />
       </div>
 
       {/* Reset FAB */}
@@ -223,3 +221,4 @@ export function ModuleContent({
     </div>
   )
 }
+

@@ -13,17 +13,23 @@ export function LockOverlay({ slug }: { slug: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
       <div className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-8 md:p-12 max-w-sm w-full mx-4 text-center space-y-6">
-        <MaterialIcon className="size-16 text-tertiary mx-auto" name="lock" />
+        <div className="flex justify-center">
+          <MaterialIcon
+            className="text-black leading-none"
+            style={{ fontSize: "3rem" }}
+            name="lock"
+          />
+        </div>
         <Text as="h2" className="text-xl md:text-2xl font-black uppercase">
           Modul Belum Terbuka
         </Text>
-        <Text className="text-sm md:text-base">
+        <Text className="text-sm md:text-base font-medium">
           Selesaikan dulu Kuis Translasi untuk membuka modul ini.
         </Text>
         <Button
           variant="default"
           size="lg"
-          className="w-full font-black uppercase"
+          className="w-full font-black uppercase gap-2"
           onClick={() => router.push("/menu")}
         >
           <MaterialIcon className="size-6" name="home" />
