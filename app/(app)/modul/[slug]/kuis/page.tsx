@@ -25,17 +25,17 @@ export default async function KuisIntroPage(props: {
 
   // Enforce quiz access guard: all tabs must be completed
   const session = await auth.api.getSession({ headers: await headers() })
+  let isLocked = false
+  let backHref = ""
+
   if (session?.user) {
     const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
     const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
 
     if (!allCompleted) {
-      return (
-        <LockOverlay
-          title="Kuis Belum Terbuka"
-          description="Selesaikan semua materi terlebih dahulu sebelum mengerjakan kuis."
-        />
-      )
+      isLocked = true
+      const latestUnlocked = [...tabs].reverse().find((t) => t.unlocked)
+      backHref = `/modul/${slug}/${latestUnlocked?.tab ?? tabs[0]?.tab ?? "titik"}`
     }
   }
 
@@ -45,7 +45,16 @@ export default async function KuisIntroPage(props: {
     : []
 
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="relative space-y-4 md:space-y-6">
+      {isLocked && (
+        <LockOverlay
+          title="Kuis Belum Terbuka"
+          description="Selesaikan semua materi terlebih dahulu sebelum mengerjakan kuis."
+          fullScreen
+          backHref={backHref}
+        />
+      )}
+
       <QuizBreadcrumb slug={slug} label={label} />
 
       <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />} />

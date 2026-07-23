@@ -4,7 +4,6 @@ import { auth } from "@/lib/auth"
 import { getTabProgress } from "@/features/modules/services/progress"
 import { getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
 import { KuisSoalClient } from "./client"
-import { LockOverlay } from "@/features/modules/components/LockOverlay"
 
 export default async function KuisSoalPage(props: {
   params: Promise<{ slug: string; nomor: string }>
@@ -26,14 +25,9 @@ export default async function KuisSoalPage(props: {
   const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
   const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
 
-  if (!allCompleted) {
-    return (
-      <LockOverlay
-        title="Kuis Belum Terbuka"
-        description="Selesaikan semua materi terlebih dahulu sebelum mengerjakan kuis."
-      />
-    )
-  }
+  const isLocked = !allCompleted
+  const latestUnlocked = isLocked ? [...tabs].reverse().find((t) => t.unlocked) : null
+  const backHref = `/modul/${slug}/${latestUnlocked?.tab ?? tabs[0]?.tab ?? "titik"}`
 
-  return <KuisSoalClient slug={slug} nomor={nomorNum} />
+  return <KuisSoalClient slug={slug} nomor={nomorNum} isLocked={isLocked} backHref={backHref} />
 }

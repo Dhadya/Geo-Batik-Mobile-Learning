@@ -15,9 +15,11 @@ import { AssessmentSection } from "./sections/cek-pemahaman/AssessmentSection"
 import { ModuleTabNav } from "./navigation/ModuleTabNav"
 import { ForwardButton } from "./navigation/ForwardButton"
 import { ResetButton } from "./shared/ResetButton"
+import { LockOverlay } from "./LockOverlay"
 import { getModuleTabs, getModuleTab, getSectionsForTab } from "../data"
 import { useSectionProgress } from "../hooks/useSectionSubmission"
 import { useAnswerStore } from "../store/answerStore"
+import { useTabProgressStore } from "../store/tabProgressStore"
 import type { PilihanGandaItem } from "../types"
 
 type SectionStatus = "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2"
@@ -162,6 +164,20 @@ export function ModuleContent({
     return s?.status === "correct" || s?.status === "wrong_attempt2"
   }).length
 
+  // Check if this tab is locked for preview-only mode
+  const tabProgressList = useTabProgressStore((s) => s.progress[slug])
+  const thisTabProgress = tabProgressList?.find((p) => p.tab === decodedTab)
+  const tabIndex = tabs.findIndex((t) => t.value === decodedTab)
+  const isTabLocked = thisTabProgress
+    ? !thisTabProgress.unlocked
+    : tabIndex > 0
+
+  // Compute backHref: navigate to latest unlocked tab
+  const latestUnlockedTab = tabProgressList
+    ? [...tabProgressList].reverse().find((p) => p.unlocked)
+    : null
+  const backHref = `/modul/${slug}/${latestUnlockedTab?.tab ?? tabs[0].value}`
+
   return (
     <div className="space-y-3 md:space-y-6">
       {/* Breadcrumb navigation */}
@@ -184,8 +200,19 @@ export function ModuleContent({
       {/* Tab navigation bar */}
       <ModuleTabNav slug={slug} tabs={tabs} currentTab={decodedTab} />
 
-      {/* Main 2-column layout: workspace + observation panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6 items-start">
+      {/* Content area — LockOverlay covers full viewport below navbar when tab is locked */}
+      <div className="relative">
+        {isTabLocked && (
+          <LockOverlay
+            title="Tab Belum Terbuka"
+            description={`Selesaikan tab ${tabs[tabIndex - 1]?.label ?? "sebelumnya"} terlebih dahulu untuk mulai mengerjakan bagian ini.`}
+            fullScreen
+            backHref={backHref}
+          />
+        )}
+
+        {/* Main 2-column layout: workspace + observation panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6 items-start">
         {/* Left column — GeoGebra canvas + conclusion formula (desktop only) */}
         <div className="lg:col-span-8 flex flex-col gap-3 md:gap-6">
           <InteractiveWorkspace materialId={tabConfig.materialId} />
@@ -239,6 +266,7 @@ export function ModuleContent({
 
       {/* Reset FAB */}
       <ResetButton slug={slug} />
+      </div>{/* end relative container */}
     </div>
   )
 }

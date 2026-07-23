@@ -21,14 +21,19 @@ import {
   useQuizStore,
 } from "@/features/quiz"
 import { useQuizSubmit } from "./useQuizSubmit"
+import { LockOverlay } from "@/features/modules/components/LockOverlay"
 
 /** Client-side quiz question page — user selects answer and navigates forward. Pembahasan shown only on result page after submit. */
 export function KuisSoalClient({
   slug,
   nomor,
+  isLocked = false,
+  backHref = "",
 }: {
   slug: string
   nomor: number
+  isLocked?: boolean
+  backHref?: string
 }) {
   const router = useRouter()
   const sessionStarted = useQuizStore((s) => s.sessionStarted)
@@ -117,7 +122,16 @@ export function KuisSoalClient({
   const label = MODULE_LABELS[slug] ?? slug
 
   return (
-    <div className="max-w-384 mx-auto space-y-4 md:space-y-6">
+    <div className="relative max-w-384 mx-auto space-y-4 md:space-y-6">
+      {isLocked && (
+        <LockOverlay
+          title="Kuis Belum Terbuka"
+          description="Selesaikan semua materi terlebih dahulu sebelum mengerjakan kuis."
+          fullScreen
+          backHref={backHref}
+        />
+      )}
+
       <QuizBreadcrumb slug={slug} label={label} />
 
       <div className="bg-surface-container-high border-4 border-black shadow-[4px_4px_0_0_black]">

@@ -16,14 +16,16 @@ export async function getTabProgress(userId: string, module: ModuleSlug) {
   if (rows.length === 0) {
     const tabs = MODULE_TABS[module] ?? [];
     const seedRows = tabs.map((t, i) => ({
+      id: crypto.randomUUID(),
       userId,
       module,
       tab: t.value,
       unlocked: i === 0,
       completed: false,
+      updatedAt: new Date(),
     }));
-    await db.insert(tabProgress).values(seedRows);
-    return seedRows;
+    await db.insert(tabProgress).values(seedRows).onConflictDoNothing();
+    return seedRows.map((r) => ({ tab: r.tab, unlocked: r.unlocked, completed: r.completed }));
   }
 
   return rows.map((r) => ({
