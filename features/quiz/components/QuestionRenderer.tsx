@@ -18,7 +18,7 @@ export function QuestionRenderer({
   onAnswer,
 }: QuestionRendererProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 w-full">
+    <div className={`grid gap-3 md:gap-4 w-full ${question.options.length >= 5 ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-5" : question.options.length === 3 ? "grid-cols-1 md:grid-cols-3" : "grid-cols-1 md:grid-cols-2"}`}>
       {question.options.map((opt, i) => (
         <AnswerButton
           key={i}
