@@ -13,6 +13,8 @@ interface QuizState {
   attemptNumber: number
   /** Assigned package: 0 = Paket 1, 1 = Paket 2. */
   currentPackage: number
+  /** True after setQuizMeta is called by KuisStartButton. Used to detect direct URL entry. */
+  sessionStarted: boolean
   /** Select an answer for a question. */
   selectAnswer: (questionId: number, optionIndex: number) => void
   /** Submit current answers — snapshots them then clears in-progress state. */
@@ -33,6 +35,7 @@ export const useQuizStore = create<QuizState>()(
       attempts: {},
       attemptNumber: 1,
       currentPackage: 0,
+      sessionStarted: false,
       selectAnswer: (questionId, optionIndex) =>
         set((state) => ({
           answers: { ...state.answers, [questionId]: optionIndex },
@@ -65,8 +68,8 @@ export const useQuizStore = create<QuizState>()(
           },
         })),
       setQuizMeta: (attemptNumber, currentPackage) =>
-        set({ attemptNumber, currentPackage }),
-      resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {}, attemptNumber: 1, currentPackage: 0 }),
+        set({ attemptNumber, currentPackage, sessionStarted: true }),
+      resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {}, attemptNumber: 1, currentPackage: 0, sessionStarted: false }),
     }),
     { name: "gematri-quiz-store" },
   ),

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
@@ -15,6 +15,7 @@ import {
   QuizArrowNav,
   QuizArrowNext,
   useQuiz,
+  useQuizStore,
 } from "@/features/quiz"
 import { useQuizSubmit } from "./useQuizSubmit"
 
@@ -27,6 +28,14 @@ export function KuisSoalClient({
   nomor: number
 }) {
   const router = useRouter()
+  const sessionStarted = useQuizStore((s) => s.sessionStarted)
+
+  // Redirect to intro if user navigated directly without starting a quiz session
+  useEffect(() => {
+    if (!sessionStarted) {
+      router.replace(`/modul/${slug}/kuis`)
+    }
+  }, [sessionStarted, slug, router])
 
   const {
     quiz,

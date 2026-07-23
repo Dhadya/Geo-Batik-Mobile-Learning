@@ -28,10 +28,16 @@ export function ProfileDropdown() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  // Handle sign-out — clear session and local state, then redirect
+  // Handle sign-out — clear session and all persisted state, then redirect
   async function handleSignOut() {
     useAnswerStore.getState().resetAll()
     useQuizStore.getState().resetAnswers()
+    try {
+      localStorage.removeItem("gematri-module-answers")
+      localStorage.removeItem("gematri-quiz-store")
+    } catch {
+      // localStorage may not be available
+    }
     await signOut()
     router.push("/login")
   }
