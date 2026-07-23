@@ -5,7 +5,7 @@ import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 export default function ErrorPage({
-  reset,
+  error,
 }: {
   error: Error & { digest?: string }
   reset: () => void
