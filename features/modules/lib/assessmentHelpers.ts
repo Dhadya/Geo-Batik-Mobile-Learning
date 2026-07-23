@@ -1,4 +1,4 @@
-import type { AssessmentQuestion, PilihanGandaItem } from "../../../types"
+import type { AssessmentQuestion, PilihanGandaItem } from "../types"
 
 /** Option label letters A–F. */
 export const LABELS = ["A", "B", "C", "D", "E", "F"]
@@ -13,14 +13,15 @@ export function countBits(n: number): number {
   return c
 }
 
-/** Convert selections to the fields format expected by evaluateSection. */
+/** Convert selections to the fields format expected by evaluateSection — uses question ID as key. */
 export function selectionsToFields(
   sel: (number | null)[],
+  questions: AssessmentQuestion[],
 ): Record<string, Record<string, string>> {
   const fields: Record<string, Record<string, string>> = {}
   sel.forEach((s, qi) => {
-    if (s != null) {
-      fields[String(qi)] = { selected: String(s) }
+    if (s != null && questions[qi]) {
+      fields[String(questions[qi].id)] = { selected: String(s) }
     }
   })
   return fields
@@ -54,7 +55,7 @@ export function computeErrors(
     if (q.multiSelect && q.correctIndices) {
       const bitmap = Number(sel[qi] ?? 0)
       const correct =
-        q.correctIndices.every((ci) => bitmap & (1 << ci)) &&
+        q.correctIndices.every((ci: number) => bitmap & (1 << ci)) &&
         q.correctIndices.length === countBits(bitmap)
       if (!correct) errs[`${q.id}`] = true
     } else if (sel[qi] !== q.correctIndex) {

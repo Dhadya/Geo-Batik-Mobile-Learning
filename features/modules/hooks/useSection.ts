@@ -85,7 +85,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     if (status === "wrong_attempt1") {
       return {
         isLocked: false,
-        attempt: 2 as 1 | 2,
+        attempt: 1 as 1 | 2,
         showCobaLagi: true,
         isCorrectEvaluation: false as boolean | null,
       }

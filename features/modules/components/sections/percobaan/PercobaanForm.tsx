@@ -3,6 +3,7 @@
 import { Text } from "@/components/retroui/Text"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { UraianItem } from "@/features/modules/types"
 
 import { PercobaanInstruction } from "./PercobaanInstruction"
@@ -21,8 +22,10 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "percobaan")
+
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   if (items.length === 0) return null
 
@@ -35,6 +38,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   if (isGaris && gtTable && block) {
     return (
       <div className="space-y-3 md:space-y-4">
+        <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
         <PercobaanGarisView
           items={items}
           fields={fields}
@@ -48,6 +52,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
 
         <SectionSubmitButton
+          attempt={attempt}
           isChecked={isChecked}
           isFilled={isFilled}
           isCorrect={isCorrectEvaluation}
@@ -64,6 +69,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   // ── Default branch (translasi titik/bangun or refleksi) ──
   return (
     <div className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {block?.instruction && (
         <PercobaanInstruction
           instruction={block.instruction}
@@ -118,6 +124,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
       <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
 
       <SectionSubmitButton
+        attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
         isCorrect={isCorrectEvaluation}

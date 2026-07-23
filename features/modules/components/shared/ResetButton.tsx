@@ -5,10 +5,16 @@ import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { Dialog } from "@/components/retroui/Dialog"
 import { useAnswerStore } from "../../store/answerStore"
 
-/** FAB button that resets all module answers with confirmation dialog. */
-export function ResetButton() {
+/** FAB button that resets all module answers with confirmation dialog. Also deletes all DB records for the module. */
+export function ResetButton({ slug }: { slug: string }) {
   const [open, setOpen] = useState(false)
   const resetAll = useAnswerStore((s) => s.resetAll)
+
+  const handleReset = () => {
+    resetAll()
+    fetch(`/api/modul/${slug}/reset`, { method: "DELETE" }).catch(() => {})
+    setOpen(false)
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -32,7 +38,7 @@ export function ResetButton() {
             Yakin ingin mereset semua jawaban?
           </p>
           <p className="text-xs md:text-sm text-muted-foreground">
-            Semua jawaban yang sudah kamu isi akan dihapus.
+            Semua jawaban yang sudah kamu isi akan dihapus, termasuk data di database.
           </p>
         </div>
 
@@ -43,10 +49,7 @@ export function ResetButton() {
           </Dialog.Close>
           <Dialog.Close
             className="font-bold uppercase text-xs md:text-sm px-4 py-2 cursor-pointer  border-2 border-destructive bg-destructive text-destructive-foreground hover:shadow-[2px_2px_0_0_black] hover:-translate-y-0.5 hover:-translate-x-0.5 active:shadow-none active:translate-y-0 active:translate-x-0 transition-all duration-150"
-            onClick={() => {
-              resetAll()
-              setOpen(false)
-            }}
+            onClick={handleReset}
           >
             Reset
           </Dialog.Close>

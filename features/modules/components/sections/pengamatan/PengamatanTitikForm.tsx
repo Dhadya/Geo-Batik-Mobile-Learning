@@ -5,6 +5,7 @@ import { Textarea } from "@/components/retroui/Textarea"
 import { Select } from "@/components/retroui/Select"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { UraianItem, MemasangkanItem } from "@/features/modules/types"
 
 interface PengamatanTitikFormProps {
@@ -17,13 +18,16 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   const hasConfirmation = slug === "translasi" && tab === "titik"
 
   return (
     <form className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {/* Section instruction */}
       {block?.instruction && (
         <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
@@ -125,6 +129,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
       )}
 
       <SectionSubmitButton
+        attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
         isCorrect={isCorrectEvaluation}

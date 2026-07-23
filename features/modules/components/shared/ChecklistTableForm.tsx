@@ -5,6 +5,7 @@ import { Text } from "@/components/retroui/Text"
 import { Checkbox } from "@/components/retroui/Checkbox"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "./SectionSubmitButton"
+import { AttemptBadge } from "./AttemptBadge"
 import type { ChecklistTableItem } from "@/features/modules/types"
 
 interface ChecklistTableFormProps {
@@ -17,8 +18,10 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   const hasConfirmation = slug === "translasi" && tab === "titik"
 
@@ -33,6 +36,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
 
   return (
     <section className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {/* Instruction */}
       <Text as="p" className="text-xs md:text-sm font-medium text-black">
         {checklistItem.question}
@@ -90,6 +94,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
       )}
 
       <SectionSubmitButton
+        attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
         isCorrect={isCorrectEvaluation}

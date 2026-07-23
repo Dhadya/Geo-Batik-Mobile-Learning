@@ -217,7 +217,7 @@ export function ModuleContent({
       </div>
 
       {/* Reset FAB */}
-      <ResetButton />
+      <ResetButton slug={slug} />
     </div>
   )
 }

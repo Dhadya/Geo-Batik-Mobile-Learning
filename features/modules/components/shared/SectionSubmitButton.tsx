@@ -10,6 +10,8 @@ interface SectionSubmitButtonProps {
   isCorrect: boolean | null
   isLocked: boolean
   showCobaLagi: boolean
+  /** Current attempt number (1 or 2) — used for dialog message text */
+  attempt: 1 | 2
   /** Called when user clicks "Periksa Jawaban" (initial submit) */
   onSubmit: () => void
   /** Called when user clicks "Coba Lagi" — resets form to edit mode */
@@ -29,6 +31,7 @@ export function SectionSubmitButton({
   isCorrect,
   isLocked,
   showCobaLagi,
+  attempt,
   onSubmit,
   onCobaLagi,
   requireConfirmation = false,
@@ -107,7 +110,9 @@ export function SectionSubmitButton({
             Yakin ingin mengirimkan jawaban?
           </p>
           <p className="text-xs md:text-sm text-gray-800">
-            Kamu hanya dapat mengirimkan jawaban maksimal 2 kali. Kamu sekarang punya 2 kesempatan. Periksa jawaban kamu sebelum mengirim.
+            {attempt === 2
+              ? "Ini adalah kesempatan terakhirmu. Jawaban yang telah terkirim tidak dapat diubah lagi. Nilai akan dihitung dari skor terbaik dari kedua kesempatan."
+              : "Kamu hanya dapat mengirimkan jawaban maksimal 2 kali. Kamu sekarang punya 2 kesempatan. Periksa jawaban kamu sebelum mengirim."}
           </p>
         </div>
 

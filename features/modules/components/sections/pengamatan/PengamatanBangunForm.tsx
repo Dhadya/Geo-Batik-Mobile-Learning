@@ -5,6 +5,7 @@ import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { PilihanGandaItem } from "@/features/modules/types"
 
 interface PengamatanBangunFormProps {
@@ -18,7 +19,10 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
+    attempt,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   const hasConfirmation = slug === "translasi" && tab === "titik"
 
@@ -27,6 +31,8 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
 
   return (
     <form className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
+
       {/* Section instruction */}
       {block?.instruction && (
         <Text as="p" className="text-xs md:text-sm text-black font-semibold leading-relaxed">
@@ -87,15 +93,16 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
       )}
 
       <SectionSubmitButton
-        isChecked={isChecked}
-        isFilled={isFilled}
-        isCorrect={isCorrectEvaluation}
-        isLocked={isLocked}
-        showCobaLagi={showCobaLagi}
-        onSubmit={handleSubmit}
-        onCobaLagi={handleCobaLagi}
-        requireConfirmation={hasConfirmation}
-      />
+          isChecked={isChecked}
+          isFilled={isFilled}
+          isCorrect={isCorrectEvaluation}
+          isLocked={isLocked}
+          showCobaLagi={showCobaLagi}
+          attempt={attempt}
+          onSubmit={handleSubmit}
+          onCobaLagi={handleCobaLagi}
+          requireConfirmation={hasConfirmation}
+        />
     </form>
   )
 }

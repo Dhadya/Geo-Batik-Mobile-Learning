@@ -6,6 +6,7 @@ import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import { UrutkanInput } from "../../shared/UrutkanInput"
 import type { UraianItem, PilihanGandaItem, UrutkanItem as UrutkanItemType } from "@/features/modules/types"
 
@@ -19,13 +20,16 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   const hasConfirmation = slug === "translasi" && tab === "titik"
 
   return (
     <div className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {block?.instruction && (
         <Text as="p" className="text-xs md:text-sm text-black font-semibold leading-relaxed">
           {block.instruction}
@@ -135,6 +139,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
       )}
 
       <SectionSubmitButton
+        attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
         isCorrect={isCorrectEvaluation}

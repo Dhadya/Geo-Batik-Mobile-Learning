@@ -6,13 +6,15 @@ import Image from "next/image"
 import { Text } from "@/components/retroui/Text"
 import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
+import { toast } from "sonner"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import { useAnswerStore } from "../../../store/answerStore"
 import { evaluateSection } from "../../../lib/evaluateSection"
 import { triggerTabUnlockIfComplete } from "../../../lib/progressSync"
 import { useSubmitSection } from "../../../hooks/useSectionSubmission"
-import { selectionsToFields, toSectionItems, computeErrors } from "./assessmentHelpers"
+import { selectionsToFields, toSectionItems, computeErrors } from "../../../lib/assessmentHelpers"
 import { ModuleAnswerButton } from "./ModuleAnswerButton"
 import type { AssessmentQuestion } from "../../../types"
 
@@ -29,6 +31,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const selections = useMemo(() => rawTab?.cekPemahaman?.selections ?? [], [rawTab])
   const aiFeedback = useMemo(() => rawTab?.cekPemahaman?.aiFeedback, [rawTab])
   const setSelections = useAnswerStore((s) => s.setSelections)
+  const hasInput = selections.some((s) => s != null)
 
   const [attempt, setAttempt] = useState<1 | 2>(1)
   const [isLocked, setIsLocked] = useState(false)
@@ -48,7 +51,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     [questions, selections],
   )
 
-  /** Bitmap-encoded selection: toggles option oi on/off for multi-select; stores single index for single-select */
+  /** Bitmap-encoded selection: toggles option on/off for multi-select; stores single index for single-select */
   const handleSelect = useCallback(
     (qi: number, oi: number) => {
       if (isChecked && !showCobaLagi) return
@@ -72,7 +75,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const doSubmit = useCallback(async () => {
     if (submitMutation.isPending) return
 
-    const fields = selectionsToFields(selections)
+    const fields = selectionsToFields(selections, questions)
     const items = toSectionItems(questions)
 
     const result = await evaluateSection(slug, tab, "cek-pemahaman", items, fields, attempt)
@@ -102,6 +105,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         setIsLocked(true)
         setShowCobaLagi(false)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "correct", attempt)
+        toast.success("Jawaban kamu benar, selamat!")
 
         await submitMutation.mutateAsync({ ...savePayload, status: "correct" })
         await triggerTabUnlockIfComplete(slug, tab)
@@ -109,12 +113,14 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         setShowCobaLagi(true)
         setAttempt(2)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt1", 2)
+        toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
 
         await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt1" })
       } else {
         setIsLocked(true)
         setShowCobaLagi(false)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt2", 2)
+        toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
 
         await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt2" })
         await triggerTabUnlockIfComplete(slug, tab)
@@ -134,15 +140,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Cek Pemahaman
         </Text>
+        <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasInput} />
         <SectionScoreIndicator score={rawTab?.cekPemahaman?.score ?? null} size="md" />
-        {isLocked && (
-          <MaterialIcon name="lock" className="size-4 md:size-6 text-muted-foreground" />
-        )}
-        {showCobaLagi && (
-          <Badge variant="solid" size="sm" className="bg-yellow-500 text-white">
-            PERCOBAAN KE-2
-          </Badge>
-        )}
       </div>
 
       {/* Questions loop */}
@@ -175,7 +174,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                           alt="Soal"
                           width={120}
                           height={120}
-                          className="w-[160px] h-[160px] sm:w-[200px] sm:h-[200px] md:w-[240px] md:h-[240px] object-contain"
+                          className="w-40 h-40 sm:w-50 sm:h-50 md:w-60 md:h-60 object-contain"
                         />
                       </div>
                     </div>
@@ -253,7 +252,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                         isWrong={!!isWrong}
                         onSelect={() => handleSelect(qi, oi)}
                         matrix={q.optionFormat === "matrix"}
-                        disabled={isChecked && !showCobaLagi}
+                        disabled={isChecked}
                         imageSrc={q.imageOptions?.[oi]}
                       />
                     )
@@ -280,36 +279,27 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         </div>
       )}
 
-      {/* Locked state */}
-      {isLocked && (
-        <div className="border-4 border-black bg-muted p-4 md:p-6 mt-4 md:mt-6">
-          <Text className="text-sm md:text-base font-bold uppercase text-muted-foreground flex items-center gap-2">
-            <MaterialIcon name="lock" className="size-4 md:size-5" />
-            {isCorrect ? "Jawaban kamu benar — bagian ini sudah terkunci karena sudah mencapai nilai terbaik" : "Kesempatan kedua sudah habis — jawaban sudah terkunci, lanjutkan ke bagian berikutnya"}
-          </Text>
-        </div>
-      )}
-
-      {/* Submit button */}
-      {!isLocked && (
-        <div className="mt-4 md:mt-8">
-          <SectionSubmitButton
-            isChecked={isChecked}
-            isFilled={allAnswered}
-            isCorrect={isCorrect}
-            isLocked={isLocked}
-            showCobaLagi={showCobaLagi}
-            onSubmit={doSubmit}
-            onCobaLagi={() => {
-              setIsChecked(false)
-              setIsCorrect(null)
-              setValidationErrors({})
-              setShowCobaLagi(false)
-            }}
-            requireConfirmation={slug === "translasi" && tab === "titik"}
-          />
-        </div>
-      )}
+      {/* Submit button — shown in all states */}
+      <div className="mt-4 md:mt-8">
+        <SectionSubmitButton
+          isChecked={isChecked}
+          isFilled={allAnswered}
+          isCorrect={isCorrect}
+          isLocked={isLocked}
+          showCobaLagi={showCobaLagi}
+          attempt={attempt}
+          onSubmit={doSubmit}
+          onCobaLagi={() => {
+            setIsChecked(false)
+            setIsCorrect(null)
+            setValidationErrors({})
+            setShowCobaLagi(false)
+            useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, "")
+            useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "unsubmitted", 2)
+          }}
+          requireConfirmation={slug === "translasi" && tab === "titik"}
+        />
+      </div>
     </section>
   )
 }

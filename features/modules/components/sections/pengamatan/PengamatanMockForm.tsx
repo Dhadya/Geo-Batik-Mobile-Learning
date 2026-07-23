@@ -6,6 +6,7 @@ import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { KoordinatItem, UraianItem } from "@/features/modules/types"
 
 interface PengamatanMockFormProps {
@@ -18,11 +19,14 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
   const {
     items, fields, errors, isChecked, isFilled,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "pengamatan")
+
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   return (
     <form onSubmit={(e) => e.preventDefault()} className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {/* Static instruction for all mock tabs */}
       <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
         Amati visualisasi GeoGebra di samping, lalu jawab pertanyaan berikut.
@@ -98,6 +102,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
       </div>
 
       <SectionSubmitButton
+        attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
         isCorrect={isCorrectEvaluation}

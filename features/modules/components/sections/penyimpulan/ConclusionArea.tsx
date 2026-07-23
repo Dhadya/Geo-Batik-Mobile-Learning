@@ -6,6 +6,7 @@ import { Text } from "@/components/retroui/Text"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { useSection } from "../../../hooks/useSection"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import { useAnswerStore } from "../../../store/answerStore"
 import type { UraianItem, UrutkanItem as UrutkanItemType } from "../../../types"
 import { UrutkanRenderer } from "./UrutkanRenderer"
@@ -25,7 +26,10 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi: resetState,
+    attempt,
   } = useSection(slug, tab, "penyimpulan")
+
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   const penyimpulanAnswers = useAnswerStore((s) => s.answers[`${slug}-${tab}`]?.penyimpulan)
   const score = penyimpulanAnswers?.score ?? null
@@ -43,6 +47,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Penyimpulan
         </Text>
+        <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
         <SectionScoreIndicator score={score} size="md" />
       </div>
 
@@ -125,6 +130,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
           isCorrect={isCorrectEvaluation}
           isLocked={isLocked}
           showCobaLagi={showCobaLagi}
+          attempt={attempt}
           onSubmit={handleSubmit}
           onCobaLagi={handleCobaLagi}
           requireConfirmation={slug === "translasi" && tab === "titik"}

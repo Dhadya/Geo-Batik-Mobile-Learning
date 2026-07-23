@@ -4,7 +4,7 @@ import Image from "next/image"
 
 import { Button } from "@/components/retroui/Button"
 import { Badge } from "@/components/retroui/Badge"
-import { LABELS } from "./assessmentHelpers"
+import { LABELS } from "../../../lib/assessmentHelpers"
 
 interface ModuleAnswerButtonProps {
   /** Zero-based option index. */

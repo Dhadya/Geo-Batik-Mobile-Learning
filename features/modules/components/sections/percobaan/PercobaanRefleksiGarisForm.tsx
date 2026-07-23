@@ -6,6 +6,7 @@ import { Select } from "@/components/retroui/Select"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { PilihanRefleksiItem } from "@/features/modules/types"
 
 interface PercobaanRefleksiGarisFormProps {
@@ -18,8 +19,10 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "percobaan")
+
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   const refleksiItem = items.find((i): i is PilihanRefleksiItem => i.type === "pilihan_refleksi")
   if (!refleksiItem) return null
@@ -29,6 +32,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
 
   return (
     <section className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {/* Instruction */}
       <Text as="p" className="text-xs md:text-sm font-medium text-black whitespace-pre-line">
         {refleksiItem.question}
@@ -99,6 +103,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
       )}
 
       <SectionSubmitButton
+        attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
         isCorrect={isCorrectEvaluation}
