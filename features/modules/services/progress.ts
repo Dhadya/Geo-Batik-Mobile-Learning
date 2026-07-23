@@ -36,24 +36,6 @@ export async function getTabProgress(userId: string, module: ModuleSlug) {
 export async function unlockNextTab(userId: string, module: ModuleSlug, completedTab: string) {
   const db = getDb();
 
-  const sections = await db.query.sectionProgress.findMany({
-    where: and(
-      eq(sectionProgress.userId, userId),
-      eq(sectionProgress.module, module),
-      eq(sectionProgress.tab, completedTab),
-    ),
-    columns: { status: true },
-  });
-
-  const expectedCount = getExpectedSectionCount(module, completedTab)
-  const allDone =
-    sections.length >= expectedCount &&
-    sections.every((s) => s.status === "correct" || s.status === "wrong_attempt2");
-
-  if (!allDone) {
-    throw appError("TAB_LOCKED");
-  }
-
   const tabs = MODULE_TABS[module] ?? [];
   const currentIndex = tabs.findIndex((t) => t.value === completedTab);
   const nextTab =
@@ -61,46 +43,71 @@ export async function unlockNextTab(userId: string, module: ModuleSlug, complete
       ? tabs[currentIndex + 1].value
       : null;
 
-  // Idempotent: skip if the current tab is already marked completed
-  const currentRow = await db.query.tabProgress.findFirst({
-    where: and(
-      eq(tabProgress.userId, userId),
-      eq(tabProgress.module, module),
-      eq(tabProgress.tab, completedTab),
-    ),
-    columns: { completed: true },
-  });
+  // Everything inside one transaction to prevent TOCTOU race
+  const updated = await db.transaction(async (tx) => {
+    const sections = await tx.query.sectionProgress.findMany({
+      where: and(
+        eq(sectionProgress.userId, userId),
+        eq(sectionProgress.module, module),
+        eq(sectionProgress.tab, completedTab),
+      ),
+      columns: { status: true },
+    });
 
-  if (currentRow?.completed) {
-    // Already completed — return current state without re-applying
-    const updated = await getTabProgress(userId, module);
-    return { unlockedTab: nextTab, progress: updated };
-  }
+    const expectedCount = getExpectedSectionCount(module, completedTab);
+    const allDone =
+      sections.length >= expectedCount &&
+      sections.every((s) => s.status === "correct" || s.status === "wrong_attempt2");
 
-  await db
-    .update(tabProgress)
-    .set({ completed: true, updatedAt: new Date() })
-    .where(
-      and(
+    if (!allDone) {
+      throw appError("TAB_LOCKED");
+    }
+
+    const currentRow = await tx.query.tabProgress.findFirst({
+      where: and(
         eq(tabProgress.userId, userId),
         eq(tabProgress.module, module),
         eq(tabProgress.tab, completedTab),
       ),
-    );
+      columns: { completed: true },
+    });
 
-  if (nextTab) {
-    await db
+    if (currentRow?.completed) {
+      const progress = await tx.query.tabProgress.findMany({
+        where: and(eq(tabProgress.userId, userId), eq(tabProgress.module, module)),
+      });
+      return { unlockedTab: nextTab, progress: progress.map((r) => ({ tab: r.tab, unlocked: r.unlocked, completed: r.completed })) };
+    }
+
+    await tx
       .update(tabProgress)
-      .set({ unlocked: true, updatedAt: new Date() })
+      .set({ completed: true, updatedAt: new Date() })
       .where(
         and(
           eq(tabProgress.userId, userId),
           eq(tabProgress.module, module),
-          eq(tabProgress.tab, nextTab),
+          eq(tabProgress.tab, completedTab),
         ),
       );
-  }
 
-  const updated = await getTabProgress(userId, module);
-  return { unlockedTab: nextTab, progress: updated };
+    if (nextTab) {
+      await tx
+        .update(tabProgress)
+        .set({ unlocked: true, updatedAt: new Date() })
+        .where(
+          and(
+            eq(tabProgress.userId, userId),
+            eq(tabProgress.module, module),
+            eq(tabProgress.tab, nextTab),
+          ),
+        );
+    }
+
+    const progress = await tx.query.tabProgress.findMany({
+      where: and(eq(tabProgress.userId, userId), eq(tabProgress.module, module)),
+    });
+    return { unlockedTab: nextTab, progress: progress.map((r) => ({ tab: r.tab, unlocked: r.unlocked, completed: r.completed })) };
+  });
+
+  return updated;
 }

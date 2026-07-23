@@ -1,7 +1,16 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { appError } from "@/lib/api/errors";
 import type { SectionItem } from "@/features/modules/types";
 import type { PilihanGandaQuestion } from "@/features/quiz/types";
+
+const GENERATION_TIMEOUT_MS = 20000;
+
+const SAFETY_SETTINGS = [
+  { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
+  { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+];
 
 export interface EvaluateSectionInput {
   module: string;
@@ -175,13 +184,28 @@ export async function evaluateSection(
     throw appError("INTERNAL_ERROR");
   }
 
+  if (!input.items?.length || Object.keys(input.answers).length === 0) {
+    return {
+      isCorrect: false,
+      score: null,
+      feedback: "Tidak ada jawaban yang ditemukan untuk dievaluasi.",
+      errors: {},
+    };
+  }
+
   const prompt = buildPrompt(input.module, input.tab, input.sectionType, input.items, input.answers, input.attempt);
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    safetySettings: SAFETY_SETTINGS,
+  });
 
   let result;
   try {
-    result = await model.generateContent(prompt);
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Gemini API timed out")), GENERATION_TIMEOUT_MS),
+    );
+    result = await Promise.race([model.generateContent(prompt), timeoutPromise]);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "AI evaluation failed";
     console.warn("[ai] Gemini API call failed:", msg);
@@ -296,20 +320,38 @@ export async function evaluateQuizQuestion(
     throw appError("INTERNAL_ERROR");
   }
 
+  const localCorrect = input.answer === input.question.correctIndex;
+
   const prompt = buildQuizPrompt(input.question, input.answer, input.attempt);
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    safetySettings: SAFETY_SETTINGS,
+  });
 
   try {
-    const result = await model.generateContent(prompt);
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Gemini API timed out")), GENERATION_TIMEOUT_MS),
+    );
+    const result = await Promise.race([model.generateContent(prompt), timeoutPromise]);
     const response = result.response.text();
     if (!response) {
-      return { isCorrect: false, score: 0, feedback: "Gagal mendapatkan feedback AI" };
+      return {
+        isCorrect: localCorrect,
+        score: localCorrect ? 100 : 0,
+        feedback: localCorrect ? "Jawaban kamu benar." : "Jawaban kamu belum tepat.",
+      };
     }
     return parseQuizAIResponse(response);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Quiz AI evaluation failed";
     console.warn("[ai] quiz Gemini API call failed:", msg);
-    return { isCorrect: false, score: 0, feedback: "Gagal mengevaluasi jawaban. Silakan coba lagi." };
+    return {
+      isCorrect: localCorrect,
+      score: localCorrect ? 100 : 0,
+      feedback: localCorrect
+        ? "Jawaban kamu benar."
+        : "Jawaban kamu belum tepat. Periksa kembali pemahamanmu tentang konsep yang sedang dipelajari.",
+    };
   }
 }

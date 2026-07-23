@@ -33,6 +33,7 @@ export type SubmitQuizInput = z.infer<typeof submitQuizSchema>;
 
 /** Persists a completed quiz result for a module. Returns the inserted row id, totalScore, and attemptNumber. */
 export async function saveQuizResult(userId: string, module: ModuleSlug, input: SubmitQuizInput) {
+  const parsed = submitQuizSchema.parse(input);
   const db = getDb();
 
   const inserted = await db
@@ -40,10 +41,10 @@ export async function saveQuizResult(userId: string, module: ModuleSlug, input: 
     .values({
       userId,
       module,
-      attemptNumber: input.attemptNumber,
-      packageId: input.packageId,
-      answers: input.answers,
-      totalScore: input.totalScore,
+      attemptNumber: parsed.attemptNumber,
+      packageId: parsed.packageId,
+      answers: parsed.answers,
+      totalScore: parsed.totalScore,
       completedAt: new Date(),
     })
     .returning({ id: quizResults.id, totalScore: quizResults.totalScore, attemptNumber: quizResults.attemptNumber });

@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { persist } from "zustand/middleware"
 import type { QuizAnswers, QuizQuestionAttempt } from "./types"
 
 interface QuizState {
@@ -24,44 +25,49 @@ interface QuizState {
   resetAnswers: () => void
 }
 
-export const useQuizStore = create<QuizState>((set) => ({
-  answers: {},
-  submittedAnswers: {},
-  attempts: {},
-  attemptNumber: 1,
-  currentPackage: 0,
-  selectAnswer: (questionId, optionIndex) =>
-    set((state) => ({
-      answers: { ...state.answers, [questionId]: optionIndex },
-    })),
-  submitAnswers: () =>
-    set((state) => ({
-      submittedAnswers: { ...state.answers },
+export const useQuizStore = create<QuizState>()(
+  persist(
+    (set) => ({
       answers: {},
-    })),
-  recordAttempt: (questionId, attempt) =>
-    set((state) => ({
-      attempts: {
-        ...state.attempts,
-        [questionId]: {
-          ...(state.attempts[questionId] ?? {
-            questionId,
-            attempt1Answer: null,
-            attempt1Correct: null,
-            attempt1Feedback: null,
-            attempt1Score: null,
-            attempt2Answer: null,
-            attempt2Correct: null,
-            attempt2Feedback: null,
-            attempt2Score: null,
-            finalScore: 0,
-            status: "unanswered" as const,
-          }),
-          ...attempt,
-        },
-      },
-    })),
-  setQuizMeta: (attemptNumber, currentPackage) =>
-    set({ attemptNumber, currentPackage }),
-  resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {}, attemptNumber: 1, currentPackage: 0 }),
-}))
+      submittedAnswers: {},
+      attempts: {},
+      attemptNumber: 1,
+      currentPackage: 0,
+      selectAnswer: (questionId, optionIndex) =>
+        set((state) => ({
+          answers: { ...state.answers, [questionId]: optionIndex },
+        })),
+      submitAnswers: () =>
+        set((state) => ({
+          submittedAnswers: { ...state.answers },
+          answers: {},
+        })),
+      recordAttempt: (questionId, attempt) =>
+        set((state) => ({
+          attempts: {
+            ...state.attempts,
+            [questionId]: {
+              ...(state.attempts[questionId] ?? {
+                questionId,
+                attempt1Answer: null,
+                attempt1Correct: null,
+                attempt1Feedback: null,
+                attempt1Score: null,
+                attempt2Answer: null,
+                attempt2Correct: null,
+                attempt2Feedback: null,
+                attempt2Score: null,
+                finalScore: 0,
+                status: "unanswered" as const,
+              }),
+              ...attempt,
+            },
+          },
+        })),
+      setQuizMeta: (attemptNumber, currentPackage) =>
+        set({ attemptNumber, currentPackage }),
+      resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {}, attemptNumber: 1, currentPackage: 0 }),
+    }),
+    { name: "gematri-quiz-store" },
+  ),
+)
