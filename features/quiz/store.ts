@@ -1,14 +1,12 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { QuizAnswers, QuizQuestionAttempt } from "./types"
+import type { QuizAnswers } from "./types"
 
 interface QuizState {
   /** User answers keyed by question id (1-based). */
   answers: QuizAnswers
   /** Snapshot of answers submitted for the current attempt. */
   submittedAnswers: QuizAnswers
-  /** Per-question two-attempt tracking. */
-  attempts: Record<number, QuizQuestionAttempt>
   /** Current quiz attempt number (1, 2, 3, ...). */
   attemptNumber: number
   /** Assigned package: 0 = Paket 1, 1 = Paket 2. */
@@ -21,8 +19,6 @@ interface QuizState {
   selectAnswer: (questionId: number, optionIndex: number) => void
   /** Submit current answers — snapshots them then clears in-progress state. */
   submitAnswers: () => void
-  /** Record a completed attempt for a single question. */
-  recordAttempt: (questionId: number, attempt: Partial<QuizQuestionAttempt>) => void
   /** Set the current attempt number and package. */
   setQuizMeta: (attemptNumber: number, currentPackage: number) => void
   /** Add a history entry and clear answers for a new attempt. */
@@ -36,7 +32,6 @@ export const useQuizStore = create<QuizState>()(
     (set) => ({
       answers: {},
       submittedAnswers: {},
-      attempts: {},
       attemptNumber: 1,
       currentPackage: 0,
       sessionStarted: false,
@@ -51,28 +46,6 @@ export const useQuizStore = create<QuizState>()(
           answers: {},
           sessionStarted: false,
         })),
-      recordAttempt: (questionId, attempt) =>
-        set((state) => ({
-          attempts: {
-            ...state.attempts,
-            [questionId]: {
-              ...(state.attempts[questionId] ?? {
-                questionId,
-                attempt1Answer: null,
-                attempt1Correct: null,
-                attempt1Feedback: null,
-                attempt1Score: null,
-                attempt2Answer: null,
-                attempt2Correct: null,
-                attempt2Feedback: null,
-                attempt2Score: null,
-                finalScore: 0,
-                status: "unanswered" as const,
-              }),
-              ...attempt,
-            },
-          },
-        })),
       setQuizMeta: (attemptNumber, currentPackage) =>
         set({ attemptNumber, currentPackage, sessionStarted: true }),
       startNewAttempt: (attemptNumber, packageId) =>
@@ -84,7 +57,7 @@ export const useQuizStore = create<QuizState>()(
           sessionStarted: true,
           history: [...state.history, { attemptNumber, packageId }],
         })),
-      resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {}, attemptNumber: 1, currentPackage: 0, sessionStarted: false, history: [] }),
+      resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attemptNumber: 1, currentPackage: 0, sessionStarted: false, history: [] }),
     }),
     { name: "gematri-quiz-store" },
   ),

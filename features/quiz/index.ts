@@ -25,5 +25,4 @@ export type {
   PilihanGandaQuestion,
   QuizModule,
   QuizAnswers,
-  QuizQuestionAttempt,
 } from "./types"

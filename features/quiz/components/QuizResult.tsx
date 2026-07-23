@@ -85,8 +85,8 @@ export function QuizResult({
 
       <QuizResultScore correctCount={correctCount} total={total} score={displayScore} />
 
-      {/* Per-tab breakdown */}
-      {tabBreakdown && tabBreakdown.length > 0 && (
+      {/* Per-tab breakdown — only shown when submittedAnswers has data */}
+      {tabBreakdown && tabBreakdown.length > 0 && Object.keys(submittedAnswers).length > 0 && (
         <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-6">
           <Text as="h2" className="text-lg md:text-xl font-black uppercase mb-4">
             Rincian Per Tab
@@ -114,7 +114,9 @@ export function QuizResult({
         </section>
       )}
 
-      <QuizResultExplanation questions={quiz.questions} answers={submittedAnswers} />
+      {Object.keys(submittedAnswers).length > 0 && (
+        <QuizResultExplanation questions={quiz.questions} answers={submittedAnswers} />
+      )}
       <QuizResultActions slug={slug} />
     </div>
   )
