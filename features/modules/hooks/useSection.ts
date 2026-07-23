@@ -1,3 +1,4 @@
+import { handleAuthError } from "@/lib/api/auth-error"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 import { useAnswerStore, emptyTab } from "../store/answerStore"
@@ -167,6 +168,9 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         })
         await triggerTabUnlockIfComplete(slug, tab)
       }
+    } catch (e) {
+      if (e instanceof Error) handleAuthError(e)
+      throw e
     } finally {
       submittingRef.current = false
     }

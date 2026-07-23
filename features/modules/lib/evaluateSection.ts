@@ -1,3 +1,4 @@
+import { handleAuthError } from "@/lib/api/auth-error"
 import { toast } from "sonner"
 import { validateSection } from "./validation"
 import type { SectionItem } from "../types"
@@ -26,6 +27,7 @@ export async function evaluateSection(
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ module: slug, tab, sectionType, items, answers: fields, attempt }),
     })
+    if (response.status === 401) { handleAuthError(new Error("UNAUTHORIZED")); throw new Error("Unauthorized") }
     const json = await response.json()
     if (!json.ok) throw new Error(json.error?.message ?? "AI evaluation failed")
     return json.data

@@ -1,5 +1,6 @@
 "use client"
 
+import { handleAuthError } from "@/lib/api/auth-error"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -80,6 +81,7 @@ export function useQuizSubmit(slug: string) {
           router.push(`/modul/${slug}/kuis/hasil`)
         },
         onError: (err) => {
+          handleAuthError(err)
           toast.error(err.message || "Gagal menyimpan kuis, silakan coba lagi")
         },
       },

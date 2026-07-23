@@ -122,19 +122,47 @@ Keluarkan JSON SAJA (tanpa markdown) dengan format:
 
 /** Parse Gemini's response into structured output. */
 export function parseAIResponse(response: string): EvaluateSectionOutput {
-  const cleaned = response.replace(/```(?:json)?\s*/gi, "").trim();
+  const cleaned = response.replace(/```(?:json)?\s*/gi, "").trim()
+
+  // Try direct JSON parse first
   try {
-    return JSON.parse(cleaned) as EvaluateSectionOutput;
+    return JSON.parse(cleaned) as EvaluateSectionOutput
   } catch {
-    const isCorrect = /"isCorrect"\s*:\s*true/i.test(cleaned);
-    const scoreMatch = cleaned.match(/"score"\s*:\s*(\d+|null)/i);
-    const feedbackMatch = cleaned.match(/"feedback"\s*:\s*"([^"]+)"/);
-    return {
-      isCorrect,
-      score: scoreMatch ? (scoreMatch[1] === "null" ? null : Number(scoreMatch[1])) : null,
-      feedback: feedbackMatch?.[1] ?? "Feedback tidak tersedia",
-      errors: {},
-    };
+    // Fallback: extract JSON between outermost braces
+    try {
+      const firstBrace = cleaned.indexOf("{")
+      const lastBrace = cleaned.lastIndexOf("}")
+      if (firstBrace === -1 || lastBrace === -1) throw new Error("No JSON object found")
+      const jsonStr = cleaned.slice(firstBrace, lastBrace + 1)
+      return JSON.parse(jsonStr) as EvaluateSectionOutput
+    } catch {
+      // Final fallback: regex extraction with multiline support
+      const section = cleaned.slice(cleaned.indexOf("{"), cleaned.lastIndexOf("}") + 1) || cleaned
+      const isCorrect = /"isCorrect"\s*:\s*true/i.test(section)
+      const scoreMatch = section.match(/"score"\s*:\s*(\d+|null)/i)
+      const feedbackLabel = '"feedback": "'
+      const feedbackStart = section.indexOf(feedbackLabel)
+      let feedback = "Feedback tidak tersedia"
+      if (feedbackStart !== -1) {
+        const afterLabel = section.slice(feedbackStart + feedbackLabel.length)
+        let end = -1
+        let escaped = false
+        for (let i = 0; i < afterLabel.length; i++) {
+          if (escaped) { escaped = false; continue }
+          if (afterLabel[i] === "\\") { escaped = true; continue }
+          if (afterLabel[i] === '"') { end = i; break }
+        }
+        if (end !== -1) {
+          feedback = afterLabel.slice(0, end).replace(/\\"/g, '"').replace(/\\n/g, "\n")
+        }
+      }
+      return {
+        isCorrect,
+        score: scoreMatch ? (scoreMatch[1] === "null" ? null : Number(scoreMatch[1])) : null,
+        feedback,
+        errors: {},
+      }
+    }
   }
 }
 

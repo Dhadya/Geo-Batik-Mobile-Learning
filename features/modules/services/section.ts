@@ -67,12 +67,33 @@ export async function saveSectionAttempt(
     return { id: updated[0].id, status: updated[0].status, finalScore: updated[0].finalScore };
   }
 
-  const inserted = await db
-    .insert(sectionProgress)
-    .values({ ...base, ...patch, ...finalize })
-    .returning();
+  try {
+    const inserted = await db
+      .insert(sectionProgress)
+      .values({ ...base, ...patch, ...finalize })
+      .returning();
 
-  return { id: inserted[0].id, status: inserted[0].status, finalScore: inserted[0].finalScore };
+    return { id: inserted[0].id, status: inserted[0].status, finalScore: inserted[0].finalScore };
+  } catch {
+    // Race condition: another request inserted the row first. Update instead.
+    const raceRow = await db.query.sectionProgress.findFirst({
+      where: and(
+        eq(sectionProgress.userId, userId),
+        eq(sectionProgress.module, module),
+        eq(sectionProgress.tab, input.tab),
+        eq(sectionProgress.sectionType, input.sectionType),
+      ),
+    })
+    if (raceRow) {
+      const updated = await db
+        .update(sectionProgress)
+        .set({ ...base, ...patch, ...finalize })
+        .where(eq(sectionProgress.id, raceRow.id))
+        .returning();
+      return { id: updated[0].id, status: updated[0].status, finalScore: updated[0].finalScore };
+    }
+    throw appError("INTERNAL_ERROR");
+  }
 }
 
 /** Fetches section-level progress for a module, optionally filtered by tab and/or section type. */
