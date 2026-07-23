@@ -1,13 +1,16 @@
 "use client"
 
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Card } from "@/components/retroui/Card"
 import { Text } from "@/components/retroui/Text"
+import { Dialog } from "@/components/retroui/Dialog"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { MODULE_LABELS } from "@/features/modules/data/moduleConfig"
+import { Skeleton } from "@/components/retroui/Skeleton"
+import { toast } from "sonner"
 import {
   QuizBreadcrumb,
   NumberIndicator,
@@ -29,6 +32,8 @@ export function KuisSoalClient({
 }) {
   const router = useRouter()
   const sessionStarted = useQuizStore((s) => s.sessionStarted)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const submittingRef = useRef(false)
 
   // Redirect to intro if user navigated directly without starting a quiz session
   useEffect(() => {
@@ -55,9 +60,40 @@ export function KuisSoalClient({
     [slug, router],
   )
 
+  const handleSubmitClick = useCallback(() => {
+    // Check all questions answered
+    const answeredCount = Object.keys(answers).length
+    if (total > 0 && answeredCount < total) {
+      toast.warning(`Kamu baru menjawab ${answeredCount} dari ${total} soal. Jawab semua soal terlebih dahulu.`)
+      return
+    }
+    // Show confirmation dialog
+    setDialogOpen(true)
+  }, [answers, total])
+
+  const handleConfirmSubmit = useCallback(() => {
+    if (submittingRef.current) return
+    submittingRef.current = true
+    setDialogOpen(false)
+    handleSelesai()
+  }, [handleSelesai])
+
+  if (!sessionStarted) {
+    return (
+      <div className="max-w-384 mx-auto space-y-4 md:space-y-6 pt-6 md:pt-8 px-4 md:px-12">
+        <Skeleton className="h-8 md:h-10 w-48" />
+        <Skeleton className="h-20 md:h-24 w-full border-4 border-black" />
+        <Skeleton className="h-96 w-full border-4 border-black" />
+      </div>
+    )
+  }
+
   if (!quiz || !question) {
-    router.replace(`/modul/${slug}/kuis`)
-    return null
+    return (
+      <div className="max-w-384 mx-auto space-y-4 md:space-y-6">
+        <Text>Soal tidak ditemukan.</Text>
+      </div>
+    )
   }
 
   const answeredIds = total > 0
@@ -146,7 +182,7 @@ export function KuisSoalClient({
           </span>
         )}
 
-        {/* Selesai — submit all answers */}
+        {/* Selesai — show confirmation before submit */}
         {isLast && (
           <span title={selectedOption === undefined ? "Pilih jawaban terlebih dahulu" : undefined}>
             <Button
@@ -154,7 +190,7 @@ export function KuisSoalClient({
               size="lg"
               className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
               disabled={selectedOption === undefined || isSubmitting}
-              onClick={handleSelesai}
+              onClick={handleSubmitClick}
             >
               {isSubmitting ? "Menyimpan..." : "Selesai"}
               <MaterialIcon className="size-6" name="check_circle" />
@@ -175,6 +211,43 @@ export function KuisSoalClient({
           </Link>
         )}
       </div>
+
+      {/* Confirmation dialog before submit */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog.Content size="sm">
+          <Dialog.Header asChild>
+            <div className="flex items-center justify-between border-b-2 px-3 md:px-4 min-h-10 md:min-h-12 bg-primary text-primary-foreground">
+              <span className="font-black uppercase text-xs md:text-sm">Kirim Jawaban</span>
+            </div>
+          </Dialog.Header>
+          <div className="p-4 md:p-6 space-y-2">
+            <p className="font-semibold text-sm md:text-base">
+              Yakin ingin mengirimkan jawaban?
+            </p>
+            <p className="text-xs md:text-sm text-muted-foreground">
+              {Object.keys(answers).length}/{total} soal telah dijawab.
+            </p>
+          </div>
+          <Dialog.Footer>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setDialogOpen(false)}
+              className="shadow-[2px_2px_0_0_black] uppercase font-bold text-xs md:text-sm"
+            >
+              Batal
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleConfirmSubmit}
+              className="shadow-[2px_2px_0_0_black] uppercase font-bold text-xs md:text-sm"
+            >
+              Kirim
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog>
     </div>
   )
 }
