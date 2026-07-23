@@ -1,5 +1,9 @@
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { persist, createJSONStorage } from "zustand/middleware"
+import {
+  createUserScopedStorage,
+  getGlobalUserId,
+} from "@/lib/user-scoped-storage"
 
 // ── Per-section answer shapes ──
 
@@ -87,7 +91,10 @@ export function emptyTab(slug: string, tab: string): TabAnswers {
   }
 }
 
-/** Zustand store for module answer persistence (localStorage-backed). */
+/** Persisted state version — bump when the TabAnswers shape changes. */
+const ANSWER_STORE_VERSION = 1
+
+/** Zustand store for module answer persistence (localStorage-backed, user-scoped). */
 export const useAnswerStore = create<AnswerStore>()(
   persist(
     (set, get) => ({
@@ -261,11 +268,32 @@ export const useAnswerStore = create<AnswerStore>()(
         set({ answers: rest })
       },
 
-      resetAll: () => set({ answers: {} }),
+      /** Clear in-memory state AND persisted storage. */
+      resetAll: () => {
+        set({ answers: {} })
+        // Also clear the persisted localStorage key so no stale data remains
+        const uid = getGlobalUserId()
+        const key = uid ? `gematri-module-answers-${uid}` : "gematri-module-answers"
+        try {
+          localStorage.removeItem(key)
+        } catch {
+          // localStorage may not be available (SSR, etc.)
+        }
+      },
     }),
     {
       name: "gematri-module-answers",
+      version: ANSWER_STORE_VERSION,
+      storage: createJSONStorage(createUserScopedStorage),
       partialize: (state) => ({ answers: state.answers }),
+      migrate: (persisted, version) => {
+        if (version < ANSWER_STORE_VERSION) {
+          // Future: add migration logic here when schema changes
+          // For now, the persisted shape is compatible
+          return persisted as { answers: Record<string, TabAnswers> }
+        }
+        return persisted as { answers: Record<string, TabAnswers> }
+      },
     },
   ),
 )

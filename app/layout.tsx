@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import { Providers } from "./providers";
+import { SessionSync } from "@/components/layout/SessionSync";
 import { Toaster } from "@/components/retroui/Sonner";
 import "./globals.css";
 
@@ -33,7 +34,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col"><Providers>{children}</Providers><Toaster /></body>
+      <body className="min-h-full flex flex-col"><Providers><SessionSync />{children}</Providers><Toaster /></body>
     </html>
   );
 }

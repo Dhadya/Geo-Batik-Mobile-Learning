@@ -1,5 +1,9 @@
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { persist, createJSONStorage } from "zustand/middleware"
+import {
+  createUserScopedStorage,
+  getGlobalUserId,
+} from "@/lib/user-scoped-storage"
 import type { QuizAnswers } from "./types"
 
 interface QuizState {
@@ -23,9 +27,12 @@ interface QuizState {
   setQuizMeta: (attemptNumber: number, currentPackage: number) => void
   /** Add a history entry and clear answers for a new attempt. */
   startNewAttempt: (attemptNumber: number, packageId: number) => void
-  /** Clear all answers. */
+  /** Clear all answers and persisted storage. */
   resetAnswers: () => void
 }
+
+/** Persisted state version — bump when the QuizState shape changes. */
+const QUIZ_STORE_VERSION = 1
 
 export const useQuizStore = create<QuizState>()(
   persist(
@@ -57,8 +64,35 @@ export const useQuizStore = create<QuizState>()(
           sessionStarted: true,
           history: [...state.history, { attemptNumber, packageId }],
         })),
-      resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attemptNumber: 1, currentPackage: 0, sessionStarted: false, history: [] }),
+      /** Clear in-memory state AND persisted storage. */
+      resetAnswers: () => {
+        set({
+          answers: {},
+          submittedAnswers: {},
+          attemptNumber: 1,
+          currentPackage: 0,
+          sessionStarted: false,
+          history: [],
+        })
+        const uid = getGlobalUserId()
+        const key = uid ? `gematri-quiz-store-${uid}` : "gematri-quiz-store"
+        try {
+          localStorage.removeItem(key)
+        } catch {
+          // localStorage may not be available
+        }
+      },
     }),
-    { name: "gematri-quiz-store" },
+    {
+      name: "gematri-quiz-store",
+      version: QUIZ_STORE_VERSION,
+      storage: createJSONStorage(createUserScopedStorage),
+      migrate: (persisted, version) => {
+        if (version < QUIZ_STORE_VERSION) {
+          return persisted as Omit<QuizState, "selectAnswer" | "submitAnswers" | "setQuizMeta" | "startNewAttempt" | "resetAnswers">
+        }
+        return persisted as Omit<QuizState, "selectAnswer" | "submitAnswers" | "setQuizMeta" | "startNewAttempt" | "resetAnswers">
+      },
+    },
   ),
 )

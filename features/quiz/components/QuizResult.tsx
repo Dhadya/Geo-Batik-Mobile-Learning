@@ -59,15 +59,27 @@ export function QuizResult({
 
   const total = quiz.questions.length
 
-  // Calculate correct count from submitted answers
-  const correctCount = quiz.questions.filter((q) =>
-    submittedAnswers[q.id] === q.correctIndex,
-  ).length
+  // Calculate correct count from submitted answers, or estimate from serverScore when history navigation
+  const hasSubmitted = Object.keys(submittedAnswers).length > 0
+  const correctCount = hasSubmitted
+    ? quiz.questions.filter((q) => submittedAnswers[q.id] === q.correctIndex).length
+    : serverScore != null
+      ? Math.round((serverScore / 100) * total)
+      : 0
 
-  const displayScore = serverScore ?? Math.round((correctCount / Math.max(total, 1)) * 100)
+  const displayScore = serverScore ?? (hasSubmitted ? Math.round((correctCount / Math.max(total, 1)) * 100) : null)
 
-  const ratio = correctCount / Math.max(total, 1)
-  let description = `Kamu menjawab ${correctCount} dari ${total} soal dengan benar.`
+  // When navigating from history without submittedAnswers, use serverScore for description
+  const scoreForDescription = displayScore ?? 0
+  const ratio = scoreForDescription / 100
+  // Use estimated correct count for description when navigating from history
+  const estimatedCorrectCount = hasSubmitted
+    ? correctCount
+    : serverScore != null
+      ? Math.round((serverScore / 100) * total)
+      : 0
+
+  let description = `Kamu menjawab ${estimatedCorrectCount} dari ${total} soal dengan benar.`
   if (ratio === 1) {
     description = `Sempurna! ${description} Kamu benar-benar menguasai materi ini!`
   } else if (ratio >= 0.7) {

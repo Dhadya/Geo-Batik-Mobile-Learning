@@ -32,12 +32,6 @@ export function ProfileDropdown() {
   async function handleSignOut() {
     useAnswerStore.getState().resetAll()
     useQuizStore.getState().resetAnswers()
-    try {
-      localStorage.removeItem("gematri-module-answers")
-      localStorage.removeItem("gematri-quiz-store")
-    } catch {
-      // localStorage may not be available
-    }
     await signOut()
     router.push("/login")
   }
