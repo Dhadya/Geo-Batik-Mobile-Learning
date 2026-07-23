@@ -15,9 +15,14 @@ export default async function ModulLayout(props: {
   if (!tabs) notFound()
 
   const session = await auth.api.getSession({ headers: await headers() })
-  const serverProgress = session?.user?.id
-    ? await getTabProgress(session.user.id, slug as keyof typeof MODULE_TABS)
-    : null
+  let serverProgress = null
+  if (session?.user?.id) {
+    try {
+      serverProgress = await getTabProgress(session.user.id, slug as keyof typeof MODULE_TABS)
+    } catch {
+      serverProgress = null
+    }
+  }
 
   const content = (
     <ProgressSyncWrapper slug={slug} serverProgress={serverProgress}>

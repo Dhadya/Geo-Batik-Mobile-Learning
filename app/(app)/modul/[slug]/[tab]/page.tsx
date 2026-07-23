@@ -11,7 +11,11 @@ export default async function ModulTabPage(props: {
   // Seed tab progress for authenticated users (no redirect — locked tabs show LockOverlay in ModuleContent)
   const session = await auth.api.getSession({ headers: await headers() })
   if (session?.user) {
-    await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
+    try {
+      await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
+    } catch {
+      // DB unavailable — ModuleContent will use client-side fallback (first tab unlocked)
+    }
   }
 
   return <ModuleContent slug={slug} tab={tab} />

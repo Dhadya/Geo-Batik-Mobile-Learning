@@ -27,7 +27,7 @@ export function ForwardButton({
 
   const handleClick = () => {
     if (!allDone) {
-      toast.warning(`Selesaikan semua bagian (${completedCount}/${activeSections.length}) terlebih dahulu`)
+      toast.warning(`Selesaikan semua bagian terlebih dahulu`)
       return
     }
     if (isLastTab) {

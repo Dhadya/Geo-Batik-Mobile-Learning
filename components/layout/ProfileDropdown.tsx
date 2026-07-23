@@ -86,7 +86,7 @@ export function ProfileDropdown() {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute left-0 right-0 lg:left-auto lg:right-0 top-full mt-2 w-full lg:w-64 border-4 border-black bg-card shadow-lg z-50">
+        <div className="absolute left-0 right-0 lg:left-auto lg:right-0 top-full mt-2 w-full lg:w-64 border-4 border-black bg-card shadow-lg z-40">
           {/* User info header */}
           <div className="px-4 py-3 border-b-4 border-black">
             <p className="text-sm font-black uppercase truncate">{user.name || "Pengguna"}</p>

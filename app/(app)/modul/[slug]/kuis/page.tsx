@@ -29,13 +29,18 @@ export default async function KuisIntroPage(props: {
   let backHref = ""
 
   if (session?.user) {
-    const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
-    const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
+    try {
+      const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
+      const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
 
-    if (!allCompleted) {
+      if (!allCompleted) {
+        isLocked = true
+        const latestUnlocked = [...tabs].reverse().find((t) => t.unlocked)
+        backHref = `/modul/${slug}/${latestUnlocked?.tab ?? tabs[0]?.tab ?? "titik"}`
+      }
+    } catch {
       isLocked = true
-      const latestUnlocked = [...tabs].reverse().find((t) => t.unlocked)
-      backHref = `/modul/${slug}/${latestUnlocked?.tab ?? tabs[0]?.tab ?? "titik"}`
+      backHref = `/modul/${slug}/titik`
     }
   }
 

@@ -22,12 +22,21 @@ export default async function KuisSoalPage(props: {
     redirect("/login")
   }
 
-  const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
-  const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
+  let isLocked = true
+  let backHref = `/modul/${slug}/titik`
 
-  const isLocked = !allCompleted
-  const latestUnlocked = isLocked ? [...tabs].reverse().find((t) => t.unlocked) : null
-  const backHref = `/modul/${slug}/${latestUnlocked?.tab ?? tabs[0]?.tab ?? "titik"}`
+  try {
+    const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
+    const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
+
+    isLocked = !allCompleted
+    if (isLocked) {
+      const latestUnlocked = [...tabs].reverse().find((t) => t.unlocked)
+      backHref = `/modul/${slug}/${latestUnlocked?.tab ?? tabs[0]?.tab ?? "titik"}`
+    }
+  } catch {
+    // DB unavailable — default to locked state
+  }
 
   return <KuisSoalClient slug={slug} nomor={nomorNum} isLocked={isLocked} backHref={backHref} />
 }

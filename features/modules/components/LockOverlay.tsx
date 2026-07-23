@@ -34,7 +34,7 @@ export function LockOverlay({
       className={
         containerRelative
           ? "absolute inset-0 z-10 flex items-center justify-center bg-black/40"
-          : "fixed inset-0 z-30 flex items-center justify-center bg-black/60"
+          : "fixed top-16 lg:top-20 bottom-0 left-0 right-0 z-20 flex items-center justify-center bg-black/60"
       }
     >
       <div className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-6 md:p-8 max-w-sm w-full mx-4 text-center space-y-4">

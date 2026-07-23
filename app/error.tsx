@@ -29,7 +29,7 @@ export default function ErrorPage({
             variant="default"
             size="lg"
             className="w-full font-black uppercase gap-2"
-            onClick={reset}
+            onClick={() => window.location.reload()}
           >
             <MaterialIcon className="size-5" name="refresh" />
             Coba Lagi
