@@ -16,8 +16,15 @@ const HISTORY_KEY_PREFIX = "gematri-quiz-history-"
 function getHistory(slug: string): AttemptRecord[] {
   try {
     const raw = localStorage.getItem(`${HISTORY_KEY_PREFIX}${slug}`)
-    return raw ? JSON.parse(raw) : []
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed)) {
+      console.warn("[KuisStartButton] Quiz history data corrupted, resetting")
+      return []
+    }
+    return parsed
   } catch {
+    console.warn("[KuisStartButton] Quiz history parse failed, resetting")
     return []
   }
 }

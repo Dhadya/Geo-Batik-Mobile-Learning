@@ -38,3 +38,8 @@ export const saveSectionSchema = z.object({
 
 /** Inferred input type for saving a section attempt. */
 export type SaveSectionInput = z.infer<typeof saveSectionSchema>;
+
+/** Validates an unlock request: which tab was completed to trigger the next unlock. */
+export const unlockSchema = z.object({
+  completedTab: z.string().min(1),
+});

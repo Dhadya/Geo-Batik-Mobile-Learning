@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
-import { evaluateQuizQuestion } from "@/features/modules/services/ai";
-import type { PilihanGandaQuestion } from "@/features/quiz/types";
+import { evaluateQuizQuestion, type EvaluateQuizQuestionInput } from "@/features/modules/services/ai";
 
 const evaluateQuizSchema = z.object({
   question: z.object({
@@ -28,31 +27,37 @@ export async function POST(request: NextRequest) {
     await requireAuth();
     const body = await request.json();
 
-    const parsed = evaluateQuizSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: {
-            code: "VALIDATION_ERROR",
-            message: "Data evaluasi tidak valid",
-            issues: parsed.error.issues.map((i) => ({
-              path: i.path.join("."),
-              message: i.message,
-            })),
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+    try {
+      const parsed = evaluateQuizSchema.safeParse(body);
+      if (!parsed.success) {
+        clearTimeout(timeoutId);
+        return NextResponse.json(
+          {
+            ok: false,
+            error: {
+              code: "VALIDATION_ERROR",
+              message: "Data evaluasi tidak valid",
+              issues: parsed.error.issues.map((i) => ({
+                path: i.path.join("."),
+                message: i.message,
+              })),
+            },
           },
-        },
-        { status: 422 },
+          { status: 422 },
+        );
+      }
+
+      const result = await evaluateQuizQuestion(
+        parsed.data as unknown as EvaluateQuizQuestionInput,
       );
+      clearTimeout(timeoutId);
+      return NextResponse.json({ ok: true, data: result });
+    } finally {
+      clearTimeout(timeoutId);
     }
-
-    const result = await evaluateQuizQuestion({
-      question: parsed.data.question as unknown as PilihanGandaQuestion,
-      answer: parsed.data.answer,
-      attempt: parsed.data.attempt,
-    });
-
-    return NextResponse.json({ ok: true, data: result });
   } catch (e) {
     return handleError(e);
   }

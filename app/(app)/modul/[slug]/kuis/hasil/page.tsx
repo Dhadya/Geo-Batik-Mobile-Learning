@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
+import { Text } from "@/components/retroui/Text"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { QuizBreadcrumb, QuizResult, getQuizModule, getQuizQuestionsByTab } from "@/features/quiz"
 import { getAllQuizResults } from "@/features/modules/services/quiz"
@@ -35,20 +36,26 @@ export default async function KuisHasilPage(props: {
 
   // Fetch all results — attempt 1 score is final, others are practice
   const session = await auth.api.getSession({ headers: await headers() })
-  let allResults: Awaited<ReturnType<typeof getAllQuizResults>> = []
-  if (session?.user) {
-    allResults = await getAllQuizResults(session.user.id, slug as ModuleSlug)
+  if (!session?.user) {
+    return (
+      <div className="space-y-4 md:space-y-6">
+        <Text>Silakan masuk terlebih dahulu untuk melihat hasil.</Text>
+      </div>
+    )
   }
+
+  let allResults: Awaited<ReturnType<typeof getAllQuizResults>> = []
+  allResults = await getAllQuizResults(session.user.id, slug as ModuleSlug)
 
   // Show specific attempt if ?attempt= provided, otherwise latest
   const targetResult = attemptParam
-    ? allResults.find((r) => r.attemptNumber === Number(attemptParam)) ?? null
+    ? allResults.find((r) => r.attemptNumber === Number(attemptParam)) ?? allResults[allResults.length - 1]
     : allResults.length > 0
       ? allResults[allResults.length - 1]
       : null
 
   // Get tabs for per-tab breakdown
-  const tabs = await getTabProgress(session?.user?.id ?? "", slug as ModuleSlug)
+  const tabs = await getTabProgress(session.user.id, slug as ModuleSlug)
 
   // Build per-tab breakdown
   const activeTabs = tabs.length > 0

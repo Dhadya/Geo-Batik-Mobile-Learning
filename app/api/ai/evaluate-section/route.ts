@@ -19,17 +19,25 @@ export async function POST(request: NextRequest) {
     await requireAuth();
     const body = await request.json();
 
-    const parsed = evaluateSectionSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { ok: false, error: { code: "VALIDATION_ERROR", message: "Data evaluasi tidak valid", issues: parsed.error.issues } },
-        { status: 422 },
-      );
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+    try {
+      const parsed = evaluateSectionSchema.safeParse(body);
+      if (!parsed.success) {
+        clearTimeout(timeoutId);
+        return NextResponse.json(
+          { ok: false, error: { code: "VALIDATION_ERROR", message: "Data evaluasi tidak valid", issues: parsed.error.issues } },
+          { status: 422 },
+        );
+      }
+
+      const result = await evaluateSection(parsed.data as unknown as EvaluateSectionInput);
+      clearTimeout(timeoutId);
+      return NextResponse.json({ ok: true, data: result });
+    } finally {
+      clearTimeout(timeoutId);
     }
-
-    const result = await evaluateSection(parsed.data as unknown as EvaluateSectionInput);
-
-    return NextResponse.json({ ok: true, data: result });
   } catch (e) {
     return handleError(e);
   }

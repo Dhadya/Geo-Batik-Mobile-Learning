@@ -47,16 +47,15 @@ export function KuisSoalClient({
   )
 
   if (!quiz || !question) {
-    return (
-      <div className="max-w-384 mx-auto space-y-4 md:space-y-6">
-        <Text>Soal tidak ditemukan.</Text>
-      </div>
-    )
+    router.replace(`/modul/${slug}/kuis`)
+    return null
   }
 
-  const answeredIds = Array.from({ length: total }, (_, i) => i + 1).filter(
-    (n) => answers[n] !== undefined,
-  )
+  const answeredIds = total > 0
+    ? Array.from({ length: total }, (_, i) => i + 1).filter(
+        (n) => answers[n] !== undefined,
+      )
+    : []
 
   const label = MODULE_LABELS[slug] ?? slug
 
