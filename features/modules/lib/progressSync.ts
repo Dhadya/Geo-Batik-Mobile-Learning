@@ -16,7 +16,7 @@ export async function syncTabProgress(slug: string): Promise<TabProgressEntry[] 
     const json = await res.json()
     if (!json.ok) return null
 
-    const tabs: TabProgressEntry[] = json.data.tabs
+    const tabs: TabProgressEntry[] = json.data?.tabs ?? []
     useTabProgressStore.getState().setProgress(slug, tabs)
     return tabs
   } catch {

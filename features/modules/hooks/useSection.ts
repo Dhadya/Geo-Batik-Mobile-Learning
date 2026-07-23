@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 import { useAnswerStore, emptyTab } from "../store/answerStore"
 import { getModuleTab } from "../data"
@@ -61,6 +61,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const aiFeedback = sectionAnswers?.aiFeedback
 
   const [errors, setErrors_] = useState<Record<string, string>>({})
+  const submittingRef = useRef(false)
 
   // Derive evaluation state directly from the persisted store state
   const storedAttempt = sectionAnswers?.attempt ?? 1
@@ -126,43 +127,48 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   }, [slug, tab, section, boundSetChecked])
 
   const handleSubmit = useCallback(async () => {
-    if (isLocked) return
+    if (isLocked || submittingRef.current) return
+    submittingRef.current = true
 
-    const result = await evaluateSection(slug, tab, section, items, fields, attempt)
-    setErrors_(result.errors)
-    boundSetAIFeedback(result.feedback)
+    try {
+      const result = await evaluateSection(slug, tab, section, items, fields, attempt)
+      setErrors_(result.errors)
+      boundSetAIFeedback(result.feedback)
 
-    useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
+      useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
 
-    if (result.isCorrect) {
-      boundSetChecked(true)
-      useAnswerStore.getState().setSectionStatus(slug, tab, section, "correct", attempt)
-      toast.success("Jawaban kamu benar, selamat!")
-      await persistSectionAttempt({
-        slug, tab, sectionType: section, attempt,
-        answer: fields, feedback: result.feedback, score: result.score,
-        status: "correct",
-      })
-      await triggerTabUnlockIfComplete(slug, tab)
-    } else if (attempt === 1) {
-      boundSetChecked(true)
-      useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt1", 2)
-      toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
-      await persistSectionAttempt({
-        slug, tab, sectionType: section, attempt,
-        answer: fields, feedback: result.feedback, score: result.score,
-        status: "wrong_attempt1",
-      })
-    } else {
-      boundSetChecked(true)
-      useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt2", 2)
-      toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
-      await persistSectionAttempt({
-        slug, tab, sectionType: section, attempt,
-        answer: fields, feedback: result.feedback, score: result.score,
-        status: "wrong_attempt2",
-      })
-      await triggerTabUnlockIfComplete(slug, tab)
+      if (result.isCorrect) {
+        boundSetChecked(true)
+        useAnswerStore.getState().setSectionStatus(slug, tab, section, "correct", attempt)
+        toast.success("Jawaban kamu benar, selamat!")
+        await persistSectionAttempt({
+          slug, tab, sectionType: section, attempt,
+          answer: fields, feedback: result.feedback, score: result.score,
+          status: "correct",
+        })
+        await triggerTabUnlockIfComplete(slug, tab)
+      } else if (attempt === 1) {
+        boundSetChecked(true)
+        useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt1", 2)
+        toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
+        await persistSectionAttempt({
+          slug, tab, sectionType: section, attempt,
+          answer: fields, feedback: result.feedback, score: result.score,
+          status: "wrong_attempt1",
+        })
+      } else {
+        boundSetChecked(true)
+        useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt2", 2)
+        toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
+        await persistSectionAttempt({
+          slug, tab, sectionType: section, attempt,
+          answer: fields, feedback: result.feedback, score: result.score,
+          status: "wrong_attempt2",
+        })
+        await triggerTabUnlockIfComplete(slug, tab)
+      }
+    } finally {
+      submittingRef.current = false
     }
   }, [attempt, isLocked, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
 

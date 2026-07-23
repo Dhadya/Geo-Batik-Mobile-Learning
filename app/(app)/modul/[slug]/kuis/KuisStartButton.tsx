@@ -28,8 +28,11 @@ function calcNextAttempt(history: AttemptRecord[]): { attemptNumber: number; pac
     return { attemptNumber, packageId: Math.round(Math.random()) as 0 | 1 }
   }
   if (attemptNumber === 2) {
-    const used = history[0].packageId
-    return { attemptNumber, packageId: used === 0 ? 1 : 0 }
+    const prev = history[0]
+    if (!prev || (prev.packageId !== 0 && prev.packageId !== 1)) {
+      return { attemptNumber, packageId: Math.round(Math.random()) as 0 | 1 }
+    }
+    return { attemptNumber, packageId: prev.packageId === 0 ? 1 : 0 }
   }
   return { attemptNumber, packageId: Math.round(Math.random()) as 0 | 1 }
 }

@@ -66,7 +66,7 @@ export function useSectionProgress(
       const response = await fetch(`/api/modul/${slug}/section${qs ? `?${qs}` : ""}`)
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal memuat progres")
-      return body.data.sections
+      return body.data?.sections ?? []
     },
     enabled: slug.length > 0,
   })

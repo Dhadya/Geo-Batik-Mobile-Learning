@@ -74,59 +74,62 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   /** Submit answers with AI evaluation and two-attempt flow. */
   const doSubmit = useCallback(async () => {
     if (submitMutation.isPending) return
-
     const fields = selectionsToFields(selections, questions)
     const items = toSectionItems(questions)
 
-    const result = await evaluateSection(slug, tab, "cek-pemahaman", items, fields, attempt)
-    const localErrors = computeErrors(selections, questions)
-
-    const isCorrectResult = result.isCorrect
-    const finalErrors = isCorrectResult ? {} : localErrors
-
-    setIsChecked(true)
-    setValidationErrors(finalErrors)
-    setIsCorrect(isCorrectResult)
-
-    useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
-    useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
-
-    const savePayload = {
-      tab,
-      sectionType: "cek-pemahaman",
-      attempt,
-      answer: fields as Record<string, unknown>,
-      score: result.score,
-      feedback: result.feedback,
-    }
-
     try {
+      const result = await evaluateSection(slug, tab, "cek-pemahaman", items, fields, attempt)
+      const localErrors = computeErrors(selections, questions)
+      const isCorrectResult = result.isCorrect
+      const finalErrors = isCorrectResult ? {} : localErrors
+
+      const savePayload = {
+        tab,
+        sectionType: "cek-pemahaman",
+        attempt,
+        answer: fields as Record<string, unknown>,
+        score: result.score,
+        feedback: result.feedback,
+      }
+
       if (isCorrectResult) {
+        await submitMutation.mutateAsync({ ...savePayload, status: "correct" })
+        setIsChecked(true)
+        setValidationErrors(finalErrors)
+        setIsCorrect(true)
         setIsLocked(true)
         setShowCobaLagi(false)
+        useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
+        useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "correct", attempt)
         toast.success("Jawaban kamu benar, selamat!")
-
-        await submitMutation.mutateAsync({ ...savePayload, status: "correct" })
         await triggerTabUnlockIfComplete(slug, tab)
       } else if (attempt === 1) {
+        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt1" })
+        setIsChecked(true)
+        setValidationErrors(finalErrors)
+        setIsCorrect(false)
         setShowCobaLagi(true)
         setAttempt(2)
+        useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
+        useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt1", 2)
         toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
-
-        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt1" })
       } else {
+        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt2" })
+        setIsChecked(true)
+        setValidationErrors(finalErrors)
+        setIsCorrect(false)
         setIsLocked(true)
         setShowCobaLagi(false)
+        useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
+        useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt2", 2)
         toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
-
-        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt2" })
         await triggerTabUnlockIfComplete(slug, tab)
       }
     } catch {
-      // submission error handled silently (toast shown by the mutation hook)
+      // submission error handled silently
     }
   }, [slug, tab, questions, selections, attempt, submitMutation])
 

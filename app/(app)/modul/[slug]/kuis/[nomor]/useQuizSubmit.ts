@@ -2,8 +2,11 @@
 
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import { useQuizStore } from "@/features/quiz"
 import { getQuizModule } from "@/features/quiz"
+
+const PACKAGE_SIZE = 10
 
 /**
  * Orchestrates all-answers submission for the entire quiz when the user presses "Selesai".
@@ -35,11 +38,21 @@ export function useQuizSubmit(slug: string) {
     if (!quiz) return
 
     const currentPackage = store.currentPackage
-    const PACKAGE_SIZE = 10
+    if (currentPackage < 0 || currentPackage > 1) {
+      toast.error("Data paket soal tidak valid, silakan mulai kuis dari awal")
+      return
+    }
+
     const packageQuestions = quiz.questions.slice(
       currentPackage * PACKAGE_SIZE,
       currentPackage * PACKAGE_SIZE + PACKAGE_SIZE,
     )
+
+    if (packageQuestions.length !== PACKAGE_SIZE) {
+      toast.error("Data soal tidak lengkap, silakan mulai kuis dari awal")
+      return
+    }
+
     const answers = store.answers
 
     const allAnswers = packageQuestions.map((q) => ({
@@ -66,9 +79,8 @@ export function useQuizSubmit(slug: string) {
           useQuizStore.getState().submitAnswers()
           router.push(`/modul/${slug}/kuis/hasil`)
         },
-        onError: () => {
-          useQuizStore.getState().submitAnswers()
-          router.push(`/modul/${slug}/kuis/hasil`)
+        onError: (err) => {
+          toast.error(err.message || "Gagal menyimpan kuis, silakan coba lagi")
         },
       },
     )

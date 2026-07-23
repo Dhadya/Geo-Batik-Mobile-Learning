@@ -77,30 +77,35 @@ export function ModuleContent({
       const finalScore = s.finalScore ?? null
 
       if (s.sectionType === "cek-pemahaman") {
-        const parsed = JSON.parse(s.attempt1Answer)
-        if (Array.isArray(parsed.selections)) {
-          store.setSelections(slug, decodedTab, parsed.selections)
-        }
-        store.setCekPemahamanStatus(slug, decodedTab, s.status as "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2", 1)
-        store.setCekPemahamanScore(slug, decodedTab, finalScore)
-      } else {
-        const isAttempt2 = !!s.attempt2Answer
-        const parsed = JSON.parse(
-          isAttempt2 ? s.attempt2Answer! : s.attempt1Answer,
-        ) as Record<string, Record<string, string>>
-        for (const [itemId, fields] of Object.entries(parsed)) {
-          for (const [fieldKey, value] of Object.entries(fields)) {
-            store.setField(
-              slug,
-              decodedTab,
-              sectionKey as "percobaan",
-              itemId,
-              fieldKey,
-              value,
-            )
+        try {
+          const parsed = JSON.parse(s.attempt1Answer)
+          if (Array.isArray(parsed.selections)) {
+            store.setSelections(slug, decodedTab, parsed.selections)
           }
+          store.setCekPemahamanStatus(slug, decodedTab, s.status as "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2", 1)
+          store.setCekPemahamanScore(slug, decodedTab, finalScore)
+        } catch {
+          continue
         }
-        store.setSectionStatus(
+      } else {
+        try {
+          const isAttempt2 = !!s.attempt2Answer
+          const parsed = JSON.parse(
+            isAttempt2 ? s.attempt2Answer! : s.attempt1Answer,
+          ) as Record<string, Record<string, string>>
+          for (const [itemId, fields] of Object.entries(parsed)) {
+            for (const [fieldKey, value] of Object.entries(fields)) {
+              store.setField(
+                slug,
+                decodedTab,
+                sectionKey as "percobaan",
+                itemId,
+                fieldKey,
+                value,
+              )
+            }
+          }
+          store.setSectionStatus(
           slug,
           decodedTab,
           sectionKey as "percobaan",
@@ -123,6 +128,9 @@ export function ModuleContent({
           )
         }
         store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
+        } catch {
+          continue
+        }
       }
     }
   }, [sections, slug, decodedTab])

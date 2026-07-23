@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation"
 import { LogOut, ChevronDown } from "lucide-react"
 import { Button } from "@/components/retroui/Button"
 import { authClient, signOut } from "@/lib/auth-client"
+import { useAnswerStore } from "@/features/modules/store/answerStore"
+import { useQuizStore } from "@/features/quiz"
 
 /* Profile dropdown — shows user name/email avatar button, expands to reveal sign-out. */
 export function ProfileDropdown() {
@@ -26,8 +28,10 @@ export function ProfileDropdown() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  // Handle sign-out — clear session then redirect to login
+  // Handle sign-out — clear session and local state, then redirect
   async function handleSignOut() {
+    useAnswerStore.getState().resetAll()
+    useQuizStore.getState().resetAnswers()
     await signOut()
     router.push("/login")
   }

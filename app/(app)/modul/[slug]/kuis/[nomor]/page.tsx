@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { getTabProgress } from "@/features/modules/services/progress"
@@ -19,18 +19,20 @@ export default async function KuisSoalPage(props: {
 
   // Enforce quiz access guard: all tabs must be completed
   const session = await auth.api.getSession({ headers: await headers() })
-  if (session?.user) {
-    const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
-    const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
+  if (!session?.user) {
+    redirect("/login")
+  }
 
-    if (!allCompleted) {
-      return (
-        <LockOverlay
-          title="Kuis Belum Terbuka"
-          description="Selesaikan semua materi terlebih dahulu sebelum mengerjakan kuis."
-        />
-      )
-    }
+  const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
+  const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
+
+  if (!allCompleted) {
+    return (
+      <LockOverlay
+        title="Kuis Belum Terbuka"
+        description="Selesaikan semua materi terlebih dahulu sebelum mengerjakan kuis."
+      />
+    )
   }
 
   return <KuisSoalClient slug={slug} nomor={nomorNum} />

@@ -12,6 +12,13 @@ export async function DELETE(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json(
+        { ok: false, error: { code: "FORBIDDEN", message: "Hanya tersedia di development" } },
+        { status: 403 },
+      )
+    }
+
     const user = await requireAuth();
     const { slug } = await params;
     const moduleSlug = slug as ModuleSlug;
