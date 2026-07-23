@@ -76,10 +76,10 @@ export default async function KuisIntroPage(props: {
       {allResults.length > 0 && (
         <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-6 space-y-3">
           <Text as="h2" className="text-base md:text-lg font-black uppercase">
-            Riwayat Percobaan
+            Riwayat Percobaan ({allResults.length})
           </Text>
           <div className="space-y-2">
-            {allResults.map((r) => {
+            {allResults.slice(-5).reverse().map((r) => {
               const config = getScoreConfig(r.totalScore)
               return (
                 <div key={r.attemptNumber} className="flex items-center justify-between border-4 border-black p-2 md:p-3">
@@ -111,6 +111,11 @@ export default async function KuisIntroPage(props: {
               )
             })}
           </div>
+          {allResults.length > 5 && (
+            <Text className="text-xs md:text-sm text-muted-foreground text-center pt-1">
+              Menampilkan 5 percobaan terakhir dari total {allResults.length}.
+            </Text>
+          )}
         </section>
       )}
 

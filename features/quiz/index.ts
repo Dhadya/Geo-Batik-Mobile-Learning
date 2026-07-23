@@ -13,6 +13,7 @@ export { QuestionRenderer } from "./components/QuestionRenderer"
 
 // Hooks
 export { useQuiz } from "./hooks/useQuiz"
+export { useQuizPembahasan } from "./hooks/useQuizPembahasan"
 
 // Store
 export { useQuizStore } from "./store"

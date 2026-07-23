@@ -15,9 +15,11 @@ const LABELS = ["A", "B", "C", "D", "E", "F"]
 export function QuizResultExplanation({
   questions,
   answers,
+  aiFeedback,
 }: {
   questions: PilihanGandaQuestion[]
   answers: QuizAnswers
+  aiFeedback?: Record<number, string>
 }) {
   return (
     <section className="space-y-3 md:space-y-4">
@@ -83,12 +85,12 @@ export function QuizResultExplanation({
                     })}
                   </div>
 
-                  {/* Pembahasan — static explanation from key answer */}
-                  {q.explanation && (
+                  {/* Pembahasan — AI-generated or static explanation */}
+                  {(aiFeedback?.[q.id] ?? q.explanation) && (
                     <div className="border-t-2 border-black pt-3 mt-3">
-                      <Text as="p" className="font-medium">
+                      <Text as="p" className="font-medium whitespace-pre-wrap">
                         <span className="font-bold">Pembahasan: </span>
-                        {q.explanation}
+                        {aiFeedback?.[q.id] ?? q.explanation}
                       </Text>
                     </div>
                   )}

@@ -149,6 +149,6 @@ export const quizResults = pgTable(
   (table) => [
     index("idx_quiz_results_user").on(table.userId),
     index("idx_quiz_results_module").on(table.module),
-    index("idx_quiz_results_attempt").on(table.userId, table.module, table.attemptNumber),
+    uniqueIndex("uq_quiz_results_attempt").on(table.userId, table.module, table.attemptNumber),
   ],
 )

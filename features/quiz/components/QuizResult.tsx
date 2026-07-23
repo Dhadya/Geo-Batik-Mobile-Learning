@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import type { ReactNode } from "react"
 import { useQuizStore } from "../store"
 import { getQuizModule } from "../data"
+import { useQuizPembahasan } from "../hooks/useQuizPembahasan"
 import { QuizHeader } from "./QuizHeader"
 import { QuizResultScore } from "./QuizResultScore"
 import { QuizResultExplanation } from "./QuizResultExplanation"
@@ -40,6 +41,13 @@ export function QuizResult({
   const router = useRouter()
   const submittedAnswers = useQuizStore((s) => s.submittedAnswers)
   const quiz = getQuizModule(slug)
+
+  // Fetch AI-generated dynamic pembahasan
+  const { data: aiFeedback } = useQuizPembahasan(
+    quiz?.questions ?? [],
+    submittedAnswers,
+    Object.keys(submittedAnswers).length > 0,
+  )
 
   const isEmpty = !quiz || (Object.keys(submittedAnswers).length === 0 && serverScore == null)
   if (isEmpty && typeof window !== "undefined") {
@@ -115,7 +123,7 @@ export function QuizResult({
       )}
 
       {Object.keys(submittedAnswers).length > 0 && (
-        <QuizResultExplanation questions={quiz.questions} answers={submittedAnswers} />
+        <QuizResultExplanation questions={quiz.questions} answers={submittedAnswers} aiFeedback={aiFeedback} />
       )}
       <QuizResultActions slug={slug} />
     </div>

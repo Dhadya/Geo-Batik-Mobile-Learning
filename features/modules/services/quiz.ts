@@ -2,7 +2,11 @@ import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { quizResults } from "@/drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
+import { appError } from "@/lib/api/errors";
 import type { ModuleSlug } from "@/features/modules/types";
+
+// PostgreSQL unique violation error code
+const UNIQUE_VIOLATION = "23505";
 
 /** Zod schema for a single quiz answer entry. */
 export const quizAnswerSchema = z.object({
@@ -36,20 +40,27 @@ export async function saveQuizResult(userId: string, module: ModuleSlug, input: 
   const parsed = submitQuizSchema.parse(input);
   const db = getDb();
 
-  const inserted = await db
-    .insert(quizResults)
-    .values({
-      userId,
-      module,
-      attemptNumber: parsed.attemptNumber,
-      packageId: parsed.packageId,
-      answers: parsed.answers,
-      totalScore: parsed.totalScore,
-      completedAt: new Date(),
-    })
-    .returning({ id: quizResults.id, totalScore: quizResults.totalScore, attemptNumber: quizResults.attemptNumber });
+  try {
+    const inserted = await db
+      .insert(quizResults)
+      .values({
+        userId,
+        module,
+        attemptNumber: parsed.attemptNumber,
+        packageId: parsed.packageId,
+        answers: parsed.answers,
+        totalScore: parsed.totalScore,
+        completedAt: new Date(),
+      })
+      .returning({ id: quizResults.id, totalScore: quizResults.totalScore, attemptNumber: quizResults.attemptNumber });
 
-  return { id: inserted[0].id, totalScore: inserted[0].totalScore, attemptNumber: inserted[0].attemptNumber };
+    return { id: inserted[0].id, totalScore: inserted[0].totalScore, attemptNumber: inserted[0].attemptNumber };
+  } catch (e: unknown) {
+    if (e instanceof Error && "code" in e && (e as { code: string }).code === UNIQUE_VIOLATION) {
+      throw appError("QUIZ_ALREADY_SUBMITTED");
+    }
+    throw e;
+  }
 }
 
 /** Fetches the most recent quiz result for a module, or null if none exists. */
