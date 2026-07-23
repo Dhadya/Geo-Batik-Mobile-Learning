@@ -20,6 +20,19 @@ import { useSectionProgress } from "../hooks/useSectionSubmission"
 import { useAnswerStore } from "../store/answerStore"
 import type { PilihanGandaItem } from "../types"
 
+type SectionStatus = "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2"
+type SectionStatusWithLock = SectionStatus | "locked"
+
+function narrowSectionStatus(raw: string | null | undefined): SectionStatus {
+  const valid: SectionStatus[] = ["unsubmitted", "correct", "wrong_attempt1", "wrong_attempt2"]
+  return valid.includes(raw as SectionStatus) ? (raw as SectionStatus) : "unsubmitted"
+}
+
+function narrowSectionStatusWithLock(raw: string | null | undefined): SectionStatusWithLock {
+  const valid: SectionStatusWithLock[] = ["unsubmitted", "correct", "wrong_attempt1", "wrong_attempt2", "locked"]
+  return valid.includes(raw as SectionStatusWithLock) ? (raw as SectionStatusWithLock) : "unsubmitted"
+}
+
 /** Main module content orchestrator — composes all sections for a given slug and tab. */
 export function ModuleContent({
   slug,
@@ -82,7 +95,7 @@ export function ModuleContent({
           if (Array.isArray(parsed.selections)) {
             store.setSelections(slug, decodedTab, parsed.selections)
           }
-          store.setCekPemahamanStatus(slug, decodedTab, s.status as "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2", 1)
+          store.setCekPemahamanStatus(slug, decodedTab, narrowSectionStatus(s.status), 1)
           store.setCekPemahamanScore(slug, decodedTab, finalScore)
         } catch {
           continue
@@ -106,12 +119,12 @@ export function ModuleContent({
             }
           }
           store.setSectionStatus(
-          slug,
-          decodedTab,
-          sectionKey as "percobaan",
-          s.status as "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2" | "locked",
-          isAttempt2 ? 2 : 1,
-        )
+            slug,
+            decodedTab,
+            sectionKey as "percobaan",
+            narrowSectionStatusWithLock(s.status),
+            isAttempt2 ? 2 : 1,
+          )
         store.setSectionScore(
           slug,
           decodedTab,

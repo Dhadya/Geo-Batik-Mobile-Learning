@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
 import { Button } from "@/components/retroui/Button"
 import { ProfileDropdown } from "@/components/layout/ProfileDropdown"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -228,7 +228,7 @@ export function Navbar() {
               className="lg:hidden border-2 border-black bg-primary-foreground/10 hover:bg-primary-foreground/20"
               aria-label="Toggle menu"
             >
-              {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+              {mobileOpen ? <MaterialIcon className="size-6" name="close" /> : <MaterialIcon className="size-6" name="menu" />}
             </Button>
           </div>
         </div>

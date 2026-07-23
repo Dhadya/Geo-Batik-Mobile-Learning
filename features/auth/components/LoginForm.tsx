@@ -1,10 +1,10 @@
 "use client"
 
-import { User, ArrowRight } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { Loader } from "@/components/retroui/Loader"
 import { Button } from "@/components/retroui/Button"
-import Link from "next/link"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { AuthFormField } from "./AuthFormField"
 import { useLoginForm } from "../hooks/useLoginForm"
 
@@ -36,7 +36,7 @@ export function LoginForm() {
           label="Email"
           type="text"
           placeholder="nama@gmail.com"
-          icon={User}
+          icon={<MaterialIcon className="size-5 text-muted-foreground" name="person" />}
           value={email}
           onChange={(e) => { setEmail(e.target.value); clearError() }}
         />
@@ -71,7 +71,7 @@ export function LoginForm() {
           ) : (
             <>
               MASUK
-              <ArrowRight className="size-6" />
+              <MaterialIcon className="size-6" name="arrow_forward" />
             </>
           )}
         </Button>
