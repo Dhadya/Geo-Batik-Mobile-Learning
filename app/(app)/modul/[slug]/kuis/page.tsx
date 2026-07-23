@@ -8,25 +8,11 @@ import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { QuizBreadcrumb, QuizHeader, getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
+import { MODULE_LABELS, MODULE_ICONS, MODULE_BG } from "@/features/modules/data/moduleConfig"
 import { KuisStartButton } from "./KuisStartButton"
 import { LockOverlay } from "@/features/modules/components/LockOverlay"
 import { getScoreConfig } from "@/features/modules/lib/scoreColors"
 import type { ModuleSlug } from "@/features/modules/types"
-
-const MODULE_LABELS: Record<string, string> = {
-  translasi: "Translasi",
-  refleksi: "Refleksi",
-}
-
-const MODULE_ICONS: Record<string, string> = {
-  translasi: "transform",
-  refleksi: "flip",
-}
-
-const MODULE_BG: Record<string, string> = {
-  translasi: "bg-module-translasi",
-  refleksi: "bg-module-refleksi",
-}
 
 export default async function KuisIntroPage(props: {
   params: Promise<{ slug: string }>

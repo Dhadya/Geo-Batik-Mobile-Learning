@@ -15,6 +15,8 @@ interface QuizState {
   currentPackage: number
   /** True after setQuizMeta is called by KuisStartButton. Used to detect direct URL entry. */
   sessionStarted: boolean
+  /** Persisted attempt history — replaces localStorage-based tracking. */
+  history: { attemptNumber: number; packageId: number }[]
   /** Select an answer for a question. */
   selectAnswer: (questionId: number, optionIndex: number) => void
   /** Submit current answers — snapshots them then clears in-progress state. */
@@ -23,6 +25,8 @@ interface QuizState {
   recordAttempt: (questionId: number, attempt: Partial<QuizQuestionAttempt>) => void
   /** Set the current attempt number and package. */
   setQuizMeta: (attemptNumber: number, currentPackage: number) => void
+  /** Add a history entry and clear answers for a new attempt. */
+  startNewAttempt: (attemptNumber: number, packageId: number) => void
   /** Clear all answers. */
   resetAnswers: () => void
 }
@@ -36,6 +40,7 @@ export const useQuizStore = create<QuizState>()(
       attemptNumber: 1,
       currentPackage: 0,
       sessionStarted: false,
+      history: [],
       selectAnswer: (questionId, optionIndex) =>
         set((state) => ({
           answers: { ...state.answers, [questionId]: optionIndex },
@@ -44,6 +49,7 @@ export const useQuizStore = create<QuizState>()(
         set((state) => ({
           submittedAnswers: { ...state.answers },
           answers: {},
+          sessionStarted: false,
         })),
       recordAttempt: (questionId, attempt) =>
         set((state) => ({
@@ -69,7 +75,16 @@ export const useQuizStore = create<QuizState>()(
         })),
       setQuizMeta: (attemptNumber, currentPackage) =>
         set({ attemptNumber, currentPackage, sessionStarted: true }),
-      resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {}, attemptNumber: 1, currentPackage: 0, sessionStarted: false }),
+      startNewAttempt: (attemptNumber, packageId) =>
+        set((state) => ({
+          answers: {},
+          submittedAnswers: {},
+          attemptNumber,
+          currentPackage: packageId,
+          sessionStarted: true,
+          history: [...state.history, { attemptNumber, packageId }],
+        })),
+      resetAnswers: () => set({ answers: {}, submittedAnswers: {}, attempts: {}, attemptNumber: 1, currentPackage: 0, sessionStarted: false, history: [] }),
     }),
     { name: "gematri-quiz-store" },
   ),

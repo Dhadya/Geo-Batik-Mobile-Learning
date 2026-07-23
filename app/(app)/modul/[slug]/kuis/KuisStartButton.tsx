@@ -6,30 +6,10 @@ import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { useQuizStore } from "@/features/quiz"
 
-interface AttemptRecord {
+function calcNextAttempt(history: { attemptNumber: number; packageId: number }[]): {
   attemptNumber: number
   packageId: number
-}
-
-const HISTORY_KEY_PREFIX = "gematri-quiz-history-"
-
-function getHistory(slug: string): AttemptRecord[] {
-  try {
-    const raw = localStorage.getItem(`${HISTORY_KEY_PREFIX}${slug}`)
-    if (!raw) return []
-    const parsed = JSON.parse(raw)
-    if (!Array.isArray(parsed)) {
-      console.warn("[KuisStartButton] Quiz history data corrupted, resetting")
-      return []
-    }
-    return parsed
-  } catch {
-    console.warn("[KuisStartButton] Quiz history parse failed, resetting")
-    return []
-  }
-}
-
-function calcNextAttempt(history: AttemptRecord[]): { attemptNumber: number; packageId: number } {
+} {
   const attemptNumber = history.length + 1
   if (attemptNumber === 1) {
     return { attemptNumber, packageId: Math.round(Math.random()) as 0 | 1 }
@@ -44,25 +24,16 @@ function calcNextAttempt(history: AttemptRecord[]): { attemptNumber: number; pac
   return { attemptNumber, packageId: Math.round(Math.random()) as 0 | 1 }
 }
 
-function saveHistory(slug: string, record: AttemptRecord) {
-  const history = getHistory(slug)
-  history.push(record)
-  localStorage.setItem(`${HISTORY_KEY_PREFIX}${slug}`, JSON.stringify(history))
-}
-
 export function KuisStartButton({ slug }: { slug: string }) {
   const router = useRouter()
-  const setQuizMeta = useQuizStore((s) => s.setQuizMeta)
-  const resetAnswers = useQuizStore((s) => s.resetAnswers)
+  const startNewAttempt = useQuizStore((s) => s.startNewAttempt)
+  const history = useQuizStore((s) => s.history)
 
   const handleStart = useCallback(() => {
-    resetAnswers()
-    const history = getHistory(slug)
     const { attemptNumber, packageId } = calcNextAttempt(history)
-    saveHistory(slug, { attemptNumber, packageId })
-    setQuizMeta(attemptNumber, packageId)
+    startNewAttempt(attemptNumber, packageId)
     router.push(`/modul/${slug}/kuis/1`)
-  }, [slug, router, setQuizMeta, resetAnswers])
+  }, [slug, router, history, startNewAttempt])
 
   return (
     <Button

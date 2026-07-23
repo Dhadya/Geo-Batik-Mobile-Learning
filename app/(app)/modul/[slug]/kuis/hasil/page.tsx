@@ -4,24 +4,10 @@ import { auth } from "@/lib/auth"
 import { Text } from "@/components/retroui/Text"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { QuizBreadcrumb, QuizResult, getQuizModule, getQuizQuestionsByTab } from "@/features/quiz"
+import { MODULE_LABELS, MODULE_ICONS, MODULE_BG } from "@/features/modules/data/moduleConfig"
 import { getAllQuizResults } from "@/features/modules/services/quiz"
 import { getTabProgress } from "@/features/modules/services/progress"
 import type { ModuleSlug } from "@/features/modules/types"
-
-const MODULE_LABELS: Record<string, string> = {
-  translasi: "Translasi",
-  refleksi: "Refleksi",
-}
-
-const MODULE_ICONS: Record<string, string> = {
-  translasi: "transform",
-  refleksi: "flip",
-}
-
-const MODULE_BG: Record<string, string> = {
-  translasi: "bg-module-translasi",
-  refleksi: "bg-module-refleksi",
-}
 
 export default async function KuisHasilPage(props: {
   params: Promise<{ slug: string }>
