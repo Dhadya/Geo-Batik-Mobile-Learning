@@ -1,11 +1,12 @@
+import { Check } from "lucide-react"
 import { getScoreColor, getScoreConfig, type ScoreColor } from "../../lib/scoreColors"
 
 /**
- * Small colored dot indicator reflecting a section's score range.
+ * Colored circle with black checkmark indicating a section's score range.
  * Numeric scores are never shown — only the color.
  *
  * Colors:
- * - Gray (unsubmitted)  → Belum Dinilai
+ * - Gray (unsubmitted)  → Belum Dinilai (hidden)
  * - Red (0–30)          → Perlu Perbaikan
  * - Orange (31–70)      → Cukup
  * - Green (71–100)      → Baik
@@ -22,12 +23,14 @@ export function SectionScoreIndicator({
 
   if (color === "gray") return null
 
-  const dotSize = size === "md" ? "size-3 md:size-4" : "size-2.5 md:size-3"
+  const circleSize = size === "md" ? "size-5 md:size-6" : "size-4 md:size-5"
 
   return (
     <span
-      className={`inline-block ${dotSize} rounded-full ${config.bgClass} border-2 border-black shrink-0`}
+      className={`inline-flex items-center justify-center ${circleSize} rounded-full ${config.bgClass} border-2 border-black shrink-0`}
       title={config.label}
-    />
+    >
+      <Check className="size-2.5 md:size-3 text-black stroke-[3]" />
+    </span>
   )
 }

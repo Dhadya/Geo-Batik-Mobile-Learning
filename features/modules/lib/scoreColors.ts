@@ -14,10 +14,10 @@ export interface ScoreColorConfig {
 }
 
 const SCORE_CONFIG: Record<ScoreColor, ScoreColorConfig> = {
-  gray:   { color: "gray",   label: "Belum Dinilai",  bgClass: "bg-gray-300",      textClass: "text-gray-600",    borderClass: "border-gray-400" },
-  red:    { color: "red",    label: "Perlu Perbaikan", bgClass: "bg-red-500",       textClass: "text-red-700",    borderClass: "border-red-600" },
-  orange: { color: "orange", label: "Cukup",           bgClass: "bg-orange-400",    textClass: "text-orange-700", borderClass: "border-orange-500" },
-  green:  { color: "green",  label: "Baik",            bgClass: "bg-green-500",     textClass: "text-green-700",  borderClass: "border-green-600" },
+  gray: { color: "gray", label: "Belum Dinilai", bgClass: "bg-gray-300", textClass: "text-gray-800", borderClass: "border-gray-400" },
+  red: { color: "red", label: "Perlu Perbaikan", bgClass: "bg-red-500", textClass: "text-red-700", borderClass: "border-red-600" },
+  orange: { color: "orange", label: "Cukup", bgClass: "bg-orange-400", textClass: "text-orange-700", borderClass: "border-orange-500" },
+  green: { color: "green", label: "Baik", bgClass: "bg-green-500", textClass: "text-green-700", borderClass: "border-green-600" },
 }
 
 /**

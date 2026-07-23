@@ -23,12 +23,14 @@ function NavDropdownItem({
   apersepsiHref,
   modulHref,
   kuisHref,
+  onSelect,
 }: {
   label: string
   isActive: boolean
   apersepsiHref: string
   modulHref: string
   kuisHref: string
+  onSelect: () => void
 }) {
   return (
     <NavigationMenuItem>
@@ -42,19 +44,19 @@ function NavDropdownItem({
         className="border-4 border-black bg-card shadow-lg p-0 w-48"
       >
         <NavigationMenuLink
-          render={<Link href={apersepsiHref} />}
+          render={<Link href={apersepsiHref} onClick={onSelect} />}
           className="block px-4 py-3 text-sm font-black uppercase border-b-2 border-black hover:bg-secondary-container focus:bg-secondary-container data-active:bg-secondary-container"
         >
           Apersepsi
         </NavigationMenuLink>
         <NavigationMenuLink
-          render={<Link href={modulHref} />}
+          render={<Link href={modulHref} onClick={onSelect} />}
           className="block px-4 py-3 text-sm font-black uppercase border-b-2 border-black hover:bg-secondary-container focus:bg-secondary-container data-active:bg-secondary-container"
         >
           Modul
         </NavigationMenuLink>
         <NavigationMenuLink
-          render={<Link href={kuisHref} />}
+          render={<Link href={kuisHref} onClick={onSelect} />}
           className="block px-4 py-3 text-sm font-black uppercase hover:bg-secondary-container focus:bg-secondary-container data-active:bg-secondary-container"
         >
           Kuis
@@ -70,11 +72,13 @@ function MobileNavDropdown({
   apersepsiHref,
   modulHref,
   kuisHref,
+  onClosePanel,
 }: {
   label: string
   apersepsiHref: string
   modulHref: string
   kuisHref: string
+  onClosePanel: () => void
 }) {
   const [open, setOpen] = useState(false)
 
@@ -99,21 +103,21 @@ function MobileNavDropdown({
         <div className="ml-4 border-l-4 border-black">
           <Link
             href={apersepsiHref}
-            onClick={() => setOpen(false)}
+            onClick={() => { setOpen(false); onClosePanel() }}
             className="block px-4 py-2 text-xs font-bold uppercase hover:bg-secondary-container transition-colors"
           >
             Apersepsi
           </Link>
           <Link
             href={modulHref}
-            onClick={() => setOpen(false)}
+            onClick={() => { setOpen(false); onClosePanel() }}
             className="block px-4 py-2 text-xs font-bold uppercase hover:bg-secondary-container transition-colors border-t-2 border-black"
           >
             Modul
           </Link>
           <Link
             href={kuisHref}
-            onClick={() => setOpen(false)}
+            onClick={() => { setOpen(false); onClosePanel() }}
             className="block px-4 py-2 text-xs font-bold uppercase hover:bg-secondary-container transition-colors border-t-2 border-black"
           >
             Kuis
@@ -134,6 +138,9 @@ export function Navbar() {
   const isTranslasiActive = pathname.startsWith("/apersepsi/translasi") || pathname.startsWith("/modul/translasi")
   const isRefleksiActive = pathname.startsWith("/apersepsi/refleksi") || pathname.startsWith("/modul/refleksi")
   const isLabActive = pathname === "/lab"
+
+  const closeDesktopDropdown = () => setNavKey((k) => k + 1)
+  const closeMobilePanel = () => setMobileOpen(false)
 
   // Close dropdowns on scroll to prevent positioner drift
   useEffect(() => {
@@ -169,7 +176,7 @@ export function Navbar() {
             <NavigationMenuList className="gap-8">
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  render={<Link href="/menu" />}
+                  render={<Link href="/menu" onClick={closeDesktopDropdown} />}
                   className={`font-black uppercase text-base h-auto px-0 py-0 bg-transparent hover:bg-transparent focus:bg-transparent data-active:bg-transparent text-primary-foreground ${isMenuActive ? "underline underline-offset-4 decoration-4" : ""
                     }`}
                 >
@@ -183,6 +190,7 @@ export function Navbar() {
                 apersepsiHref="/apersepsi/translasi"
                 modulHref="/modul/translasi"
                 kuisHref="/modul/translasi/kuis"
+                onSelect={closeDesktopDropdown}
               />
 
               <NavDropdownItem
@@ -191,11 +199,12 @@ export function Navbar() {
                 apersepsiHref="/apersepsi/refleksi"
                 modulHref="/modul/refleksi"
                 kuisHref="/modul/refleksi/kuis"
+                onSelect={closeDesktopDropdown}
               />
 
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  render={<Link href="/lab" />}
+                  render={<Link href="/lab" onClick={closeDesktopDropdown} />}
                   className={`font-black uppercase text-base h-auto px-0 py-0 bg-transparent hover:bg-transparent focus:bg-transparent data-active:bg-transparent text-primary-foreground ${isLabActive ? "underline underline-offset-4 decoration-4" : ""
                     }`}
                 >
@@ -242,6 +251,7 @@ export function Navbar() {
               apersepsiHref="/apersepsi/translasi"
               modulHref="/modul/translasi"
               kuisHref="/modul/translasi/kuis"
+              onClosePanel={closeMobilePanel}
             />
 
             <MobileNavDropdown
@@ -249,6 +259,7 @@ export function Navbar() {
               apersepsiHref="/apersepsi/refleksi"
               modulHref="/modul/refleksi"
               kuisHref="/modul/refleksi/kuis"
+              onClosePanel={closeMobilePanel}
             />
 
             <Link

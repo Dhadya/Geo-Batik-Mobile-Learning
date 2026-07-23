@@ -43,8 +43,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Penyimpulan
         </Text>
-        <SectionScoreIndicator score={score} />
-        {isChecked && <MaterialIcon className="size-4 md:size-6 text-green-600" name="check" />}
+        <SectionScoreIndicator score={score} size="md" />
       </div>
 
       <div className="space-y-4 md:space-y-6">
@@ -115,7 +114,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
         })}
 
         {isChecked && aiFeedback && (
-          <div className="border-4 border-primary bg-primary/5 p-3 md:p-4">
+          <div className="border-4 border-black bg-background p-3 md:p-4">
             <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
           </div>
         )}

@@ -81,7 +81,7 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
 
       {/* AI feedback banner */}
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 ">
+        <div className="border-4 border-black bg-background p-3 md:p-4">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap text-black">{aiFeedback}</Text>
         </div>
       )}

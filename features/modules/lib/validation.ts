@@ -34,8 +34,8 @@ export function validateSection(
         const m = item as MatriksItem
         const aVal = Number(itemAnswers.a)
         const bVal = Number(itemAnswers.b)
-        if (aVal !== m.answer.a) errors[`${item.id}_a`] = "Jawaban belum tepat"
-        if (bVal !== m.answer.b) errors[`${item.id}_b`] = "Jawaban belum tepat"
+        if (aVal !== m.answer.a) errors[`${item.id}_a`] = "Komponen matriks a belum sesuai — periksa kembali vektor translasi dari soal"
+        if (bVal !== m.answer.b) errors[`${item.id}_b`] = "Komponen matriks b belum sesuai — periksa kembali vektor translasi dari soal"
         if (aVal === m.answer.a && bVal === m.answer.b) correctCount++
         break
       }
@@ -44,7 +44,7 @@ export function validateSection(
         const xVal = Number(itemAnswers.x)
         const yVal = Number(itemAnswers.y)
         if (xVal !== k.answer.x || yVal !== k.answer.y) {
-          errors[`${item.id}_coord`] = "Jawaban belum tepat"
+          errors[`${item.id}_coord`] = "Koordinat titik belum sesuai — pastikan x dan y dihitung berdasarkan vektor translasi"
         } else {
           correctCount++
         }
@@ -62,7 +62,7 @@ export function validateSection(
           return normExpected.split(/[.,;!?]+/).some((p) => p.trim() && normUser.includes(p))
         })
         if (!userAns || !isCorrect) {
-          errors[`${item.id}_text`] = "Jawaban kurang tepat"
+          errors[`${item.id}_text`] = "Jawaban uraian kurang tepat — coba periksa langkah penyelesaian dan pastikan sesuai dengan format yang diminta"
         } else {
           correctCount++
         }
@@ -75,7 +75,7 @@ export function validateSection(
         )
         for (const [leftId, expectedRightId] of Object.entries(m.correctMatches)) {
           if (itemAnswers[leftId] !== expectedRightId) {
-            errors[`${item.id}_${leftId}`] = "Pasangan belum tepat"
+            errors[`${item.id}_${leftId}`] = "Pasangan tidak sesuai — coba hubungkan kembali setiap pasangan berdasarkan konsep yang telah dipelajari"
           }
         }
         if (allCorrect) correctCount++
@@ -91,14 +91,14 @@ export function validateSection(
           if (correct) {
             correctCount++
           } else {
-            errors[`${pg.id}_selection`] = "Jawaban kurang tepat"
+            errors[`${pg.id}_selection`] = "Pilihan ganda belum tepat — pastikan semua opsi yang dipilih sesuai dengan jawaban yang benar"
           }
         } else if (selections !== undefined) {
           const idx = selections[i] ?? -1
           if (idx === pg.correctIndex) {
             correctCount++
           } else {
-            errors[`${pg.id}_selection`] = "Jawaban kurang tepat"
+            errors[`${pg.id}_selection`] = "Pilihan yang dipilih tidak sesuai jawaban benar — coba perhatikan kembali pertanyaan dengan seksama"
           }
         } else {
           const idx = fields[String(pg.id)]?.selected !== undefined
@@ -107,7 +107,7 @@ export function validateSection(
           if (idx === pg.correctIndex) {
             correctCount++
           } else {
-            errors[`${pg.id}_selection`] = "Jawaban kurang tepat"
+            errors[`${pg.id}_selection`] = "Jawaban belum tepat — pastikan opsi yang dipilih benar berdasarkan materi yang telah dipelajari"
           }
         }
         break
@@ -121,7 +121,7 @@ export function validateSection(
         if (isCorrect) {
           correctCount++
         } else {
-          errors[`${item.id}_order`] = "Urutan belum tepat"
+            errors[`${item.id}_order`] = "Urutan tidak sesuai — perhatikan urutan logis langkah-langkah berdasarkan konsep yang dipelajari"
         }
         break
       }
@@ -129,12 +129,12 @@ export function validateSection(
         const pr = item as PilihanRefleksiItem
         const selected = itemAnswers.selected ?? ""
         if (!selected) {
-          errors[`${item.id}_selected`] = "Pilih salah satu refleksi"
+          errors[`${item.id}_selected`] = "Pilih salah satu jenis refleksi terlebih dahulu sebelum mengisi jawaban"
           break
         }
         const correctAnswers = pr.correctAnswers[selected]
         if (!correctAnswers) {
-          errors[`${item.id}_selected`] = "Pilihan tidak valid"
+          errors[`${item.id}_selected`] = "Jenis refleksi yang dipilih tidak tersedia dalam soal ini"
           break
         }
         let allCorrect = true
@@ -142,7 +142,7 @@ export function validateSection(
           const xVal = Number(itemAnswers[`x${idx}`])
           const yVal = Number(itemAnswers[`y${idx}`])
           if (xVal !== correctAnswers[idx].x || yVal !== correctAnswers[idx].y) {
-            errors[`${item.id}_coord${idx}`] = "Jawaban belum tepat"
+            errors[`${item.id}_coord${idx}`] = "Koordinat bayangan belum sesuai — hitung kembali berdasarkan jenis refleksi yang dipilih"
             allCorrect = false
           }
         }
@@ -156,7 +156,7 @@ export function validateSection(
           const userValue = itemAnswers[`statement_${idx}`] ?? ""
           const correctValue = ct.correctAnswers[idx] ? "ya" : "tidak"
           if (userValue !== correctValue) {
-            errors[`${item.id}_checklist`] = "Jawaban kurang tepat"
+            errors[`${item.id}_checklist`] = "Ada jawaban yang belum sesuai — perhatikan setiap pernyataan dengan cermat dan bandingkan dengan hasil pengamatan"
             allCorrect = false
             break
           }
@@ -172,7 +172,7 @@ export function validateSection(
     errors,
     summary:
       correctCount === items.length
-        ? "Semua jawaban benar!"
-        : `${correctCount}/${items.length} jawaban benar`,
+        ? "Semua jawaban benar! Kamu telah menjawab dengan tepat pada seluruh soal. Pertahankan pemahaman ini dan lanjutkan ke materi berikutnya."
+        : `${correctCount}/${items.length} jawaban benar. Perhatikan bagian yang masih salah dan coba pahami konsep di baliknya sebelum mencoba lagi.`,
   }
 }

@@ -12,16 +12,16 @@ interface SectionSubmitButtonProps {
   showCobaLagi: boolean
   /** Called when user clicks "Periksa Jawaban" (initial submit) */
   onSubmit: () => void
-  /** Called when user clicks "Periksa Jawaban Lagi" — resets form to edit mode */
+  /** Called when user clicks "Coba Lagi" — resets form to edit mode */
   onCobaLagi?: () => void
-  /** If true, requires a confirmation dialog before submitting */
+  /** If true, requires a confirmation dialog before initial submit only */
   requireConfirmation?: boolean
 }
 
 /**
  * Single submit button cycling through all section states.
- * States: Periksa Jawaban → Periksa Jawaban Lagi → Selesai (disabled) | Kesempatan Habis (disabled).
- * Confirmation dialog shown before both initial submit and coba-lagi.
+ * States: Periksa Jawaban (with optional dialog) → Coba Lagi (no dialog) → Selesai (disabled) | Kesempatan Habis (disabled).
+ * Confirmation dialog only shown before the initial submit — Coba Lagi acts as a direct confirmer.
  */
 export function SectionSubmitButton({
   isChecked,
@@ -43,7 +43,7 @@ export function SectionSubmitButton({
   if (!isChecked) {
     text = "Periksa Jawaban"
   } else if (showCobaLagi) {
-    text = "Periksa Jawaban Lagi"
+    text = "Coba Lagi"
     variantStyle = "bg-secondary text-white hover:bg-secondary/90"
   } else if (isCorrect) {
     text = "Selesai"
@@ -55,24 +55,22 @@ export function SectionSubmitButton({
 
   const handleClick = useCallback(() => {
     if (!isLocked) {
-      if (requireConfirmation) {
-        setOpen(true)
-      } else if (showCobaLagi) {
+      if (showCobaLagi) {
+        // Coba Lagi — no dialog, directly reset for attempt 2
         onCobaLagi?.()
+      } else if (requireConfirmation) {
+        // Initial submit — show confirmation dialog
+        setOpen(true)
       } else {
         onSubmit()
       }
     }
-  }, [isLocked, showCobaLagi, onSubmit, onCobaLagi, requireConfirmation])
+  }, [isLocked, showCobaLagi, requireConfirmation, onSubmit, onCobaLagi])
 
   const handleConfirm = useCallback(() => {
-    if (showCobaLagi) {
-      onCobaLagi?.()
-    } else {
-      onSubmit()
-    }
+    onSubmit()
     setOpen(false)
-  }, [showCobaLagi, onCobaLagi, onSubmit])
+  }, [onSubmit])
 
   const buttonElement = (
     <Button
@@ -90,7 +88,7 @@ export function SectionSubmitButton({
     </div>
   ) : buttonElement
 
-  if (!requireConfirmation) {
+  if (!requireConfirmation || showCobaLagi) {
     return wrappedButton
   }
 
@@ -108,15 +106,9 @@ export function SectionSubmitButton({
           <p className="font-semibold text-sm md:text-base">
             Yakin ingin mengirimkan jawaban?
           </p>
-          {showCobaLagi ? (
-            <p className="text-xs md:text-sm text-gray-600">
-              Ini adalah kesempatan terakhirmu. Jawaban yang telah terkirim tidak dapat diubah lagi. Nilai akan dihitung dari skor terbaik dari kedua kesempatan.
-            </p>
-          ) : (
-            <p className="text-xs md:text-sm text-gray-600">
-              Kamu hanya dapat mengirimkan jawaban maksimal 2 kali. Kamu sekarang punya 2 kesempatan. Periksa jawaban kamu sebelum mengirim.
-            </p>
-          )}
+          <p className="text-xs md:text-sm text-gray-800">
+            Kamu hanya dapat mengirimkan jawaban maksimal 2 kali. Kamu sekarang punya 2 kesempatan. Periksa jawaban kamu sebelum mengirim.
+          </p>
         </div>
 
         <Dialog.Footer>

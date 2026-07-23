@@ -134,10 +134,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
           Cek Pemahaman
         </Text>
-        <SectionScoreIndicator score={rawTab?.cekPemahaman?.score ?? null} />
-        {isChecked && isCorrect && (
-          <MaterialIcon name="check" className="size-4 md:size-6 text-green-600" />
-        )}
+        <SectionScoreIndicator score={rawTab?.cekPemahaman?.score ?? null} size="md" />
         {isLocked && (
           <MaterialIcon name="lock" className="size-4 md:size-6 text-muted-foreground" />
         )}
@@ -276,7 +273,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
       {/* AI feedback banner */}
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 mt-4 md:mt-6">
+        <div className="border-4 border-black bg-background p-3 md:p-4 mt-4 md:mt-6">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">
             {aiFeedback}
           </Text>
@@ -288,7 +285,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         <div className="border-4 border-black bg-muted p-4 md:p-6 mt-4 md:mt-6">
           <Text className="text-sm md:text-base font-bold uppercase text-muted-foreground flex items-center gap-2">
             <MaterialIcon name="lock" className="size-4 md:size-5" />
-            {isCorrect ? "Jawaban benar — terkunci" : "Kesempatan habis — jawaban terkunci"}
+            {isCorrect ? "Jawaban kamu benar — bagian ini sudah terkunci karena sudah mencapai nilai terbaik" : "Kesempatan kedua sudah habis — jawaban sudah terkunci, lanjutkan ke bagian berikutnya"}
           </Text>
         </div>
       )}

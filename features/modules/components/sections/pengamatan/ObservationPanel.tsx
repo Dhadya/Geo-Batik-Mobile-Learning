@@ -11,7 +11,6 @@ import { PengamatanBangunForm } from "./PengamatanBangunForm"
 import { PengamatanGarisForm } from "./PengamatanGarisForm"
 import { PengamatanMockForm } from "./PengamatanMockForm"
 import { ChecklistTableForm } from "../../shared/ChecklistTableForm"
-import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 interface ObservationPanelProps {
   slug: string
@@ -28,13 +27,8 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const isRefleksi = slug === "refleksi"
 
   const tabKey = `${slug}-${tab}`
-  const pengamatanStatus = useAnswerStore((s) => s.answers[tabKey]?.pengamatan?.status)
-  const percobaanStatus = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.status)
   const pengamatanScore = useAnswerStore((s) => s.answers[tabKey]?.pengamatan?.score ?? null)
   const percobaanScore = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.score ?? null)
-
-  const pengamatanLocked = pengamatanStatus === "correct" || pengamatanStatus === "wrong_attempt2"
-  const percobaanLocked = percobaanStatus === "correct" || percobaanStatus === "wrong_attempt2"
 
   return (
     <div className="h-auto lg:h-full flex flex-col gap-3 md:gap-4">
@@ -47,7 +41,6 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
           >
             <span>Pengamatan</span>
             <SectionScoreIndicator score={pengamatanScore} />
-            {pengamatanLocked && <MaterialIcon className="size-5" name="check" />}
           </Tabs.Trigger>
           <Tabs.Trigger
             value="percobaan"
@@ -55,7 +48,6 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
           >
             <span>Percobaan</span>
             <SectionScoreIndicator score={percobaanScore} />
-            {percobaanLocked && <MaterialIcon className="size-5" name="check" />}
           </Tabs.Trigger>
         </Tabs.List>
 

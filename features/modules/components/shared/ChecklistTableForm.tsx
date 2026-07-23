@@ -39,7 +39,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
       </Text>
 
       {/* Checklist table */}
-      <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
+      <table className="w-full border-4 border-black-coll borderapse bg-background text-xs md:text-sm">
         <thead>
           <tr className="bg-muted border-b-4 border-black text-center font-black">
             <th className="p-2 md:p-3 border-r-2 border-black text-left">Pernyataan</th>
@@ -84,7 +84,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
       )}
 
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 ">
+        <div className="border-4 border-black bg-background p-3 md:p-4">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
