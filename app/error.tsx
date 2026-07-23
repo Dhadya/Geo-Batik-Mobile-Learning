@@ -5,7 +5,7 @@ import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 export default function ErrorPage({
-  error,
+  reset,
 }: {
   error: Error & { digest?: string }
   reset: () => void
@@ -29,7 +29,7 @@ export default function ErrorPage({
             variant="default"
             size="lg"
             className="w-full font-black uppercase gap-2"
-            onClick={() => window.location.reload()}
+            onClick={() => reset()}
           >
             <MaterialIcon className="size-5" name="refresh" />
             Coba Lagi

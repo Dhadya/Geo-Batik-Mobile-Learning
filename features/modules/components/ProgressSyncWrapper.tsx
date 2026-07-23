@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useTabProgressStore, type TabProgressEntry } from "../store/tabProgressStore"
 
 /**
@@ -17,17 +17,10 @@ export function ProgressSyncWrapper({
   serverProgress?: TabProgressEntry[] | null
   children: React.ReactNode
 }) {
-  const [prevSlug, setPrevSlug] = useState<string | null>(null)
-
-  // Seed synchronously during render to avoid layout/hydration flash of locked tabs
-  if (serverProgress && prevSlug !== slug) {
-    setPrevSlug(slug)
-    useTabProgressStore.getState().setProgress(slug, serverProgress)
-  }
-
   useEffect(() => {
-    // Only fetch client-side if serverProgress is undefined (unknown/not loaded)
-    if (serverProgress === undefined) {
+    if (serverProgress) {
+      useTabProgressStore.getState().setProgress(slug, serverProgress)
+    } else if (serverProgress === undefined) {
       import("../lib/progressSync").then(({ syncTabProgress }) => syncTabProgress(slug))
     }
   }, [slug, serverProgress])
