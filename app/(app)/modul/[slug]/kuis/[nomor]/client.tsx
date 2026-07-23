@@ -35,13 +35,6 @@ export function KuisSoalClient({
   const [dialogOpen, setDialogOpen] = useState(false)
   const submittingRef = useRef(false)
 
-  // Redirect to intro if user navigated directly without starting a quiz session
-  useEffect(() => {
-    if (!sessionStarted) {
-      router.replace(`/modul/${slug}/kuis`)
-    }
-  }, [sessionStarted, slug, router])
-
   const {
     quiz,
     question,
@@ -53,7 +46,26 @@ export function KuisSoalClient({
     selectAnswer,
   } = useQuiz(slug, nomor)
 
+  const submittedAnswers = useQuizStore((s) => s.submittedAnswers)
+
+  // Redirect to hasil if answers were already submitted (browser back from hasil page)
+  // Redirect to intro if user navigated directly without starting a quiz session
+  useEffect(() => {
+    if (Object.keys(submittedAnswers).length > 0 && Object.keys(answers).length === 0) {
+      router.replace(`/modul/${slug}/kuis/hasil`)
+    } else if (!sessionStarted) {
+      router.replace(`/modul/${slug}/kuis`)
+    }
+  }, [sessionStarted, slug, router, submittedAnswers, answers])
+
   const { handleSelesai, isSubmitting } = useQuizSubmit(slug)
+
+  // Reset submittingRef when mutation completes (success or error), allowing retry
+  useEffect(() => {
+    if (!isSubmitting) {
+      submittingRef.current = false
+    }
+  }, [isSubmitting])
 
   const handleNumberSelect = useCallback(
     (n: number) => router.push(`/modul/${slug}/kuis/${n}`),

@@ -8,20 +8,11 @@ import type { ModuleSlug } from "@/features/modules/types";
 // PostgreSQL unique violation error code
 const UNIQUE_VIOLATION = "23505";
 
-/** Zod schema for a single quiz answer entry. */
+/** Zod schema for a single quiz answer entry (single-attempt per question). */
 export const quizAnswerSchema = z.object({
   questionId: z.number(),
-  type: z.enum(["pilihan_ganda", "uraian", "angka", "campuran"]),
-  attempt1Answer: z.unknown().nullable(),
-  attempt1Correct: z.boolean().nullable(),
-  attempt1Feedback: z.string().nullable(),
-  attempt1Score: z.number().int().nullable(),
-  attempt2Answer: z.unknown().nullable(),
-  attempt2Correct: z.boolean().nullable(),
-  attempt2Feedback: z.string().nullable(),
-  attempt2Score: z.number().int().nullable(),
-  finalScore: z.number().int(),
-  status: z.enum(["correct_attempt1", "wrong_attempt1", "wrong_attempt2"]),
+  answer: z.number(),
+  isCorrect: z.boolean(),
 });
 
 /** Zod schema for submitting all quiz results at once. */

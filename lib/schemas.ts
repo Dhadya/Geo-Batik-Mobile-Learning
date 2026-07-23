@@ -43,3 +43,25 @@ export type SaveSectionInput = z.infer<typeof saveSectionSchema>;
 export const unlockSchema = z.object({
   completedTab: z.string().min(1),
 });
+
+/** Validates a section evaluation request for Gemini AI. */
+export const evaluateSectionSchema = z.object({
+  module: z.string().min(1),
+  tab: z.string().min(1),
+  sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
+  items: z.array(z.any()).min(1),
+  answers: z.record(z.string(), z.record(z.string(), z.string())),
+  attempt: z.union([z.literal(1), z.literal(2)]),
+});
+
+/** Validates a pembahasan generation request for Gemini AI. */
+export const pembahasanSchema = z.object({
+  questions: z.array(z.object({
+    id: z.number(),
+    question: z.string(),
+    options: z.array(z.string()),
+    correctIndex: z.number(),
+    explanation: z.string(),
+  })),
+  answers: z.record(z.number(), z.number()),
+});

@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
+import { useQuizStatus } from "@/features/modules/hooks/useQuizStatus"
 
-/** Forward button: shows "MATERI SELANJUTNYA" (non-last tab) or "KERJAKAN KUIS" (last tab). Blocks navigation if sections incomplete. */
+/** Forward button: shows "MATERI SELANJUTNYA" (non-last tab) or "KERJAKAN KUIS"/"ULANGI KUIS" (last tab). Blocks navigation if sections incomplete. */
 export function ForwardButton({
   slug,
   tab,
@@ -22,6 +23,7 @@ export function ForwardButton({
   const router = useRouter()
   const isLastTab = tabs[tabs.length - 1].value === tab
   const allDone = completedCount === activeSections.length
+  const { data: quizStatus } = useQuizStatus(slug)
 
   const handleClick = () => {
     if (!allDone) {
@@ -37,6 +39,12 @@ export function ForwardButton({
     }
   }
 
+  const buttonLabel = isLastTab
+    ? quizStatus?.hasAttempt
+      ? "ULANGI KUIS"
+      : "KERJAKAN KUIS"
+    : "MATERI SELANJUTNYA"
+
   return (
     <Button
       variant="default"
@@ -44,7 +52,7 @@ export function ForwardButton({
       className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
       onClick={handleClick}
     >
-      {isLastTab ? "KERJAKAN KUIS" : "MATERI SELANJUTNYA"}
+      {buttonLabel}
       <MaterialIcon className="size-4 md:size-6" name="arrow_forward" />
     </Button>
   )

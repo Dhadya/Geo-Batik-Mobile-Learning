@@ -218,3 +218,71 @@ export async function evaluateSection(
 
   return parseAIResponse(response);
 }
+
+/** Timeout for pembahasan generation (longer — needs per-question analysis). */
+const PEMBAHASAN_TIMEOUT_MS = 30000;
+
+/** Build prompt for pembahasan generation. */
+function buildPembahasanPrompt(
+  questions: { id: number; question: string; options: string[]; correctIndex: number }[],
+  answers: Record<number, number>,
+): string {
+  const lines = questions.map((q) => {
+    const userAns = answers[q.id];
+    const isCorrect = userAns === q.correctIndex;
+    return `Soal ${q.id}: ${q.question}\nOpsi: ${q.options.join(" | ")}\nJawaban benar: ${q.options[q.correctIndex]} (opsi ${q.correctIndex})\nJawaban siswa: ${userAns != null ? q.options[userAns] ?? "Tidak dijawab" : "Tidak dijawab"}\nHasil: ${isCorrect ? "BENAR" : "SALAH"}`;
+  }).join("\n\n");
+
+  return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
+
+Seorang siswa telah menyelesaikan kuis dengan hasil sebagai berikut:
+
+${lines}
+
+Tugasmu: Berikan feedback/pembahasan yang mendalam untuk SETIAP soal, fokus pada:
+- Jika jawaban benar: berikan konfirmasi dan penguatan konsep
+- Jika jawaban salah: jelaskan langkah demi langkah penyelesaian yang benar, dan tunjukkan di mana letak kesalahan siswa
+- Gunakan bahasa Indonesia yang sederhana dan mudah dipahami
+- Berikan semangat untuk terus belajar
+
+Keluarkan JSON SAJA (tanpa markdown) dengan format array：
+[
+  {
+    "questionId": number,
+    "feedback": "string pembahasan dalam Bahasa Indonesia"
+  }
+]`;
+}
+
+/** Generate AI-powered pembahasan for a completed quiz. Returns per-question feedback, falling back to static explanations on failure. */
+export async function generatePembahasan(
+  questions: { id: number; question: string; options: string[]; correctIndex: number; explanation: string }[],
+  answers: Record<number, number>,
+): Promise<{ questionId: number; feedback: string }[]> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return questions.map((q) => ({ questionId: q.id, feedback: q.explanation }));
+  }
+
+  const prompt = buildPembahasanPrompt(questions, answers);
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    safetySettings: SAFETY_SETTINGS,
+  });
+
+  try {
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("AI timed out")), PEMBAHASAN_TIMEOUT_MS),
+    );
+    const result = await Promise.race([model.generateContent(prompt), timeoutPromise]);
+    const text = result.response.text();
+    if (!text) throw new Error("AI returned empty response");
+
+    const cleaned = text.replace(/```(?:json)?\s*/gi, "").trim();
+    const feedback: { questionId: number; feedback: string }[] = JSON.parse(cleaned);
+    return feedback;
+  } catch {
+    return questions.map((q) => ({ questionId: q.id, feedback: q.explanation }));
+  }
+}
