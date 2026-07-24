@@ -98,9 +98,17 @@ export function KuisSoalClient({
   if (!sessionStarted) {
     return (
       <div className="max-w-384 mx-auto space-y-4 md:space-y-6 pt-6 md:pt-8 px-4 md:px-12">
-        <Skeleton className="h-8 md:h-10 w-48" />
-        <Skeleton className="h-20 md:h-24 w-full border-4 border-black" />
-        <Skeleton className="h-96 w-full border-4 border-black" />
+        <Skeleton className="h-5 md:h-6 w-48 border-2 border-black" />
+        <div className="bg-surface-container-high border-4 border-black shadow-[4px_4px_0_0_black]">
+          <div className="flex gap-2 p-3 md:p-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Skeleton key={i} className="size-10 md:size-12 shrink-0 border-4 border-black shadow-[2px_2px_0_0_black]" />
+            ))}
+          </div>
+          <div className="p-3 md:p-4">
+            <Skeleton className="h-80 md:h-96 w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
+          </div>
+        </div>
       </div>
     )
   }

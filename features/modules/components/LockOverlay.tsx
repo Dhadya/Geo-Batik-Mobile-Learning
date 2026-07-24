@@ -7,10 +7,10 @@ import { Text } from "@/components/retroui/Text"
 
 /**
  * Overlay shown when content is locked.
- * - Default (`fixed inset-0 z-30`): full-screen below navbar — used for
- *   module-level locks (RefleksiLockGuard, quiz access guard).
- * - `fullScreen` (`fixed inset-0 z-30`): same positioning, but shows a
- *   "Kembali" button that navigates to `backHref`.
+ * - Default (`fixed top-16 lg:top-20 min-h-dvh z-[9998]`): full-screen below
+ *   navbar — covers scrollable content, not just viewport.
+ * - `fullScreen`: same positioning, but shows a "Kembali" button that navigates
+ *   to `backHref`.
  * - `containerRelative` (`absolute inset-0 z-10`): per-tab locks inside a
  *   relative parent — content can be previewed underneath the overlay.
  */
@@ -34,7 +34,7 @@ export function LockOverlay({
       className={
         containerRelative
           ? "absolute inset-0 z-10 flex items-center justify-center bg-black/40"
-          : "fixed top-16 lg:top-20 bottom-0 left-0 right-0 z-20 flex items-center justify-center bg-black/60"
+          : "fixed top-16 lg:top-20 left-0 right-0 min-h-dvh z-[9998] flex items-center justify-center bg-black/60"
       }
     >
       <div className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-6 md:p-8 max-w-sm w-full mx-4 text-center space-y-4">
