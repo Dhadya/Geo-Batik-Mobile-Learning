@@ -93,7 +93,7 @@ export default async function KuisIntroPage(props: {
       {allResults.length > 0 && (
         <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-6 space-y-3">
           <Text as="h2" className="text-base md:text-lg font-black uppercase">
-            Riwayat Percobaan ({allResults.length})
+            Riwayat Kuis ({allResults.length})
           </Text>
           <div className="space-y-2">
             {allResults.slice(-5).reverse().map((r) => {
@@ -116,12 +116,11 @@ export default async function KuisIntroPage(props: {
                   </div>
                   <Link href={`/modul/${slug}/kuis/hasil?attempt=${r.attemptNumber}`}>
                     <Button
-                      variant="outline"
+                      variant="default"
                       size="sm"
-                      className="font-bold uppercase text-xs gap-1 shadow-[2px_2px_0_0_black]"
+                      className="font-bold uppercase text-xs shadow-[2px_2px_0_0_black]"
                     >
                       Lihat Detail
-                      <MaterialIcon className="size-3.5" name="arrow_forward" />
                     </Button>
                   </Link>
                 </div>

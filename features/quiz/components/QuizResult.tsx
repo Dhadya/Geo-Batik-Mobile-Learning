@@ -3,19 +3,13 @@
 import { useRouter } from "next/navigation"
 import type { ReactNode } from "react"
 import { useQuizStore } from "../store"
-import { getQuizModule } from "../data"
+import { getQuizModule, PACKAGE_SIZE } from "../data"
 import { useQuizPembahasan } from "../hooks/useQuizPembahasan"
 import { QuizHeader } from "./QuizHeader"
 import { QuizResultScore } from "./QuizResultScore"
 import { QuizResultExplanation } from "./QuizResultExplanation"
 import { QuizResultActions } from "./QuizResultActions"
-import { Text } from "@/components/retroui/Text"
-import { MaterialIcon } from "@/components/common/MaterialIcon"
-
-interface TabBreakdownEntry {
-  tab: string
-  questions: { id: number }[]
-}
+import type { QuizAnswers } from "../types"
 
 export function QuizResult({
   slug,
@@ -24,7 +18,7 @@ export function QuizResult({
   icon,
   bgColor,
   serverScore,
-  tabBreakdown,
+  serverAnswers,
   attemptNumber,
   totalAttempts,
 }: {
@@ -34,7 +28,7 @@ export function QuizResult({
   icon?: ReactNode
   bgColor?: string
   serverScore?: number | null
-  tabBreakdown?: TabBreakdownEntry[]
+  serverAnswers?: QuizAnswers
   attemptNumber?: number | null
   totalAttempts?: number
 }) {
@@ -42,14 +36,17 @@ export function QuizResult({
   const submittedAnswers = useQuizStore((s) => s.submittedAnswers)
   const quiz = getQuizModule(slug)
 
-  // Fetch AI-generated dynamic pembahasan
+  // Use submittedAnswers (live) or serverAnswers (history navigation)
+  const answers = Object.keys(submittedAnswers).length > 0 ? submittedAnswers : serverAnswers
+  const hasAnswers = answers != null && Object.keys(answers).length > 0
+
   const { data: aiFeedback } = useQuizPembahasan(
     quiz?.questions ?? [],
-    submittedAnswers,
-    Object.keys(submittedAnswers).length > 0,
+    answers ?? {},
+    hasAnswers,
   )
 
-  const isEmpty = !quiz || (Object.keys(submittedAnswers).length === 0 && serverScore == null)
+  const isEmpty = !quiz || (!hasAnswers && serverScore == null)
   if (isEmpty && typeof window !== "undefined") {
     router.replace(`/modul/${slug}/kuis`)
     return null
@@ -57,29 +54,18 @@ export function QuizResult({
 
   if (!quiz) return null
 
-  const total = quiz.questions.length
-
-  // Calculate correct count from submitted answers, or estimate from serverScore when history navigation
-  const hasSubmitted = Object.keys(submittedAnswers).length > 0
-  const correctCount = hasSubmitted
-    ? quiz.questions.filter((q) => submittedAnswers[q.id] === q.correctIndex).length
+  const correctCount = hasAnswers
+    ? quiz.questions.slice(0, PACKAGE_SIZE).filter((q) => answers![q.id] === q.correctIndex).length
     : serverScore != null
-      ? Math.round((serverScore / 100) * total)
+      ? Math.round((serverScore / 100) * PACKAGE_SIZE)
       : 0
 
-  const displayScore = serverScore ?? (hasSubmitted ? Math.round((correctCount / Math.max(total, 1)) * 100) : null)
+  const displayScore = serverScore ?? (hasAnswers ? Math.round((correctCount / PACKAGE_SIZE) * 100) : null)
 
-  // When navigating from history without submittedAnswers, use serverScore for description
   const scoreForDescription = displayScore ?? 0
   const ratio = scoreForDescription / 100
-  // Use estimated correct count for description when navigating from history
-  const estimatedCorrectCount = hasSubmitted
-    ? correctCount
-    : serverScore != null
-      ? Math.round((serverScore / 100) * total)
-      : 0
 
-  let description = `Kamu menjawab ${estimatedCorrectCount} dari ${total} soal dengan benar.`
+  let description = `Kamu menjawab ${correctCount} dari ${PACKAGE_SIZE} soal dengan benar.`
   if (ratio === 1) {
     description = `Sempurna! ${description} Kamu benar-benar menguasai materi ini!`
   } else if (ratio >= 0.7) {
@@ -90,52 +76,18 @@ export function QuizResult({
     description = `Ayo semangat! ${description} Jangan menyerah, coba ulangi dan pelajari lagi materinya.`
   }
 
+  const attemptLabel = attemptNumber != null && totalAttempts != null && totalAttempts > 0
+    ? `Percobaan Ke-${attemptNumber} — ${attemptNumber === 1 ? "Nilai Akhir" : "Latihan"}`
+    : undefined
+
   return (
     <div className="space-y-6 md:space-y-8">
       <QuizHeader title={title} badge={badge} icon={icon} bgColor={bgColor} description={description} />
 
-      {/* Attempt info banner */}
-      {attemptNumber != null && totalAttempts != null && totalAttempts > 0 && (
-        <div className="border-4 border-black bg-white p-3 md:p-4 text-center shadow-[4px_4px_0_0_black]">
-          <Text className="text-sm md:text-base font-bold uppercase">
-            Percobaan Ke-{attemptNumber} — {attemptNumber === 1 ? "Nilai Akhir" : "Latihan"}
-          </Text>
-        </div>
-      )}
+      <QuizResultScore score={displayScore} attemptLabel={attemptLabel} />
 
-      <QuizResultScore correctCount={correctCount} total={total} score={displayScore} />
-
-      {/* Per-tab breakdown — only shown when submittedAnswers has data */}
-      {tabBreakdown && tabBreakdown.length > 0 && Object.keys(submittedAnswers).length > 0 && (
-        <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-6">
-          <Text as="h2" className="text-lg md:text-xl font-black uppercase mb-4">
-            Rincian Per Tab
-          </Text>
-          <div className="space-y-2">
-            {tabBreakdown.map((tb) => {
-              const correctInTab = tb.questions.filter((q) => {
-                return submittedAnswers[q.id] === quiz.questions.find((qq) => qq.id === q.id)?.correctIndex
-              }).length
-              return (
-                <div key={tb.tab} className="flex items-center justify-between border-4 border-black p-2 md:p-3">
-                  <span className="font-bold uppercase text-xs md:text-sm">{tb.tab}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="font-black text-sm md:text-base">
-                      {correctInTab}/{tb.questions.length}
-                    </span>
-                    {correctInTab === tb.questions.length && (
-                      <MaterialIcon className="size-4 text-green-600" name="check" />
-                    )}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </section>
-      )}
-
-      {Object.keys(submittedAnswers).length > 0 && (
-        <QuizResultExplanation questions={quiz.questions} answers={submittedAnswers} aiFeedback={aiFeedback} />
+      {hasAnswers && (
+        <QuizResultExplanation questions={quiz.questions.slice(0, PACKAGE_SIZE)} answers={answers!} aiFeedback={aiFeedback} />
       )}
       <QuizResultActions slug={slug} />
     </div>

@@ -17,7 +17,6 @@ export function useQuiz(slug: string, nomor: number) {
   const question: PilihanGandaQuestion | undefined = packageQuestions[nomor - 1]
   const storeAnswers = useQuizStore((s) => s.answers)
   const selectAnswer = useQuizStore((s) => s.selectAnswer)
-  const resetAnswers = useQuizStore((s) => s.resetAnswers)
 
   const selectedOption = useMemo(() => {
     if (!question) return undefined
@@ -40,6 +39,5 @@ export function useQuiz(slug: string, nomor: number) {
     isFirst,
     answers: storeAnswers,
     selectAnswer,
-    resetAnswers,
   }
 }
