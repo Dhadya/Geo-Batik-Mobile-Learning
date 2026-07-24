@@ -81,7 +81,7 @@ export function QuizResult({
     : undefined
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <div className="space-y-4 md:space-y-6">
       <QuizHeader title={title} badge={badge} icon={icon} bgColor={bgColor} description={description} />
 
       <QuizResultScore score={displayScore} attemptLabel={attemptLabel} />

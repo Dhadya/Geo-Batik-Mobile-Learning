@@ -36,19 +36,19 @@ export function QuizResultExplanation({
           let statusIcon = null
           if (isAnswered) {
             statusIcon = isCorrect
-              ? <MaterialIcon className="size-4 shrink-0 text-green-600" name="check" />
-              : <MaterialIcon className="size-4 shrink-0 text-red-600" name="close" />
+              ? <MaterialIcon className="size-6 shrink-0 text-green-600" name="check_circle" />
+              : <MaterialIcon className="size-6 shrink-0 text-red-600" name="cancel" />
           }
 
           return (
             <AccordionItem key={q.id} value={`q-${q.id}`} className="border-4 border-black">
               <AccordionTrigger className="px-4 py-3">
-                <span className="flex flex-col gap-1 text-left">
-                  <span className="flex items-center gap-3">
-                    {statusIcon}
-                    <span className="font-black">Soal {i + 1}</span>
+                <span className="flex items-center gap-3 text-left">
+                  {statusIcon}
+                  <span className="flex flex-col gap-0.5">
+                    <span className="font-black text-base md:text-lg">Soal {i + 1}</span>
+                    <span className="font-medium text-sm md:text-base text-muted-foreground line-clamp-2">{q.question}</span>
                   </span>
-                  <span className="font-medium text-sm text-muted-foreground line-clamp-2">{q.question}</span>
                 </span>
               </AccordionTrigger>
               <AccordionContent>

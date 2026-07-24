@@ -27,7 +27,7 @@ export function ScoreGauge({ score, attemptLabel }: { score: number; attemptLabe
           {attemptLabel}
         </span>
       )}
-      <ResponsiveContainer width={320} height={200}>
+      <ResponsiveContainer width={320} height={180}>
         <RadialBarChart
           data={chartData}
           startAngle={180}
@@ -41,7 +41,7 @@ export function ScoreGauge({ score, attemptLabel }: { score: number; attemptLabe
               content={({ viewBox }) => {
                 if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                   const cx = viewBox.cx ?? 160
-                  const cy = viewBox.cy ?? 180
+                  const cy = viewBox.cy ?? 160
                   return (
                     <text x={cx} y={cy} textAnchor="middle" style={{ pointerEvents: "none" }}>
                       <tspan
@@ -67,6 +67,7 @@ export function ScoreGauge({ score, attemptLabel }: { score: number; attemptLabe
           </PolarRadiusAxis>
           <RadialBar
             dataKey="score"
+            max={100}
             cornerRadius={0}
             fill={strokeColor}
             background={{ fill: "#e5e7eb" }}
