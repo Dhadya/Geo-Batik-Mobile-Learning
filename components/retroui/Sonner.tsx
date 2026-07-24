@@ -16,6 +16,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
+      position="top-center"
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,
@@ -30,8 +31,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
           toast:
             "group/toast relative flex w-(--width) items-center gap-3 rounded border-2 border-border bg-popover p-4 font-sans text-popover-foreground shadow-md",
           content: "flex min-w-0 flex-col gap-0.5",
-          title: "font-head text-sm font-medium",
-          description: "text-sm text-muted-foreground",
+          title: "font-head text-sm lg:text-base font-medium",
+          description: "text-sm lg:text-base text-muted-foreground",
           icon: "shrink-0",
           actionButton:
             "ms-auto h-fit min-w-fit shrink-0 rounded border-2 border-border bg-primary px-2 py-1 text-xs font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none",

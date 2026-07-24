@@ -50,12 +50,12 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
 
         {/* Version and copyright footer */}
         <div className="mt-8 flex justify-center gap-4">
-          <div className="px-4 py-2 border-2 border-black bg-muted text-[10px] font-bold uppercase flex items-center gap-2">
-            <span>Ver: 1.0.0-KAWUNG</span>
+          <div className="px-4 py-2 border-2 border-black bg-muted text-[10px] md:text-xs font-bold uppercase flex items-center gap-2">
             <span className="size-2 bg-secondary rounded-full" />
+            <span>2026 GEMATRI</span>
           </div>
-          <div className="px-4 py-2 border-2 border-black bg-muted text-[10px] font-bold uppercase">
-            2026 GEMATRI
+          <div className="px-4 py-2 border-2 border-black bg-muted text-[10px] md:text-xs font-bold uppercase">
+            Gemakan Mahir Transformasi Geometri
           </div>
         </div>
       </main>

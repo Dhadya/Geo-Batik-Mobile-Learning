@@ -49,7 +49,7 @@ export interface AssessmentQuestion {
 export interface ModuleSections {
   percobaan: SectionBlock
   pengamatan: SectionBlock
-  penyimpulan: SectionBlock
+  penyimpulan?: SectionBlock
   cekPemahaman: SectionBlock
 }
 

@@ -1,10 +1,10 @@
 "use client"
 
-import { User, ArrowRight } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { Loader } from "@/components/retroui/Loader"
 import { Button } from "@/components/retroui/Button"
-import Link from "next/link"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { AuthFormField } from "./AuthFormField"
 import { useRegisterForm } from "../hooks/useRegisterForm"
 
@@ -35,7 +35,7 @@ export function RegisterForm() {
     return (
       <div className="text-center space-y-4 py-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary border-4 border-black neubrutal-shadow-sm">
-          <span className="text-2xl">✓</span>
+          <MaterialIcon className="size-8 text-black" name="check" />
         </div>
         <h2 className="text-xl font-black uppercase">Berhasil Daftar!</h2>
         <p className="text-sm">Anda akan dialihkan ke halaman login...</p>
@@ -60,7 +60,7 @@ export function RegisterForm() {
           label="Email"
           type="text"
           placeholder="nama@gmail.com"
-          icon={User}
+          icon={<MaterialIcon className="size-5 text-muted-foreground" name="person" />}
           value={email}
           onChange={(e) => { setEmail(e.target.value); clearError() }}
         />
@@ -95,7 +95,7 @@ export function RegisterForm() {
           ) : (
             <>
               DAFTAR
-              <ArrowRight className="size-6" />
+              <MaterialIcon className="size-6" name="arrow_forward" />
             </>
           )}
         </Button>

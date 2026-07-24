@@ -1,10 +1,11 @@
 "use client"
 
-import { useCallback } from "react"
+
 import { Text } from "@/components/retroui/Text"
-import { Button } from "@/components/retroui/Button"
 import { Checkbox } from "@/components/retroui/Checkbox"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
+import { SectionSubmitButton } from "./SectionSubmitButton"
+import { AttemptBadge } from "./AttemptBadge"
 import type { ChecklistTableItem } from "@/features/modules/types"
 
 interface ChecklistTableFormProps {
@@ -16,17 +17,13 @@ interface ChecklistTableFormProps {
 export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors,
+    setField, handleSubmit,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "pengamatan")
 
-  const handleClick = useCallback(() => {
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   // Find the ChecklistTableItem
   const checklistItem = items.find((i): i is ChecklistTableItem => i.type === "checklist_table")
@@ -39,13 +36,14 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
 
   return (
     <section className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {/* Instruction */}
       <Text as="p" className="text-xs md:text-sm font-medium text-black">
         {checklistItem.question}
       </Text>
 
       {/* Checklist table */}
-      <table className="w-full border-4 border-black border-collapse bg-background text-xs md:text-sm">
+      <table className="w-full border-4 border-black-coll borderapse bg-background text-xs md:text-sm">
         <thead>
           <tr className="bg-muted border-b-4 border-black text-center font-black">
             <th className="p-2 md:p-3 border-r-2 border-black text-left">Pernyataan</th>
@@ -89,20 +87,23 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
         <Text className="text-destructive text-[10px] md:text-xs">{errors[`${checklistItem.id}_checklist`]}</Text>
       )}
 
-      <Button
-        onClick={handleClick}
-        disabled={!isFilled && !isChecked}
-        variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black]"
-      >
-        {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-      </Button>
-
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 ">
+        <div className="border-4 border-black bg-background p-3 md:p-4">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
+
+      <SectionSubmitButton
+        attempt={attempt}
+        isChecked={isChecked}
+        isFilled={isFilled}
+        isCorrect={isCorrectEvaluation}
+        isLocked={isLocked}
+        showCobaLagi={showCobaLagi}
+        onSubmit={handleSubmit}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
+      />
     </section>
   )
 }

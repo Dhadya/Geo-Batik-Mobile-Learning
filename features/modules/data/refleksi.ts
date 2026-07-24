@@ -845,22 +845,6 @@ export const refleksiTabs: ModuleTab[] = [
             },
           ],
         },
-        penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
-          items: [
-            {
-              id: 7,
-              type: "uraian",
-              question: "Jelaskan sifat-sifat refleksi bangun datar!",
-              answer: "Refleksi mempertahankan bentuk dan ukuran bangun. Bangun dan bayangan saling berhadapan dengan jarak yang sama ke garis cermin.",
-              acceptAnswers: [
-                "Bentuk dan ukuran bangun tidak berubah. Bangun dan bayangan saling berhadapan.",
-                "Bentuk dan ukuran tidak berubah. Saling berhadapan.",
-                "Bangun dan bayangan bentuknya sama, ukurannya sama, dan saling berhadapan.",
-              ],
-            },
-          ],
-        },
         cekPemahaman: {
           instruction: "Kerjakan soal-soal berikut.",
           items: [

@@ -27,20 +27,21 @@ Indonesian SMP students. The product uses Batik motifs as geometric context.
 
 ## 1. Stack & Versions
 
-| Layer      | Version / Package                                                                   |
-| ---------- | ----------------------------------------------------------------------------------- |
-| Next.js    | `16.2.9` (App Router, Turbopack)                                                    |
-| React      | `19.2.4`                                                                            |
-| TypeScript | Strict mode, `@/*` path alias                                                       |
-| Styling    | Tailwind CSS v4 + shadcn v4 + `tw-animate-css`                                      |
-| Base UI    | `@base-ui/react` ^1.6.0 (via RetroUI)                                               |
-| Icons      | Material Symbols (via `@/components/common/MaterialIcon`) — fallback `lucide-react` |
-| CVA        | `class-variance-authority` for variants                                             |
-| Auth       | BetterAuth                                                                          |
-| Database   | Supabase (PostgreSQL) + Drizzle ORM                                                 |
-| AI         | Gemini API                                                                          |
-| API Layer  | AppError codes + handleError() + requireAuth()                                      |
-| Services   | Plain async functions under features/modules/services/                              |
+| Layer      | Version / Package                                                             |
+| ---------- | ----------------------------------------------------------------------------- |
+| Next.js    | `16.2.9` (App Router, Turbopack)                                              |
+| React      | `19.2.4`                                                                      |
+| TypeScript | Strict mode, `@/*` path alias                                                 |
+| Styling    | Tailwind CSS v4 + shadcn v4 + `tw-animate-css`                                |
+| Base UI    | `@base-ui/react` ^1.6.0 (via RetroUI)                                         |
+| Icons      | Material Symbols (via `@/components/common/MaterialIcon`) — no `lucide-react` |
+| CVA        | `class-variance-authority` for variants                                       |
+| Auth       | BetterAuth                                                                    |
+| Database   | Supabase (PostgreSQL) + Drizzle ORM                                           |
+| AI         | Gemini API                                                                    |
+| API Layer  | AppError codes + handleError() + requireAuth()                                |
+| Services   | Plain async functions under features/\*/services/                             |
+| Data Layer | TanStack Query — hooks in features/\*/hooks/, provider in app/providers.tsx   |
 
 ---
 
@@ -77,25 +78,25 @@ features/                     # Feature-based modular architecture
 │   ├── components/           # ModuleCard, LabCard, MenuHeader, ModuleGrid, BackLink
 │   ├── data.ts               # Menu module data
 │   └── index.ts              # Barrel exports
-├── prasyarat/                # Prerequisite material feature
-│   ├── components/           # InteractiveCanvas, GeoGebraCanvas, ControlPanel, ConceptCard, VideoEmbed
-│   ├── hooks/                # useGeoGebra, useToggleControls
-│   ├── data.ts               # Prerequisite concept data
-│   ├── toggles.ts            # Toggle config and accordion groups
-│   ├── types.ts              # GGBApplet, GGBWindow, GeoGebraToggle types
-│   └── index.ts              # Barrel exports
 ├── modules/                  # Core learning engine
+│   ├── components/           # ConclusionArea, AssessmentSection, etc.
+│   ├── hooks/                # TanStack Query hooks (useSectionSubmission, useTabProgress, useEvaluateSection)
+│   ├── data/                 # Shared constants (moduleConfig.ts)
+│   ├── lib/                  # Client-side utils (shuffle.ts)
 │   ├── services/             # Layer 2 — plain async service functions
-│   │   ├── section.ts        # saveSectionAttempt, getSectionProgress
-│   │   ├── progress.ts       # getTabProgress, unlockNextTab
-│   │   ├── quiz.ts           # saveQuizResult, getLatestQuizResult
-│   │   └── ai.ts             # evaluateSection, evaluateQuizQuestion
-│   ├── store/                # Zustand stores (answerStore, tabProgressStore)
-│   ├── lib/                  # Client-side utils
-│   ├── hooks/                # useSection, useObservation, useQuiz
-│   ├── types/                # Shared TypeScript types
-│   └── components/           # Section UI components
-└── quiz/                     # Quiz data, types, components, hooks
+│   └── index.ts              # Barrel exports
+├── quiz/                     # Quiz feature
+│   ├── components/           # QuizResult, QuizNavigation, etc.
+│   ├── hooks/                # TanStack Query hooks (useSubmitQuiz, useQuizResult, useEvaluateQuiz)
+│   ├── data/                 # Question bank (translasi.ts, refleksi.ts)
+│   └── index.ts              # Barrel exports
+└── prasyarat/                # Prerequisite material feature
+    ├── components/           # InteractiveCanvas, GeoGebraCanvas, ControlPanel, ConceptCard, VideoEmbed
+    ├── hooks/                # useGeoGebra, useToggleControls
+    ├── data.ts               # Prerequisite concept data
+    ├── toggles.ts            # Toggle config and accordion groups
+    ├── types.ts              # GGBApplet, GGBWindow, GeoGebraToggle types
+    └── index.ts              # Barrel exports
 
 components/                   # Shared React components
 ├── retroui/                  # NeoBrutalism primitives (Button, Card, Toggle, Accordion, Skeleton, Sonner, etc.)
@@ -104,10 +105,11 @@ components/                   # Shared React components
 └── layout/                   # AuthLayout, LandingFooter, ProfileDropdown
 
 lib/                          # Utilities and clients
+├── query/                    # TanStack Query setup
+│   └── client.ts             # Singleton QueryClient factory
 ├── api/                      # Layer 1 shared primitives
 │   ├── errors.ts             # AppError + typed codes + handleError()
-│   ├── auth-utils.ts         # requireAuth() via BetterAuth
-│   └── handler.ts            # apiHandler wrapper
+│   └── auth-utils.ts         # requireAuth() via BetterAuth
 ├── supabase/                 # Supabase client (client, server, middleware)
 ├── auth.ts                   # BetterAuth server config
 ├── auth-client.ts            # BetterAuth browser client
@@ -201,7 +203,7 @@ import { MaterialIcon } from "@/components/common/MaterialIcon"
   className="neubrutal-shadow hover-shift active-shift"
   onClick={...}>
   MASUK
-  <MaterialIcon className="!size-10" name="arrow_forward" />
+  <MaterialIcon className="size-10" name="arrow_forward" />
 </Button>
 
 // Outline
@@ -351,6 +353,9 @@ catch (e) { return handleError(e); }
 
 After every task, inspect `git status`, `git diff`, and `git log --oneline -5` to understand what changed. Always propose the commit message in chat for approval — never commit without confirmation.
 
+- Never use quotes (single or double) in commit messages — plain text only
+- Never use emoji in commit messages
+
 ```
 <type>(<scope>): <description>
 
@@ -452,5 +457,18 @@ npx tsc --noEmit     # TypeScript check
 5. **`"use client"** — add only when needed (hooks, state, event handlers).
    Default to server components.
 6. **Material Symbols priority** — use `@/components/common/MaterialIcon`
-   as first choice. Fall back to `lucide-react` only if the symbol doesn't exist.
+   exclusively. Never use `lucide-react` icons.
 7. **Teacher role** — does not exist. All users are students.
+8. **Raw fetch in components** — never use `fetch()` or `useEffect`+fetch in
+   components. All API calls go through TanStack Query hooks in `features/*/hooks/`.
+9. **File size over 300 lines** — split into sub-components, hooks, or helpers.
+   One exported component/function per file. Extract helpers to separate files.
+10. **Numbered component names** — never `Item7Renderer`, `Step3Form`, etc.
+    Use descriptive names like `MatrixExplanationRenderer`, `BayanganTableRenderer`.
+11. **Tailwind `!` prefix** — never use `!size-5`, `bg-white!`, `justify-start!`.
+    Use standard specificity and proper Tailwind utilities.
+12. **Emoji in app code** — never use `🎉`, `✅`, etc. Use MaterialIcon instead.
+13. **Inline constants** — extract labels, icons, colors to `features/*/data/`
+    files. Never define them in page or component files.
+14. **Dead code** — files with zero imports must be deleted. Remove unused barrel
+    exports, deprecated hooks, and stale references.

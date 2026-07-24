@@ -17,8 +17,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { GripVertical } from "lucide-react"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { seededShuffle } from "@/features/modules/lib/shuffle"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 interface UrutkanInputProps {
   items: string[]
@@ -31,18 +32,6 @@ interface SortableItemProps {
   id: string
   label: string
   disabled?: boolean
-}
-
-/** Fisher-Yates shuffle with a deterministic seed so server/client match. */
-function seededShuffle(arr: number[], seed: number): number[] {
-  const a = [...arr]
-  let s = seed
-  for (let i = a.length - 1; i > 0; i--) {
-    s = (s * 1103515245 + 12345) & 0x7fffffff
-    const j = s % (i + 1);
-    [a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
 }
 
 /** A single sortable item — entire row is draggable. */
@@ -67,7 +56,7 @@ function SortableItem({ id, label, disabled }: SortableItemProps) {
       className={`flex items-center gap-2 border-2 border-black px-2 py-1.5 bg-white cursor-grab active:cursor-grabbing touch-none select-none shadow-[2px_2px_0_0_black] ${isDragging ? "shadow-[4px_4px_0_0_#000] z-10" : ""}`}
       tabIndex={disabled ? -1 : 0}
     >
-      <GripVertical className="size-4 text-muted-foreground shrink-0" />
+      <MaterialIcon className="size-5 text-muted-foreground shrink-0" name="drag_indicator" />
       <span className="text-xs md:text-sm font-medium">{label}</span>
     </div>
   )

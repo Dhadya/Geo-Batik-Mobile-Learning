@@ -1,11 +1,13 @@
 "use client"
 
-import { useCallback } from "react"
+
 import { Text } from "@/components/retroui/Text"
-import { Button } from "@/components/retroui/Button"
 import { Input } from "@/components/retroui/Input"
 import { Select } from "@/components/retroui/Select"
-import { useSection, allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
+import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
+import { SectionSubmitButton } from "./SectionSubmitButton"
+import { AttemptBadge } from "./AttemptBadge"
 import type { PilihanRefleksiItem } from "@/features/modules/types"
 
 interface PilihanRefleksiFormProps {
@@ -17,17 +19,13 @@ interface PilihanRefleksiFormProps {
 export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors,
+    setField, handleSubmit,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "percobaan")
 
-  const handleClick = useCallback(() => {
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   // Find the PilihanRefleksiItem
   const refleksiItem = items.find((i): i is PilihanRefleksiItem => i.type === "pilihan_refleksi")
@@ -38,6 +36,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
 
   return (
     <section className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {/* Instruction */}
       <Text as="p" className="text-xs md:text-sm font-medium text-black whitespace-pre-line">
         {refleksiItem.question}
@@ -131,20 +130,23 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
         <Text className="text-destructive text-[10px] md:text-xs">{errors[`${refleksiItem.id}_selected`]}</Text>
       )}
 
-      <Button
-        onClick={handleClick}
-        disabled={!isFilled && !isChecked}
-        variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black]"
-      >
-        {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-      </Button>
-
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 ">
+        <div className="border-4 border-black bg-background p-3 md:p-4">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
+
+      <SectionSubmitButton
+        attempt={attempt}
+        isChecked={isChecked}
+        isFilled={isFilled}
+        isCorrect={isCorrectEvaluation}
+        isLocked={isLocked}
+        showCobaLagi={showCobaLagi}
+        onSubmit={handleSubmit}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
+      />
     </section>
   )
 }

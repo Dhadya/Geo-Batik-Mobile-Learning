@@ -1,21 +1,8 @@
-import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { sectionProgress } from "@/drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import { appError } from "@/lib/api/errors";
-
-/** Validates a section attempt payload: which tab/section, attempt number, answer data, score, and final status. */
-export const saveSectionSchema = z.object({
-  tab: z.string().min(1),
-  sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
-  attempt: z.union([z.literal(1), z.literal(2)]),
-  answer: z.record(z.string(), z.unknown()),
-  score: z.number().int().min(0).max(100).nullable().optional(),
-  status: z.enum(["correct", "wrong_attempt1", "wrong_attempt2"]).optional(),
-});
-
-/** Inferred input type for saving a section attempt. */
-export type SaveSectionInput = z.infer<typeof saveSectionSchema>;
+import { type SaveSectionInput } from "@/lib/schemas";
 
 /**
  * Persists a student's answer for a section (percobaan/pengamatan/penyimpulan/cek-pemahaman).
@@ -57,10 +44,13 @@ export async function saveSectionAttempt(
     status: input.status ?? ("unsubmitted" as const),
   };
 
-  const patch = {
+  const patch: Record<string, unknown> = {
     [`${attemptField}Answer`]: answerStr,
     [`${attemptField}Score`]: input.score ?? null,
   };
+  if (input.feedback) {
+    patch[`${attemptField}Feedback`] = input.feedback;
+  }
 
   const finalize =
     input.status === "correct" || input.status === "wrong_attempt2"
@@ -77,12 +67,33 @@ export async function saveSectionAttempt(
     return { id: updated[0].id, status: updated[0].status, finalScore: updated[0].finalScore };
   }
 
-  const inserted = await db
-    .insert(sectionProgress)
-    .values({ ...base, ...patch, ...finalize })
-    .returning();
+  try {
+    const inserted = await db
+      .insert(sectionProgress)
+      .values({ ...base, ...patch, ...finalize })
+      .returning();
 
-  return { id: inserted[0].id, status: inserted[0].status, finalScore: inserted[0].finalScore };
+    return { id: inserted[0].id, status: inserted[0].status, finalScore: inserted[0].finalScore };
+  } catch {
+    // Race condition: another request inserted the row first. Update instead.
+    const raceRow = await db.query.sectionProgress.findFirst({
+      where: and(
+        eq(sectionProgress.userId, userId),
+        eq(sectionProgress.module, module),
+        eq(sectionProgress.tab, input.tab),
+        eq(sectionProgress.sectionType, input.sectionType),
+      ),
+    })
+    if (raceRow) {
+      const updated = await db
+        .update(sectionProgress)
+        .set({ ...base, ...patch, ...finalize })
+        .where(eq(sectionProgress.id, raceRow.id))
+        .returning();
+      return { id: updated[0].id, status: updated[0].status, finalScore: updated[0].finalScore };
+    }
+    throw appError("INTERNAL_ERROR");
+  }
 }
 
 /** Fetches section-level progress for a module, optionally filtered by tab and/or section type. */
@@ -119,6 +130,9 @@ export async function getSectionProgress(
     finalScore: r.finalScore,
     attempt1Answer: r.attempt1Answer,
     attempt1Feedback: r.attempt1Feedback,
+    attempt1Score: r.attempt1Score,
+    attempt2Answer: r.attempt2Answer,
+    attempt2Feedback: r.attempt2Feedback,
     completedAt: r.completedAt?.toISOString() ?? null,
   }));
 }

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
-import { saveSectionSchema, saveSectionAttempt, getSectionProgress } from "@/features/modules/services/section";
+import { saveSectionAttempt, getSectionProgress } from "@/features/modules/services/section";
+import { saveSectionSchema } from "@/lib/schemas";
 import type { ModuleSlug } from "@/features/modules/types";
 
 /** POST /api/modul/[slug]/section — save a student's section attempt (percobaan/pengamatan/penyimpulan/cek-pemahaman). */
@@ -12,6 +13,13 @@ export async function POST(
   try {
     const user = await requireAuth();
     const { slug } = await params;
+    if (slug !== "translasi" && slug !== "refleksi") {
+      return NextResponse.json(
+        { ok: false, error: { code: "MODULE_NOT_FOUND", message: "Modul tidak ditemukan" } },
+        { status: 404 },
+      );
+    }
+
     const body = await request.json();
 
     const parsed = saveSectionSchema.safeParse(body);
@@ -48,6 +56,12 @@ export async function GET(
   try {
     const user = await requireAuth();
     const { slug } = await params;
+    if (slug !== "translasi" && slug !== "refleksi") {
+      return NextResponse.json(
+        { ok: false, error: { code: "MODULE_NOT_FOUND", message: "Modul tidak ditemukan" } },
+        { status: 404 },
+      );
+    }
     const { searchParams } = new URL(request.url);
     const tab = searchParams.get("tab") ?? undefined;
     const sectionType = searchParams.get("sectionType") ?? undefined;

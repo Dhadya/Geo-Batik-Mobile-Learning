@@ -1,5 +1,9 @@
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { persist, createJSONStorage } from "zustand/middleware"
+import {
+  createUserScopedStorage,
+  getGlobalUserId,
+} from "@/lib/user-scoped-storage"
 
 // ── Per-section answer shapes ──
 
@@ -7,12 +11,20 @@ export interface SectionAnswers {
   fields: Record<string, Record<string, string>>
   isChecked: boolean
   aiFeedback?: string
+  status?: "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2" | "locked"
+  attempt?: 1 | 2
+  /** Numeric score (0–100) from AI evaluation. Only student-visible as color indicator. */
+  score?: number | null
 }
 
 export interface CekPemahamanAnswers {
   selections: (number | null)[]
   isChecked: boolean
   aiFeedback?: string
+  status?: "unsubmitted" | "correct" | "wrong_attempt1" | "wrong_attempt2"
+  attempt?: 1 | 2
+  /** Numeric score (0–100) from AI evaluation. Only student-visible as color indicator. */
+  score?: number | null
 }
 
 export interface TabAnswers {
@@ -43,6 +55,25 @@ interface AnswerStore {
   setSelections: (slug: string, tab: string, selections: (number | null)[]) => void
   setChecked: (slug: string, tab: string, section: SectionName, checked: boolean) => void
   setAIFeedback: (slug: string, tab: string, section: SectionName, feedback: string) => void
+  setCekPemahamanFeedback: (slug: string, tab: string, feedback: string) => void
+  setSectionStatus: (
+    slug: string,
+    tab: string,
+    section: SectionName,
+    status: SectionAnswers["status"],
+    attempt: 1 | 2,
+  ) => void
+  /** Set status/attempt for the cekPemahaman section (separate because it uses CekPemahamanAnswers, not SectionAnswers). */
+  setCekPemahamanStatus: (
+    slug: string,
+    tab: string,
+    status: CekPemahamanAnswers["status"],
+    attempt: 1 | 2,
+  ) => void
+  /** Set score for a standard section (percobaan/pengamatan/penyimpulan). Score is never shown as raw number — only used for color indicator. */
+  setSectionScore: (slug: string, tab: string, section: SectionName, score: number | null) => void
+  /** Set score for cekPemahaman section. */
+  setCekPemahamanScore: (slug: string, tab: string, score: number | null) => void
   getTabAnswers: (slug: string, tab: string) => TabAnswers
   resetTab: (slug: string, tab: string) => void
   resetAll: () => void
@@ -53,14 +84,17 @@ export function emptyTab(slug: string, tab: string): TabAnswers {
   return {
     slug,
     tab,
-    percobaan: { fields: {}, isChecked: false },
-    pengamatan: { fields: {}, isChecked: false },
-    penyimpulan: { fields: {}, isChecked: false },
+    percobaan: { fields: {}, isChecked: false, status: "unsubmitted", attempt: 1 },
+    pengamatan: { fields: {}, isChecked: false, status: "unsubmitted", attempt: 1 },
+    penyimpulan: { fields: {}, isChecked: false, status: "unsubmitted", attempt: 1 },
     cekPemahaman: { selections: [], isChecked: false },
   }
 }
 
-/** Zustand store for module answer persistence (localStorage-backed). */
+/** Persisted state version — bump when the TabAnswers shape changes. */
+const ANSWER_STORE_VERSION = 1
+
+/** Zustand store for module answer persistence (localStorage-backed, user-scoped). */
 export const useAnswerStore = create<AnswerStore>()(
   persist(
     (set, get) => ({
@@ -106,6 +140,20 @@ export const useAnswerStore = create<AnswerStore>()(
         })
       },
 
+      setCekPemahamanStatus: (slug, tab, status, attempt) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              cekPemahaman: { ...current.cekPemahaman, status, attempt, isChecked: true },
+            },
+          },
+        })
+      },
+
       setChecked: (slug, tab, section, checked) => {
         const id = `${slug}-${tab}`
         const current = get().answers[id] ?? emptyTab(slug, tab)
@@ -142,6 +190,74 @@ export const useAnswerStore = create<AnswerStore>()(
         })
       },
 
+      setCekPemahamanFeedback: (slug, tab, feedback) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              cekPemahaman: {
+                ...current.cekPemahaman,
+                aiFeedback: feedback,
+              },
+            },
+          },
+        })
+      },
+
+      setSectionScore: (slug, tab, section, score) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              [section]: {
+                ...current[section] as SectionAnswers,
+                score,
+              },
+            },
+          },
+        })
+      },
+
+      setCekPemahamanScore: (slug, tab, score) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              cekPemahaman: { ...current.cekPemahaman, score },
+            },
+          },
+        })
+      },
+
+      setSectionStatus: (slug, tab, section, status, attempt) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              [section]: {
+                ...current[section] as SectionAnswers,
+                status,
+                attempt,
+              },
+            },
+          },
+        })
+      },
+
       getTabAnswers: (slug, tab) =>
         get().answers[`${slug}-${tab}`] ?? emptyTab(slug, tab),
 
@@ -152,11 +268,32 @@ export const useAnswerStore = create<AnswerStore>()(
         set({ answers: rest })
       },
 
-      resetAll: () => set({ answers: {} }),
+      /** Clear in-memory state AND persisted storage. */
+      resetAll: () => {
+        set({ answers: {} })
+        // Also clear the persisted localStorage key so no stale data remains
+        const uid = getGlobalUserId()
+        const key = uid ? `gematri-module-answers-${uid}` : "gematri-module-answers"
+        try {
+          localStorage.removeItem(key)
+        } catch {
+          // localStorage may not be available (SSR, etc.)
+        }
+      },
     }),
     {
       name: "gematri-module-answers",
+      version: ANSWER_STORE_VERSION,
+      storage: createJSONStorage(createUserScopedStorage),
       partialize: (state) => ({ answers: state.answers }),
+      migrate: (persisted, version) => {
+        if (version < ANSWER_STORE_VERSION) {
+          // Future: add migration logic here when schema changes
+          // For now, the persisted shape is compatible
+          return persisted as { answers: Record<string, TabAnswers> }
+        }
+        return persisted as { answers: Record<string, TabAnswers> }
+      },
     },
   ),
 )

@@ -33,7 +33,7 @@ export async function POST(
     }
 
     const result = await saveQuizResult(user.id, slug as ModuleSlug, parsed.data);
-    return NextResponse.json({ ok: true, data: result }, { status: 201 });
+    return NextResponse.json({ ok: true, data: result });
   } catch (e) {
     return handleError(e);
   }

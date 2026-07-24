@@ -1,11 +1,10 @@
 "use client"
 
-import { User, ArrowRight } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { Loader } from "@/components/retroui/Loader"
 import { Button } from "@/components/retroui/Button"
-import { Checkbox } from "@/components/retroui/Checkbox"
-import Link from "next/link"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { AuthFormField } from "./AuthFormField"
 import { useLoginForm } from "../hooks/useLoginForm"
 
@@ -37,7 +36,7 @@ export function LoginForm() {
           label="Email"
           type="text"
           placeholder="nama@gmail.com"
-          icon={User}
+          icon={<MaterialIcon className="size-5 text-muted-foreground" name="person" />}
           value={email}
           onChange={(e) => { setEmail(e.target.value); clearError() }}
         />
@@ -59,31 +58,20 @@ export function LoginForm() {
           </div>
         )}
 
-        {/* Remember me checkbox + forgot password link */}
-        <div className="flex items-center justify-between pt-2">
-          <label className="flex items-center gap-3 cursor-pointer">
-            <Checkbox variant="outline" className="border-4 border-black size-6" />
-            <span className="text-xs font-bold uppercase">Ingat Saya</span>
-          </label>
-          <Link href="#" className="text-xs font-bold uppercase text-primary-dark underline">
-            Lupa?
-          </Link>
-        </div>
-
         {/* Submit button — full width with NeoBrutalism shadow */}
         <Button
           type="submit"
-          variant="default"
+          variant="outline"
           size="lg"
           disabled={isDisabled}
-          className="w-full h-16 text-xl font-black uppercase neubrutal-shadow hover-shift active-shift flex items-center justify-center gap-3"
+          className="w-full h-16 text-xl font-black uppercase flex items-center justify-center gap-3 bg-card text-black"
         >
           {loading ? (
             <Loader variant="secondary" size="lg" />
           ) : (
             <>
               MASUK
-              <ArrowRight className="size-6" />
+              <MaterialIcon className="size-6" name="arrow_forward" />
             </>
           )}
         </Button>
@@ -124,8 +112,8 @@ export function LoginForm() {
         <p className="text-sm mb-4">Belum punya akun akademik?</p>
         <Link href="/register">
           <Button
-            variant="default"
-            className="w-full h-12 bg-card border-4 border-black text-xs font-bold uppercase hover:bg-secondary-container transition-all"
+            variant="outline"
+            className="w-full h-12 bg-card text-black border-4 border-black text-xs font-bold uppercase transition-all"
           >
             Daftar Baru
           </Button>

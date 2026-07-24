@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { user, session, account, verification } from "@/drizzle/schema";
 
 function getAuthBaseURL() {
@@ -34,55 +34,50 @@ const trustedOrigins = Array.from(
   )
 ) as string[];
 
-// BetterAuth server config — Drizzle adapter with Postgres and schema mapping
-export const auth = betterAuth({
-  baseURL: authBaseURL,
-  trustedOrigins,
-  database: drizzleAdapter(db, {
-    provider: "pg",
-    // Map BetterAuth models to our Drizzle table exports
-    schema: {
-      user,
-      session,
-      account,
-      verification,
-    },
-  }),
-  // Email/password authentication enabled, no email verification required
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: false,
-  },
-  // Google OAuth provider config
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      // Block implicit sign-up — allow sign-up from register page via requestSignUp flag
-      disableImplicitSignUp: true,
-    },
-  },
-  // Next.js integration — handles cookies and session refresh for App Router
-  plugins: [nextCookies()],
-  // Session config — 7-day expiry, daily refresh, 5-min cookie cache
-  session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // Refresh every 24 hours
-    cookieCache: {
-      enabled: true,
-      maxAge: 5 * 60, // Cache for 5 minutes
-    },
-  },
-  // Redirect OAuth errors to login page by default (register pages override)
-  onAPIError: {
-    errorURL: "/login",
-  },
-  // Cookie security — httpOnly, secure in prod, sameSite lax
-  advanced: {
-    cookiePrefix: "better-auth",
-    generateId: () => crypto.randomUUID(),
-  },
-});
+let _auth: ReturnType<typeof betterAuth>;
 
-// Inferred session type for use across the app
+function createAuthInstance(): ReturnType<typeof betterAuth> {
+  if (!_auth) {
+    _auth = betterAuth({
+      baseURL: authBaseURL,
+      trustedOrigins,
+      database: drizzleAdapter(getDb(), {
+        provider: "pg",
+        schema: { user, session, account, verification },
+      }),
+      emailAndPassword: { enabled: true, requireEmailVerification: false },
+      socialProviders: {
+        google: {
+          clientId: process.env.GOOGLE_CLIENT_ID!,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+          disableImplicitSignUp: true,
+        },
+      },
+      plugins: [nextCookies()],
+      session: {
+        expiresIn: 60 * 60 * 24 * 7,
+        updateAge: 60 * 60 * 24,
+        cookieCache: { enabled: true, maxAge: 5 * 60 },
+      },
+      onAPIError: { errorURL: "/login" },
+      advanced: { cookiePrefix: "better-auth", generateId: () => crypto.randomUUID() },
+    }) as unknown as ReturnType<typeof betterAuth>;
+  }
+  return _auth;
+}
+
+export const auth = new Proxy<ReturnType<typeof betterAuth>>(
+  {} as ReturnType<typeof betterAuth>,
+  {
+    get(_, prop: string | symbol) {
+      const instance = createAuthInstance();
+      const value = instance[prop as keyof ReturnType<typeof betterAuth>];
+      return typeof value === "function" ? value.bind(instance) : value;
+    },
+    has(_, prop: string | symbol) {
+      return prop in createAuthInstance();
+    },
+  },
+);
+
 export type Session = typeof auth.$Infer.Session;
