@@ -18,12 +18,10 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "pengamatan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
-
-  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   // Find the ChecklistTableItem
   const checklistItem = items.find((i): i is ChecklistTableItem => i.type === "checklist_table")
@@ -93,7 +91,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
         </div>
       )}
 
-      <SectionSubmitButton
+<SectionSubmitButton
         attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
@@ -102,7 +100,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
         onCobaLagi={handleCobaLagi}
-        requireConfirmation={hasConfirmation}
+        isSubmitting={isSubmitting}
       />
     </section>
   )

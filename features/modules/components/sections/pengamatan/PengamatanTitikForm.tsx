@@ -18,7 +18,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "pengamatan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
@@ -138,6 +138,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
         onSubmit={handleSubmit}
         onCobaLagi={handleCobaLagi}
         requireConfirmation={hasConfirmation}
+        isSubmitting={isSubmitting}
       />
     </form>
   )

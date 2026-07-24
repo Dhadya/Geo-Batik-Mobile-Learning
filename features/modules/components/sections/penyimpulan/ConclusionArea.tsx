@@ -1,6 +1,5 @@
 "use client"
 
-import { useCallback } from "react"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { Text } from "@/components/retroui/Text"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
@@ -22,21 +21,16 @@ interface ConclusionAreaProps {
 
 /** Penyimpulan section — renders uraian items with special layouts per item. */
 export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
-  const {
+const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi: resetState,
-    attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "penyimpulan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   const penyimpulanAnswers = useAnswerStore((s) => s.answers[`${slug}-${tab}`]?.penyimpulan)
   const score = penyimpulanAnswers?.score ?? null
-
-  const handleCobaLagi = useCallback(() => {
-    resetState()
-  }, [resetState])
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
@@ -124,7 +118,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
           </div>
         )}
 
-        <SectionSubmitButton
+<SectionSubmitButton
           isChecked={isChecked}
           isFilled={isFilled}
           isCorrect={isCorrectEvaluation}
@@ -133,7 +127,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
           attempt={attempt}
           onSubmit={handleSubmit}
           onCobaLagi={handleCobaLagi}
-          requireConfirmation={slug === "translasi" && tab === "titik"}
+          isSubmitting={isSubmitting}
         />
       </div>
     </section>

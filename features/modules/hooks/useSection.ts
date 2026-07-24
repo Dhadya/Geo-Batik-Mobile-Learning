@@ -1,5 +1,5 @@
 import { handleAuthError } from "@/lib/api/auth-error"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { useAnswerStore, emptyTab } from "../store/answerStore"
 import { getModuleTab } from "../data"
@@ -62,7 +62,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const aiFeedback = sectionAnswers?.aiFeedback
 
   const [errors, setErrors_] = useState<Record<string, string>>({})
-  const submittingRef = useRef(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Derive evaluation state directly from the persisted store state
   const storedAttempt = sectionAnswers?.attempt ?? 1
@@ -128,8 +128,8 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   }, [slug, tab, section, boundSetChecked])
 
   const handleSubmit = useCallback(async () => {
-    if (isLocked || submittingRef.current) return
-    submittingRef.current = true
+    if (isLocked || isSubmitting) return
+    setIsSubmitting(true)
 
     try {
       const result = await evaluateSection(slug, tab, section, items, fields, attempt)
@@ -172,9 +172,9 @@ export function useSection(slug: string, tab: string, section: SectionName) {
       if (e instanceof Error) handleAuthError(e)
       throw e
     } finally {
-      submittingRef.current = false
+      setIsSubmitting(false)
     }
-  }, [attempt, isLocked, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
+  }, [attempt, isLocked, isSubmitting, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
 
   return {
     items,
@@ -185,6 +185,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     aiFeedback,
     attempt,
     isLocked,
+    isSubmitting,
     showCobaLagi,
     isCorrectEvaluation,
     handleCobaLagi,

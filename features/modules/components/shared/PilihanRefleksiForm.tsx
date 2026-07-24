@@ -20,12 +20,10 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "percobaan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
-
-  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   // Find the PilihanRefleksiItem
   const refleksiItem = items.find((i): i is PilihanRefleksiItem => i.type === "pilihan_refleksi")
@@ -136,7 +134,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
         </div>
       )}
 
-      <SectionSubmitButton
+<SectionSubmitButton
         attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
@@ -145,7 +143,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
         onCobaLagi={handleCobaLagi}
-        requireConfirmation={hasConfirmation}
+        isSubmitting={isSubmitting}
       />
     </section>
   )

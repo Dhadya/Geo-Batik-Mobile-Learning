@@ -28,11 +28,82 @@ export async function getTabProgress(userId: string, module: ModuleSlug) {
     return seedRows.map((r) => ({ tab: r.tab, unlocked: r.unlocked, completed: r.completed }));
   }
 
-  return rows.map((r) => ({
+  // Auto-unlock safety: check each incomplete tab (except last) for terminal sections and unlock next
+  await autoUnlockCompletedTabs(userId, module, rows);
+
+  // Re-fetch after potential updates
+  const updatedRows = await db.query.tabProgress.findMany({
+    where: and(eq(tabProgress.userId, userId), eq(tabProgress.module, module)),
+  });
+
+  return updatedRows.map((r) => ({
     tab: r.tab,
     unlocked: r.unlocked,
     completed: r.completed,
   }));
+}
+
+/**
+ * Checks each incomplete tab (except the last) to see if all its sections are terminal.
+ * If so, marks the tab as completed and unlocks the next one.
+ * This is a safety net for when the client-side triggerTabUnlockIfComplete fails to fire.
+ */
+async function autoUnlockCompletedTabs(
+  userId: string,
+  module: ModuleSlug,
+  currentRows: { tab: string; completed: boolean }[],
+) {
+  const db = getDb();
+  const tabs = MODULE_TABS[module] ?? [];
+
+  for (let i = 0; i < tabs.length - 1; i++) {
+    const tabValue = tabs[i].value;
+    const row = currentRows.find((r) => r.tab === tabValue);
+    if (!row || row.completed) continue;
+
+    const sections = await db.query.sectionProgress.findMany({
+      where: and(
+        eq(sectionProgress.userId, userId),
+        eq(sectionProgress.module, module),
+        eq(sectionProgress.tab, tabValue),
+      ),
+      columns: { status: true },
+    });
+
+    const expectedCount = getExpectedSectionCount(module, tabValue);
+    const allDone =
+      sections.length >= expectedCount &&
+      sections.every((s) => s.status === "correct" || s.status === "wrong_attempt2");
+
+    if (!allDone) continue;
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(tabProgress)
+        .set({ completed: true, updatedAt: new Date() })
+        .where(
+          and(
+            eq(tabProgress.userId, userId),
+            eq(tabProgress.module, module),
+            eq(tabProgress.tab, tabValue),
+          ),
+        );
+
+      const nextTab = tabs[i + 1]?.value;
+      if (nextTab) {
+        await tx
+          .update(tabProgress)
+          .set({ unlocked: true, updatedAt: new Date() })
+          .where(
+            and(
+              eq(tabProgress.userId, userId),
+              eq(tabProgress.module, module),
+              eq(tabProgress.tab, nextTab),
+            ),
+          );
+      }
+    });
+  }
 }
 
 export async function unlockNextTab(userId: string, module: ModuleSlug, completedTab: string) {

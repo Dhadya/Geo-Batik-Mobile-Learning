@@ -22,7 +22,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "percobaan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
@@ -61,6 +61,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           onSubmit={handleSubmit}
           onCobaLagi={handleCobaLagi}
           requireConfirmation={false}
+          isSubmitting={isSubmitting}
         />
       </div>
     )

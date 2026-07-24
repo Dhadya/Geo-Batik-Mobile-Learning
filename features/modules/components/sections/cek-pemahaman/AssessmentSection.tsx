@@ -55,6 +55,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         : null
   )
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const submitMutation = useSubmitSection(slug)
 
@@ -89,7 +90,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
   /** Submit answers with AI evaluation and two-attempt flow. */
   const doSubmit = useCallback(async () => {
-    if (submitMutation.isPending) return
+    if (submitMutation.isPending || isSubmitting) return
+    setIsSubmitting(true)
     const fields = selectionsToFields(selections, questions)
     const items = toSectionItems(questions)
 
@@ -146,8 +148,10 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       }
     } catch {
       // submission error handled silently
+    } finally {
+      setIsSubmitting(false)
     }
-  }, [slug, tab, questions, selections, attempt, submitMutation])
+  }, [slug, tab, questions, selections, attempt, submitMutation, isSubmitting])
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6 mt-4 md:mt-6">
@@ -317,6 +321,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
             useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "unsubmitted", 2)
           }}
           requireConfirmation={slug === "translasi" && tab === "titik"}
+          isSubmitting={isSubmitting}
         />
       </div>
     </section>

@@ -19,7 +19,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
   const {
     items, fields, errors, isChecked, isFilled,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "pengamatan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
@@ -101,7 +101,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
         })}
       </div>
 
-      <SectionSubmitButton
+<SectionSubmitButton
         attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
@@ -110,7 +110,8 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
         onCobaLagi={handleCobaLagi}
-        requireConfirmation={slug === "translasi" && tab === "titik"}
+        requireConfirmation={false}
+        isSubmitting={isSubmitting}
       />
     </form>
   )

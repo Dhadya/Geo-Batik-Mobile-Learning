@@ -3,6 +3,34 @@ import { appError } from "@/lib/api/errors";
 import type { SectionItem } from "@/features/modules/types";
 
 const GENERATION_TIMEOUT_MS = 20000;
+const MAX_RETRIES = 3;
+const RETRY_BASE_DELAY_MS = 1000;
+
+/** Check if an error is a quota/rate-limit error from Gemini. */
+function isQuotaError(e: unknown): boolean {
+  const msg = e instanceof Error ? e.message : String(e);
+  return msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("RATE_LIMIT");
+}
+
+/** Retry a promise-returning function with exponential backoff on quota errors. */
+async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastError = e;
+      if (isQuotaError(e) && attempt < MAX_RETRIES - 1) {
+        const delay = RETRY_BASE_DELAY_MS * Math.pow(2, attempt);
+        console.warn(`[ai] ${label} quota error, retrying in ${delay}ms (attempt ${attempt + 2}/${MAX_RETRIES})`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw lastError;
+}
 
 const SAFETY_SETTINGS = [
   { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
@@ -31,21 +59,29 @@ export interface EvaluateSectionOutput {
 function describeItem(item: SectionItem): string {
   switch (item.type) {
     case "matriks":
-      return `Soal ${item.id}: ${item.label} → Jawaban benar: (${item.answer.a}, ${item.answer.b})`;
+      return `Soal ${item.id}: ${item.label} → KUNCI JAWABAN: (${item.answer.a}, ${item.answer.b})`;
     case "koordinat":
-      return `Soal ${item.id}: ${item.label} → Jawaban benar: (${item.answer.x}, ${item.answer.y})`;
-    case "uraian":
-      return `Soal ${item.id}: ${item.question} → Jawaban benar (acuan): ${item.answer}`;
+      return `Soal ${item.id}: ${item.label} → KUNCI JAWABAN: (${item.answer.x}, ${item.answer.y})`;
+    case "uraian": {
+      const accept = item.acceptAnswers?.length ? ` (jawaban lain yang diterima: ${item.acceptAnswers.join(", ")})` : "";
+      return `Soal ${item.id}: ${item.question} → KUNCI JAWABAN (acuan): ${item.answer}${accept}`;
+    }
     case "memasangkan":
-      return `Soal ${item.id}: ${item.question} → Pasangan benar: ${JSON.stringify(item.correctMatches)}`;
+      return `Soal ${item.id}: ${item.question} → KUNCI JAWABAN pasangan: ${JSON.stringify(item.correctMatches)}`;
     case "pilihan_ganda":
-      return `Soal ${item.id}: ${item.question} Opsi: ${item.options.join(" | ")} → Jawaban benar: opsi ${item.correctIndex}`;
+      return `Soal ${item.id}: ${item.question} Opsi: ${item.options.map((o, i) => `${i}. ${o}`).join(" | ")} → KUNCI JAWABAN: opsi ${item.correctIndex} (${item.options[item.correctIndex]})`;
     case "urutkan":
-      return `Soal ${item.id}: ${item.question} → Urutan benar: ${item.items.join(" → ")}`;
-    case "pilihan_refleksi":
-      return `Soal ${item.id}: ${item.question} Opsi: ${item.options.join(" | ")}`;
-    case "checklist_table":
-      return `Soal ${item.id}: ${item.question} Pernyataan: ${JSON.stringify(item.statements)} → Kebenaran: ${JSON.stringify(item.correctAnswers)}`;
+      return `Soal ${item.id}: ${item.question} → KUNCI JAWABAN urutan: ${item.items.join(" → ")}`;
+    case "pilihan_refleksi": {
+      const detail = Object.entries(item.correctAnswers)
+        .map(([opt, coords]) => `  Opsi ${opt}: (${coords.map((c) => `(${c.x}, ${c.y})`).join(", ")})`)
+        .join("\n");
+      return `Soal ${item.id}: ${item.question} Opsi: ${item.options.join(" | ")}\nKUNCI JAWABAN:\n${detail}`;
+    }
+    case "checklist_table": {
+      const detail = item.statements.map((s, i) => `  ${i + 1}. ${s}: ${item.correctAnswers[i] ? "Ya" : "Tidak"}`).join("\n");
+      return `Soal ${item.id}: ${item.question}\nKUNCI JAWABAN:\n${detail}`;
+    }
     default:
       return `Soal ${(item as SectionItem).id}`;
   }
@@ -75,23 +111,34 @@ export function buildPrompt(
   const sectionLabel = sectionType.replace(/_/g, " ");
   const tabLabel = tab.replace(/-/g, " ");
 
-  if (attempt === 2) {
-    return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
+  const basePrompt = `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
 Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module} - ${tabLabel}.
-Ini adalah percobaan kedua (terakhir).
+${attempt === 2 ? "Ini adalah percobaan kedua (terakhir)." : ""}
 
-Soal:
+Soal-soal beserta KUNCI JAWABAN yang sudah diverifikasi kebenarannya:
 ${itemDescriptions}
 
 Jawaban siswa:
 ${studentAnswers}
 
+ATURAN PENTING YANG HARUS DIPATUHI:
+- KUNCI JAWABAN yang tercantum di atas adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
+- Tugasmu HANYA membandingkan jawaban siswa dengan kunci jawaban. Jika cocok, maka jawaban siswa BENAR.
+- JANGAN pernah menyebut atau menulis kata "kekeliruan di kunci jawaban", "sepertinya ada kesalahan", atau sejenisnya.
+- Feedback harus berfokus pada membantu siswa, bukan mengevaluasi soal atau kunci jawaban.
+- Gunakan bahasa Indonesia yang sederhana dan sesuai tingkat SMP.
+- Jangan menyebut nomor soal dalam feedback. Gunakan poin-poin bullet saja.
+- Feedback harus singkat, padat, dan to the point. Maksimal 2 kalimat per poin.
+
+`;
+
+  if (attempt === 2) {
+    return `${basePrompt}
 INSTRUKSI:
 - Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri semangat
-- Jika ada yang salah: isi "isCorrect": false, berikan feedback mendalam
-- Jelaskan langkah demi langkah penyelesaiannya
+- Jika ada yang salah: isi "isCorrect": false, berikan feedback singkat per poin
+- Jelaskan langkah demi langkah penyelesaiannya secara ringkas
 - Tampilkan jawaban yang benar sebagai bahan evaluasi
-- Gunakan bahasa Indonesia yang sederhana
 - Berikan semangat untuk terus belajar
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
@@ -103,21 +150,12 @@ Keluarkan JSON SAJA (tanpa markdown) dengan format:
 }`;
   }
 
-  return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
-Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module} - ${tabLabel}.
-
-Soal:
-${itemDescriptions}
-
-Jawaban siswa:
-${studentAnswers}
-
+  return `${basePrompt}
 INSTRUKSI PENTING:
 - Jika semua jawaban benar: isi "isCorrect": true, "score": 100, "feedback": pujian singkat, "errors": {}
 - Jika ada yang salah: isi "isCorrect": false, beri petunjuk singkat (1-2 kalimat) yang mengarahkan siswa pada letak kekurangan mereka
 - JANGAN menyebutkan jawaban akhir
 - JANGAN memberikan angka atau langkah perhitungan
-- Gunakan bahasa Indonesia yang sederhana
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
@@ -195,7 +233,7 @@ export async function evaluateSection(
   const prompt = buildPrompt(input.module, input.tab, input.sectionType, input.items, input.answers, input.attempt);
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-3.1-flash-lite",
     safetySettings: SAFETY_SETTINGS,
   });
 
@@ -204,10 +242,13 @@ export async function evaluateSection(
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("Gemini API timed out")), GENERATION_TIMEOUT_MS),
     );
-    result = await Promise.race([model.generateContent(prompt), timeoutPromise]);
+    result = await withRetry(
+      () => Promise.race([model.generateContent(prompt), timeoutPromise]),
+      `evaluateSection (${input.module}/${input.tab}/${input.sectionType})`,
+    );
   } catch (e) {
     const msg = e instanceof Error ? e.message : "AI evaluation failed";
-    const isQuota = msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED");
+    const isQuota = isQuotaError(e);
     console.warn("[ai] Gemini API call failed:", isQuota ? "quota/rate limit" : msg);
     throw appError(isQuota ? "AI_EVALUATION_FAILED" : "INTERNAL_ERROR");
   }
@@ -268,7 +309,7 @@ export async function generatePembahasan(
   const prompt = buildPembahasanPrompt(questions, answers);
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-3.1-flash-lite",
     safetySettings: SAFETY_SETTINGS,
   });
 
@@ -276,7 +317,10 @@ export async function generatePembahasan(
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("AI timed out")), PEMBAHASAN_TIMEOUT_MS),
     );
-    const result = await Promise.race([model.generateContent(prompt), timeoutPromise]);
+    const result = await withRetry(
+      () => Promise.race([model.generateContent(prompt), timeoutPromise]),
+      "generatePembahasan",
+    );
     const text = result.response.text();
     if (!text) throw new Error("AI returned empty response");
 

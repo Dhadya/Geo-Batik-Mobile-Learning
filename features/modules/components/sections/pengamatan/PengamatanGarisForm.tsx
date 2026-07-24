@@ -20,12 +20,10 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "pengamatan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
-
-  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   return (
     <div className="space-y-3 md:space-y-4">
@@ -138,7 +136,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
         </div>
       )}
 
-      <SectionSubmitButton
+<SectionSubmitButton
         attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
@@ -147,7 +145,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
         showCobaLagi={showCobaLagi}
         onSubmit={handleSubmit}
         onCobaLagi={handleCobaLagi}
-        requireConfirmation={hasConfirmation}
+        isSubmitting={isSubmitting}
       />
     </div>
   )
