@@ -30,14 +30,30 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const rawTab = useAnswerStore((s) => s.answers[tabKey])
   const selections = useMemo(() => rawTab?.cekPemahaman?.selections ?? [], [rawTab])
   const aiFeedback = useMemo(() => rawTab?.cekPemahaman?.aiFeedback, [rawTab])
+  const persistedStatus = rawTab?.cekPemahaman?.status
+  const persistedAttempt = rawTab?.cekPemahaman?.attempt
   const setSelections = useAnswerStore((s) => s.setSelections)
   const hasInput = selections.some((s) => s != null)
 
-  const [attempt, setAttempt] = useState<1 | 2>(1)
-  const [isLocked, setIsLocked] = useState(false)
-  const [showCobaLagi, setShowCobaLagi] = useState(false)
-  const [isChecked, setIsChecked] = useState(false)
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [attempt, setAttempt] = useState<1 | 2>(() => {
+    if (persistedStatus === "correct" || persistedStatus === "wrong_attempt2") return 2
+    if (persistedStatus === "wrong_attempt1") return 2
+    return persistedAttempt ?? 1
+  })
+  const [isLocked, setIsLocked] = useState(() =>
+    persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
+  )
+  const [showCobaLagi, setShowCobaLagi] = useState(() =>
+    persistedStatus === "wrong_attempt1"
+  )
+  const [isChecked, setIsChecked] = useState(() =>
+    persistedStatus === "correct" || persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2"
+  )
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(() =>
+    persistedStatus === "correct" ? true
+      : persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2" ? false
+        : null
+  )
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({})
 
   const submitMutation = useSubmitSection(slug)
@@ -134,7 +150,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   }, [slug, tab, questions, selections, attempt, submitMutation])
 
   return (
-    <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
+    <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6 mt-4 md:mt-6">
       {/* Section header */}
       <div className="flex items-center justify-start gap-2 mb-4 md:mb-6">
         <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
@@ -225,8 +241,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
                 <div
                   className={`grid gap-2 md:gap-3 ${q.options.length >= 5
-                      ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
-                      : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+                    ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
+                    : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
                     }`}
                 >
                   {q.options.map((opt, oi) => {

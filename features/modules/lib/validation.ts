@@ -14,6 +14,8 @@ export interface ValidationResult {
   isCorrect: boolean
   errors: Record<string, string>
   summary: string
+  correctCount: number
+  totalItems: number
 }
 
 /** Validate all items in a section against stored answers. */
@@ -170,6 +172,8 @@ export function validateSection(
   return {
     isCorrect: Object.keys(errors).length === 0,
     errors,
+    correctCount,
+    totalItems: items.length,
     summary:
       correctCount === items.length
         ? "Semua jawaban benar! Kamu telah menjawab dengan tepat pada seluruh soal. Pertahankan pemahaman ini dan lanjutkan ke materi berikutnya."

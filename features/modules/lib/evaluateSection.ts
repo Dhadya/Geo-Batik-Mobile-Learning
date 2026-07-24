@@ -34,10 +34,12 @@ export async function evaluateSection(
   } catch {
     toast.error("Gagal memuat feedback AI, menggunakan penilaian lokal")
     const local = validateSection(items, fields, undefined)
+    const allCorrect = local.correctCount === local.totalItems
+    const noneCorrect = local.correctCount === 0
     return {
-      isCorrect: local.isCorrect,
-      score: local.isCorrect ? 100 : 0,
-      feedback: local.isCorrect
+      isCorrect: allCorrect,
+      score: allCorrect ? 100 : noneCorrect ? 0 : 50,
+      feedback: allCorrect
         ? "Jawaban kamu benar. Semua jawaban sesuai dengan kunci jawaban yang diharapkan. Pertahankan pemahamanmu dan lanjutkan ke materi selanjutnya."
         : "Jawaban kamu belum sepenuhnya tepat. Periksa kembali setiap pernyataan dan pastikan pemahamanmu tentang konsep yang sedang dipelajari. Coba bandingkan dengan hasil percobaan yang sudah kamu lakukan.",
       errors: local.errors ?? {},

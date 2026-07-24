@@ -207,8 +207,9 @@ export async function evaluateSection(
     result = await Promise.race([model.generateContent(prompt), timeoutPromise]);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "AI evaluation failed";
-    console.warn("[ai] Gemini API call failed:", msg);
-    throw new Error(msg);
+    const isQuota = msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED");
+    console.warn("[ai] Gemini API call failed:", isQuota ? "quota/rate limit" : msg);
+    throw appError(isQuota ? "AI_EVALUATION_FAILED" : "INTERNAL_ERROR");
   }
 
   const response = result.response.text();
