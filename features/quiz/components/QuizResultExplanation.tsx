@@ -33,62 +33,52 @@ export function QuizResultExplanation({
           const isCorrect = userAnswer === q.correctIndex
           const isAnswered = userAnswer !== undefined
 
-          let statusClass = ""
           let statusIcon = null
           if (isAnswered) {
-            if (isCorrect) {
-              statusClass = "data-[open]:bg-secondary data-[open]:text-secondary-foreground"
-              statusIcon = <MaterialIcon className="size-4 shrink-0 text-secondary" name="check" />
-            } else {
-              statusClass = "data-[open]:bg-destructive data-[open]:text-destructive-foreground"
-              statusIcon = <MaterialIcon className="size-4 shrink-0 text-destructive" name="close" />
-            }
+            statusIcon = isCorrect
+              ? <MaterialIcon className="size-4 shrink-0 text-green-600" name="check" />
+              : <MaterialIcon className="size-4 shrink-0 text-red-600" name="close" />
           }
 
           return (
-            <AccordionItem key={q.id} value={`q-${q.id}`}>
-              <AccordionTrigger className={`px-4 py-3 ${statusClass}`}>
-                <span className="flex items-center gap-3">
-                  {statusIcon}
-                  <span className="font-bold">Soal {i + 1}</span>
+            <AccordionItem key={q.id} value={`q-${q.id}`} className="border-4 border-black">
+              <AccordionTrigger className="px-4 py-3">
+                <span className="flex flex-col gap-1 text-left">
+                  <span className="flex items-center gap-3">
+                    {statusIcon}
+                    <span className="font-black">Soal {i + 1}</span>
+                  </span>
+                  <span className="font-medium text-sm text-muted-foreground line-clamp-2">{q.question}</span>
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-4 p-4">
-                  <Text as="p" className="font-medium text-foreground text-base">
-                    {q.question}
-                  </Text>
+                <div className="space-y-3 p-4 border-t-2 border-black">
+                  {q.options.map((opt, optIdx) => {
+                    const isUserAnswer = userAnswer === optIdx
+                    const isCorrectAnswer = q.correctIndex === optIdx
+                    let className = "border-4 border-black px-3 py-2 font-medium "
 
-                  {/* MCQ options with highlights */}
-                  <div className="space-y-2">
-                    {q.options.map((opt, optIdx) => {
-                      const isUserAnswer = userAnswer === optIdx
-                      const isCorrectAnswer = q.correctIndex === optIdx
-                      let className = "border-4 border-black px-3 py-2 font-medium "
+                    if (isCorrectAnswer) {
+                      className += " bg-secondary text-secondary-foreground"
+                    } else if (isUserAnswer && !isCorrectAnswer) {
+                      className += " bg-destructive text-destructive-foreground"
+                    } else {
+                      className += " bg-muted text-muted-foreground"
+                    }
 
-                      if (isCorrectAnswer) {
-                        className += " bg-secondary text-secondary-foreground"
-                      } else if (isUserAnswer && !isCorrectAnswer) {
-                        className += " bg-destructive text-destructive-foreground"
-                      } else {
-                        className += " bg-muted text-muted-foreground"
-                      }
+                    return (
+                      <div key={optIdx} className={`${className} flex items-center`}>
+                        <span className="font-bold mr-2">{LABELS[optIdx]}.</span>
+                        <span className="flex-1">{opt}</span>
+                        {isCorrectAnswer && <MaterialIcon className="size-4 shrink-0" name="check" />}
+                        {isUserAnswer && !isCorrectAnswer && <MaterialIcon className="size-4 shrink-0" name="close" />}
+                      </div>
+                    )
+                  })}
 
-                      return (
-                        <div key={optIdx} className={className}>
-                          <span className="font-bold mr-2">{LABELS[optIdx]}.</span>
-                          {opt}
-                          {isCorrectAnswer && <MaterialIcon className="size-4 ml-2" name="check" />}
-                          {isUserAnswer && !isCorrectAnswer && <MaterialIcon className="size-4 ml-2" name="close" />}
-                        </div>
-                      )
-                    })}
-                  </div>
-
-                  {/* Pembahasan — AI-generated or static explanation */}
                   {(aiFeedback?.[q.id] ?? q.explanation) && (
-                    <div className="border-t-2 border-black pt-3 mt-3">
-                      <Text as="p" className="font-medium whitespace-pre-wrap">
+                    <div className="border-t-2 border-black pt-3">
+                      <Text as="p" className="font-medium text-sm whitespace-pre-wrap">
                         <span className="font-bold">Pembahasan: </span>
                         {aiFeedback?.[q.id] ?? q.explanation}
                       </Text>

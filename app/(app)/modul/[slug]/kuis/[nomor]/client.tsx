@@ -245,7 +245,7 @@ export function KuisSoalClient({
               Pastikan jawabanmu sudah tepat sebelum mengirim.
             </p>
             <p className="text-xs md:text-sm text-muted-foreground">
-              Hanya percobaan ke-1 yang dihitung sebagai nilai final.
+              Hanya percobaan pertama yang dihitung sebagai nilai final.
             </p>
           </div>
           <Dialog.Footer>

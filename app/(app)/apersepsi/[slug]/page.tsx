@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/retroui/Button"
-import { ArrowRight } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { ApersepsiHeader, RichParagraph, ShapeStamps, apersepsiData } from "@/features/apersepsi"
 import { QuizBreadcrumb } from "@/features/quiz"
 import { RefleksiLockGuard } from "@/features/modules/components/RefleksiLockGuard"
@@ -61,7 +61,7 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
             className="px-8 py-3 md:px-12 md:py-4 font-black text-lg md:text-2xl shadow-lg hover:translate-x-1 hover:translate-y-1 hover:shadow-md transition-all uppercase gap-3 md:gap-4"
           >
             Baik, Ayo Belajar
-            <ArrowRight className="size-6 md:size-8" />
+            <MaterialIcon className="size-6 md:size-8" name="arrow_forward" />
           </Button>
         </Link>
       </div>

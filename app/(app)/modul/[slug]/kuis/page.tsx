@@ -85,7 +85,7 @@ export default async function KuisIntroPage(props: {
             Hasil dan pembahasan akan ditampilkan setelah semua jawaban dikirim.
           </li>
           <li>
-            Hanya <span className="font-bold">percobaan ke-1</span> yang dihitung sebagai nilai final — percobaan berikutnya untuk latihan.
+            Hanya <span className="font-bold">percobaan pertama</span> yang dihitung sebagai nilai final — percobaan berikutnya untuk latihan.
           </li>
         </ul>
       </section>
