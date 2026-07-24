@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { signIn } from "@/lib/auth-client"
-import { validateEmail, validatePassword, mapLoginError } from "@/lib/validators"
+import { validateEmail, mapLoginError } from "@/lib/validators"
 import { validateRedirect } from "@/lib/validate-redirect"
 
 // OAuth error codes from BetterAuth — exhaustive list
@@ -77,9 +77,9 @@ export function useLoginForm() {
       return
     }
 
-    const passwordError = validatePassword(password)
-    if (passwordError) {
-      setError(passwordError)
+    // Only check password is not empty — no character validation on login
+    if (!password.trim()) {
+      setError("Password harus diisi")
       return
     }
 

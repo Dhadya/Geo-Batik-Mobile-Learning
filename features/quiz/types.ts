@@ -1,10 +1,17 @@
-/** A single multiple-choice quiz question. */
-export interface QuizQuestion {
+/** Multiple-choice question. */
+export interface PilihanGandaQuestion {
   id: number
+  type: "pilihan_ganda"
   question: string
+  module: string
+  tab?: string
   options: string[]
   correctIndex: number
   explanation: string
+  /** Matrix/vector displayed inline in question (format: "a,b" → vertical 2×1). */
+  questionMatrix?: string
+  /** Text appended after the matrix display. */
+  questionSuffix?: string
 }
 
 /** Quiz module configuration per slug. */
@@ -12,7 +19,7 @@ export interface QuizModule {
   slug: string
   title: string
   badge: string
-  questions: QuizQuestion[]
+  questions: PilihanGandaQuestion[]
 }
 
 /** User answer record keyed by question id. */

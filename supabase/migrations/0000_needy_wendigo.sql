@@ -1,22 +1,3 @@
--- Drop old tables from previous schema
-DROP TABLE IF EXISTS "batik_creations" CASCADE;
-DROP TABLE IF EXISTS "chat_messages" CASCADE;
-DROP TABLE IF EXISTS "page_content" CASCADE;
-DROP TABLE IF EXISTS "subtopic_progress" CASCADE;
-
--- Drop old User/account tables named with plural convention
-DROP TABLE IF EXISTS "account" CASCADE;
-DROP TABLE IF EXISTS "session" CASCADE;
-DROP TABLE IF EXISTS "quiz_results" CASCADE;
-DROP TABLE IF EXISTS "verification" CASCADE;
-DROP TABLE IF EXISTS "users" CASCADE;
-
--- Drop old helper views
-DROP VIEW IF EXISTS "student_module_progress" CASCADE;
-DROP VIEW IF EXISTS "student_latest_quiz" CASCADE;
-
--- ── New Schema ───────────────────────────────────────────────────────────
-
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
@@ -38,6 +19,8 @@ CREATE TABLE "quiz_results" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
 	"module" text NOT NULL,
+	"attempt_number" integer NOT NULL,
+	"package_id" integer NOT NULL,
 	"answers" jsonb DEFAULT '[]'::jsonb NOT NULL,
 	"total_score" integer NOT NULL,
 	"completed_at" timestamp with time zone DEFAULT now() NOT NULL
@@ -110,6 +93,7 @@ ALTER TABLE "tab_progress" ADD CONSTRAINT "tab_progress_user_id_user_id_fk" FORE
 CREATE INDEX "idx_account_user" ON "account" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_quiz_results_user" ON "quiz_results" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_quiz_results_module" ON "quiz_results" USING btree ("module");--> statement-breakpoint
+CREATE UNIQUE INDEX "uq_quiz_results_attempt" ON "quiz_results" USING btree ("user_id","module","attempt_number");--> statement-breakpoint
 CREATE UNIQUE INDEX "uq_user_module_tab_section" ON "section_progress" USING btree ("user_id","module","tab","section_type");--> statement-breakpoint
 CREATE INDEX "idx_section_progress_user" ON "section_progress" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "idx_session_user" ON "session" USING btree ("user_id");--> statement-breakpoint

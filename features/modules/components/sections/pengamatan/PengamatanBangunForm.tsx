@@ -1,9 +1,11 @@
 "use client"
 
-import { useCallback } from "react"
+
 import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { PilihanGandaItem } from "@/features/modules/types"
 
 interface PengamatanBangunFormProps {
@@ -15,24 +17,22 @@ interface PengamatanBangunFormProps {
 export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors, block,
+    setField, handleSubmit, block,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
+    attempt,
   } = useSection(slug, tab, "pengamatan")
 
-  const handleClick = useCallback(() => {
-    /* Toggle: submit for checking or reset to re-try */
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   /* Only render pilihan_ganda items (binary choice questions) */
   const pgItems = items.filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
 
   return (
     <form className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
+
       {/* Section instruction */}
       {block?.instruction && (
         <Text as="p" className="text-xs md:text-sm text-black font-semibold leading-relaxed">
@@ -67,7 +67,7 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
                       variant={isSelected ? "default" : "outline"}
                       disabled={isChecked}
                       onClick={() => setField(String(pg.id), "selected", String(oi))}
-                      className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs rounded-none text-black ${
+                      className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs  text-black ${
                         isCorrect ? "border-green-600 bg-green-100 text-green-800" : ""
                       } ${isWrong ? "border-destructive bg-destructive/10" : ""}`}
                     >
@@ -87,21 +87,22 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
 
       {/* AI feedback banner */}
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+        <div className="border-4 border-black bg-background p-3 md:p-4">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap text-black">{aiFeedback}</Text>
         </div>
       )}
 
-      {/* Submit / Re-check button */}
-      <Button
-        type="button"
-        onClick={handleClick}
-        disabled={!isFilled && !isChecked}
-        variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 shadow-[2px_2px_0_0_rgba(0,0,0,1)] uppercase rounded-none text-black"
-      >
-        {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-      </Button>
+      <SectionSubmitButton
+          isChecked={isChecked}
+          isFilled={isFilled}
+          isCorrect={isCorrectEvaluation}
+          isLocked={isLocked}
+          showCobaLagi={showCobaLagi}
+          attempt={attempt}
+          onSubmit={handleSubmit}
+          onCobaLagi={handleCobaLagi}
+          requireConfirmation={hasConfirmation}
+        />
     </form>
   )
 }

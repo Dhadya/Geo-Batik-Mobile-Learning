@@ -1,10 +1,12 @@
 "use client"
 
-import { useCallback } from "react"
+
 import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import { UrutkanInput } from "../../shared/UrutkanInput"
 import type { UraianItem, PilihanGandaItem, UrutkanItem as UrutkanItemType } from "@/features/modules/types"
 
@@ -17,20 +19,17 @@ interface PengamatanGarisFormProps {
 export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors, block,
+    setField, handleSubmit, block,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "pengamatan")
 
-  const handleClick = useCallback(() => {
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   return (
     <div className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {block?.instruction && (
         <Text as="p" className="text-xs md:text-sm text-black font-semibold leading-relaxed">
           {block.instruction}
@@ -64,7 +63,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
                           variant={isSelected ? "default" : "outline"}
                           disabled={isChecked}
                           onClick={() => setField(String(pg.id), "selected", String(oi))}
-                          className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs rounded-none text-black ${
+                          className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs  text-black ${
                             isCorrect ? "border-green-600 bg-green-100 text-green-800" : ""
                           } ${isWrong ? "border-destructive bg-destructive/10" : ""}`}
                         >
@@ -134,20 +133,22 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
       </div>
 
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+        <div className="border-4 border-black bg-background p-3 md:p-4">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
 
-      <Button
-        type="button"
-        onClick={handleClick}
-        disabled={!isFilled && !isChecked}
-        variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none text-black"
-      >
-        {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-      </Button>
+      <SectionSubmitButton
+        attempt={attempt}
+        isChecked={isChecked}
+        isFilled={isFilled}
+        isCorrect={isCorrectEvaluation}
+        isLocked={isLocked}
+        showCobaLagi={showCobaLagi}
+        onSubmit={handleSubmit}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
+      />
     </div>
   )
 }

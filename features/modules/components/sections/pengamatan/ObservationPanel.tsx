@@ -1,6 +1,8 @@
 "use client"
 
 import { Tabs } from "@/components/retroui/Tab"
+import { useAnswerStore } from "../../../store/answerStore"
+import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { PercobaanForm } from "../percobaan/PercobaanForm"
 import { PilihanRefleksiForm } from "../../shared/PilihanRefleksiForm"
 import { PercobaanRefleksiGarisForm } from "../percobaan/PercobaanRefleksiGarisForm"
@@ -24,22 +26,28 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const isRefleksiGaris = slug === "refleksi" && tab === "garis"
   const isRefleksi = slug === "refleksi"
 
+  const tabKey = `${slug}-${tab}`
+  const pengamatanScore = useAnswerStore((s) => s.answers[tabKey]?.pengamatan?.score ?? null)
+  const percobaanScore = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.score ?? null)
+
   return (
     <div className="h-auto lg:h-full flex flex-col gap-3 md:gap-4">
       <Tabs defaultValue="pengamatan" className="flex flex-col h-full gap-3 md:gap-4">
         {/* Tab navigation bar */}
-        <Tabs.List className="border-4 border-black bg-white p-1 md:p-1.5 flex gap-1.5 md:gap-2 shadow-[4px_4px_0_0_#000] w-full rounded-none overflow-x-hidden">
+        <Tabs.List className="border-4 border-black bg-white p-1 md:p-1.5 flex gap-1.5 md:gap-2 shadow-[4px_4px_0_0_black] w-full overflow-x-hidden">
           <Tabs.Trigger
             value="pengamatan"
-            className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer rounded-none border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_#000] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150"
+            className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_black] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150 flex items-center justify-center gap-1 md:gap-1.5"
           >
-            Pengamatan
+            <span>Pengamatan</span>
+            <SectionScoreIndicator score={pengamatanScore} />
           </Tabs.Trigger>
           <Tabs.Trigger
             value="percobaan"
-            className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer rounded-none border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_#000] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150"
+            className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_black] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150 flex items-center justify-center gap-1 md:gap-1.5"
           >
-            Percobaan
+            <span>Percobaan</span>
+            <SectionScoreIndicator score={percobaanScore} />
           </Tabs.Trigger>
         </Tabs.List>
 

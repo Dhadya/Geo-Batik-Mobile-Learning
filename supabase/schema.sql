@@ -150,22 +150,28 @@ CREATE POLICY "Users manage own tab progress"
 
 -- ============================================================================
 -- 4. QUIZ RESULTS — per-attempt quiz answers and total score
---    Stores all answers as JSON with per-question attempt data.
+--    Each row is one quiz attempt (1, 2, 3, ...).
+--    package_id: 0 = Paket 1 (questions 1-10), 1 = Paket 2 (questions 11-20)
 -- ============================================================================
 CREATE TABLE quiz_results (
-  id            TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-  user_id       TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-  module        TEXT NOT NULL CHECK (module IN ('translasi', 'refleksi')),
-  answers       JSONB NOT NULL DEFAULT '[]'::jsonb,
-  total_score   INTEGER NOT NULL,
-  completed_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  id              TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  user_id         TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+  module          TEXT NOT NULL CHECK (module IN ('translasi', 'refleksi')),
+  attempt_number  INTEGER NOT NULL,
+  package_id      INTEGER NOT NULL CHECK (package_id IN (0, 1)),
+  answers         JSONB NOT NULL DEFAULT '[]'::jsonb,
+  total_score     INTEGER NOT NULL,
+  completed_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 COMMENT ON TABLE  quiz_results IS $$Quiz attempt results with per-question two-attempt data$$;
 COMMENT ON COLUMN quiz_results.answers IS $$JSON array — [{question_id, type, attempt_1_answer, attempt_1_correct, attempt_1_feedback, attempt_2_answer, attempt_2_correct, attempt_2_feedback, final_score}]$$;
+COMMENT ON COLUMN quiz_results.attempt_number IS $$1, 2, 3, ... — which attempt this is$$;
+COMMENT ON COLUMN quiz_results.package_id IS $$0 = Paket 1 (questions 1-10), 1 = Paket 2 (questions 11-20)$$;
 
-CREATE INDEX idx_quiz_results_user   ON quiz_results(user_id);
-CREATE INDEX idx_quiz_results_module ON quiz_results(module);
+CREATE INDEX idx_quiz_results_user     ON quiz_results(user_id);
+CREATE INDEX idx_quiz_results_module   ON quiz_results(module);
+CREATE INDEX idx_quiz_results_attempt  ON quiz_results(user_id, module, attempt_number);
 
 -- ── RLS ────────────────────────────────────────────────────────────────────
 ALTER TABLE quiz_results ENABLE ROW LEVEL SECURITY;

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 /** Arrow navigation buttons — white bg with border and shadow for back/next. */
 export function QuizArrowNav({
@@ -22,7 +22,7 @@ export function QuizArrowNav({
         className="w-12 h-12 md:w-14 md:h-14 bg-white"
         disabled
       >
-        <ChevronLeft className="size-6 md:size-7" />
+        <MaterialIcon className="size-6" name="chevron_left" />
       </Button>
     )
   }
@@ -34,7 +34,7 @@ export function QuizArrowNav({
         size="icon"
         className="w-12 h-12 md:w-14 md:h-14 bg-white"
       >
-        <ChevronLeft className="size-6 md:size-7" />
+        <MaterialIcon className="size-6" name="chevron_left" />
       </Button>
     </Link>
   )
@@ -58,7 +58,7 @@ export function QuizArrowNext({
         className="w-12 h-12 md:w-14 md:h-14 bg-white"
         disabled
       >
-        <ChevronRight className="size-6 md:size-7" />
+        <MaterialIcon className="size-6" name="chevron_right" />
       </Button>
     )
   }
@@ -70,7 +70,7 @@ export function QuizArrowNext({
         size="icon"
         className="w-12 h-12 md:w-14 md:h-14 bg-white"
       >
-        <ChevronRight className="size-6 md:size-7" />
+        <MaterialIcon className="size-6" name="chevron_right" />
       </Button>
     </Link>
   )

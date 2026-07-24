@@ -24,3 +24,44 @@ export const TranslasiBangunSchema = z.object({
 
 export type TranslasiTitikData = z.infer<typeof TranslasiTitikSchema>;
 export type TranslasiBangunData = z.infer<typeof TranslasiBangunSchema>;
+
+/** Validates a section attempt payload: which tab/section, attempt number, answer data, score, and final status. */
+export const saveSectionSchema = z.object({
+  tab: z.string().min(1),
+  sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
+  attempt: z.union([z.literal(1), z.literal(2)]),
+  answer: z.record(z.string(), z.unknown()),
+  score: z.number().int().min(0).max(100).nullable().optional(),
+  status: z.enum(["correct", "wrong_attempt1", "wrong_attempt2"]).optional(),
+  feedback: z.string().optional(),
+});
+
+/** Inferred input type for saving a section attempt. */
+export type SaveSectionInput = z.infer<typeof saveSectionSchema>;
+
+/** Validates an unlock request: which tab was completed to trigger the next unlock. */
+export const unlockSchema = z.object({
+  completedTab: z.string().min(1),
+});
+
+/** Validates a section evaluation request for Gemini AI. */
+export const evaluateSectionSchema = z.object({
+  module: z.string().min(1),
+  tab: z.string().min(1),
+  sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
+  items: z.array(z.any()).min(1),
+  answers: z.record(z.string(), z.record(z.string(), z.string())),
+  attempt: z.union([z.literal(1), z.literal(2)]),
+});
+
+/** Validates a pembahasan generation request for Gemini AI. */
+export const pembahasanSchema = z.object({
+  questions: z.array(z.object({
+    id: z.number(),
+    question: z.string(),
+    options: z.array(z.string()),
+    correctIndex: z.number(),
+    explanation: z.string(),
+  })),
+  answers: z.record(z.number(), z.number()),
+});

@@ -1,7 +1,7 @@
 "use client"
 
 import { Input } from "@/components/retroui/Input"
-import { allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
+import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
 
 interface BayanganInputProps {
   x: string

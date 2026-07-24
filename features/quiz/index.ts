@@ -9,15 +9,21 @@ export { QuizResult } from "./components/QuizResult"
 export { QuizResultScore } from "./components/QuizResultScore"
 export { QuizResultExplanation } from "./components/QuizResultExplanation"
 export { QuizResultActions } from "./components/QuizResultActions"
+export { QuestionRenderer } from "./components/QuestionRenderer"
 
 // Hooks
 export { useQuiz } from "./hooks/useQuiz"
+export { useQuizPembahasan } from "./hooks/useQuizPembahasan"
 
 // Store
 export { useQuizStore } from "./store"
 
 // Data + helpers
-export { QUIZ_MODULES, getQuizModule } from "./data"
+export { QUIZ_MODULES, PACKAGE_SIZE, getQuizModule, getQuizQuestionsByTab } from "./data"
 
 // Types
-export type { QuizQuestion, QuizModule, QuizAnswers } from "./types"
+export type {
+  PilihanGandaQuestion,
+  QuizModule,
+  QuizAnswers,
+} from "./types"

@@ -49,7 +49,7 @@ export function mapLoginError(message: string): string {
   if (lower.includes("oauth") || lower.includes("google")) {
     return "Gagal masuk dengan Google. Silakan coba lagi.";
   }
-  return message || "Gagal masuk. Silakan coba lagi.";
+  return "Gagal masuk. Silakan coba lagi.";
 }
 
 // Map BetterAuth registration errors to user-friendly Indonesian text

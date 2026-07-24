@@ -21,13 +21,13 @@ export function RichParagraph({ text }: { text: string }) {
 export function ShapeStamps() {
   return (
     <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
-      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_black]">
         <MaterialIcon name="grid_view" className="text-xl md:text-2xl text-secondary" />
       </div>
-      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_black]">
         <MaterialIcon name="change_history" className="text-xl md:text-2xl text-tertiary" />
       </div>
-      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_black]">
         <MaterialIcon name="circle" className="text-xl md:text-2xl text-primary" />
       </div>
     </div>

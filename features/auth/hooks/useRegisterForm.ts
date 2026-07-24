@@ -42,7 +42,7 @@ function mapAuthError(message: string): string {
   if (lower.includes("email")) {
     return "Format email tidak valid (misal: nama@email.com)"
   }
-  return message || "Gagal mendaftar. Silakan coba lagi."
+  return "Gagal mendaftar. Silakan coba lagi."
 }
 
 /* Register form hook — manages form state, validation, and auth API calls. */

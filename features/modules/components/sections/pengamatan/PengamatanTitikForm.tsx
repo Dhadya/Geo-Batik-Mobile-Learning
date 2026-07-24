@@ -1,11 +1,11 @@
 "use client"
 
-import { useCallback } from "react"
 import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
-import { Button } from "@/components/retroui/Button"
 import { Select } from "@/components/retroui/Select"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { UraianItem, MemasangkanItem } from "@/features/modules/types"
 
 interface PengamatanTitikFormProps {
@@ -17,21 +17,17 @@ interface PengamatanTitikFormProps {
 export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors, block,
+    setField, handleSubmit, block,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "pengamatan")
 
-  const handleClick = useCallback(() => {
-    /* Toggle: check answers or switch back to edit mode */
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
+
+  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   return (
     <form className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {/* Section instruction */}
       {block?.instruction && (
         <Text as="p" className="text-xs md:text-sm text-muted-foreground font-semibold leading-relaxed">
@@ -127,20 +123,22 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
 
       {/* AI feedback banner */}
       {isChecked && aiFeedback && (
-        <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+        <div className="border-4 border-black bg-background p-3 md:p-4">
           <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
         </div>
       )}
 
-      {/* Submit / Re-check button */}
-      <Button
-        onClick={handleClick}
-        disabled={!isFilled && !isChecked}
-        variant={isChecked ? "secondary" : "default"}
-        className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
-      >
-        {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-      </Button>
+      <SectionSubmitButton
+        attempt={attempt}
+        isChecked={isChecked}
+        isFilled={isFilled}
+        isCorrect={isCorrectEvaluation}
+        isLocked={isLocked}
+        showCobaLagi={showCobaLagi}
+        onSubmit={handleSubmit}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={hasConfirmation}
+      />
     </form>
   )
 }

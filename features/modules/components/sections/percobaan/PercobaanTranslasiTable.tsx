@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/retroui/Input"
 import { CoordStack } from "../../shared/CoordStack"
-import { allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
+import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
 import type { MatriksItem, KoordinatItem, SectionItem } from "@/features/modules/types"
 
 interface PercobaanTranslasiTableProps {

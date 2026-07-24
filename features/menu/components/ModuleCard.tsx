@@ -83,7 +83,7 @@ export function ModuleCard({
             />
           ) : (
             <div className="w-full h-full kawung-pattern bg-muted flex items-center justify-center">
-              <span className="text-xs font-bold uppercase text-muted-foreground tracking-widest">Preview Segera</span>
+              <span className="text-xs font-bold uppercase text-muted-foreground tracking-wide">Preview Segera</span>
             </div>
           )}
         </div>

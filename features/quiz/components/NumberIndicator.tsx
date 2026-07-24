@@ -28,7 +28,7 @@ export function NumberIndicator({
               className={`w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 p-0 font-bold text-xs md:text-sm border-2 border-black ${isCurrent
                 ? "bg-primary text-primary-foreground"
                 : isAnswered
-                  ? "bg-secondary text-secondary-foreground"
+                  ? "bg-secondary text-white"
                   : "bg-white text-foreground"
                 }`}
               onClick={() => onSelect(n)}

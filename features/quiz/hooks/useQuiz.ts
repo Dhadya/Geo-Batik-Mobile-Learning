@@ -1,30 +1,32 @@
 "use client"
 
+import { useMemo } from "react"
 import { useQuizStore } from "../store"
-import { getQuizModule } from "../data"
-import type { QuizQuestion } from "../types"
+import { getQuizModule, PACKAGE_SIZE } from "../data"
+import type { PilihanGandaQuestion } from "../types"
 
 /** Quiz logic hook — derives all state from zustand store + route params. */
 export function useQuiz(slug: string, nomor: number) {
+  const currentPackage = useQuizStore((s) => s.currentPackage)
   const quiz = getQuizModule(slug)
-  const total = quiz?.questions.length ?? 0
-  const question: QuizQuestion | undefined = quiz?.questions[nomor - 1]
+  const packageQuestions = useMemo(
+    () => quiz?.questions.slice(currentPackage * PACKAGE_SIZE, currentPackage * PACKAGE_SIZE + PACKAGE_SIZE) ?? [],
+    [quiz, currentPackage],
+  )
+  const total = packageQuestions.length
+  const question: PilihanGandaQuestion | undefined = packageQuestions[nomor - 1]
   const storeAnswers = useQuizStore((s) => s.answers)
   const selectAnswer = useQuizStore((s) => s.selectAnswer)
-  const resetAnswers = useQuizStore((s) => s.resetAnswers)
 
-  const selectedOption = question ? storeAnswers[question.id] : undefined
+  const selectedOption = useMemo(() => {
+    if (!question) return undefined
+    return storeAnswers[question.id]
+  }, [storeAnswers, question])
+
   const answeredCount = Object.keys(storeAnswers).length
-  const allAnswered = total > 0 && answeredCount === total
+  const allAnswered = total > 0 && answeredCount >= total
   const isLast = nomor === total
   const isFirst = nomor === 1
-
-  const score = quiz
-    ? quiz.questions.reduce((acc, q) => {
-        if (storeAnswers[q.id] === q.correctIndex) return acc + 1
-        return acc
-      }, 0)
-    : 0
 
   return {
     quiz,
@@ -35,9 +37,7 @@ export function useQuiz(slug: string, nomor: number) {
     allAnswered,
     isLast,
     isFirst,
-    score,
     answers: storeAnswers,
     selectAnswer,
-    resetAnswers,
   }
 }

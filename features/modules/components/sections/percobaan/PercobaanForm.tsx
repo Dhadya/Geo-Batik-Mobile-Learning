@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback } from "react"
 import { Text } from "@/components/retroui/Text"
-import { Button } from "@/components/retroui/Button"
-import { useSection } from "@/features/modules/hooks/useObservation"
+import { useSection } from "@/features/modules/hooks/useSection"
+import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { UraianItem } from "@/features/modules/types"
 
 import { PercobaanInstruction } from "./PercobaanInstruction"
@@ -21,17 +21,11 @@ interface PercobaanFormProps {
 export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
-    setField, handleSubmit, setChecked, setErrors, block,
+    setField, handleSubmit, block,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
   } = useSection(slug, tab, "percobaan")
 
-  const handleClick = useCallback(() => {
-    if (isChecked) {
-      setChecked(false)
-      setErrors({})
-    } else {
-      handleSubmit()
-    }
-  }, [isChecked, setChecked, setErrors, handleSubmit])
+  const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
 
   if (items.length === 0) return null
 
@@ -44,6 +38,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   if (isGaris && gtTable && block) {
     return (
       <div className="space-y-3 md:space-y-4">
+        <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
         <PercobaanGarisView
           items={items}
           fields={fields}
@@ -56,10 +51,16 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 
         <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
 
-        <SubmitButton
+        <SectionSubmitButton
+          attempt={attempt}
           isChecked={isChecked}
           isFilled={isFilled}
-          onClick={handleClick}
+          isCorrect={isCorrectEvaluation}
+          isLocked={isLocked}
+          showCobaLagi={showCobaLagi}
+          onSubmit={handleSubmit}
+          onCobaLagi={handleCobaLagi}
+          requireConfirmation={false}
         />
       </div>
     )
@@ -68,6 +69,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   // ── Default branch (translasi titik/bangun or refleksi) ──
   return (
     <div className="space-y-3 md:space-y-4">
+      <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
       {block?.instruction && (
         <PercobaanInstruction
           instruction={block.instruction}
@@ -121,10 +123,16 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 
       <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
 
-      <SubmitButton
+      <SectionSubmitButton
+        attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
-        onClick={handleClick}
+        isCorrect={isCorrectEvaluation}
+        isLocked={isLocked}
+        showCobaLagi={showCobaLagi}
+        onSubmit={handleSubmit}
+        onCobaLagi={handleCobaLagi}
+        requireConfirmation={slug === "translasi" && tab === "titik"}
       />
     </div>
   )
@@ -136,22 +144,8 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 function AiFeedbackBanner({ aiFeedback, isChecked }: { aiFeedback?: string; isChecked: boolean }) {
   if (!isChecked || !aiFeedback) return null
   return (
-    <div className="border-4 border-primary bg-primary/5 p-3 md:p-4 rounded-none">
+    <div className="border-4 border-black bg-background p-3 md:p-4">
       <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
     </div>
-  )
-}
-
-/** Periksa Jawaban / Periksa Lagi toggle button. */
-function SubmitButton({ isChecked, isFilled, onClick }: { isChecked: boolean; isFilled: boolean; onClick: () => void }) {
-  return (
-    <Button
-      onClick={onClick}
-      disabled={!isFilled && !isChecked}
-      variant={isChecked ? "secondary" : "default"}
-      className="w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_rgba(0,0,0,1)] rounded-none"
-    >
-      {isChecked ? "Periksa Lagi" : "Periksa Jawaban"}
-    </Button>
   )
 }

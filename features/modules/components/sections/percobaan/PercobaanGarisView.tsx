@@ -2,7 +2,8 @@
 
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
-import { allowOnlyNumbers } from "@/features/modules/hooks/useObservation"
+import { Textarea } from "@/components/retroui/Textarea"
+import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
 import { PercobaanInstruction } from "./PercobaanInstruction"
 import type { KoordinatItem, UraianItem, SectionItem, GarisTranslasiTable, SectionBlock } from "@/features/modules/types"
 
@@ -163,9 +164,9 @@ export function PercobaanGarisView({
                 <span className="text-base md:text-lg shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
                 <div className="grow space-y-0.5 md:space-y-1">
                   <Text as="p" className="text-xs md:text-sm font-medium text-black">{u.question}</Text>
-                  <textarea
+                  <Textarea
                     value={val}
-                    onChange={(e) => setField(String(u.id), "text", e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                     disabled={isChecked}
                     rows={2}
                     placeholder="Tuliskan jawabanmu..."
