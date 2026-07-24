@@ -24,13 +24,14 @@ export function SectionScoreIndicator({
   if (color === "gray") return null
 
   const circleSize = size === "md" ? "size-5 md:size-6" : "size-4 md:size-5"
+  const iconSize = size === "md" ? "size-3 md:size-3.5" : "size-2.5 md:size-3"
 
   return (
     <span
       className={`inline-flex items-center justify-center ${circleSize} rounded-full ${config.bgClass} border-2 border-black shrink-0`}
       title={config.label}
     >
-      <Check className="size-2.5 md:size-3 text-black stroke-[3]" />
+      <Check className={`${iconSize} text-black stroke-[3]`} />
     </span>
   )
 }

@@ -13,9 +13,9 @@ export default function ModulTabLoading() {
       </div>
 
       {/* Tab navigation bar */}
-      <div className="flex gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-4">
-        {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-10 md:h-12 w-24 md:w-32 shrink-0 border-4 border-black shadow-[4px_4px_0_0_black]" />
+      <div className="flex gap-2 md:gap-4">
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-10 md:h-12 flex-1 border-4 border-black shadow-[4px_4px_0_0_black]" />
         ))}
       </div>
 

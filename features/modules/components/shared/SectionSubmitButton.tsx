@@ -50,7 +50,7 @@ export function SectionSubmitButton({
     variantStyle = "bg-secondary text-white hover:bg-secondary/90"
   } else if (isCorrect) {
     text = "Selesai"
-    variantStyle = "bg-green-600 text-white hover:bg-green-700"
+    variantStyle = "bg-secondary text-white hover:bg-secondary"
   } else {
     text = "Kesempatan Habis"
     variantStyle = "bg-gray-300 text-gray-500 border-gray-400"

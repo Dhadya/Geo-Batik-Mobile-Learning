@@ -3,6 +3,7 @@ import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { getTabProgress } from "@/features/modules/services/progress"
 import { getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
+import { MODULE_TABS } from "@/features/modules/data"
 import { KuisSoalClient } from "./client"
 
 export default async function KuisSoalPage(props: {
@@ -26,13 +27,15 @@ export default async function KuisSoalPage(props: {
   let backHref = `/modul/${slug}/titik`
 
   try {
+    const tabOrder = MODULE_TABS[slug as keyof typeof MODULE_TABS]?.map((t) => t.value) ?? []
     const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
-    const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
+    const sorted = [...tabs].sort((a, b) => tabOrder.indexOf(a.tab) - tabOrder.indexOf(b.tab))
+    const allCompleted = sorted.length > 0 && sorted.every((t) => t.completed)
 
     isLocked = !allCompleted
     if (isLocked) {
-      const latestUnlocked = [...tabs].reverse().find((t) => t.unlocked)
-      backHref = `/modul/${slug}/${latestUnlocked?.tab ?? tabs[0]?.tab ?? "titik"}`
+      const latestUnlocked = [...sorted].reverse().find((t) => t.unlocked)
+      backHref = `/modul/${slug}/${latestUnlocked?.tab ?? sorted[0]?.tab ?? "titik"}`
     }
   } catch {
     // DB unavailable — default to locked state

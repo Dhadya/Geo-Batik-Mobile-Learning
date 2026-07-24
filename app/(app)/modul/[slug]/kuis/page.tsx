@@ -8,6 +8,7 @@ import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { QuizBreadcrumb, QuizHeader, getQuizModule, PACKAGE_SIZE } from "@/features/quiz"
+import { MODULE_TABS } from "@/features/modules/data"
 import { MODULE_LABELS, MODULE_ICONS, MODULE_BG } from "@/features/modules/data/moduleConfig"
 import { KuisStartButton } from "./KuisStartButton"
 import { LockOverlay } from "@/features/modules/components/LockOverlay"
@@ -30,13 +31,15 @@ export default async function KuisIntroPage(props: {
 
   if (session?.user) {
     try {
+      const tabOrder = MODULE_TABS[slug as keyof typeof MODULE_TABS]?.map((t) => t.value) ?? []
       const tabs = await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
-      const allCompleted = tabs.length > 0 && tabs.every((t) => t.completed)
+      const sorted = [...tabs].sort((a, b) => tabOrder.indexOf(a.tab) - tabOrder.indexOf(b.tab))
+      const allCompleted = sorted.length > 0 && sorted.every((t) => t.completed)
 
       if (!allCompleted) {
         isLocked = true
-        const latestUnlocked = [...tabs].reverse().find((t) => t.unlocked)
-        backHref = `/modul/${slug}/${latestUnlocked?.tab ?? tabs[0]?.tab ?? "titik"}`
+        const latestUnlocked = [...sorted].reverse().find((t) => t.unlocked)
+        backHref = `/modul/${slug}/${latestUnlocked?.tab ?? sorted[0]?.tab ?? "titik"}`
       }
     } catch {
       isLocked = true

@@ -50,7 +50,7 @@ export function ModuleAnswerButton({
       disabled={disabled}
     >
       <span
-        className={`w-5 h-5 md:w-7 md:h-7 border-2 border-black flex items-center justify-center text-[10px] md:text-sm shrink-0 ${isCorrect ? "bg-green-600 text-white" : isWrong ? "bg-destructive text-white" : "bg-foreground text-background"
+        className={`w-5 h-5 md:w-7 md:h-7 border-2 border-black flex items-center justify-center text-[10px] md:text-sm shrink-0 ${isCorrect ? "bg-secondary text-white" : isWrong ? "bg-destructive text-white" : "bg-foreground text-background"
           }`}
       >
         {LABELS[index]}
@@ -87,7 +87,7 @@ export function ModuleAnswerButton({
         </Badge>
       )}
       {isCorrect && (
-        <Badge variant="solid" size="sm" className="absolute -top-2 -right-2 uppercase bg-green-600">
+        <Badge variant="solid" size="sm" className="absolute -top-2 -right-2 uppercase bg-secondary">
           Benar
         </Badge>
       )}

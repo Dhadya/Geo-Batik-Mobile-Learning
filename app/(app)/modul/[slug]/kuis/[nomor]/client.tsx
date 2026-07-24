@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { Button } from "@/components/retroui/Button"
 import { Card } from "@/components/retroui/Card"
 import { Text } from "@/components/retroui/Text"
@@ -231,19 +230,6 @@ export function KuisSoalClient({
             </Button>
           </span>
         )}
-
-        {/* Kembali — only shown on first question */}
-        {isFirst && (
-          <Link href={`/modul/${slug}/kuis`}>
-            <Button
-              variant="default"
-              size="lg"
-              className="px-6 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
-            >
-              Kembali
-            </Button>
-          </Link>
-        )}
       </div>
 
       {/* Confirmation dialog before submit */}
@@ -256,10 +242,10 @@ export function KuisSoalClient({
           </Dialog.Header>
           <div className="p-4 md:p-6 space-y-2">
             <p className="font-semibold text-sm md:text-base">
-              Yakin ingin mengirimkan jawaban?
+              Pastikan jawabanmu sudah tepat sebelum mengirim.
             </p>
             <p className="text-xs md:text-sm text-muted-foreground">
-              {Object.keys(answers).length}/{total} soal telah dijawab.
+              Hanya percobaan ke-1 yang dihitung sebagai nilai final.
             </p>
           </div>
           <Dialog.Footer>
