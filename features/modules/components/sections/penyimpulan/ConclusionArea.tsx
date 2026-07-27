@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback } from "react"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { Text } from "@/components/retroui/Text"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { useSection } from "../../../hooks/useSection"
 import { AttemptBadge } from "../../shared/AttemptBadge"
@@ -23,10 +23,9 @@ interface ConclusionAreaProps {
 /** Penyimpulan section — renders uraian items with special layouts per item. */
 export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
   const {
-    items, fields, errors, isChecked, isFilled, aiFeedback,
+    items, fields, errors, fieldColors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi: resetState,
-    attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "penyimpulan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
@@ -34,17 +33,11 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
   const penyimpulanAnswers = useAnswerStore((s) => s.answers[`${slug}-${tab}`]?.penyimpulan)
   const score = penyimpulanAnswers?.score ?? null
 
-  const handleCobaLagi = useCallback(() => {
-    resetState()
-  }, [resetState])
-
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
       <div className="flex items-center gap-2 md:gap-4 mb-3 md:mb-4">
-        <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
-          <MaterialIcon className="size-4 md:size-6" name="lightbulb" />
-        </div>
-        <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
+        <MaterialIcon className="size-5 md:size-6" name="lightbulb" />
+        <Text as="h2" className="text-base md:text-lg font-black uppercase">
           Penyimpulan
         </Text>
         <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
@@ -75,6 +68,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 key={u.id}
                 fields={fields}
                 isChecked={isChecked}
+                fieldColors={fieldColors}
                 setField={setField}
               />
             )
@@ -86,6 +80,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 key={u.id}
                 fields={fields}
                 errors={errors}
+                fieldColors={fieldColors}
                 isChecked={isChecked}
                 setField={setField}
               />
@@ -101,6 +96,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 fields={fields}
                 errors={errors}
                 isChecked={isChecked}
+                fieldColors={fieldColors}
                 setField={setField}
               />
             )
@@ -112,17 +108,17 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
               item={u}
               fields={fields}
               errors={errors}
+              fieldColors={fieldColors}
               isChecked={isChecked}
               setField={setField}
             />
           )
         })}
 
-        {isChecked && aiFeedback && (
-          <div className="border-4 border-black bg-background p-3 md:p-4">
-            <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
-          </div>
-        )}
+        <SectionFeedbackPopover
+          aiFeedback={aiFeedback ?? ""}
+          isLocked={isLocked}
+        />
 
         <SectionSubmitButton
           isChecked={isChecked}
@@ -133,7 +129,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
           attempt={attempt}
           onSubmit={handleSubmit}
           onCobaLagi={handleCobaLagi}
-          requireConfirmation={slug === "translasi" && tab === "titik"}
+          isSubmitting={isSubmitting}
         />
       </div>
     </section>

@@ -57,7 +57,7 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
           <ToggleButton
             key={toggle.label}
             toggle={toggle}
-            isActive={activeToggles[toggle.label] ?? true}
+            isActive={activeToggles[toggle.label] ?? false}
             onToggle={handleToggleClick}
           />
         ))}

@@ -1,6 +1,7 @@
 import { handleAuthError } from "@/lib/api/auth-error"
 import { toast } from "sonner"
 import { validateSection } from "./validation"
+import type { FieldColor } from "./validation"
 import type { SectionItem } from "../types"
 
 /**
@@ -20,6 +21,7 @@ export async function evaluateSection(
   score: number | null
   feedback: string
   errors: Record<string, string>
+  fieldColors: Record<string, FieldColor>
 }> {
   try {
     const response = await fetch("/api/ai/evaluate-section", {
@@ -30,19 +32,47 @@ export async function evaluateSection(
     if (response.status === 401) { handleAuthError(new Error("UNAUTHORIZED")); throw new Error("Unauthorized") }
     const json = await response.json()
     if (!json.ok) throw new Error(json.error?.message ?? "AI evaluation failed")
-    return json.data
+    const aiCorrect = json.data.isCorrect
+    const local = validateSection(items, fields, undefined)
+    const aiScore = json.data.score
+
+    // AI is the sole source of truth when it succeeds
+    if (aiCorrect) {
+      return {
+        ...json.data,
+        isCorrect: true,
+        score: aiScore != null ? Math.max(aiScore, 100) : 100,
+        errors: {},
+        fieldColors: local.fieldColors,
+      }
+    }
+
+    // AI says wrong — use its score or fall back to local calculation
+    const numericScore = aiScore != null ? aiScore
+      : local.correctCount === local.totalItems ? 100
+      : local.correctCount === 0 ? 0
+      : 50
+    return {
+      ...json.data,
+      isCorrect: false,
+      score: numericScore,
+      errors: json.data.errors ?? local.errors ?? {},
+      fieldColors: json.data.fieldColors ?? local.fieldColors ?? {},
+    }
   } catch {
     toast.error("Gagal memuat feedback AI, menggunakan penilaian lokal")
     const local = validateSection(items, fields, undefined)
     const allCorrect = local.correctCount === local.totalItems
     const noneCorrect = local.correctCount === 0
+    const fallbackScore = allCorrect ? 100 : noneCorrect ? 0 : 50
     return {
       isCorrect: allCorrect,
-      score: allCorrect ? 100 : noneCorrect ? 0 : 50,
+      score: fallbackScore,
       feedback: allCorrect
         ? "Jawaban kamu benar. Semua jawaban sesuai dengan kunci jawaban yang diharapkan. Pertahankan pemahamanmu dan lanjutkan ke materi selanjutnya."
         : "Jawaban kamu belum sepenuhnya tepat. Periksa kembali setiap pernyataan dan pastikan pemahamanmu tentang konsep yang sedang dipelajari. Coba bandingkan dengan hasil percobaan yang sudah kamu lakukan.",
       errors: local.errors ?? {},
+      fieldColors: local.fieldColors ?? {},
     }
   }
 }

@@ -15,14 +15,16 @@ export function QuizBreadcrumb({
   slug,
   label,
   path = "kuis",
+  activeItem,
 }: {
   slug: string
   label: string
   path?: "apersepsi" | "modul" | "kuis"
+  activeItem?: string
 }) {
   return (
     <Breadcrumb>
-      <BreadcrumbList className="text-xs md:text-lg font-semibold text-black/70 gap-1 md:gap-2">
+      <BreadcrumbList className="text-sm md:text-base font-semibold text-black/70 gap-1 md:gap-2">
         <BreadcrumbItem>
           <BreadcrumbLink render={<Link href="/menu" />}>
             Menu
@@ -43,9 +45,9 @@ export function QuizBreadcrumb({
         <BreadcrumbSeparator />
         {path === "apersepsi" ? (
           <BreadcrumbItem>
-                <BreadcrumbPage className="text-black font-bold">
-                  Apersepsi
-                </BreadcrumbPage>
+            <BreadcrumbPage className="text-black font-bold">
+              Apersepsi
+            </BreadcrumbPage>
           </BreadcrumbItem>
         ) : path === "modul" ? (
           <>
@@ -56,9 +58,9 @@ export function QuizBreadcrumb({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-                <BreadcrumbPage className="text-black font-bold">
-                  Modul
-                </BreadcrumbPage>
+              <BreadcrumbPage className="text-black font-bold">
+                Modul
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </>
         ) : (
@@ -75,11 +77,27 @@ export function QuizBreadcrumb({
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-            <BreadcrumbItem>
+            {activeItem ? (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink render={<Link href={`/modul/${slug}/kuis`} />}>
+                    Kuis
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-black font-bold">
+                    {activeItem}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            ) : (
+              <BreadcrumbItem>
                 <BreadcrumbPage className="text-black font-bold">
                   Kuis
                 </BreadcrumbPage>
-            </BreadcrumbItem>
+              </BreadcrumbItem>
+            )}
           </>
         )}
       </BreadcrumbList>

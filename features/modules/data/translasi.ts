@@ -294,7 +294,7 @@ export const translasiTabs: ModuleTab[] = [
               type: "pilihan_ganda",
               question: "Tentukan bayangan dari bangun berikut jika ditranslasikan sejauh",
               options: ["a", "b", "c", "d"],
-              correctIndex: 3,
+              correctIndex: 0,
               optionFormat: "image",
               imageOptions: [
                 "/questions/translasi bangun_2a.webp",
@@ -335,6 +335,7 @@ export const translasiTabs: ModuleTab[] = [
           instruction:
             "Diberikan persamaan garis k : -x + 2y = 4. Garis k akan ditranslasikan sejauh",
           instructionMatrix: "4,-2",
+          instructionSuffix: ". Ikuti langkah-langkah berikut untuk menentukan bayangan garis k:",
           garisTranslasiTable: {
             sourceItemIds: [1, 2],
             targetItemIds: [3, 4],
@@ -381,7 +382,7 @@ export const translasiTabs: ModuleTab[] = [
             {
               id: 7,
               type: "pilihan_ganda",
-              question: "Apakah kemiringan garis berubah?",
+              question: "Apakah kemiringan garis berubah saat ditranslasi?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
             },
@@ -401,7 +402,9 @@ export const translasiTabs: ModuleTab[] = [
             {
               id: 10,
               type: "pilihan_ganda",
-              question: "Bagaimana jika ditranslasikan oleh (0, 0), apakah titik potong sumbu x dan sumbu y berubah?",
+              question: "Bagaimana jika ditranslasikan oleh",
+              questionMatrix: "0,0",
+              questionSuffix: ", apakah titik potong sumbu x dan sumbu y berubah?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
             },

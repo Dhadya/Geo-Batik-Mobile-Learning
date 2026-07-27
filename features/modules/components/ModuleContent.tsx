@@ -142,7 +142,7 @@ export function ModuleContent({
             feedback,
           )
         }
-        store.setChecked(slug, decodedTab, sectionKey as "percobaan", true)
+        // Don't set isChecked here — let the user check answers again on second attempt
         } catch {
           continue
         }

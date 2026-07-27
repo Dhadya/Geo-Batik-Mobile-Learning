@@ -47,6 +47,7 @@ export function KuisSoalClient({
     isLast,
     isFirst,
     answers,
+    answeredPositions,
     selectAnswer,
   } = useQuiz(slug, nomor)
 
@@ -120,12 +121,6 @@ export function KuisSoalClient({
     )
   }
 
-  const answeredIds = total > 0
-    ? Array.from({ length: total }, (_, i) => i + 1).filter(
-        (n) => answers[n] !== undefined,
-      )
-    : []
-
   const label = MODULE_LABELS[slug] ?? slug
 
   return (
@@ -139,13 +134,13 @@ export function KuisSoalClient({
         />
       )}
 
-      <QuizBreadcrumb slug={slug} label={label} />
+      <QuizBreadcrumb slug={slug} label={label} activeItem={`Soal ${nomor}`} />
 
       <div className="bg-surface-container-high border-4 border-black shadow-[4px_4px_0_0_black]">
         <NumberIndicator
           total={total}
           current={nomor}
-          answeredIds={answeredIds}
+          answeredPositions={answeredPositions}
           onSelect={handleNumberSelect}
         />
 
@@ -157,8 +152,8 @@ export function KuisSoalClient({
           <div className="grow p-3 md:p-4">
             <Card className="w-full border-4 border-black shadow-[4px_4px_0_0_black]">
               <Card.Content className="space-y-4 md:space-y-6">
-                <div className="font-semibold text-sm md:text-base">
-                  <Text as="p" className="inline">
+                <div className="font-semibold">
+                  <Text as="p" className="inline text-sm md:text-base leading-relaxed wrap-break-word">
                     {question.question}
                   </Text>
                   {"questionMatrix" in question && question.questionMatrix && (

@@ -14,6 +14,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "Batik Geometry",
   description: "Belajar Geometri Transformasi melalui Batik",
+  icons: "/logo.png",
 };
 
 export default function RootLayout({

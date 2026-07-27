@@ -3,7 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
-import { ApersepsiHeader, RichParagraph, ShapeStamps, apersepsiData } from "@/features/apersepsi"
+import { ApersepsiHeader, RichParagraph, apersepsiData } from "@/features/apersepsi"
 import { QuizBreadcrumb } from "@/features/quiz"
 import { RefleksiLockGuard } from "@/features/modules/components/RefleksiLockGuard"
 import type { ApersepsiSlug } from "@/features/apersepsi"
@@ -48,8 +48,6 @@ export default async function ApersepsiPage(props: { params: Promise<{ slug: str
           {afterParagraphs.map((paragraph, i) => (
             <RichParagraph key={`after-${i}`} text={paragraph} />
           ))}
-
-          <ShapeStamps />
         </div>
       </div>
 

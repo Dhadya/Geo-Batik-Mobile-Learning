@@ -1,8 +1,8 @@
 "use client"
 
-import { Text } from "@/components/retroui/Text"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { UraianItem } from "@/features/modules/types"
 
@@ -20,9 +20,9 @@ interface PercobaanFormProps {
 /** Percobaan form — orchestrator that delegates to view-specific sub-components. */
 export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   const {
-    items, fields, errors, isChecked, isFilled, aiFeedback,
+    items, fields, errors, fieldColors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
-    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt,
+    isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "percobaan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
@@ -43,13 +43,17 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           items={items}
           fields={fields}
           errors={errors}
+          fieldColors={fieldColors}
           isChecked={isChecked}
           setField={setField}
           block={block}
           garisTranslasiTable={gtTable}
         />
 
-        <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
+        <SectionFeedbackPopover
+          aiFeedback={aiFeedback ?? ""}
+          isLocked={isLocked}
+        />
 
         <SectionSubmitButton
           attempt={attempt}
@@ -61,6 +65,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           onSubmit={handleSubmit}
           onCobaLagi={handleCobaLagi}
           requireConfirmation={false}
+          isSubmitting={isSubmitting}
         />
       </div>
     )
@@ -74,6 +79,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         <PercobaanInstruction
           instruction={block.instruction}
           instructionMatrix={block.instructionMatrix}
+          instructionSuffix={block.instructionSuffix}
         />
       )}
 
@@ -95,6 +101,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           items={tableItems}
           fields={fields}
           errors={errors}
+          fieldColors={fieldColors}
           setField={setField}
           tab={tab}
           refleksiGroups={block?.refleksiGroups}
@@ -107,6 +114,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           items={tableItems}
           fields={fields}
           errors={errors}
+          fieldColors={fieldColors}
           setField={setField}
           showPointLetters={tab === "bangun"}
         />
@@ -117,11 +125,15 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         items={uraianItems}
         fields={fields}
         errors={errors}
+        fieldColors={fieldColors}
         isChecked={isChecked}
         setField={setField}
       />
 
-      <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
+      <SectionFeedbackPopover
+        aiFeedback={aiFeedback ?? ""}
+        isLocked={isLocked}
+      />
 
       <SectionSubmitButton
         attempt={attempt}
@@ -134,18 +146,6 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         onCobaLagi={handleCobaLagi}
         requireConfirmation={slug === "translasi" && tab === "titik"}
       />
-    </div>
-  )
-}
-
-// ── Shared mini-components ──────────────────────────────────
-
-/** AI feedback banner — shown after submission. */
-function AiFeedbackBanner({ aiFeedback, isChecked }: { aiFeedback?: string; isChecked: boolean }) {
-  if (!isChecked || !aiFeedback) return null
-  return (
-    <div className="border-4 border-black bg-background p-3 md:p-4">
-      <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
     </div>
   )
 }

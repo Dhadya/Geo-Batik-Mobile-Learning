@@ -8,6 +8,7 @@ import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
 import { toast } from "sonner"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import { useAnswerStore } from "../../../store/answerStore"
@@ -47,14 +48,15 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     persistedStatus === "wrong_attempt1"
   )
   const [isChecked, setIsChecked] = useState(() =>
-    persistedStatus === "correct" || persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2"
+    persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
   )
   const [isCorrect, setIsCorrect] = useState<boolean | null>(() =>
     persistedStatus === "correct" ? true
       : persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2" ? false
         : null
   )
-  const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({})
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const submitMutation = useSubmitSection(slug)
 
@@ -89,7 +91,8 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
   /** Submit answers with AI evaluation and two-attempt flow. */
   const doSubmit = useCallback(async () => {
-    if (submitMutation.isPending) return
+    if (submitMutation.isPending || isSubmitting) return
+    setIsSubmitting(true)
     const fields = selectionsToFields(selections, questions)
     const items = toSectionItems(questions)
 
@@ -146,17 +149,17 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       }
     } catch {
       // submission error handled silently
+    } finally {
+      setIsSubmitting(false)
     }
-  }, [slug, tab, questions, selections, attempt, submitMutation])
+  }, [slug, tab, questions, selections, attempt, submitMutation, isSubmitting])
 
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6 mt-4 md:mt-6">
       {/* Section header */}
       <div className="flex items-center justify-start gap-2 mb-4 md:mb-6">
-        <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
-          <MaterialIcon name="check_circle" className="size-4 md:size-6" />
-        </div>
-        <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
+        <MaterialIcon name="check_circle" className="size-5 md:size-6" />
+        <Text as="h2" className="text-base md:text-lg font-black uppercase">
           Cek Pemahaman
         </Text>
         <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasInput} />
@@ -166,7 +169,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       {/* Questions loop */}
       <div className="space-y-4 md:space-y-6">
         {questions.map((q, qi) => {
-          const hasError = validationErrors[q.id]
+          const errorMsg = validationErrors[q.id]
           const isMulti = q.multiSelect
 
           return (
@@ -183,7 +186,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                     <div className="space-y-1 md:space-y-2">
                       <Text
                         as="p"
-                        className="text-xs md:text-base font-semibold leading-relaxed text-black"
+                        className="text-sm md:text-base font-semibold leading-relaxed text-black"
                       >
                         Perhatikan gambar berikut!
                       </Text>
@@ -200,7 +203,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                   )}
 
                   {q.questionMatrix ? (
-                    <p className="text-xs md:text-base font-semibold leading-relaxed text-black">
+                    <p className="text-sm md:text-base font-semibold leading-relaxed text-black">
                       {q.question}
                       {(() => {
                         const [top, bottom] = q.questionMatrix!.split(",")
@@ -226,7 +229,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                   ) : (
                     <Text
                       as="p"
-                      className="text-xs md:text-base font-semibold leading-relaxed text-black"
+                      className="text-sm md:text-base font-semibold leading-relaxed text-black"
                     >
                       {q.question}
                     </Text>
@@ -273,14 +276,15 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                         matrix={q.optionFormat === "matrix"}
                         disabled={isChecked}
                         imageSrc={q.imageOptions?.[oi]}
+                        attempt={attempt}
                       />
                     )
                   })}
                 </div>
 
-                {isChecked && hasError && (
+                {isChecked && errorMsg && (
                   <Text className="text-destructive text-[10px] md:text-xs font-medium text-center">
-                    Jawaban kurang tepat
+                    {errorMsg}
                   </Text>
                 )}
               </Card.Content>
@@ -289,14 +293,13 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         })}
       </div>
 
-      {/* AI feedback banner */}
-      {isChecked && aiFeedback && (
-        <div className="border-4 border-black bg-background p-3 md:p-4 mt-4 md:mt-6">
-          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">
-            {aiFeedback}
-          </Text>
-        </div>
-      )}
+      {/* AI feedback popover */}
+      <div className="mt-4 md:mt-6">
+        <SectionFeedbackPopover
+          aiFeedback={aiFeedback ?? ""}
+          isLocked={isLocked}
+        />
+      </div>
 
       {/* Submit button — shown in all states */}
       <div className="mt-4 md:mt-8">
@@ -313,10 +316,10 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
             setIsCorrect(null)
             setValidationErrors({})
             setShowCobaLagi(false)
-            useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, "")
             useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "unsubmitted", 2)
           }}
           requireConfirmation={slug === "translasi" && tab === "titik"}
+          isSubmitting={isSubmitting}
         />
       </div>
     </section>

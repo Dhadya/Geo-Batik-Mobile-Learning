@@ -15,16 +15,34 @@ export const prerequisiteConcepts: PrerequisiteConcept[] = [
     icon: "ads_click",
   },
   {
+    title: "Kuadran",
+    description:
+      "Daerah yang terbagi karena perpotongan sumbu x dan sumbu y. Terdapat 4 kuadran, yaitu:\nKuadran I: absis x > 0 dan ordinat y > 0.\nKuadran II: absis x < 0 dan ordinat y > 0.\nKuadran III: absis x < 0 dan ordinat y < 0.\nKuadran IV: absis x > 0 dan ordinat y < 0.",
+    icon: "grid_4x4",
+  },
+  {
     title: "Garis",
     description:
       "Himpunan titik-titik berderet yang memanjang tanpa batas ke dua arah (kanan-kiri atau atas-bawah). Garis memiliki dimensi panjang, tetapi tidak memiliki dimensi lebar. Berada di dimensi 1. Penamaannya berupa persamaan garis.",
     icon: "horizontal_rule",
   },
   {
+    title: "Ruas Garis",
+    description:
+      "Ruas garis didefinisikan sebagai bagian dari suatu garis lurus yang dibatasi oleh dua titik ujung.",
+    icon: "remove",
+  },
+  {
     title: "Bidang",
     description:
       "Bidang dideskripsikan sebagai permukaan datar dua dimensi yang meluas tanpa batas ke segala arah dan tidak memiliki ketebalan.",
     icon: "grid_view",
+  },
+  {
+    title: "Bangun Datar",
+    description:
+      "Bentuk 2 dimensi yang datar. Bangun datar memiliki dimensi panjang dan lebar.",
+    icon: "pentagon",
   },
   {
     title: "Sumbu x",
@@ -37,43 +55,5 @@ export const prerequisiteConcepts: PrerequisiteConcept[] = [
     description:
       "Sumbu y adalah garis bilangan real vertikal pada bidang Kartesius. Nilai pada sumbu y disebut ordinat.",
     icon: "north",
-  },
-  {
-    title: "Kuadran",
-    description:
-      "Daerah yang terbagi karena perpotongan sumbu x dan sumbu y. Terdapat 4 kuadran, yaitu:\nKuadran I: absis x > 0 dan ordinat y > 0.\nKuadran II: absis x < 0 dan ordinat y > 0.\nKuadran III: absis x < 0 dan ordinat y < 0.\nKuadran IV: absis x > 0 dan ordinat y < 0.",
-    icon: "grid_4x4",
-  },
-  {
-    title: "K1",
-    description: "Kuadran I terletak di absis x > 0 dan ordinat y > 0.",
-    icon: "grid_view",
-  },
-  {
-    title: "K2",
-    description: "Kuadran II terletak di absis x < 0 dan ordinat y > 0.",
-    icon: "grid_view",
-  },
-  {
-    title: "K3",
-    description: "Kuadran III terletak di absis x < 0 dan ordinat y < 0.",
-    icon: "grid_view",
-  },
-  {
-    title: "K4",
-    description: "Kuadran IV terletak di absis x > 0 dan ordinat y < 0.",
-    icon: "grid_view",
-  },
-  {
-    title: "Ruas Garis",
-    description:
-      "Ruas garis didefinisikan sebagai bagian dari suatu garis lurus yang dibatasi oleh dua titik ujung.",
-    icon: "remove",
-  },
-  {
-    title: "Bangun Datar",
-    description:
-      "Bentuk 2 dimensi yang datar. Bangun datar memiliki dimensi panjang dan lebar.",
-    icon: "pentagon",
   },
 ]

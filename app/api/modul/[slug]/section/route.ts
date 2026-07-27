@@ -41,7 +41,11 @@ export async function POST(
     }
 
     const result = await saveSectionAttempt(user.id, slug as ModuleSlug, parsed.data);
-
+    console.log(
+      `[section.save] slug=${slug} tab=${parsed.data.tab}`,
+      `sectionType=${parsed.data.sectionType} attempt=${parsed.data.attempt}`,
+      `status=${parsed.data.status} score=${parsed.data.score}`,
+    );
     return NextResponse.json({ ok: true, data: result }, { status: 200 });
   } catch (e) {
     return handleError(e);
@@ -67,7 +71,11 @@ export async function GET(
     const sectionType = searchParams.get("sectionType") ?? undefined;
 
     const sections = await getSectionProgress(user.id, slug as ModuleSlug, tab, sectionType);
-
+    console.log(
+      `[section.fetch] slug=${slug} tab=${tab ?? "all"} sectionType=${sectionType ?? "all"}`,
+      `count=${sections.length}`,
+      sections.map((s) => `${s.sectionType}[${s.tab}]:${s.status}`).join(" "),
+    );
     return NextResponse.json({ ok: true, data: { sections } });
   } catch (e) {
     return handleError(e);

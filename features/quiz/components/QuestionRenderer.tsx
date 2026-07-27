@@ -24,6 +24,7 @@ export function QuestionRenderer({
           key={i}
           index={i}
           text={opt}
+          matrix={question.optionMatrices?.[i]}
           isSelected={selectedAnswer === i}
           onSelect={() => onAnswer(i)}
           disabled={disabled}
