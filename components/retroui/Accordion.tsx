@@ -24,7 +24,7 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
     <AccordionPrimitive.Item
       data-slot="accordion-item"
       className={cn(
-        "overflow-hidden border-2 border-black bg-card text-foreground shadow-sm transition-shadow duration-200 hover:shadow data-[open]:shadow",
+        "overflow-hidden border-2 border-black bg-card text-foreground shadow-sm transition-shadow duration-200 hover:shadow data-open:shadow",
         className
       )}
       {...props}
@@ -42,7 +42,7 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "flex flex-1 cursor-pointer items-center justify-between gap-4 px-3 py-2 text-left font-bold text-xs transition-colors hover:bg-primary hover:text-primary-foreground data-[open]:bg-primary data-[open]:text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:text-sm",
+          "group flex flex-1 cursor-pointer items-center justify-between gap-4 px-3 py-2 text-left font-bold text-xs transition-colors hover:bg-primary hover:text-primary-foreground data-[open]:bg-primary data-open:text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:text-sm",
           className
         )}
         {...props}
@@ -52,7 +52,7 @@ function AccordionTrigger({
           aria-hidden
           data-slot="accordion-trigger-icon"
           className={cn(
-            "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 [[data-state=open]>&]:rotate-180",
+            "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-data-panel-open:rotate-180",
             EASE
           )}
         />
@@ -74,10 +74,10 @@ function AccordionContent({
       // `data-ending-style`. Transitioning `height` between that var and 0 gives a
       // real slide open/close.
       className={cn(
-        "group/panel h-[var(--accordion-panel-height)] overflow-hidden bg-card font-body text-sm text-muted-foreground",
+        "group/panel h-(--accordion-panel-height) overflow-hidden bg-card font-body text-sm text-muted-foreground",
         "transition-[height] duration-300",
         EASE,
-        "data-[starting-style]:h-0 data-[ending-style]:h-0"
+        "data-starting-style:h-0 data-ending-style:h-0"
       )}
       {...props}
     >
@@ -85,8 +85,8 @@ function AccordionContent({
         className={cn(
           "px-3 pb-3 transition-[opacity,transform] duration-300 ease-out",
           // Fade + nudge the content as the panel opens/closes, synced to the slide.
-          "group-data-[starting-style]/panel:-translate-y-1 group-data-[starting-style]/panel:opacity-0",
-          "group-data-[ending-style]/panel:-translate-y-1 group-data-[ending-style]/panel:opacity-0",
+          "group-data-starting-style/panel:-translate-y-1 group-data-starting-style/panel:opacity-0",
+          "group-data-ending-style/panel:-translate-y-1 group-data-ending-style/panel:opacity-0",
           className
         )}
       >

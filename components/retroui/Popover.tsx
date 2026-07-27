@@ -19,7 +19,7 @@ const PopoverContent = ({
       <BasePopover.Popup
         ref={ref}
         className={cn(
-          "z-50 w-[36rem] border-4 border-black bg-white p-4 shadow-[4px_4px_0_0_black] data-[open]:animate-in data-[open]:fade-in-0 data-[open]:zoom-in-95 data-[closed]:animate-out data-[closed]:fade-out-0 data-[closed]:zoom-out-95",
+          "z-50 w-lg md:w-xl border-4 border-black bg-white p-4 shadow-[4px_4px_0_0_black] data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className,
         )}
         {...props}

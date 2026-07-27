@@ -139,7 +139,7 @@ export function KuisSoalClient({
         />
       )}
 
-      <QuizBreadcrumb slug={slug} label={label} />
+      <QuizBreadcrumb slug={slug} label={label} activeItem={`Soal ${nomor}`} />
 
       <div className="bg-surface-container-high border-4 border-black shadow-[4px_4px_0_0_black]">
         <NumberIndicator

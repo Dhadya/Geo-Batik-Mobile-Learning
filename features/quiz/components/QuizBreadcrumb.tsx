@@ -15,10 +15,12 @@ export function QuizBreadcrumb({
   slug,
   label,
   path = "kuis",
+  activeItem,
 }: {
   slug: string
   label: string
   path?: "apersepsi" | "modul" | "kuis"
+  activeItem?: string
 }) {
   return (
     <Breadcrumb>
@@ -75,11 +77,27 @@ export function QuizBreadcrumb({
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="text-black font-bold">
-                Kuis
-              </BreadcrumbPage>
-            </BreadcrumbItem>
+            {activeItem ? (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink render={<Link href={`/modul/${slug}/kuis`} />}>
+                    Kuis
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-black font-bold">
+                    {activeItem}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            ) : (
+              <BreadcrumbItem>
+                <BreadcrumbPage className="text-black font-bold">
+                  Kuis
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            )}
           </>
         )}
       </BreadcrumbList>
