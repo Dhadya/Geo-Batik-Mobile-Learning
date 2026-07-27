@@ -40,7 +40,7 @@ export function AnswerButton({
     <Button
       variant={isSelected ? "default" : "outline"}
       size="lg"
-      className="w-full justify-start gap-3 p-4 md:p-5 text-left font-bold text-sm md:text-base wrap-break-word relative"
+       className="w-full justify-start gap-3 p-4 md:p-5 text-left font-medium text-xs md:text-sm wrap-break-word relative"
       onClick={onSelect}
       disabled={disabled}
     >
