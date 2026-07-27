@@ -7,12 +7,12 @@ import { Text } from "@/components/retroui/Text"
 export function NumberIndicator({
   total,
   current,
-  answeredIds,
+  answeredPositions,
   onSelect,
 }: {
   total: number
   current: number
-  answeredIds: number[]
+  answeredPositions: Set<number>
   onSelect: (n: number) => void
 }) {
   return (
@@ -20,7 +20,7 @@ export function NumberIndicator({
       <div className="flex flex-wrap gap-2">
         {Array.from({ length: total }, (_, i) => i + 1).map((n) => {
           const isCurrent = n === current
-          const isAnswered = answeredIds.includes(n)
+          const isAnswered = answeredPositions.has(n)
           return (
             <Button
               key={n}

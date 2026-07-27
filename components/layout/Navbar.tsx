@@ -162,9 +162,15 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Left — Logo + Brand */}
           <Link href="/" className="flex items-center gap-3 shrink-0">
-            {/* Placeholder logo */}
-            <div className="size-10 lg:size-14 bg-accent border-4 border-black flex items-center justify-center shadow-md">
-              <span className="font-black text-lg lg:text-2xl text-black">G</span>
+            {/* Logo */}
+            <div className="size-10 lg:size-14 border-4 border-black flex items-center justify-center shadow-md overflow-hidden">
+              <Image
+                src="/logo.png"
+                alt="Batik Geometry"
+                width={56}
+                height={56}
+                className="size-full object-cover"
+              />
             </div>
             <span className="font-black text-xl lg:text-3xl uppercase tracking-tight">
               GEMATRI

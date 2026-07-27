@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react"
 import { Button } from "@/components/retroui/Button"
 import { Dialog } from "@/components/retroui/Dialog"
+import { Loader } from "@/components/retroui/Loader"
 
 interface SectionSubmitButtonProps {
   isChecked: boolean
@@ -18,6 +19,8 @@ interface SectionSubmitButtonProps {
   onCobaLagi?: () => void
   /** If true, requires a confirmation dialog before initial submit only */
   requireConfirmation?: boolean
+  /** Show loading spinner instead of text */
+  isSubmitting?: boolean
 }
 
 /**
@@ -35,10 +38,11 @@ export function SectionSubmitButton({
   onSubmit,
   onCobaLagi,
   requireConfirmation = false,
+  isSubmitting = false,
 }: SectionSubmitButtonProps) {
   const [open, setOpen] = useState(false)
 
-  const isDisabled = !isChecked ? !isFilled : isLocked && !showCobaLagi
+  const isDisabled = !isChecked ? !isFilled : (isLocked && !showCobaLagi) || isSubmitting
 
   let text: string
   let variantStyle = ""
@@ -79,9 +83,16 @@ export function SectionSubmitButton({
     <Button
       onClick={handleClick}
       disabled={isDisabled}
-      className={`w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black] ${variantStyle}`}
+      className={`w-full font-bold text-sm md:text-base py-1 md:py-2 uppercase shadow-[2px_2px_0_0_black] ${variantStyle}`}
     >
-      {text}
+      {isSubmitting ? (
+        <div className="flex items-center justify-center gap-2">
+          <Loader variant="secondary" size="md" />
+          <span>Memeriksa...</span>
+        </div>
+      ) : (
+        text
+      )}
     </Button>
   )
 

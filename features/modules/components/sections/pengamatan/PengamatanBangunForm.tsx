@@ -5,6 +5,7 @@ import { Text } from "@/components/retroui/Text"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { PilihanGandaItem } from "@/features/modules/types"
 
@@ -19,12 +20,10 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi,
-    attempt,
+    attempt, isSubmitting,
   } = useSection(slug, tab, "pengamatan")
 
   const hasAnyInput = Object.values(fields).some((f) => Object.values(f).some((v) => v !== ""))
-
-  const hasConfirmation = slug === "translasi" && tab === "titik"
 
   /* Only render pilihan_ganda items (binary choice questions) */
   const pgItems = items.filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
@@ -59,6 +58,7 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
                   const isSelected = Number(selected) === oi
                   const isCorrect = isChecked && isSelected && oi === pg.correctIndex
                   const isWrong = isChecked && isSelected && oi !== pg.correctIndex
+                  const isWrongAttempt2 = isWrong && attempt === 2
 
                   return (
                     <Button
@@ -67,9 +67,9 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
                       variant={isSelected ? "default" : "outline"}
                       disabled={isChecked}
                       onClick={() => setField(String(pg.id), "selected", String(oi))}
-                      className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs  text-black ${
-                        isCorrect ? "border-green-600 bg-green-100 text-green-800" : ""
-                      } ${isWrong ? "border-destructive bg-destructive/10" : ""}`}
+                      className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs text-black ${
+                        isCorrect ? "border-green-600 bg-green-100 text-green-800" : isWrongAttempt2 ? "border-destructive bg-destructive/10 text-destructive" : isWrong ? "border-orange-500 bg-orange-50 text-orange-800" : ""
+                      }`}
                     >
                       {opt}
                     </Button>
@@ -86,13 +86,12 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
       })}
 
       {/* AI feedback banner */}
-      {isChecked && aiFeedback && (
-        <div className="border-4 border-black bg-background p-3 md:p-4">
-          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap text-black">{aiFeedback}</Text>
-        </div>
-      )}
+      <SectionFeedbackPopover
+        aiFeedback={aiFeedback ?? ""}
+        isLocked={isLocked}
+      />
 
-      <SectionSubmitButton
+<SectionSubmitButton
           isChecked={isChecked}
           isFilled={isFilled}
           isCorrect={isCorrectEvaluation}
@@ -101,8 +100,9 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
           attempt={attempt}
           onSubmit={handleSubmit}
           onCobaLagi={handleCobaLagi}
-          requireConfirmation={hasConfirmation}
-        />
+          requireConfirmation={false}
+          isSubmitting={isSubmitting}
+      />
     </form>
   )
 }

@@ -64,6 +64,7 @@ export interface GarisTranslasiTable {
 export interface SectionBlock {
   instruction: string
   instructionMatrix?: string
+  instructionSuffix?: string
   garisTranslasiTable?: GarisTranslasiTable
   refleksiGroups?: RefleksiGroup[]
   items: SectionItem[]

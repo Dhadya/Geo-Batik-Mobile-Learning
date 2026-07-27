@@ -45,9 +45,15 @@ export default async function KuisHasilPage(props: {
     }
   }
 
+  const activeItem = attemptParam
+    ? `Hasil ${attemptParam}`
+    : allResults.length > 0
+      ? "Hasil Terakhir"
+      : undefined
+
   return (
     <div className="space-y-4 md:space-y-6">
-      <QuizBreadcrumb slug={slug} label={label} />
+      <QuizBreadcrumb slug={slug} label={label} activeItem={activeItem} />
 
       <QuizResult
         slug={slug}

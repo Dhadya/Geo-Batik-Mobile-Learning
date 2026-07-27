@@ -41,11 +41,11 @@ export function KuisStartButton({ slug }: { slug: string }) {
     <Button
       variant="default"
       size="lg"
-      className="px-12 md:px-16 py-6 md:py-8 text-xl md:text-2xl font-black uppercase gap-4 md:gap-5"
+      className="px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-black uppercase gap-3 md:gap-4"
       onClick={handleStart}
     >
       {sessionStarted ? "Lanjutkan Kuis" : "Mulai Kuis"}
-      <MaterialIcon className="size-7 md:size-8" name="arrow_forward" />
+      <MaterialIcon className="size-5 md:size-6" name="arrow_forward" />
     </Button>
   )
 }

@@ -14,7 +14,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(2, 2)", "(2, 6)", "(-8, 2)", "(8, 2)"],
     correctIndex: 0,
     explanation:
-      "A(-3, 4) + T(5, -2) = (-3+5, 4-2) = (2, 2).",
+      "Translasi adalah pergeseran bangun datar sejauh vektor tertentu tanpa mengubah bentuk, ukuran, maupun orientasi. Setiap titik pada bangun digeser dengan jarak dan arah yang sama.\n\nLangkah-langkah: 1) Tentukan vektor translasi T(5, -2). 2) Jumlahkan vektor translasi dengan koordinat titik: A + T = (-3+5, 4+(-2)). 3) Hitung: (-3+5, 4-2) = (2, 2).",
   },
   {
     id: 2,
@@ -25,7 +25,8 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(-4, 5)", "(4, 5)", "(-4, -5)", "(2, 4)"],
     correctIndex: 0,
     explanation:
-      "Vektor translasi = P' - P = (2-6, 4-(-1)) = (-4, 5).",
+      "Vektor translasi dapat dicari dengan mengurangi koordinat bayangan dengan koordinat titik awal. Hasilnya adalah vektor yang menggeser titik dari posisi semula ke posisi bayangan.\n\nLangkah-langkah: 1) Gunakan rumus T = P' - P. 2) Substitusi koordinat: T = (2-6, 4-(-1)). 3) Hitung: (-4, 5).",
+    optionMatrices: { 0: "-4,5", 1: "4,5", 2: "-4,-5", 3: "2,4" },
   },
   {
     id: 3,
@@ -38,7 +39,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(x+3, y-6)", "(x-3, y+6)", "(x-3, y-6)", "(x+3, y+6)"],
     correctIndex: 1,
     explanation:
-      "B(x, y) + T(-3, 6) = (x-3, y+6).",
+      "Translasi menjumlahkan komponen vektor translasi dengan masing-masing koordinat titik. Untuk vektor T(a, b), bayangan titik (x, y) adalah (x+a, y+b).\n\nLangkah-langkah: 1) Tentukan vektor translasi T(-3, 6). 2) Jumlahkan dengan koordinat B(x, y): (x+(-3), y+6). 3) Sederhanakan: (x-3, y+6).",
   },
   {
     id: 4,
@@ -49,7 +50,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["2", "3", "5", "8"],
     correctIndex: 1,
     explanation:
-      "a = 3-(-2) = 5, b = 3-5 = -2. a+b = 5+(-2) = 3.",
+      "Untuk mencari komponen vektor translasi, kurangi koordinat bayangan dengan koordinat titik asal. Jumlahkan kedua komponen vektor untuk mendapatkan nilai a+b.\n\nLangkah-langkah: 1) Hitung a = x' - x = 3-(-2) = 5. 2) Hitung b = y' - y = 3-5 = -2. 3) Hitung a+b = 5+(-2) = 3.",
   },
   {
     id: 5,
@@ -67,7 +68,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     ],
     correctIndex: 2,
     explanation:
-      "Translasi menggeser semua titik sejauh vektor yang sama, tanpa mengubah bentuk atau ukuran.",
+      "Translasi menggeser seluruh titik bangun dengan vektor yang sama sehingga posisi bangun berpindah. Semua sifat bangun seperti bentuk, ukuran, luas, dan keliling tetap tidak berubah.\n\nLangkah-langkah: 1) Pahami bahwa translasi adalah pergeseran semua titik dengan vektor yang identik. 2) Karena setiap titik bergerak sejauh vektor yang sama, maka semua titik sudut bergeser sejauh yang sama. 3) Pilihan yang tepat adalah semua titik sudut bergeser sejauh yang sama.",
   },
   {
     id: 6,
@@ -83,7 +84,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     ],
     correctIndex: 3,
     explanation:
-      "Translasi hanya memindahkan posisi, bentuk dan ukuran bangun tetap sama.",
+      "Translasi hanya mengubah posisi bangun di bidang koordinat. Bentuk, ukuran, dan semua sifat geometri bangun tetap dipertahankan.\n\nLangkah-langkah: 1) Ingat bahwa translasi memindahkan bangun tanpa mengubah bentuk atau ukuran. 2) Posisi, letak, dan koordinat titik pasti berubah karena bangun bergeser. 3) Pilihan yang tepat adalah bentuk dan ukuran bangun.",
   },
   {
     id: 7,
@@ -95,7 +96,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(1, 9)", "(1, 8)", "(3, 8)", "(3, 9)"],
     correctIndex: 0,
     explanation:
-      "T = A' - A = (7-2, 5-(-3)) = (5, 8). B' = (-4+5, 1+8) = (1, 9).",
+      "Pertama tentukan vektor translasi dengan mengurangi koordinat bayangan dengan koordinat titik asal, lalu terapkan vektor tersebut ke titik lain.\n\nLangkah-langkah: 1) Tentukan vektor translasi T = A' - A = (7-2, 5-(-3)) = (5, 8). 2) Terapkan vektor yang sama ke titik B: B' = B + T = (-4+5, 1+8). 3) Hitung B' = (1, 9).",
   },
   {
     id: 8,
@@ -109,7 +110,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(0, 8)", "(4, 2)", "(2, 8)", "(0, 5)"],
     correctIndex: 0,
     explanation:
-      "C(2, 5) + T(-2, 3) = (2-2, 5+3) = (0, 8).",
+      "Setiap titik pada bangun ditranslasikan dengan menjumlahkan komponen vektor translasi ke masing-masing koordinat titik.\n\nLangkah-langkah: 1) Tentukan vektor translasi T(-2, 3). 2) Terapkan ke titik C(2, 5): C' = (2+(-2), 5+3). 3) Hitung C' = (0, 8).",
   },
   {
     id: 9,
@@ -122,7 +123,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["y = 2x - 5", "y = 2x + 1", "y = 2x - 3", "y = 2x + 5"],
     correctIndex: 0,
     explanation:
-      "Substitusi x' = x+3, y' = y+2. y-2 = 2(x-3)-1 → y = 2x-5.",
+      "Untuk mentranslasikan persamaan garis, substitusikan x dengan x' - a dan y dengan y' - b, di mana T(a, b) adalah vektor translasi. Kemudian selesaikan untuk mendapatkan persamaan bayangan dalam variabel x' dan y'.\n\nLangkah-langkah: 1) Vektor translasi T(3, 2), maka substitusi x = x'-3 dan y = y'-2. 2) Masukkan ke persamaan awal: y'-2 = 2(x'-3)-1. 3) Sederhanakan: y'-2 = 2x'-6-1 → y' = 2x'-5. Persamaan bayangan: y = 2x-5.",
   },
   {
     id: 10,
@@ -135,9 +136,8 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["2x + y = 6", "2x + y = 14", "2x + y = 2", "2x + y = 10"],
     correctIndex: 0,
     explanation:
-      "Substitusi x = x'+2, y = y'-4: 2(x'+2)+(y'-4)=6 → 2x'+y'=6. Garis invariant.",
+      "Jika garis ditranslasikan oleh vektor (a, b), substitusikan x dengan x'-a dan y dengan y'-b. Beberapa garis memiliki sifat invariant setelah translasi tertentu.\n\nLangkah-langkah: 1) Vektor translasi T(-2, 4), substitusi x = x'+2 dan y = y'-4. 2) Masukkan ke persamaan awal: 2(x'+2)+(y'-4)=6. 3) Sederhanakan: 2x'+4+y'-4=6 → 2x'+y'=6. Hasilnya sama dengan persamaan awal, sehingga garis ini invariant terhadap translasi tersebut.",
   },
-
   // ── PAKET 2 ──
   {
     id: 11,
@@ -150,7 +150,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(1, 3)", "(7, 3)", "(1, -7)", "(7, -7)"],
     correctIndex: 0,
     explanation:
-      "A(4, -2) + T(-3, 5) = (4-3, -2+5) = (1, 3).",
+      "Translasi menjumlahkan komponen vektor translasi dengan masing-masing koordinat titik. Pahami bahwa translasi tidak mengubah bentuk atau ukuran, hanya menggeser posisi.\n\nLangkah-langkah: 1) Tentukan vektor translasi T(-3, 5). 2) Jumlahkan dengan koordinat A(4, -2): (4+(-3), -2+5). 3) Hitung: (1, 3).",
   },
   {
     id: 12,
@@ -161,7 +161,8 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(4, -5)", "(-4, 5)", "(4, 5)", "(-1, -3)"],
     correctIndex: 0,
     explanation:
-      "Vektor translasi = P' - P = (-1-(-5), -3-2) = (4, -5).",
+      "Vektor translasi diperoleh dari selisih koordinat bayangan dan titik asal. Ini adalah kebalikan dari proses translasi biasa, yaitu mencari vektor yang menghasilkan pergeseran tersebut.\n\nLangkah-langkah: 1) Gunakan rumus T = P' - P. 2) Substitusi koordinat: T = (-1-(-5), -3-2). 3) Hitung: (4, -5).",
+    optionMatrices: { 0: "4,-5", 1: "-4,5", 2: "4,5", 3: "-1,-3" },
   },
   {
     id: 13,
@@ -174,7 +175,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(x+6, y-4)", "(x-6, y+4)", "(x+6, y+4)", "(x-6, y-4)"],
     correctIndex: 0,
     explanation:
-      "B(x, y) + T(6, -4) = (x+6, y-4).",
+      "Translasi dengan vektor T(a, b) mengubah koordinat (x, y) menjadi (x+a, y+b). Perhatikan bahwa tanda setiap komponen vektor memengaruhi arah pergeseran.\n\nLangkah-langkah: 1) Tentukan vektor translasi T(6, -4). 2) Jumlahkan dengan koordinat B(x, y): (x+6, y+(-4)). 3) Sederhanakan: (x+6, y-4).",
   },
   {
     id: 14,
@@ -185,7 +186,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["-10", "0", "5", "-5"],
     correctIndex: 1,
     explanation:
-      "a = -2-3 = -5, b = 4-(-1) = 5. a+b = -5+5 = 0.",
+      "Untuk mencari komponen vektor translasi, kurangi koordinat bayangan dengan koordinat titik asal. Tentukan kedua komponen lalu jumlahkan.\n\nLangkah-langkah: 1) Hitung a = x' - x = -2-3 = -5. 2) Hitung b = y' - y = 4-(-1) = 5. 3) Hitung a+b = -5+5 = 0.",
   },
   {
     id: 15,
@@ -203,7 +204,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     ],
     correctIndex: 1,
     explanation:
-      "Translasi menggeser setiap titik dengan vektor yang sama, sehingga bentuk, ukuran, luas, dan keliling tetap.",
+      "Translasi menggeser setiap titik bangun dengan vektor translasi yang identik. Akibatnya, semua titik sudut bergeser dengan jarak dan arah yang sama.\n\nLangkah-langkah: 1) Pahami bahwa translasi menggeser setiap titik dengan vektor (a, b) yang sama. 2) Karena vektor identik untuk semua titik, maka semua titik sudut bergeser sejauh yang sama. 3) Pilihan yang tepat adalah semua titik sudut bergeser dengan vektor yang sama.",
   },
   {
     id: 16,
@@ -219,7 +220,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     ],
     correctIndex: 2,
     explanation:
-      "Translasi mempertahankan bentuk dan ukuran, hanya posisi yang berubah.",
+      "Translasi mempertahankan semua sifat geometri bangun seperti bentuk, ukuran, sudut, dan luas. Satu-satunya yang berubah adalah posisi bangun pada bidang koordinat.\n\nLangkah-langkah: 1) Ingat bahwa translasi adalah transformasi kaku (isometri). 2) Transformasi kaku mempertahankan bentuk dan ukuran bangun. 3) Posisi bangun berubah seiring pergeseran. Pilihan yang tepat adalah bentuk dan ukuran bangun.",
   },
   {
     id: 17,
@@ -231,7 +232,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(8, -6)", "(7, -6)", "(8, -2)", "(7, -2)"],
     correctIndex: 0,
     explanation:
-      "T = A' - A = (5-(-1), 1-4) = (6, -3). B' = (2+6, -3-3) = (8, -6).",
+      "Tentukan vektor translasi dari pasangan titik asal dan bayangan yang diketahui, lalu terapkan vektor yang sama ke titik yang belum diketahui.\n\nLangkah-langkah: 1) Tentukan vektor translasi T = A' - A = (5-(-1), 1-4) = (6, -3). 2) Terapkan ke titik B(2, -3): B' = B + T = (2+6, -3+(-3)). 3) Hitung B' = (8, -6).",
   },
   {
     id: 18,
@@ -245,7 +246,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["(2, 2)", "(2, 0)", "(4, 2)", "(4, 0)"],
     correctIndex: 0,
     explanation:
-      "D(-2, 4) + T(4, -2) = (2, 2).",
+      "Untuk mencari koordinat bayangan suatu titik, jumlahkan vektor translasi dengan koordinat titik asal.\n\nLangkah-langkah: 1) Tentukan vektor translasi T(4, -2). 2) Terapkan ke titik D(-2, 4): D' = (-2+4, 4+(-2)). 3) Hitung D' = (2, 2).",
   },
   {
     id: 19,
@@ -258,7 +259,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["y = -x + 5", "y = -x + 3", "y = -x + 9", "y = -x + 1"],
     correctIndex: 2,
     explanation:
-      "Substitusi x = x'-2, y = y'-3: y'-3 = -(x'-2)+4 → y' = -x'+9.",
+      "Untuk mentranslasikan persamaan garis, substitusikan x dengan x' - a dan y dengan y' - b. Kemudian susun ulang persamaan dalam variabel x' dan y'.\n\nLangkah-langkah: 1) Vektor translasi T(2, 3), substitusi x = x'-2 dan y = y'-3. 2) Masukkan ke persamaan awal: y'-3 = -(x'-2)+4. 3) Sederhanakan: y'-3 = -x'+2+4 → y' = -x'+9. Persamaan bayangan: y = -x+9.",
   },
   {
     id: 20,
@@ -271,7 +272,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     options: ["x - y = 0", "x - y = 6", "x - y = 10", "x - y = 8"],
     correctIndex: 2,
     explanation:
-      "Substitusi x = x'-5, y = y'+2: (x'-5)-(y'+2)=3 → x'-y'=10.",
+      "Untuk mentranslasikan persamaan garis, substitusikan x dengan x' - a dan y dengan y' - b, lalu selesaikan untuk mendapatkan persamaan bayangan baru.\n\nLangkah-langkah: 1) Vektor translasi T(5, -2), substitusi x = x'-5 dan y = y'+2. 2) Masukkan ke persamaan awal: (x'-5)-(y'+2)=3. 3) Sederhanakan: x'-5-y'-2=3 → x'-y'=10. Persamaan bayangan: x - y = 10.",
   },
 ]
 

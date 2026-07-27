@@ -47,7 +47,23 @@ export function QuizResultExplanation({
                   {statusIcon}
                   <span className="flex flex-col gap-0.5">
                     <span className="font-black text-base md:text-lg">Soal {i + 1}</span>
-                    <span className="font-medium text-sm md:text-base text-muted-foreground line-clamp-2">{q.question}</span>
+                    <span className="font-medium text-sm md:text-base text-muted-foreground">
+                      {q.question}
+                      {q.questionMatrix && (() => {
+                        const [top, bottom] = q.questionMatrix.split(",")
+                        return (
+                          <span className="inline-flex items-center gap-0.5 mx-1 align-middle">
+                            <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
+                            <span className="flex flex-col items-center gap-0 md:gap-0.5 text-xs md:text-sm font-black align-middle">
+                              <span className="leading-none text-center">{top}</span>
+                              <span className="leading-none text-center">{bottom}</span>
+                            </span>
+                            <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
+                          </span>
+                        )
+                      })()}
+                      {q.questionSuffix && <span> {q.questionSuffix}</span>}
+                    </span>
                   </span>
                 </span>
               </AccordionTrigger>
@@ -56,6 +72,7 @@ export function QuizResultExplanation({
                   {q.options.map((opt, optIdx) => {
                     const isUserAnswer = userAnswer === optIdx
                     const isCorrectAnswer = q.correctIndex === optIdx
+                    const optMatrix = q.optionMatrices?.[optIdx]
                     let className = "border-4 border-black px-3 py-2 font-medium "
 
                     if (isCorrectAnswer) {
@@ -69,7 +86,18 @@ export function QuizResultExplanation({
                     return (
                       <div key={optIdx} className={`${className} flex items-center`}>
                         <span className="font-bold mr-2">{LABELS[optIdx]}.</span>
-                        <span className="flex-1">{opt}</span>
+                        <span className="flex-1">
+                          {optMatrix ? (
+                            <span className="inline-flex items-center gap-0.5 mx-1 align-middle">
+                              <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
+                              <span className="flex flex-col items-center gap-0 md:gap-0.5 text-xs md:text-sm font-black align-middle">
+                                <span className="leading-none text-center">{optMatrix.split(",")[0]}</span>
+                                <span className="leading-none text-center">{optMatrix.split(",")[1]}</span>
+                              </span>
+                              <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
+                            </span>
+                          ) : opt}
+                        </span>
                         {isCorrectAnswer && <MaterialIcon className="size-4 shrink-0" name="check" />}
                         {isUserAnswer && !isCorrectAnswer && <MaterialIcon className="size-4 shrink-0" name="close" />}
                       </div>
@@ -78,7 +106,7 @@ export function QuizResultExplanation({
 
                   {(aiFeedback?.[q.id] ?? q.explanation) && (
                     <div className="border-t-2 border-black pt-3">
-                      <Text as="p" className="font-medium text-sm whitespace-pre-wrap">
+                      <Text as="p" className="font-medium text-base whitespace-pre-wrap">
                         <span className="font-bold">Pembahasan: </span>
                         {aiFeedback?.[q.id] ?? q.explanation}
                       </Text>

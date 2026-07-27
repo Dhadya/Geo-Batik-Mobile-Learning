@@ -1,21 +1,26 @@
 import { handleAuthError } from "@/lib/api/auth-error"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { toast } from "sonner"
 import { useAnswerStore, emptyTab } from "../store/answerStore"
 import { getModuleTab } from "../data"
 import { evaluateSection } from "../lib/evaluateSection"
 import { persistSectionAttempt } from "../lib/persistSectionAttempt"
 import { triggerTabUnlockIfComplete } from "../lib/progressSync"
+import type { FieldColor } from "../lib/validation"
 import type { SectionItem, SectionBlock } from "../types"
 
 type SectionName = "percobaan" | "pengamatan" | "penyimpulan"
 
 /** Check whether all fields for a set of items are filled. */
 function isSectionFilled(items: SectionItem[], fields: Record<string, Record<string, string>>): boolean {
+  const hasPilihanRefleksi = items.some((item) => item.type === "pilihan_refleksi")
   return items.every((item) => {
     const f = fields[String(item.id)] ?? {}
     if (item.type === "matriks") return f.a !== "" && f.a !== undefined && f.b !== "" && f.b !== undefined
-    if (item.type === "koordinat") return f.x !== "" && f.x !== undefined && f.y !== "" && f.y !== undefined
+    if (item.type === "koordinat") {
+      if (hasPilihanRefleksi) return true
+      return f.x !== "" && f.x !== undefined && f.y !== "" && f.y !== undefined
+    }
     if (item.type === "uraian") {
       if (item.id === 11) return (f.a_val ?? "").trim() !== "" && (f.b_val ?? "").trim() !== ""
       return (f.text ?? "").trim() !== ""
@@ -62,7 +67,8 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const aiFeedback = sectionAnswers?.aiFeedback
 
   const [errors, setErrors_] = useState<Record<string, string>>({})
-  const submittingRef = useRef(false)
+  const [fieldColors, setFieldColors_] = useState<Record<string, FieldColor>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Derive evaluation state directly from the persisted store state
   const storedAttempt = sectionAnswers?.attempt ?? 1
@@ -125,15 +131,28 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     useAnswerStore.getState().setSectionStatus(slug, tab, section, "unsubmitted", 2)
     boundSetChecked(false)
     setErrors_({})
+    setFieldColors_({})
   }, [slug, tab, section, boundSetChecked])
 
   const handleSubmit = useCallback(async () => {
-    if (isLocked || submittingRef.current) return
-    submittingRef.current = true
+    if (isLocked || isSubmitting) return
+    setIsSubmitting(true)
 
     try {
-      const result = await evaluateSection(slug, tab, section, items, fields, attempt)
+      // Filter out placeholder koordinat items when pilihan_refleksi exists
+      // (they are validated as part of pilihan_refleksi, not standalone)
+      const hasPilihanRefleksi = items.some((item) => item.type === "pilihan_refleksi")
+      const evaluationItems = hasPilihanRefleksi
+        ? items.filter((item) => item.type !== "koordinat")
+        : items
+      const result = await evaluateSection(slug, tab, section, evaluationItems, fields, attempt)
       setErrors_(result.errors)
+      // Orange for wrong answers on attempt 1 (still has a chance); red for attempt 2 (final)
+      const adjusted: Record<string, FieldColor> = {}
+      for (const [key, color] of Object.entries(result.fieldColors)) {
+        adjusted[key] = (attempt === 1 && color === "red") ? "orange" : color
+      }
+      setFieldColors_(adjusted)
       boundSetAIFeedback(result.feedback)
 
       useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
@@ -172,19 +191,21 @@ export function useSection(slug: string, tab: string, section: SectionName) {
       if (e instanceof Error) handleAuthError(e)
       throw e
     } finally {
-      submittingRef.current = false
+      setIsSubmitting(false)
     }
-  }, [attempt, isLocked, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
+  }, [attempt, isLocked, isSubmitting, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
 
   return {
     items,
     fields,
     errors: isChecked ? errors : {},
+    fieldColors: isChecked ? fieldColors : {},
     isChecked,
     isFilled,
     aiFeedback,
     attempt,
     isLocked,
+    isSubmitting,
     showCobaLagi,
     isCorrectEvaluation,
     handleCobaLagi,

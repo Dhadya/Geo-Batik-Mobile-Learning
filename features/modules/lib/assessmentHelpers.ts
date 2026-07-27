@@ -45,21 +45,32 @@ export function toSectionItems(qs: AssessmentQuestion[]): PilihanGandaItem[] {
   }))
 }
 
-/** Compute local validation errors for display. */
+/** Compute local validation errors for display. Returns error message keyed by question id. */
 export function computeErrors(
   sel: (number | null)[],
   qs: AssessmentQuestion[],
-): Record<string, boolean> {
-  const errs: Record<string, boolean> = {}
+): Record<string, string> {
+  const errs: Record<string, string> = {}
   qs.forEach((q, qi) => {
     if (q.multiSelect && q.correctIndices) {
       const bitmap = Number(sel[qi] ?? 0)
-      const correct =
-        q.correctIndices.every((ci: number) => bitmap & (1 << ci)) &&
-        q.correctIndices.length === countBits(bitmap)
-      if (!correct) errs[`${q.id}`] = true
+      const selected: number[] = []
+      let b = bitmap
+      let idx = 0
+      while (b) {
+        if (b & 1) selected.push(idx)
+        b >>= 1
+        idx++
+      }
+      const allCorrectSelected = q.correctIndices.every((ci: number) => selected.includes(ci))
+      const noExtra = selected.length === q.correctIndices.length
+      if (!allCorrectSelected) {
+        errs[`${q.id}`] = "Jawaban kurang lengkap, ada opsi lain yang lebih tepat"
+      } else if (!noExtra) {
+        errs[`${q.id}`] = "Ada opsi yang dipilih tidak tepat, periksa kembali pilihanmu"
+      }
     } else if (sel[qi] !== q.correctIndex) {
-      errs[`${q.id}`] = true
+      errs[`${q.id}`] = "Jawaban kurang tepat"
     }
   })
   return errs

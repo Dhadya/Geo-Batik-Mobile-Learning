@@ -23,6 +23,12 @@ export async function POST(request: NextRequest) {
 
     try {
       const result = await evaluateSection(parsed.data as unknown as EvaluateSectionInput);
+      console.log(
+        `[evaluate-section] module=${parsed.data.module} tab=${parsed.data.tab}`,
+        `sectionType=${parsed.data.sectionType} attempt=${parsed.data.attempt}`,
+        `score=${result.score} isCorrect=${result.isCorrect}`,
+        `items=${parsed.data.items?.length ?? 0} answerKeys=${Object.keys(parsed.data.answers ?? {}).length}`,
+      );
       return NextResponse.json({ ok: true, data: result });
     } finally {
       clearTimeout(timeoutId);

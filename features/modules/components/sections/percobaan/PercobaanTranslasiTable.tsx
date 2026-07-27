@@ -3,12 +3,15 @@
 import { Input } from "@/components/retroui/Input"
 import { CoordStack } from "../../shared/CoordStack"
 import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
+import type { FieldColor } from "@/features/modules/lib/validation"
 import type { MatriksItem, KoordinatItem, SectionItem } from "@/features/modules/types"
 
 interface PercobaanTranslasiTableProps {
   items: SectionItem[]
   fields: Record<string, Record<string, string>>
   errors: Record<string, string>
+  fieldColors: Record<string, FieldColor>
   setField: (itemId: string, fieldKey: string, value: string) => void
   /** Whether to prefix bayangan labels with A'/B'/C'/D' (used for bangun tab). */
   showPointLetters: boolean
@@ -19,6 +22,7 @@ export function PercobaanTranslasiTable({
   items,
   fields,
   errors,
+  fieldColors,
   setField,
   showPointLetters,
 }: PercobaanTranslasiTableProps) {
@@ -45,6 +49,8 @@ export function PercobaanTranslasiTable({
                       b={fields[String(m.id)]?.b ?? ""}
                       aError={errors[`${m.id}_a`]}
                       bError={errors[`${m.id}_b`]}
+                      aColor={fieldColors[`${m.id}_a`]}
+                      bColor={fieldColors[`${m.id}_b`]}
                       onAChange={(val) => setField(String(m.id), "a", val)}
                       onBChange={(val) => setField(String(m.id), "b", val)}
                     />
@@ -60,6 +66,7 @@ export function PercobaanTranslasiTable({
               const match = bayanganVal.match(/\((-?\d+),\s*(-?\d+)\)/)
               const bx = match?.[1] ?? ""
               const by = match?.[2] ?? ""
+              const coordColor = fieldColors[`${k.id}_coord`]
 
               return (
                 <div key={k.id} className="grid grid-cols-3 items-center py-2 md:py-3 text-center">
@@ -82,7 +89,7 @@ export function PercobaanTranslasiTable({
                       value={fields[String(k.id)]?.x ?? ""}
                       onKeyDown={allowOnlyNumbers}
                       onChange={(e) => setField(String(k.id), "x", e.target.value)}
-                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${errors[`${k.id}_coord`] ? "border-destructive" : "border-black"}`}
+                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor, !!errors[`${k.id}_coord`])}`}
                     />
                     <span className="font-bold text-xs md:text-sm">,</span>
                     <Input
@@ -92,7 +99,7 @@ export function PercobaanTranslasiTable({
                       value={fields[String(k.id)]?.y ?? ""}
                       onKeyDown={allowOnlyNumbers}
                       onChange={(e) => setField(String(k.id), "y", e.target.value)}
-                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${errors[`${k.id}_coord`] ? "border-destructive" : "border-black"}`}
+                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor, !!errors[`${k.id}_coord`])}`}
                     />
                     <span className="font-bold text-xs md:text-sm">)</span>
                   </div>

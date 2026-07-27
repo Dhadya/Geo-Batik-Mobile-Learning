@@ -2,18 +2,21 @@
 
 import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
+import type { FieldColor } from "@/features/modules/lib/validation"
 import type { UraianItem } from "@/features/modules/types"
 
 interface PercobaanUraianListProps {
   items: UraianItem[]
   fields: Record<string, Record<string, string>>
   errors: Record<string, string>
+  fieldColors: Record<string, FieldColor>
   isChecked: boolean
   setField: (itemId: string, fieldKey: string, value: string) => void
 }
 
 /** Renders a bullet list of uraian (free-text) items with validation. */
-export function PercobaanUraianList({ items, fields, errors, isChecked, setField }: PercobaanUraianListProps) {
+export function PercobaanUraianList({ items, fields, errors, fieldColors, isChecked, setField }: PercobaanUraianListProps) {
   if (items.length === 0) return null
 
   return (
@@ -21,6 +24,7 @@ export function PercobaanUraianList({ items, fields, errors, isChecked, setField
       {items.map((u) => {
         const val = fields[String(u.id)]?.text ?? ""
         const err = errors[`${u.id}_text`]
+        const color = fieldColors[`${u.id}_text`]
 
         return (
           <div key={u.id} className="flex gap-1.5 md:gap-2">
@@ -35,7 +39,7 @@ export function PercobaanUraianList({ items, fields, errors, isChecked, setField
                 disabled={isChecked}
                 rows={2}
                 placeholder="Tuliskan jawabanmu..."
-                className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${err ? "border-destructive" : ""}`}
+                className={`border-4 font-medium resize-none text-xs md:text-sm text-black ${fieldColorClasses(color, !!err)}`}
               />
               {err && <Text className="text-destructive text-[10px] md:text-xs font-medium">{err}</Text>}
             </div>

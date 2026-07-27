@@ -3,6 +3,8 @@
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { getReflectionLabel } from "./conclusionHelpers"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
+import type { FieldColor } from "@/features/modules/lib/validation"
 
 interface BayanganTableRendererProps {
   slug: string
@@ -10,6 +12,7 @@ interface BayanganTableRendererProps {
   fields: Record<string, Record<string, string>>
   errors: Record<string, string>
   isChecked: boolean
+  fieldColors: Record<string, FieldColor>
   setField: (id: string, subKey: string, value: string) => void
 }
 
@@ -20,10 +23,12 @@ export function BayanganTableRenderer({
   fields,
   errors,
   isChecked,
+  fieldColors,
   setField,
 }: BayanganTableRendererProps) {
   const val = fields["8"]?.text ?? ""
   const err = errors["8_text"]
+  const textColor = fieldColors["8_text"]
   const reflectLabel = getReflectionLabel(tab)
 
   return (
@@ -86,7 +91,7 @@ export function BayanganTableRenderer({
                 onChange={(e) => setField("8", "text", e.target.value)}
                 disabled={isChecked}
                 placeholder="..., ..."
-                className={`w-16 md:w-20 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${err ? "border-destructive" : "border-black"}`}
+                className={`w-16 md:w-20 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(textColor, !!err)}`}
               />
               <span className="text-xs md:text-sm font-bold select-none">)</span>
             </div>

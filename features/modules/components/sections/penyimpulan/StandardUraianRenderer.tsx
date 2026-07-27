@@ -2,12 +2,15 @@
 
 import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
+import type { FieldColor } from "@/features/modules/lib/validation"
 import type { UraianItem } from "../../../types"
 
 interface StandardUraianRendererProps {
   item: UraianItem
   fields: Record<string, Record<string, string>>
   errors: Record<string, string>
+  fieldColors: Record<string, FieldColor>
   isChecked: boolean
   setField: (id: string, subKey: string, value: string) => void
 }
@@ -17,11 +20,13 @@ export function StandardUraianRenderer({
   item,
   fields,
   errors,
+  fieldColors,
   isChecked,
   setField,
 }: StandardUraianRendererProps) {
   const val = fields[String(item.id)]?.text ?? ""
   const err = errors[`${item.id}_text`]
+  const color = fieldColors[`${item.id}_text`]
 
   return (
     <div className="flex gap-1.5 md:gap-2">
@@ -36,7 +41,7 @@ export function StandardUraianRenderer({
           disabled={isChecked}
           rows={2}
           placeholder="Tuliskan jawabanmu..."
-          className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${err ? "border-destructive" : ""}`}
+          className={`border-4 font-medium resize-none text-xs md:text-sm text-black ${fieldColorClasses(color, !!err)}`}
         />
         {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}
       </div>

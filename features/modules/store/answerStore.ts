@@ -211,6 +211,8 @@ export const useAnswerStore = create<AnswerStore>()(
       setSectionScore: (slug, tab, section, score) => {
         const id = `${slug}-${tab}`
         const current = get().answers[id] ?? emptyTab(slug, tab)
+        const existing = (current[section] as SectionAnswers).score
+        const highest = score != null && existing != null ? Math.max(score, existing) : (score ?? existing)
         set({
           answers: {
             ...get().answers,
@@ -218,7 +220,7 @@ export const useAnswerStore = create<AnswerStore>()(
               ...current,
               [section]: {
                 ...current[section] as SectionAnswers,
-                score,
+                score: highest,
               },
             },
           },
@@ -228,12 +230,14 @@ export const useAnswerStore = create<AnswerStore>()(
       setCekPemahamanScore: (slug, tab, score) => {
         const id = `${slug}-${tab}`
         const current = get().answers[id] ?? emptyTab(slug, tab)
+        const existing = current.cekPemahaman.score
+        const highest = score != null && existing != null ? Math.max(score, existing) : (score ?? existing)
         set({
           answers: {
             ...get().answers,
             [id]: {
               ...current,
-              cekPemahaman: { ...current.cekPemahaman, score },
+              cekPemahaman: { ...current.cekPemahaman, score: highest },
             },
           },
         })
@@ -242,7 +246,6 @@ export const useAnswerStore = create<AnswerStore>()(
       setSectionStatus: (slug, tab, section, status, attempt) => {
         const id = `${slug}-${tab}`
         const current = get().answers[id] ?? emptyTab(slug, tab)
-
         set({
           answers: {
             ...get().answers,
