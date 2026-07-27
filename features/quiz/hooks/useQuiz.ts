@@ -27,6 +27,9 @@ export function useQuiz(slug: string, nomor: number) {
   const allAnswered = total > 0 && answeredCount >= total
   const isLast = nomor === total
   const isFirst = nomor === 1
+  const answeredIds = packageQuestions
+    .map((q) => q.id)
+    .filter((id) => storeAnswers[id] !== undefined)
 
   return {
     quiz,
@@ -38,6 +41,7 @@ export function useQuiz(slug: string, nomor: number) {
     isLast,
     isFirst,
     answers: storeAnswers,
+    answeredIds,
     selectAnswer,
   }
 }

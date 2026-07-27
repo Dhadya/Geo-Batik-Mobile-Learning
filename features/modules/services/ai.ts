@@ -311,13 +311,18 @@ const PEMBAHASAN_TIMEOUT_MS = 30000;
 
 /** Build prompt for pembahasan generation. */
 function buildPembahasanPrompt(
-  questions: { id: number; question: string; options: string[]; correctIndex: number }[],
+  questions: { id: number; question: string; options: string[]; correctIndex: number; explanation: string }[],
   answers: Record<number, number>,
 ): string {
   const lines = questions.map((q) => {
     const userAns = answers[q.id];
     const isCorrect = userAns === q.correctIndex;
-    return `Soal ${q.id}: ${q.question}\nOpsi: ${q.options.join(" | ")}\nJawaban benar: ${q.options[q.correctIndex]} (opsi ${q.correctIndex})\nJawaban siswa: ${userAns != null ? q.options[userAns] ?? "Tidak dijawab" : "Tidak dijawab"}\nHasil: ${isCorrect ? "BENAR" : "SALAH"}`;
+    return `Soal ${q.id}: ${q.question}
+Opsi: ${q.options.map((o, i) => `${i}. ${o}`).join(" | ")}
+KUNCI JAWABAN: opsi ${q.correctIndex} (${q.options[q.correctIndex]})
+Penjelasan referensi: ${q.explanation}
+Jawaban siswa: ${userAns != null ? q.options[userAns] ?? "Tidak dijawab" : "Tidak dijawab"}
+Hasil: ${isCorrect ? "BENAR" : "SALAH"}`;
   }).join("\n\n");
 
   return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
@@ -326,13 +331,19 @@ Seorang siswa telah menyelesaikan kuis dengan hasil sebagai berikut:
 
 ${lines}
 
-Tugasmu: Berikan feedback/pembahasan yang mendalam untuk SETIAP soal, fokus pada:
-• Jika jawaban benar: berikan konfirmasi dan penguatan konsep
-• Jika jawaban salah: jelaskan langkah demi langkah penyelesaian yang benar, dan tunjukkan di mana letak kesalahan siswa
-• Gunakan bahasa Indonesia yang sederhana dan mudah dipahami
-• Berikan semangat untuk terus belajar
+ATURAN PENTING:
+- KUNCI JAWABAN yang tercantum di atas adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
+- Feedback harus berfokus pada membantu siswa memahami konsep, bukan mengevaluasi soal atau kunci jawaban.
+- DILARANG menggunakan karakter * (asterisk) dan — (em dash) dalam feedback.
+- Gunakan bahasa Indonesia yang sederhana dan mudah dipahami siswa SMP.
 
-Keluarkan JSON SAJA (tanpa markdown) dengan format array：
+Tugasmu: Berikan feedback/pembahasan untuk SETIAP soal:
+- Jika jawaban benar: berikan konfirmasi singkat dan penguatan konsep (1-2 kalimat)
+- Jika jawaban salah: jelaskan langkah demi langkah penyelesaian yang benar, dan tunjukkan di mana letak kesalahan siswa
+- JANGAN beri pujian berlebihan, motivasi, atau kalimat penyemangat. Feedback harus to the point.
+- Jangan menyebut nomor soal dalam feedback.
+
+Keluarkan JSON SAJA (tanpa markdown) dengan format array:
 [
   {
     "questionId": number,

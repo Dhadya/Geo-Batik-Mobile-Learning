@@ -40,14 +40,14 @@ export function AnswerButton({
     <Button
       variant={isSelected ? "default" : "outline"}
       size="lg"
-      className="w-full justify-start gap-3 p-4 md:p-5 text-left font-bold text-base md:text-lg relative"
+      className="w-full justify-start gap-3 p-4 md:p-5 text-left font-bold text-sm md:text-base lg:text-lg overflow-hidden break-words relative"
       onClick={onSelect}
       disabled={disabled}
     >
-      <span className="w-8 h-8 md:w-10 md:h-10 border-4 border-black bg-foreground text-background flex items-center justify-center text-sm md:text-base shrink-0">
+      <span className="w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 border-4 border-black bg-foreground text-background flex items-center justify-center text-xs md:text-sm lg:text-base shrink-0">
         {LABELS[index]}
       </span>
-      <span className="grow">
+      <span className="grow min-w-0 break-words">
         {matrix ? <MatrixInline matrix={matrix} /> : text}
       </span>
       {isSelected && (

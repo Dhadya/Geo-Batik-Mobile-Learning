@@ -47,6 +47,7 @@ export function KuisSoalClient({
     isLast,
     isFirst,
     answers,
+    answeredIds,
     selectAnswer,
   } = useQuiz(slug, nomor)
 
@@ -119,12 +120,6 @@ export function KuisSoalClient({
       </div>
     )
   }
-
-  const answeredIds = total > 0
-    ? Array.from({ length: total }, (_, i) => i + 1).filter(
-        (n) => answers[n] !== undefined,
-      )
-    : []
 
   const label = MODULE_LABELS[slug] ?? slug
 
