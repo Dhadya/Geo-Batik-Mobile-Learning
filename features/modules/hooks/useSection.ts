@@ -6,6 +6,7 @@ import { getModuleTab } from "../data"
 import { evaluateSection } from "../lib/evaluateSection"
 import { persistSectionAttempt } from "../lib/persistSectionAttempt"
 import { triggerTabUnlockIfComplete } from "../lib/progressSync"
+import type { FieldColor } from "../lib/validation"
 import type { SectionItem, SectionBlock } from "../types"
 
 type SectionName = "percobaan" | "pengamatan" | "penyimpulan"
@@ -66,6 +67,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const aiFeedback = sectionAnswers?.aiFeedback
 
   const [errors, setErrors_] = useState<Record<string, string>>({})
+  const [fieldColors, setFieldColors_] = useState<Record<string, FieldColor>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Derive evaluation state directly from the persisted store state
@@ -129,6 +131,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     useAnswerStore.getState().setSectionStatus(slug, tab, section, "unsubmitted", 2)
     boundSetChecked(false)
     setErrors_({})
+    setFieldColors_({})
   }, [slug, tab, section, boundSetChecked])
 
   const handleSubmit = useCallback(async () => {
@@ -138,6 +141,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     try {
       const result = await evaluateSection(slug, tab, section, items, fields, attempt)
       setErrors_(result.errors)
+      setFieldColors_(result.fieldColors)
       boundSetAIFeedback(result.feedback)
 
       useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
@@ -184,6 +188,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     items,
     fields,
     errors: isChecked ? errors : {},
+    fieldColors: isChecked ? fieldColors : {},
     isChecked,
     isFilled,
     aiFeedback,

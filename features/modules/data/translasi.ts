@@ -401,7 +401,9 @@ export const translasiTabs: ModuleTab[] = [
             {
               id: 10,
               type: "pilihan_ganda",
-              question: "Bagaimana jika ditranslasikan oleh (0, 0), apakah titik potong sumbu x dan sumbu y berubah?",
+              question: "Bagaimana jika ditranslasikan oleh",
+              questionMatrix: "0,0",
+              questionSuffix: ", apakah titik potong sumbu x dan sumbu y berubah?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
             },

@@ -157,9 +157,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6 mt-4 md:mt-6">
       {/* Section header */}
       <div className="flex items-center justify-start gap-2 mb-4 md:mb-6">
-        <div className="w-6 h-6 md:w-8 md:h-8 border-3 border-black bg-white flex items-center justify-center shrink-0">
-          <MaterialIcon name="check_circle" className="size-3 md:size-4" />
-        </div>
+        <MaterialIcon name="check_circle" className="size-5 md:size-6" />
         <Text as="h2" className="text-base md:text-lg font-black uppercase">
           Cek Pemahaman
         </Text>

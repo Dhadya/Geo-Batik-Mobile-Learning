@@ -10,9 +10,13 @@ import type {
   ChecklistTableItem,
 } from "../types"
 
+/** Per-field color status after checking answers. */
+export type FieldColor = "green" | "red" | null
+
 export interface ValidationResult {
   isCorrect: boolean
   errors: Record<string, string>
+  fieldColors: Record<string, FieldColor>
   summary: string
   correctCount: number
   totalItems: number
@@ -25,6 +29,7 @@ export function validateSection(
   selections?: (number | null)[],
 ): ValidationResult {
   const errors: Record<string, string> = {}
+  const fieldColors: Record<string, FieldColor> = {}
   let correctCount = 0
   const hasPilihanRefleksi = items.some((item) => item.type === "pilihan_refleksi")
 
@@ -37,9 +42,13 @@ export function validateSection(
         const m = item as MatriksItem
         const aVal = Number(itemAnswers.a)
         const bVal = Number(itemAnswers.b)
-        if (aVal !== m.answer.a) errors[`${item.id}_a`] = "Komponen matriks a belum sesuai — periksa kembali vektor translasi dari soal"
-        if (bVal !== m.answer.b) errors[`${item.id}_b`] = "Komponen matriks b belum sesuai — periksa kembali vektor translasi dari soal"
-        if (aVal === m.answer.a && bVal === m.answer.b) correctCount++
+        const aOk = aVal === m.answer.a
+        const bOk = bVal === m.answer.b
+        fieldColors[`${item.id}_a`] = aOk ? "green" : "red"
+        fieldColors[`${item.id}_b`] = bOk ? "green" : "red"
+        if (!aOk) errors[`${item.id}_a`] = "Komponen matriks a belum sesuai — periksa kembali vektor translasi dari soal"
+        if (!bOk) errors[`${item.id}_b`] = "Komponen matriks b belum sesuai — periksa kembali vektor translasi dari soal"
+        if (aOk && bOk) correctCount++
         break
       }
       case "koordinat": {
@@ -47,7 +56,9 @@ export function validateSection(
         const k = item as KoordinatItem
         const xVal = Number(itemAnswers.x)
         const yVal = Number(itemAnswers.y)
-        if (xVal !== k.answer.x || yVal !== k.answer.y) {
+        const coordOk = xVal === k.answer.x && yVal === k.answer.y
+        fieldColors[`${item.id}_coord`] = coordOk ? "green" : "red"
+        if (!coordOk) {
           errors[`${item.id}_coord`] = "Koordinat titik belum sesuai — pastikan x dan y dihitung berdasarkan vektor translasi"
         } else {
           correctCount++
@@ -65,6 +76,7 @@ export function validateSection(
           if (normUser === normExpected) return true
           return normExpected.split(/[.,;!?]+/).some((p) => p.trim() && normUser.includes(p))
         })
+        fieldColors[`${item.id}_text`] = userAns && isCorrect ? "green" : "red"
         if (!userAns || !isCorrect) {
           errors[`${item.id}_text`] = "Jawaban uraian kurang tepat — coba periksa langkah penyelesaian dan pastikan sesuai dengan format yang diminta"
         } else {
@@ -74,15 +86,16 @@ export function validateSection(
       }
       case "memasangkan": {
         const m = item as MemasangkanItem
-        const allCorrect = m.leftItems.every(
-          (l) => itemAnswers[l.id] === m.correctMatches[l.id],
-        )
+        let allMatch = true
         for (const [leftId, expectedRightId] of Object.entries(m.correctMatches)) {
-          if (itemAnswers[leftId] !== expectedRightId) {
+          const ok = itemAnswers[leftId] === expectedRightId
+          fieldColors[`${item.id}_${leftId}`] = ok ? "green" : "red"
+          if (!ok) {
             errors[`${item.id}_${leftId}`] = "Pasangan tidak sesuai — coba hubungkan kembali setiap pasangan berdasarkan konsep yang telah dipelajari"
+            allMatch = false
           }
         }
-        if (allCorrect) correctCount++
+        if (allMatch) correctCount++
         break
       }
       case "pilihan_ganda": {
@@ -92,6 +105,7 @@ export function validateSection(
           const selected = selectedStr ? selectedStr.split(",").map(Number) : []
           const correct = selected.length === pg.correctIndices.length &&
             pg.correctIndices.every((v) => selected.includes(v))
+          fieldColors[`${pg.id}_selection`] = correct ? "green" : "red"
           if (correct) {
             correctCount++
           } else {
@@ -99,7 +113,9 @@ export function validateSection(
           }
         } else if (selections !== undefined) {
           const idx = selections[i] ?? -1
-          if (idx === pg.correctIndex) {
+          const ok = idx === pg.correctIndex
+          fieldColors[`${pg.id}_selection`] = ok ? "green" : "red"
+          if (ok) {
             correctCount++
           } else {
             errors[`${pg.id}_selection`] = "Pilihan yang dipilih tidak sesuai jawaban benar — coba perhatikan kembali pertanyaan dengan seksama"
@@ -108,7 +124,9 @@ export function validateSection(
           const idx = fields[String(pg.id)]?.selected !== undefined
             ? Number(fields[String(pg.id)].selected)
             : -1
-          if (idx === pg.correctIndex) {
+          const ok = idx === pg.correctIndex
+          fieldColors[`${pg.id}_selection`] = ok ? "green" : "red"
+          if (ok) {
             correctCount++
           } else {
             errors[`${pg.id}_selection`] = "Jawaban belum tepat — pastikan opsi yang dipilih benar berdasarkan materi yang telah dipelajari"
@@ -122,6 +140,7 @@ export function validateSection(
         const expectedOrder = u.items.map((_, i) => i)
         const isCorrect = userOrder.length === expectedOrder.length &&
           userOrder.every((val, idx) => val === expectedOrder[idx])
+        fieldColors[`${item.id}_order`] = isCorrect ? "green" : "red"
         if (isCorrect) {
           correctCount++
         } else {
@@ -145,7 +164,9 @@ export function validateSection(
         for (let idx = 0; idx < correctAnswers.length; idx++) {
           const xVal = Number(itemAnswers[`x${idx}`])
           const yVal = Number(itemAnswers[`y${idx}`])
-          if (xVal !== correctAnswers[idx].x || yVal !== correctAnswers[idx].y) {
+          const ok = xVal === correctAnswers[idx].x && yVal === correctAnswers[idx].y
+          fieldColors[`${item.id}_coord${idx}`] = ok ? "green" : "red"
+          if (!ok) {
             errors[`${item.id}_coord${idx}`] = "Koordinat bayangan belum sesuai — hitung kembali berdasarkan jenis refleksi yang dipilih"
             allCorrect = false
           }
@@ -159,7 +180,9 @@ export function validateSection(
         for (let idx = 0; idx < ct.statements.length; idx++) {
           const userValue = itemAnswers[`statement_${idx}`] ?? ""
           const correctValue = ct.correctAnswers[idx] ? "ya" : "tidak"
-          if (userValue !== correctValue) {
+          const ok = userValue === correctValue
+          fieldColors[`${item.id}_checklist_${idx}`] = ok ? "green" : "red"
+          if (!ok) {
             errors[`${item.id}_checklist`] = "Ada jawaban yang belum sesuai — perhatikan setiap pernyataan dengan cermat dan bandingkan dengan hasil pengamatan"
             allCorrect = false
             break
@@ -174,6 +197,7 @@ export function validateSection(
   return {
     isCorrect: Object.keys(errors).length === 0,
     errors,
+    fieldColors,
     correctCount,
     totalItems: items.length,
     summary:

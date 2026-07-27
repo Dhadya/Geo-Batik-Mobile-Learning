@@ -35,9 +35,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
       <div className="flex items-center gap-2 md:gap-4 mb-3 md:mb-4">
-        <div className="w-6 h-6 md:w-8 md:h-8 border-3 border-black bg-white flex items-center justify-center shrink-0">
-          <MaterialIcon className="size-3 md:size-4" name="lightbulb" />
-        </div>
+        <MaterialIcon className="size-5 md:size-6" name="lightbulb" />
         <Text as="h2" className="text-base md:text-lg font-black uppercase">
           Penyimpulan
         </Text>

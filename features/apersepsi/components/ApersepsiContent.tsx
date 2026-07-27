@@ -1,5 +1,4 @@
 import type { ReactNode } from "react"
-import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 /** Parse **bold** markers into <strong> elements */
 export function parseBold(text: string): ReactNode[] {

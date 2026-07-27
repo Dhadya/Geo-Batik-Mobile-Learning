@@ -1,6 +1,7 @@
 import { handleAuthError } from "@/lib/api/auth-error"
 import { toast } from "sonner"
 import { validateSection } from "./validation"
+import type { FieldColor } from "./validation"
 import type { SectionItem } from "../types"
 
 /**
@@ -20,6 +21,7 @@ export async function evaluateSection(
   score: number | null
   feedback: string
   errors: Record<string, string>
+  fieldColors: Record<string, FieldColor>
 }> {
   try {
     const response = await fetch("/api/ai/evaluate-section", {
@@ -43,6 +45,7 @@ export async function evaluateSection(
         ? "Jawaban kamu benar. Semua jawaban sesuai dengan kunci jawaban yang diharapkan. Pertahankan pemahamanmu dan lanjutkan ke materi selanjutnya."
         : "Jawaban kamu belum sepenuhnya tepat. Periksa kembali setiap pernyataan dan pastikan pemahamanmu tentang konsep yang sedang dipelajari. Coba bandingkan dengan hasil percobaan yang sudah kamu lakukan.",
       errors: local.errors ?? {},
+      fieldColors: local.fieldColors ?? {},
     }
   }
 }
