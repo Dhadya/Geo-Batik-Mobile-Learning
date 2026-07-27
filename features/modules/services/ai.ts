@@ -3,8 +3,34 @@ import { appError } from "@/lib/api/errors";
 import type { SectionItem } from "@/features/modules/types";
 
 const GENERATION_TIMEOUT_MS = 8000;
-const MAX_RETRIES = 1;
+const MAX_RETRIES = 2;
 const RETRY_BASE_DELAY_MS = 1000;
+
+/** Collect all available Gemini API keys from env vars (GEMINI_API_KEY_1..N, fallback to GEMINI_API_KEY comma-separated). */
+function collectApiKeys(): string[] {
+  const keys: string[] = [];
+  for (let i = 1; i <= 10; i++) {
+    const k = process.env[`GEMINI_API_KEY_${i}`];
+    if (k) keys.push(k);
+  }
+  if (keys.length === 0) {
+    const single = process.env.GEMINI_API_KEY;
+    if (single) keys.push(...single.split(",").map((s) => s.trim()).filter(Boolean));
+  }
+  return keys;
+}
+
+const apiKeys = collectApiKeys();
+let keyIndex = 0;
+
+function getCurrentKey(): string {
+  return apiKeys[keyIndex] ?? "";
+}
+
+function rotateKey(): void {
+  keyIndex = (keyIndex + 1) % apiKeys.length;
+  console.warn(`[ai] rotating to key ${keyIndex + 1}/${apiKeys.length}`);
+}
 
 /** Check if an error is a quota/rate-limit error from Gemini. */
 function isQuotaError(e: unknown): boolean {
@@ -12,7 +38,7 @@ function isQuotaError(e: unknown): boolean {
   return msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("RATE_LIMIT");
 }
 
-/** Retry a promise-returning function with exponential backoff on quota errors. */
+/** Retry a promise-returning function with exponential backoff and key rotation on any error. */
 async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
   let lastError: unknown;
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
@@ -20,9 +46,11 @@ async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
       return await fn();
     } catch (e) {
       lastError = e;
-      if (isQuotaError(e) && attempt < MAX_RETRIES - 1) {
+      if (attempt < MAX_RETRIES - 1) {
         const delay = RETRY_BASE_DELAY_MS * Math.pow(2, attempt);
-        console.warn(`[ai] ${label} quota error, retrying in ${delay}ms (attempt ${attempt + 2}/${MAX_RETRIES})`);
+        const ctx = isQuotaError(e) ? "quota" : "transient";
+        console.warn(`[ai] ${label} ${ctx} error, rotating key and retrying in ${delay}ms (attempt ${attempt + 2}/${MAX_RETRIES})`);
+        rotateKey();
         await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
@@ -122,12 +150,13 @@ Jawaban siswa:
 ${studentAnswers}
 
 ATURAN PENTING YANG HARUS DIPATUHI:
-- KUNCI JAWABAN yang tercantum di atas adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
-- Tugasmu HANYA membandingkan jawaban siswa dengan kunci jawaban. Jika cocok, maka jawaban siswa BENAR.
-- JANGAN pernah menyebut atau menulis kata "kekeliruan di kunci jawaban", "sepertinya ada kesalahan", atau sejenisnya.
-- Feedback harus berfokus pada membantu siswa, bukan mengevaluasi soal atau kunci jawaban.
-- Gunakan bahasa Indonesia yang sederhana dan sesuai tingkat SMP.
-- Jangan menyebut nomor soal dalam feedback. Gunakan poin-poin bullet saja.
+• KUNCI JAWABAN yang tercantum di atas adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
+• Tugasmu HANYA membandingkan jawaban siswa dengan kunci jawaban. Jika cocok, maka jawaban siswa BENAR.
+• JANGAN pernah menyebut atau menulis kata "kekeliruan di kunci jawaban", "sepertinya ada kesalahan", atau sejenisnya.
+• Feedback harus berfokus pada membantu siswa, bukan mengevaluasi soal atau kunci jawaban.
+• Gunakan bahasa Indonesia yang sederhana dan sesuai tingkat SMP.
+• Jangan menyebut nomor soal dalam feedback. Gunakan bullet • untuk setiap poin, jangan gunakan * atau -.  
+• DILARANG menggunakan karakter * (asterisk) dalam feedback. Selalu gunakan • untuk bullet point.
 
 `;
 
@@ -136,11 +165,12 @@ ATURAN PENTING YANG HARUS DIPATUHI:
 INSTRUKSI: PEMBAHASAN (percobaan kedua)
 Feedback ini akan dibaca siswa setelah kesempatan habis. Tujuannya agar siswa belajar dari kesalahan.
 
-- Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri pujian dan semangat
-- Jika ada yang salah: isi "isCorrect": false, "score" sesuai proporsi benar
-- Untuk setiap soal yang salah: jelaskan LANGKAH demi LANGKAH penyelesaiannya secara ringkas
-- Tunjukkan jawaban yang benar beserta cara mendapatkannya
-- Akhiri dengan semangat untuk terus belajar
+• Jika semua jawaban benar: isi "isCorrect": true, "score": 100. Feedback tetap berisi penjelasan singkat mengapa jawaban benar untuk setiap soal.
+• Jika ada yang salah: isi "isCorrect": false, "score" sesuai proporsi benar. Feedback fokus ke soal yang salah.
+• Untuk setiap soal yang salah: sebutkan jawaban benar dan rumus/cara singkat mendapatkannya
+• Untuk setiap soal yang benar: tetap sebutkan sekilas konsep yang digunakan (1 kalimat per soal)
+• JANGAN beri pujian berlebihan, motivasi, atau kalimat penyemangat. Feedback harus to the point.
+• Minimal kata pengantar seperti "Jawaban yang benar adalah...", langsung ke inti koreksi.
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
@@ -152,15 +182,15 @@ Keluarkan JSON SAJA (tanpa markdown) dengan format:
   }
 
   return `${basePrompt}
-INSTRUKSI, HINT (percobaan pertama):
+INSTRUKSI: HINT (percobaan pertama):
 Feedback ini akan dibaca siswa sebagai petunjuk sebelum mencoba lagi. JANGAN beri jawaban akhir.
 
-- Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri pujian singkat
-- Jika ada yang salah: isi "isCorrect": false
-- Berikan PETUNJUK ARAH (2-3 kalimat) yang mengarahkan siswa pada letak kekurangan
-- Sebutkan KONSEP apa yang perlu ditinjau ulang (misal: "Perhatikan lagi arah perpindahan pada sumbu x")
-- JANGAN menyebutkan jawaban akhir, angka hasil, atau langkah perhitungan
-- Bersifat membimbing, bukan mengoreksi, siswa masih punya kesempatan mencoba lagi
+• Jika semua jawaban benar: isi "isCorrect": true, "score": 100. Feedback tetap berisi penjelasan singkat mengapa jawaban benar untuk setiap soal (1 kalimat per soal)
+• Jika ada yang salah: isi "isCorrect": false
+• Berikan PETUNJUK ARAH (2-3 poin kalimat per soal salah) yang mengarahkan siswa pada letak kekurangan
+• Sebutkan KONSEP apa yang perlu ditinjau ulang, terkait soal spesifik yang salah
+• Boleh menyebutkan rumus atau cara singkat, tapi JANGAN berikan jawaban akhir atau angka hasil
+• JANGAN beri pujian, motivasi, atau kalimat pembuka basa-basi
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
@@ -221,8 +251,7 @@ export function parseAIResponse(response: string): EvaluateSectionOutput {
 export async function evaluateSection(
   input: EvaluateSectionInput,
 ): Promise<EvaluateSectionOutput> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
+  if (apiKeys.length === 0) {
     throw appError("INTERNAL_ERROR");
   }
 
@@ -236,19 +265,24 @@ export async function evaluateSection(
   }
 
   const prompt = buildPrompt(input.module, input.tab, input.sectionType, input.items, input.answers, input.attempt);
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-3.5-flash-lite",
-    safetySettings: SAFETY_SETTINGS,
-  });
 
-  let result;
-  try {
+  const generate = async () => {
+    const key = getCurrentKey();
+    const genAI = new GoogleGenerativeAI(key);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-3.5-flash-lite",
+      safetySettings: SAFETY_SETTINGS,
+    });
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("Gemini API timed out")), GENERATION_TIMEOUT_MS),
     );
+    return await Promise.race([model.generateContent(prompt), timeoutPromise]);
+  };
+
+  let result;
+  try {
     result = await withRetry(
-      () => Promise.race([model.generateContent(prompt), timeoutPromise]),
+      generate,
       `evaluateSection (${input.module}/${input.tab}/${input.sectionType})`,
     );
   } catch (e) {
@@ -287,10 +321,10 @@ Seorang siswa telah menyelesaikan kuis dengan hasil sebagai berikut:
 ${lines}
 
 Tugasmu: Berikan feedback/pembahasan yang mendalam untuk SETIAP soal, fokus pada:
-- Jika jawaban benar: berikan konfirmasi dan penguatan konsep
-- Jika jawaban salah: jelaskan langkah demi langkah penyelesaian yang benar, dan tunjukkan di mana letak kesalahan siswa
-- Gunakan bahasa Indonesia yang sederhana dan mudah dipahami
-- Berikan semangat untuk terus belajar
+• Jika jawaban benar: berikan konfirmasi dan penguatan konsep
+• Jika jawaban salah: jelaskan langkah demi langkah penyelesaian yang benar, dan tunjukkan di mana letak kesalahan siswa
+• Gunakan bahasa Indonesia yang sederhana dan mudah dipahami
+• Berikan semangat untuk terus belajar
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format array：
 [
@@ -306,26 +340,27 @@ export async function generatePembahasan(
   questions: { id: number; question: string; options: string[]; correctIndex: number; explanation: string }[],
   answers: Record<number, number>,
 ): Promise<{ questionId: number; feedback: string }[]> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
+  if (apiKeys.length === 0) {
     return questions.map((q) => ({ questionId: q.id, feedback: q.explanation }));
   }
 
   const prompt = buildPembahasanPrompt(questions, answers);
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-3.5-flash-lite",
-    safetySettings: SAFETY_SETTINGS,
-  });
 
-  try {
+  const generate = async () => {
+    const key = getCurrentKey();
+    const genAI = new GoogleGenerativeAI(key);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-3.5-flash-lite",
+      safetySettings: SAFETY_SETTINGS,
+    });
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("AI timed out")), PEMBAHASAN_TIMEOUT_MS),
     );
-    const result = await withRetry(
-      () => Promise.race([model.generateContent(prompt), timeoutPromise]),
-      "generatePembahasan",
-    );
+    return await Promise.race([model.generateContent(prompt), timeoutPromise]);
+  };
+
+  try {
+    const result = await withRetry(generate, "generatePembahasan");
     const text = result.response.text();
     if (!text) throw new Error("AI returned empty response");
 

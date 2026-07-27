@@ -32,6 +32,14 @@ export async function evaluateSection(
     if (response.status === 401) { handleAuthError(new Error("UNAUTHORIZED")); throw new Error("Unauthorized") }
     const json = await response.json()
     if (!json.ok) throw new Error(json.error?.message ?? "AI evaluation failed")
+    const aiCorrect = json.data.isCorrect
+    if (aiCorrect) {
+      return {
+        ...json.data,
+        errors: {},
+        fieldColors: {},
+      }
+    }
     const local = validateSection(items, fields, undefined)
     return {
       ...json.data,

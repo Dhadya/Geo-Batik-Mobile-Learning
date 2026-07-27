@@ -68,7 +68,7 @@ export function validateSection(
       case "uraian": {
         const u = item as UraianItem
         const userAns = (itemAnswers.text ?? "").trim()
-        const normalize = (s: string) => s.replace(/\u2212/g, "-").replace(/\s+/g, "").toLowerCase()
+        const normalize = (s: string) => s.replace(/\u2212/g, "-").replace(/[()\[\]{}]/g, "").replace(/\s+/g, "").toLowerCase()
         const allExpected = [u.answer, ...(u.acceptAnswers ?? [])]
         const isCorrect = allExpected.some((expected) => {
           const normExpected = normalize(expected)
