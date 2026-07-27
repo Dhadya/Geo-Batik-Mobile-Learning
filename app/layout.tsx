@@ -12,9 +12,23 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Batik Geometry",
-  description: "Belajar Geometri Transformasi melalui Batik",
-  icons: "/logo.png",
+  title: "GEMATRI | Gemakan Mahir Transformasi Geometri",
+  description:
+    "Platform belajar geometri transformasi untuk siswa SMP melalui eksplorasi motif Batik Nusantara. Kuasai translasi dan refleksi dengan kuis interaktif, pembahasan AI, dan visualisasi GeoGebra.",
+  keywords: [
+    "GEMATRI",
+    "transformasi geometri",
+    "translasi",
+    "refleksi",
+    "Batik",
+    "matematika SMP",
+    "geometri koordinat",
+  ],
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
 };
 
 export default function RootLayout({
@@ -24,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="id"
       className={`${spaceGrotesk.variable} h-full antialiased`}
     >
       <head>
