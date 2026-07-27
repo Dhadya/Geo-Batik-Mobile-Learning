@@ -12,10 +12,14 @@ type SectionName = "percobaan" | "pengamatan" | "penyimpulan"
 
 /** Check whether all fields for a set of items are filled. */
 function isSectionFilled(items: SectionItem[], fields: Record<string, Record<string, string>>): boolean {
+  const hasPilihanRefleksi = items.some((item) => item.type === "pilihan_refleksi")
   return items.every((item) => {
     const f = fields[String(item.id)] ?? {}
     if (item.type === "matriks") return f.a !== "" && f.a !== undefined && f.b !== "" && f.b !== undefined
-    if (item.type === "koordinat") return f.x !== "" && f.x !== undefined && f.y !== "" && f.y !== undefined
+    if (item.type === "koordinat") {
+      if (hasPilihanRefleksi) return true
+      return f.x !== "" && f.x !== undefined && f.y !== "" && f.y !== undefined
+    }
     if (item.type === "uraian") {
       if (item.id === 11) return (f.a_val ?? "").trim() !== "" && (f.b_val ?? "").trim() !== ""
       return (f.text ?? "").trim() !== ""

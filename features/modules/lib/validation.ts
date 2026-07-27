@@ -26,6 +26,7 @@ export function validateSection(
 ): ValidationResult {
   const errors: Record<string, string> = {}
   let correctCount = 0
+  const hasPilihanRefleksi = items.some((item) => item.type === "pilihan_refleksi")
 
   for (let i = 0; i < items.length; i++) {
     const item = items[i]
@@ -42,6 +43,7 @@ export function validateSection(
         break
       }
       case "koordinat": {
+        if (hasPilihanRefleksi) break
         const k = item as KoordinatItem
         const xVal = Number(itemAnswers.x)
         const yVal = Number(itemAnswers.y)

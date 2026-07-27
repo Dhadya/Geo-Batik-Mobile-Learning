@@ -23,7 +23,7 @@ export function VectorInputRenderer({
 
   return (
     <div className="flex gap-1.5 md:gap-2">
-      <span className="text-base md:text-lg shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
+      <span className="text-base md:text-lg shrink-0 w-3 md:w-4 text-right mt-2">•</span>
       <div className="grow space-y-2 md:space-y-3">
         <div className="flex items-center gap-0.5">
           <p className="text-xs md:text-sm text-black">
@@ -47,7 +47,7 @@ export function VectorInputRenderer({
               value={aVal}
               onChange={(e) => {
                 setField("11", "a_val", e.target.value)
-                              validateVector(e.target.value, bVal, setVectorErr)
+                validateVector(e.target.value, bVal, setVectorErr)
               }}
               disabled={isChecked}
               placeholder="..."
@@ -67,8 +67,8 @@ export function VectorInputRenderer({
           </div>
           <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
         </div>
-{isChecked && vectorErr && (
-              <Text className="text-destructive text-[10px] md:text-xs font-medium">{vectorErr}</Text>
+        {isChecked && vectorErr && (
+          <Text className="text-destructive text-[10px] md:text-xs font-medium">{vectorErr}</Text>
         )}
       </div>
     </div>

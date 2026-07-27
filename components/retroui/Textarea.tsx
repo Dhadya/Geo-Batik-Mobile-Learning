@@ -11,7 +11,7 @@ export function Textarea({
       placeholder={placeholder}
       rows={4}
       className={cn(
-        "px-2 py-2 w-full border-2 text-xs md:text-sm rounded shadow-md transition focus:outline-hidden focus:shadow-xs placeholder:text-muted-foreground",
+        "px-2 py-2 w-full border-2 text-xs md:text-sm rounded shadow-md transition focus:outline-hidden focus:shadow-xs placeholder:text-muted-foreground disabled:opacity-100",
         className
       )}
       {...props}

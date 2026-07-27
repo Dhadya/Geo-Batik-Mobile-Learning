@@ -294,7 +294,7 @@ export const translasiTabs: ModuleTab[] = [
               type: "pilihan_ganda",
               question: "Tentukan bayangan dari bangun berikut jika ditranslasikan sejauh",
               options: ["a", "b", "c", "d"],
-              correctIndex: 3,
+              correctIndex: 0,
               optionFormat: "image",
               imageOptions: [
                 "/questions/translasi bangun_2a.webp",
@@ -381,7 +381,7 @@ export const translasiTabs: ModuleTab[] = [
             {
               id: 7,
               type: "pilihan_ganda",
-              question: "Apakah kemiringan garis berubah?",
+              question: "Apakah kemiringan garis berubah saat ditranslasi?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
             },

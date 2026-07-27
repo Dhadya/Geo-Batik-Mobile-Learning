@@ -11,25 +11,8 @@ export function parseBold(text: string): ReactNode[] {
 /** Render a paragraph with bold markup support */
 export function RichParagraph({ text }: { text: string }) {
   return (
-    <p className="text-sm md:text-base leading-relaxed text-foreground text-justify">
+    <p className="text-base md:text-lg leading-relaxed text-foreground text-justify">
       {parseBold(text)}
     </p>
-  )
-}
-
-/** Three decorative shape stamps at the bottom of the content card */
-export function ShapeStamps() {
-  return (
-    <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
-      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_black]">
-        <MaterialIcon name="grid_view" className="text-xl md:text-2xl text-secondary" />
-      </div>
-      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_black]">
-        <MaterialIcon name="change_history" className="text-xl md:text-2xl text-tertiary" />
-      </div>
-      <div className="size-10 md:size-12 border-2 border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_black]">
-        <MaterialIcon name="circle" className="text-xl md:text-2xl text-primary" />
-      </div>
-    </div>
   )
 }
