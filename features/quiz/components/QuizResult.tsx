@@ -54,11 +54,18 @@ export function QuizResult({
 
   if (!quiz) return null
 
-  const correctCount = hasAnswers
-    ? quiz.questions.slice(0, PACKAGE_SIZE).filter((q) => answers![q.id] === q.correctIndex).length
-    : serverScore != null
-      ? Math.round((serverScore / 100) * PACKAGE_SIZE)
-      : 0
+  const correctCount = (() => {
+    if (hasAnswers) {
+      // Use actual answers (live submitted or server stored) to calculate correct count
+      return quiz.questions.slice(0, PACKAGE_SIZE).filter((q) => answers![q.id] === q.correctIndex).length
+    }
+    if (serverScore != null) {
+      // Fallback: derive from server score when no answers available
+      return Math.round((serverScore / 100) * PACKAGE_SIZE)
+    }
+    // No answers and no score available
+    return 0
+  })()
 
   const displayScore = serverScore ?? (hasAnswers ? Math.round((correctCount / PACKAGE_SIZE) * 100) : null)
 
@@ -77,7 +84,13 @@ export function QuizResult({
   }
 
   const attemptLabel = attemptNumber != null && totalAttempts != null && totalAttempts > 0
-    ? `Percobaan Ke-${attemptNumber}, ${attemptNumber === 1 ? "Nilai Akhir" : "Latihan"}`
+    ? (() => {
+        if (attemptNumber === 1) return "Percobaan Pertama"
+        if (totalAttempts === 1) return "Percobaan Pertama"
+        if (attemptNumber === totalAttempts && displayScore != null && displayScore > 0)
+          return `Percobaan Ke-${attemptNumber} (Akhir)`
+        return `Percobaan Ke-${attemptNumber} (Latihan)`
+      })()
     : undefined
 
   return (
