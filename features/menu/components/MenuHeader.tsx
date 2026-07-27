@@ -10,7 +10,7 @@ export function MenuHeader() {
       >
         Menu Utama
       </Text>
-      <p className="text-base md:text-lg font-medium">
+      <p className="text-lg md:text-xl font-medium">
         Selamat datang di GEMATRI! Jelajahi transformasi geometri melalui lensa budaya batik.
         Pilih modul di bawah ini untuk memulai pembelajaran.
       </p>

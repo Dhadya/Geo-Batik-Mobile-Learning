@@ -34,7 +34,7 @@ export const accordionItemLabels = [
 ]
 
 export const defaultToggleStates: Record<string, boolean> = {
-  "Sumbu X": true,
+  "Sumbu X": false,
   "Sumbu Y": false,
   "Kuadran": false,
   "K1": false,

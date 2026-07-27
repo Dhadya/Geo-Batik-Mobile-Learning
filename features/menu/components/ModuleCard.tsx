@@ -65,7 +65,7 @@ export function ModuleCard({
         >
           {title}
         </Text>
-        <p className="text-sm md:text-base font-semibold">{description}</p>
+        <p className="text-base md:text-lg font-semibold">{description}</p>
       </div>
 
       {/* Footer — preview image + CTA button */}
