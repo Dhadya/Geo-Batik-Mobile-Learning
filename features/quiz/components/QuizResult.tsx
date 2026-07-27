@@ -87,7 +87,7 @@ export function QuizResult({
     ? (() => {
         if (attemptNumber === 1) return "Percobaan Pertama"
         if (totalAttempts === 1) return "Percobaan Pertama"
-        if (attemptNumber === totalAttempts && displayScore != null && displayScore > 0)
+        if (attemptNumber === totalAttempts)
           return `Percobaan Ke-${attemptNumber} (Akhir)`
         return `Percobaan Ke-${attemptNumber} (Latihan)`
       })()

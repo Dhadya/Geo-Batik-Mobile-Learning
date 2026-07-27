@@ -20,7 +20,14 @@ export async function GET(
 
     const finalResult = all.find((r) => r.attemptNumber === 1) ?? null;
 
-    return NextResponse.json({ ok: true, data: { result: latest, allResults: all, finalResult } });
+    return NextResponse.json(
+      { ok: true, data: { result: latest, allResults: all, finalResult } },
+      {
+        headers: {
+          "cache-control": "no-store",
+        },
+      },
+    );
   } catch (e) {
     return handleError(e);
   }

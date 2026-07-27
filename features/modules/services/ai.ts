@@ -385,6 +385,14 @@ export async function generatePembahasan(
     const feedback: { questionId: number; feedback: string }[] = JSON.parse(cleaned);
     return feedback;
   } catch {
-    return questions.map((q) => ({ questionId: q.id, feedback: q.explanation }));
+    return questions.map((q) => {
+      const userAns = answers[q.id]
+      const isCorrect = userAns === q.correctIndex
+      let feedback = q.explanation
+      if (!isCorrect && userAns !== undefined) {
+        feedback = `${q.explanation}\n\nLangkah penyelesaian yang benar:\n1) Identifikasi jawaban yang benar berdasarkan konsep yang sesuai.\n2) Perhatikan bahwa jawaban Anda memilih opsi ke-${userAns + 1} yang tidak sesuai.\n3) Gunakan rumus atau konsep yang tepat untuk memperoleh jawaban yang benar, yaitu opsi ke-${q.correctIndex + 1}.`
+      }
+      return { questionId: q.id, feedback }
+    })
   }
 }
