@@ -21,7 +21,7 @@ interface ConclusionAreaProps {
 
 /** Penyimpulan section — renders uraian items with special layouts per item. */
 export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
-const {
+  const {
     items, fields, errors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
@@ -35,10 +35,10 @@ const {
   return (
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6">
       <div className="flex items-center gap-2 md:gap-4 mb-3 md:mb-4">
-        <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
-          <MaterialIcon className="size-4 md:size-6" name="lightbulb" />
+        <div className="w-6 h-6 md:w-8 md:h-8 border-3 border-black bg-white flex items-center justify-center shrink-0">
+          <MaterialIcon className="size-3 md:size-4" name="lightbulb" />
         </div>
-        <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
+        <Text as="h2" className="text-base md:text-lg font-black uppercase">
           Penyimpulan
         </Text>
         <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
@@ -118,7 +118,7 @@ const {
           </div>
         )}
 
-<SectionSubmitButton
+        <SectionSubmitButton
           isChecked={isChecked}
           isFilled={isFilled}
           isCorrect={isCorrectEvaluation}

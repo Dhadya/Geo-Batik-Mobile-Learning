@@ -83,7 +83,7 @@ export function SectionSubmitButton({
     <Button
       onClick={handleClick}
       disabled={isDisabled}
-      className={`w-full font-bold text-xs md:text-base py-1.5 md:py-3 uppercase shadow-[2px_2px_0_0_black] ${variantStyle}`}
+      className={`w-full font-bold text-sm md:text-base py-1 md:py-2 uppercase shadow-[2px_2px_0_0_black] ${variantStyle}`}
     >
       {isSubmitting ? (
         <div className="flex items-center justify-center gap-2">

@@ -22,7 +22,7 @@ export function QuizBreadcrumb({
 }) {
   return (
     <Breadcrumb>
-      <BreadcrumbList className="text-xs md:text-lg font-semibold text-black/70 gap-1 md:gap-2">
+      <BreadcrumbList className="text-sm md:text-base font-semibold text-black/70 gap-1 md:gap-2">
         <BreadcrumbItem>
           <BreadcrumbLink render={<Link href="/menu" />}>
             Menu
@@ -43,9 +43,9 @@ export function QuizBreadcrumb({
         <BreadcrumbSeparator />
         {path === "apersepsi" ? (
           <BreadcrumbItem>
-                <BreadcrumbPage className="text-black font-bold">
-                  Apersepsi
-                </BreadcrumbPage>
+            <BreadcrumbPage className="text-black font-bold">
+              Apersepsi
+            </BreadcrumbPage>
           </BreadcrumbItem>
         ) : path === "modul" ? (
           <>
@@ -56,9 +56,9 @@ export function QuizBreadcrumb({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-                <BreadcrumbPage className="text-black font-bold">
-                  Modul
-                </BreadcrumbPage>
+              <BreadcrumbPage className="text-black font-bold">
+                Modul
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </>
         ) : (
@@ -76,9 +76,9 @@ export function QuizBreadcrumb({
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-                <BreadcrumbPage className="text-black font-bold">
-                  Kuis
-                </BreadcrumbPage>
+              <BreadcrumbPage className="text-black font-bold">
+                Kuis
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </>
         )}

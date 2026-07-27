@@ -157,10 +157,10 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     <section className="border-4 border-black bg-white shadow-lg p-3 md:p-6 mt-4 md:mt-6">
       {/* Section header */}
       <div className="flex items-center justify-start gap-2 mb-4 md:mb-6">
-        <div className="w-8 h-8 md:w-12 md:h-12 border-3 border-black bg-white flex items-center justify-center shrink-0">
-          <MaterialIcon name="check_circle" className="size-4 md:size-6" />
+        <div className="w-6 h-6 md:w-8 md:h-8 border-3 border-black bg-white flex items-center justify-center shrink-0">
+          <MaterialIcon name="check_circle" className="size-3 md:size-4" />
         </div>
-        <Text as="h2" className="text-lg md:text-2xl font-black uppercase">
+        <Text as="h2" className="text-base md:text-lg font-black uppercase">
           Cek Pemahaman
         </Text>
         <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasInput} />
@@ -187,7 +187,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                     <div className="space-y-1 md:space-y-2">
                       <Text
                         as="p"
-                        className="text-xs md:text-base font-semibold leading-relaxed text-black"
+                        className="text-sm md:text-base font-semibold leading-relaxed text-black"
                       >
                         Perhatikan gambar berikut!
                       </Text>
@@ -204,7 +204,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                   )}
 
                   {q.questionMatrix ? (
-                    <p className="text-xs md:text-base font-semibold leading-relaxed text-black">
+                    <p className="text-sm md:text-base font-semibold leading-relaxed text-black">
                       {q.question}
                       {(() => {
                         const [top, bottom] = q.questionMatrix!.split(",")
@@ -230,7 +230,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                   ) : (
                     <Text
                       as="p"
-                      className="text-xs md:text-base font-semibold leading-relaxed text-black"
+                      className="text-sm md:text-base font-semibold leading-relaxed text-black"
                     >
                       {q.question}
                     </Text>
