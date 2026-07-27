@@ -1,12 +1,8 @@
 import { z } from "zod";
 import { getDb } from "@/lib/db";
 import { quizResults } from "@/drizzle/schema";
-import { eq, and, desc } from "drizzle-orm";
-import { appError } from "@/lib/api/errors";
+import { eq, and, desc, max } from "drizzle-orm";
 import type { ModuleSlug } from "@/features/modules/types";
-
-// PostgreSQL unique violation error code
-const UNIQUE_VIOLATION = "23505";
 
 /** Zod schema for a single quiz answer entry (single-attempt per question). */
 export const quizAnswerSchema = z.object({
@@ -31,28 +27,28 @@ export async function saveQuizResult(userId: string, module: ModuleSlug, input: 
   const parsed = submitQuizSchema.parse(input)
   const db = getDb()
 
-  try {
-    const inserted = await db
-      .insert(quizResults)
-      .values({
-        userId,
-        module,
-        attemptNumber: parsed.attemptNumber,
-        packageId: parsed.packageId,
-        answers: parsed.answers,
-        totalScore: parsed.totalScore,
-        completedAt: new Date(),
-      })
-      .returning({ id: quizResults.id, totalScore: quizResults.totalScore, attemptNumber: quizResults.attemptNumber })
+  // Compute the next attempt number server-side so it always increments correctly.
+  const [{ maxAttempt }] = await db
+    .select({ maxAttempt: max(quizResults.attemptNumber) })
+    .from(quizResults)
+    .where(and(eq(quizResults.userId, userId), eq(quizResults.module, module)))
 
-    return { id: inserted[0].id, totalScore: inserted[0].totalScore, attemptNumber: inserted[0].attemptNumber }
-  } catch (e: unknown) {
-    const code = (e as { cause?: { code?: string } })?.cause?.code ?? (e as { code?: string })?.code
-    if (code === UNIQUE_VIOLATION) {
-      throw appError("QUIZ_ALREADY_SUBMITTED")
-    }
-    throw e
-  }
+  const attemptNumber = ((maxAttempt ?? 0) + 1)
+
+  const inserted = await db
+    .insert(quizResults)
+    .values({
+      userId,
+      module,
+      attemptNumber,
+      packageId: parsed.packageId,
+      answers: parsed.answers,
+      totalScore: parsed.totalScore,
+      completedAt: new Date(),
+    })
+    .returning({ id: quizResults.id, totalScore: quizResults.totalScore, attemptNumber: quizResults.attemptNumber })
+
+  return { id: inserted[0].id, totalScore: inserted[0].totalScore, attemptNumber: inserted[0].attemptNumber }
 }
 
 /** Fetches the most recent quiz result for a module, or null if none exists. */

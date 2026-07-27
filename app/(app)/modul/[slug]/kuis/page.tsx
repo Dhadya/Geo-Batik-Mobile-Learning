@@ -98,12 +98,10 @@ export default async function KuisIntroPage(props: {
           <div className="space-y-2">
 {allResults.slice(-5).reverse().map((r) => {
                const config = getScoreConfig(r.totalScore)
-               const attemptLabel =
-                 r.attemptNumber === 1
-                   ? "Percobaan Pertama (Nilai Akhir)"
-                   : r.attemptNumber === allResults.length
-                     ? `Percobaan Ke-${r.attemptNumber} (Akhir)`
-                     : `Percobaan Ke-${r.attemptNumber} (Latihan)`
+                const attemptLabel =
+                  r.attemptNumber === 1
+                    ? "Percobaan Pertama (Nilai Akhir)"
+                    : `Percobaan Ke-${r.attemptNumber} (Latihan)`
                return (
                  <div key={r.attemptNumber} className="flex items-center justify-between border-4 border-black p-2 md:p-3">
                    <div className="flex items-center gap-3">
