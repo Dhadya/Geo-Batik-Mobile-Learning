@@ -96,36 +96,35 @@ export default async function KuisIntroPage(props: {
             Riwayat Kuis ({allResults.length})
           </Text>
           <div className="space-y-2">
-            {allResults.slice(-5).reverse().map((r) => {
-              const config = getScoreConfig(r.totalScore)
-              return (
-                <div key={r.attemptNumber} className="flex items-center justify-between border-4 border-black p-2 md:p-3">
-                  <div className="flex items-center gap-3">
-                    <span className={`inline-block size-3 md:size-4 rounded-full ${config.bgClass} border-2 border-black shrink-0`} />
-                    <span className="font-bold text-xs md:text-sm uppercase">
-                      Percobaan Ke-{r.attemptNumber}
-                    </span>
-                    <span className="font-black text-xs md:text-sm">
-                      {r.totalScore}/100
-                    </span>
-                    {r.attemptNumber === 1 && (
-                      <span className="text-[10px] md:text-xs bg-secondary text-white px-1.5 py-0.5 font-bold uppercase">
-                        Nilai Akhir
-                      </span>
-                    )}
-                  </div>
-                  <Link href={`/modul/${slug}/kuis/hasil?attempt=${r.attemptNumber}`}>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="font-bold uppercase text-xs shadow-[2px_2px_0_0_black]"
-                    >
-                      Lihat Detail
-                    </Button>
-                  </Link>
-                </div>
-              )
-            })}
+{allResults.slice(-5).reverse().map((r) => {
+               const config = getScoreConfig(r.totalScore)
+                const attemptLabel =
+                  r.attemptNumber === 1
+                    ? "Percobaan Pertama (Nilai Akhir)"
+                    : `Percobaan Ke-${r.attemptNumber} (Latihan)`
+               return (
+                 <div key={r.attemptNumber} className="flex items-center justify-between border-4 border-black p-2 md:p-3">
+                   <div className="flex items-center gap-3">
+                     <span className={`inline-block size-3 md:size-4 rounded-full ${config.bgClass} border-2 border-black shrink-0`} />
+                     <span className="font-bold text-xs md:text-sm uppercase">
+                       {attemptLabel}
+                     </span>
+                     <span className="font-black text-xs md:text-sm">
+                       {r.totalScore}/100
+                     </span>
+                   </div>
+                   <Link href={`/modul/${slug}/kuis/hasil?attempt=${r.attemptNumber}`}>
+                     <Button
+                       variant="default"
+                       size="sm"
+                       className="font-bold uppercase text-xs shadow-[2px_2px_0_0_black]"
+                     >
+                       Lihat Detail
+                     </Button>
+                   </Link>
+                 </div>
+               )
+             })}
           </div>
           {allResults.length > 5 && (
             <Text className="text-xs md:text-sm text-muted-foreground text-center pt-1">

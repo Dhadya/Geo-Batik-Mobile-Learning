@@ -31,7 +31,7 @@ export function QuizHeader({
         >
           {title}
         </Text>
-        <Text as="p" className="text-sm md:text-base mt-2 opacity-80 text-primary-foreground">
+         <Text as="p" className="text-base md:text-lg mt-2 opacity-80 text-primary-foreground">
           {description ?? `Selesaikan tantangan untuk mendapatkan badge "${badge}".`}
         </Text>
       </div>
