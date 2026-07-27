@@ -107,8 +107,22 @@ export function QuizResultExplanation({
                   {(aiFeedback?.[q.id] ?? q.explanation) && (
                     <div className="border-t-2 border-black pt-3">
                       <Text as="p" className="font-medium text-base whitespace-pre-wrap">
-                        <span className="font-bold">Pembahasan: </span>
-                        {aiFeedback?.[q.id] ?? q.explanation}
+                        {isCorrect ? (
+                          <>
+                            <span className="font-bold text-green-700">Benar! </span>
+                            {aiFeedback?.[q.id] ?? q.explanation}
+                          </>
+                        ) : isAnswered ? (
+                          <>
+                            <span className="font-bold text-red-700">Pembahasan: </span>
+                            {aiFeedback?.[q.id] ?? q.explanation}
+                          </>
+                        ) : (
+                          <>
+                            <span className="font-bold">Pembahasan: </span>
+                            {aiFeedback?.[q.id] ?? q.explanation}
+                          </>
+                        )}
                       </Text>
                     </div>
                   )}
