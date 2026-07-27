@@ -41,6 +41,6 @@ export async function persistSectionAttempt(data: {
     }
   } catch (e) {
     console.error("[persistSectionAttempt] network error", e)
-    toast.error("Gagal menyimpan jawaban — periksa koneksi internet")
+    toast.error("Gagal menyimpan jawaban, periksa koneksi internet")
   }
 }

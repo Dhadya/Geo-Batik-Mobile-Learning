@@ -2,8 +2,8 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 import { appError } from "@/lib/api/errors";
 import type { SectionItem } from "@/features/modules/types";
 
-const GENERATION_TIMEOUT_MS = 20000;
-const MAX_RETRIES = 3;
+const GENERATION_TIMEOUT_MS = 8000;
+const MAX_RETRIES = 1;
 const RETRY_BASE_DELAY_MS = 1000;
 
 /** Check if an error is a quota/rate-limit error from Gemini. */
@@ -146,13 +146,13 @@ Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
   "isCorrect": boolean,
   "score": number (0-100) atau null,
-  "feedback": "string dalam Bahasa Indonesia — berisi pembahasan lengkap per poin",
+  "feedback": "string dalam Bahasa Indonesia, berisi pembahasan lengkap per poin",
   "errors": { "fieldKey": "alasan kesalahan" }
 }`;
   }
 
   return `${basePrompt}
-INSTRUKSI — HINT (percobaan pertama):
+INSTRUKSI, HINT (percobaan pertama):
 Feedback ini akan dibaca siswa sebagai petunjuk sebelum mencoba lagi. JANGAN beri jawaban akhir.
 
 - Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri pujian singkat
@@ -160,13 +160,13 @@ Feedback ini akan dibaca siswa sebagai petunjuk sebelum mencoba lagi. JANGAN ber
 - Berikan PETUNJUK ARAH (2-3 kalimat) yang mengarahkan siswa pada letak kekurangan
 - Sebutkan KONSEP apa yang perlu ditinjau ulang (misal: "Perhatikan lagi arah perpindahan pada sumbu x")
 - JANGAN menyebutkan jawaban akhir, angka hasil, atau langkah perhitungan
-- Bersifat membimbing, bukan mengoreksi — siswa masih punya kesempatan mencoba lagi
+- Bersifat membimbing, bukan mengoreksi, siswa masih punya kesempatan mencoba lagi
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
   "isCorrect": boolean,
   "score": number (0-100) atau null,
-  "feedback": "string dalam Bahasa Indonesia — berisi hint/petunjuk, bukan pembahasan",
+  "feedback": "string dalam Bahasa Indonesia, berisi hint/petunjuk, bukan pembahasan",
   "errors": { "fieldKey": "alasan kesalahan" }
 }`;
 }
@@ -238,7 +238,7 @@ export async function evaluateSection(
   const prompt = buildPrompt(input.module, input.tab, input.sectionType, input.items, input.answers, input.attempt);
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: "gemini-3.1-flash-lite",
+    model: "gemini-3.5-flash-lite",
     safetySettings: SAFETY_SETTINGS,
   });
 
@@ -314,7 +314,7 @@ export async function generatePembahasan(
   const prompt = buildPembahasanPrompt(questions, answers);
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: "gemini-3.1-flash-lite",
+    model: "gemini-3.5-flash-lite",
     safetySettings: SAFETY_SETTINGS,
   });
 

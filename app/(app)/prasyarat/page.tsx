@@ -31,14 +31,14 @@ export default function PrasyaratPage() {
         <VideoEmbed
           label="Video Penjelasan"
           src="https://www.youtube.com/embed/pcoG-VM2sq4"
-          alt="Video — Elemen Dasar Geometri"
+          alt="Video, Elemen Dasar Geometri"
         />
       </div>
 
       {/* Interactive canvas — GeoGebra embed with concept controls */}
       <InteractiveCanvas
         materialId="n3upyysb"
-        alt="GeoGebra — Elemen Dasar Geometri"
+        alt="GeoGebra, Elemen Dasar Geometri"
       />
 
       {/* Concept cards grid */}

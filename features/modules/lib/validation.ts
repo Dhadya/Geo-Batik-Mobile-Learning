@@ -46,8 +46,8 @@ export function validateSection(
         const bOk = bVal === m.answer.b
         fieldColors[`${item.id}_a`] = aOk ? "green" : "red"
         fieldColors[`${item.id}_b`] = bOk ? "green" : "red"
-        if (!aOk) errors[`${item.id}_a`] = "Komponen matriks a belum sesuai — periksa kembali vektor translasi dari soal"
-        if (!bOk) errors[`${item.id}_b`] = "Komponen matriks b belum sesuai — periksa kembali vektor translasi dari soal"
+        if (!aOk) errors[`${item.id}_a`] = "Komponen matriks a belum sesuai, periksa kembali vektor translasi dari soal"
+        if (!bOk) errors[`${item.id}_b`] = "Komponen matriks b belum sesuai, periksa kembali vektor translasi dari soal"
         if (aOk && bOk) correctCount++
         break
       }
@@ -59,7 +59,7 @@ export function validateSection(
         const coordOk = xVal === k.answer.x && yVal === k.answer.y
         fieldColors[`${item.id}_coord`] = coordOk ? "green" : "red"
         if (!coordOk) {
-          errors[`${item.id}_coord`] = "Koordinat titik belum sesuai — pastikan x dan y dihitung berdasarkan vektor translasi"
+          errors[`${item.id}_coord`] = "Koordinat titik belum sesuai, pastikan x dan y dihitung berdasarkan vektor translasi"
         } else {
           correctCount++
         }
@@ -78,7 +78,7 @@ export function validateSection(
         })
         fieldColors[`${item.id}_text`] = userAns && isCorrect ? "green" : "red"
         if (!userAns || !isCorrect) {
-          errors[`${item.id}_text`] = "Jawaban uraian kurang tepat — coba periksa langkah penyelesaian dan pastikan sesuai dengan format yang diminta"
+          errors[`${item.id}_text`] = "Jawaban uraian kurang tepat, coba periksa langkah penyelesaian dan pastikan sesuai dengan format yang diminta"
         } else {
           correctCount++
         }
@@ -91,7 +91,7 @@ export function validateSection(
           const ok = itemAnswers[leftId] === expectedRightId
           fieldColors[`${item.id}_${leftId}`] = ok ? "green" : "red"
           if (!ok) {
-            errors[`${item.id}_${leftId}`] = "Pasangan tidak sesuai — coba hubungkan kembali setiap pasangan berdasarkan konsep yang telah dipelajari"
+            errors[`${item.id}_${leftId}`] = "Pasangan tidak sesuai, coba hubungkan kembali setiap pasangan berdasarkan konsep yang telah dipelajari"
             allMatch = false
           }
         }
@@ -109,7 +109,7 @@ export function validateSection(
           if (correct) {
             correctCount++
           } else {
-            errors[`${pg.id}_selection`] = "Pilihan ganda belum tepat — pastikan semua opsi yang dipilih sesuai dengan jawaban yang benar"
+            errors[`${pg.id}_selection`] = "Pilihan ganda belum tepat, pastikan semua opsi yang dipilih sesuai dengan jawaban yang benar"
           }
         } else if (selections !== undefined) {
           const idx = selections[i] ?? -1
@@ -118,7 +118,7 @@ export function validateSection(
           if (ok) {
             correctCount++
           } else {
-            errors[`${pg.id}_selection`] = "Pilihan yang dipilih tidak sesuai jawaban benar — coba perhatikan kembali pertanyaan dengan seksama"
+            errors[`${pg.id}_selection`] = "Pilihan yang dipilih tidak sesuai jawaban benar, coba perhatikan kembali pertanyaan dengan seksama"
           }
         } else {
           const idx = fields[String(pg.id)]?.selected !== undefined
@@ -129,7 +129,7 @@ export function validateSection(
           if (ok) {
             correctCount++
           } else {
-            errors[`${pg.id}_selection`] = "Jawaban belum tepat — pastikan opsi yang dipilih benar berdasarkan materi yang telah dipelajari"
+            errors[`${pg.id}_selection`] = "Jawaban belum tepat, pastikan opsi yang dipilih benar berdasarkan materi yang telah dipelajari"
           }
         }
         break
@@ -144,7 +144,7 @@ export function validateSection(
         if (isCorrect) {
           correctCount++
         } else {
-            errors[`${item.id}_order`] = "Urutan tidak sesuai — perhatikan urutan logis langkah-langkah berdasarkan konsep yang dipelajari"
+            errors[`${item.id}_order`] = "Urutan tidak sesuai, perhatikan urutan logis langkah-langkah berdasarkan konsep yang dipelajari"
         }
         break
       }
@@ -167,7 +167,7 @@ export function validateSection(
           const ok = xVal === correctAnswers[idx].x && yVal === correctAnswers[idx].y
           fieldColors[`${item.id}_coord${idx}`] = ok ? "green" : "red"
           if (!ok) {
-            errors[`${item.id}_coord${idx}`] = "Koordinat bayangan belum sesuai — hitung kembali berdasarkan jenis refleksi yang dipilih"
+            errors[`${item.id}_coord${idx}`] = "Koordinat bayangan belum sesuai, hitung kembali berdasarkan jenis refleksi yang dipilih"
             allCorrect = false
           }
         }
@@ -183,7 +183,7 @@ export function validateSection(
           const ok = userValue === correctValue
           fieldColors[`${item.id}_checklist_${idx}`] = ok ? "green" : "red"
           if (!ok) {
-            errors[`${item.id}_checklist`] = "Ada jawaban yang belum sesuai — perhatikan setiap pernyataan dengan cermat dan bandingkan dengan hasil pengamatan"
+            errors[`${item.id}_checklist`] = "Ada jawaban yang belum sesuai, perhatikan setiap pernyataan dengan cermat dan bandingkan dengan hasil pengamatan"
             allCorrect = false
             break
           }

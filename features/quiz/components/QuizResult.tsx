@@ -77,7 +77,7 @@ export function QuizResult({
   }
 
   const attemptLabel = attemptNumber != null && totalAttempts != null && totalAttempts > 0
-    ? `Percobaan Ke-${attemptNumber} — ${attemptNumber === 1 ? "Nilai Akhir" : "Latihan"}`
+    ? `Percobaan Ke-${attemptNumber}, ${attemptNumber === 1 ? "Nilai Akhir" : "Latihan"}`
     : undefined
 
   return (
