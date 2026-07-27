@@ -52,8 +52,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 
         <SectionFeedbackPopover
           aiFeedback={aiFeedback ?? ""}
-          isChecked={isChecked}
-          showCobaLagi={showCobaLagi}
+          isLocked={isLocked}
         />
 
         <SectionSubmitButton
@@ -133,8 +132,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
 
       <SectionFeedbackPopover
         aiFeedback={aiFeedback ?? ""}
-        isChecked={isChecked}
-        showCobaLagi={showCobaLagi}
+        isLocked={isLocked}
       />
 
       <SectionSubmitButton

@@ -88,8 +88,7 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
       {/* AI feedback banner */}
       <SectionFeedbackPopover
         aiFeedback={aiFeedback ?? ""}
-        isChecked={isChecked}
-        showCobaLagi={showCobaLagi}
+        isLocked={isLocked}
       />
 
 <SectionSubmitButton

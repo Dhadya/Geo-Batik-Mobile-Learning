@@ -48,7 +48,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     persistedStatus === "wrong_attempt1"
   )
   const [isChecked, setIsChecked] = useState(() =>
-    persistedStatus === "correct" || persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2"
+    persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
   )
   const [isCorrect, setIsCorrect] = useState<boolean | null>(() =>
     persistedStatus === "correct" ? true
@@ -297,8 +297,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       <div className="mt-4 md:mt-6">
         <SectionFeedbackPopover
           aiFeedback={aiFeedback ?? ""}
-          isChecked={isChecked}
-          showCobaLagi={showCobaLagi}
+          isLocked={isLocked}
         />
       </div>
 
@@ -317,7 +316,6 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
             setIsCorrect(null)
             setValidationErrors({})
             setShowCobaLagi(false)
-            useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, "")
             useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "unsubmitted", 2)
           }}
           requireConfirmation={slug === "translasi" && tab === "titik"}

@@ -133,7 +133,7 @@ ATURAN PENTING YANG HARUS DIPATUHI:
 
   if (attempt === 2) {
     return `${basePrompt}
-INSTRUKSI — PEMBAHASAN (percobaan kedua):
+INSTRUKSI: PEMBAHASAN (percobaan kedua)
 Feedback ini akan dibaca siswa setelah kesempatan habis. Tujuannya agar siswa belajar dari kesalahan.
 
 - Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri pujian dan semangat

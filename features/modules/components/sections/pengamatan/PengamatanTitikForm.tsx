@@ -127,8 +127,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
       {/* AI feedback popover */}
       <SectionFeedbackPopover
         aiFeedback={aiFeedback ?? ""}
-        isChecked={isChecked}
-        showCobaLagi={showCobaLagi}
+        isLocked={isLocked}
       />
 
       <SectionSubmitButton

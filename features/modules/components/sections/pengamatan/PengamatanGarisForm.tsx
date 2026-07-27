@@ -150,8 +150,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
 
       <SectionFeedbackPopover
         aiFeedback={aiFeedback ?? ""}
-        isChecked={isChecked}
-        showCobaLagi={showCobaLagi}
+        isLocked={isLocked}
       />
 
 <SectionSubmitButton

@@ -93,8 +93,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
 
       <SectionFeedbackPopover
         aiFeedback={aiFeedback ?? ""}
-        isChecked={isChecked}
-        showCobaLagi={showCobaLagi}
+        isLocked={isLocked}
       />
 
 <SectionSubmitButton

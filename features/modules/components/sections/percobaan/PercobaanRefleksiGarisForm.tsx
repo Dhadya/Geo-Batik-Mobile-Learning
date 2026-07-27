@@ -104,6 +104,11 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
         <Text className="text-destructive text-[10px] md:text-xs">{errors[`${refleksiItem.id}_selected`]}</Text>
       )}
 
+      <SectionFeedbackPopover
+        aiFeedback={aiFeedback ?? ""}
+        isLocked={isLocked}
+      />
+
       <SectionSubmitButton
         attempt={attempt}
         isChecked={isChecked}
@@ -114,12 +119,6 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
         onSubmit={handleSubmit}
         onCobaLagi={handleCobaLagi}
         isSubmitting={isSubmitting}
-      />
-
-      <SectionFeedbackPopover
-        aiFeedback={aiFeedback ?? ""}
-        isChecked={isChecked}
-        showCobaLagi={showCobaLagi}
       />
     </section>
   )

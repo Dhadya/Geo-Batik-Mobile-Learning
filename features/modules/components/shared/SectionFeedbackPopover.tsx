@@ -12,20 +12,20 @@ import {
 
 interface SectionFeedbackPopoverProps {
   aiFeedback: string
-  isChecked: boolean
-  showCobaLagi: boolean
+  isLocked: boolean
 }
 
 /** Floating popover button that shows AI feedback after checking answers. */
 export function SectionFeedbackPopover({
   aiFeedback,
-  isChecked,
-  showCobaLagi,
+  isLocked,
 }: SectionFeedbackPopoverProps) {
-  if (!isChecked || !aiFeedback) return null
+  if (!aiFeedback) return null
 
-  const label = showCobaLagi ? "Lihat Hint" : "Lihat Pembahasan"
-  const title = showCobaLagi ? "Hint" : "Pembahasan"
+  // When form is locked (attempt exhausted or correct), show final explanation.
+  // When still editable (percobaan 2), show hint so the student can refer to it.
+  const label = isLocked ? "Lihat Pembahasan" : "Lihat Hint"
+  const title = isLocked ? "Pembahasan" : "Hint"
 
   return (
     <div className="flex justify-center">

@@ -117,8 +117,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
 
         <SectionFeedbackPopover
           aiFeedback={aiFeedback ?? ""}
-          isChecked={isChecked}
-          showCobaLagi={showCobaLagi}
+          isLocked={isLocked}
         />
 
         <SectionSubmitButton

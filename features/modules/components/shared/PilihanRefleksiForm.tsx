@@ -129,8 +129,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
 
       <SectionFeedbackPopover
         aiFeedback={aiFeedback ?? ""}
-        isChecked={isChecked}
-        showCobaLagi={showCobaLagi}
+        isLocked={isLocked}
       />
 
       <SectionSubmitButton

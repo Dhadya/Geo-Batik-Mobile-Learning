@@ -56,7 +56,7 @@ async function autoUnlockCompletedTabs(
   const db = getDb();
   const tabs = MODULE_TABS[module] ?? [];
 
-  for (let i = 0; i < tabs.length - 1; i++) {
+  for (let i = 0; i < tabs.length; i++) {
     const tabValue = tabs[i].value;
     const row = currentRows.find((r) => r.tab === tabValue);
     if (!row || row.completed) continue;
