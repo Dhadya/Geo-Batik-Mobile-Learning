@@ -67,9 +67,7 @@ export function QuizResult({
     return 0
   })()
 
-  const displayScore = hasAnswers
-    ? Math.round((correctCount / PACKAGE_SIZE) * 100)
-    : serverScore
+  const displayScore = serverScore ?? (hasAnswers ? Math.round((correctCount / PACKAGE_SIZE) * 100) : null)
 
   const scoreForDescription = displayScore ?? 0
   const ratio = scoreForDescription / 100
