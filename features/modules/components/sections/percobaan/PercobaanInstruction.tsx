@@ -5,10 +5,11 @@ import { Text } from "@/components/retroui/Text"
 interface PercobaanInstructionProps {
   instruction: string
   instructionMatrix?: string
+  instructionSuffix?: string
 }
 
 /** Renders the instruction text with an optional inline matrix. */
-export function PercobaanInstruction({ instruction, instructionMatrix }: PercobaanInstructionProps) {
+export function PercobaanInstruction({ instruction, instructionMatrix, instructionSuffix }: PercobaanInstructionProps) {
   return (
     <Text as="p" className="text-xs md:text-sm text-black font-semibold leading-relaxed">
       {instruction}
@@ -24,7 +25,7 @@ export function PercobaanInstruction({ instruction, instructionMatrix }: Percoba
               </span>
               <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
             </span>
-            <span>. Ikuti langkah-langkah berikut untuk menentukan bayangan garis k:</span>
+            {instructionSuffix && <span>{instructionSuffix}</span>}
           </>
         )
       })()}

@@ -9,6 +9,7 @@ import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import { UrutkanInput } from "../../shared/UrutkanInput"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
 import type { UraianItem, PilihanGandaItem, UrutkanItem as UrutkanItemType } from "@/features/modules/types"
 
 interface PengamatanGarisFormProps {
@@ -19,7 +20,7 @@ interface PengamatanGarisFormProps {
 /** Garis pengamatan form — renders pilihan_ganda, uraian, and urutkan items. */
 export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
   const {
-    items, fields, errors, isChecked, isFilled, aiFeedback,
+    items, fields, errors, fieldColors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "pengamatan")
@@ -48,12 +49,27 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
                 <div className="grow space-y-1.5 md:space-y-2">
                   <Text as="p" className="text-xs md:text-sm font-medium text-black">
                     {pg.question}
+                    {pg.questionMatrix && (() => {
+                      const [top, bottom] = pg.questionMatrix.split(",")
+                      return (
+                        <span className="inline-flex items-center gap-0.5 mx-0.5 align-middle">
+                          <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
+                          <span className="flex flex-col items-center gap-0.5 text-xs md:text-sm font-black text-black">
+                            <span className="text-center leading-none select-none">{top}</span>
+                            <span className="text-center leading-none select-none">{bottom}</span>
+                          </span>
+                          <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
+                        </span>
+                      )
+                    })()}
+                    {pg.questionSuffix && <span>{pg.questionSuffix}</span>}
                   </Text>
                   <div className="flex gap-2 md:gap-3 flex-wrap">
                     {pg.options.map((opt, oi) => {
                       const isSelected = Number(selected) === oi
                       const isCorrect = isChecked && isSelected && oi === pg.correctIndex
                       const isWrong = isChecked && isSelected && oi !== pg.correctIndex
+                      const isWrongAttempt2 = isWrong && attempt === 2
 
                       return (
                         <Button
@@ -62,9 +78,9 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
                           variant={isSelected ? "default" : "outline"}
                           disabled={isChecked}
                           onClick={() => setField(String(pg.id), "selected", String(oi))}
-                          className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs  text-black ${
-                            isCorrect ? "border-green-600 bg-green-100 text-green-800" : ""
-                          } ${isWrong ? "border-destructive bg-destructive/10" : ""}`}
+                          className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs text-black ${
+                            isCorrect ? "border-green-600 bg-green-100 text-green-800" : isWrongAttempt2 ? "border-destructive bg-destructive/10" : isWrong ? "border-orange-500 bg-orange-50 text-orange-800" : ""
+                          }`}
                         >
                           {opt}
                         </Button>
@@ -81,6 +97,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
             const u = item as UraianItem
             const val = fields[String(u.id)]?.text ?? ""
             const err = errors[`${u.id}_text`]
+            const fc = fieldColors[`${u.id}_text`]
 
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
@@ -95,7 +112,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
                     disabled={isChecked}
                     rows={2}
                     placeholder="Tuliskan jawabanmu..."
-                    className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${err ? "border-destructive" : ""}`}
+                    className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${fieldColorClasses(fc, !!err)}`}
                   />
                   {err && <Text className="text-destructive text-[10px] md:text-xs font-medium">{err}</Text>}
                 </div>

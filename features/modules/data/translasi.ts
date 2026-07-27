@@ -335,6 +335,7 @@ export const translasiTabs: ModuleTab[] = [
           instruction:
             "Diberikan persamaan garis k : -x + 2y = 4. Garis k akan ditranslasikan sejauh",
           instructionMatrix: "4,-2",
+          instructionSuffix: ". Ikuti langkah-langkah berikut untuk menentukan bayangan garis k:",
           garisTranslasiTable: {
             sourceItemIds: [1, 2],
             targetItemIds: [3, 4],

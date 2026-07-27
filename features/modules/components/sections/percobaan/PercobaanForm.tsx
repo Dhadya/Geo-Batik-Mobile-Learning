@@ -80,6 +80,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         <PercobaanInstruction
           instruction={block.instruction}
           instructionMatrix={block.instructionMatrix}
+          instructionSuffix={block.instructionSuffix}
         />
       )}
 
@@ -125,6 +126,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         items={uraianItems}
         fields={fields}
         errors={errors}
+        fieldColors={fieldColors}
         isChecked={isChecked}
         setField={setField}
       />

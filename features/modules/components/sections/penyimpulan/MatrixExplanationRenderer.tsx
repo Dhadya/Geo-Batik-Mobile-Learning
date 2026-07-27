@@ -2,10 +2,13 @@
 
 import { Text } from "@/components/retroui/Text"
 import { Textarea } from "@/components/retroui/Textarea"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
+import type { FieldColor } from "@/features/modules/lib/validation"
 
 interface MatrixExplanationRendererProps {
   fields: Record<string, Record<string, string>>
   errors: Record<string, string>
+  fieldColors: Record<string, FieldColor>
   isChecked: boolean
   setField: (id: string, subKey: string, value: string) => void
 }
@@ -14,11 +17,13 @@ interface MatrixExplanationRendererProps {
 export function MatrixExplanationRenderer({
   fields,
   errors,
+  fieldColors,
   isChecked,
   setField,
 }: MatrixExplanationRendererProps) {
   const val = fields["7"]?.text ?? ""
   const err = errors["7_text"]
+  const color = fieldColors["7_text"]
 
   return (
     <div className="flex gap-1.5 md:gap-2">
@@ -41,7 +46,7 @@ export function MatrixExplanationRenderer({
           disabled={isChecked}
           rows={2}
           placeholder="Tuliskan penjelasanmu..."
-          className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${err ? "border-destructive" : ""}`}
+          className={`border-4 font-medium resize-none text-xs md:text-sm text-black ${fieldColorClasses(color, !!err)}`}
         />
         {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}
       </div>

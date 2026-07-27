@@ -5,6 +5,7 @@ import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { Textarea } from "@/components/retroui/Textarea"
 import { useSection } from "@/features/modules/hooks/useSection"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { KoordinatItem, UraianItem } from "@/features/modules/types"
@@ -17,7 +18,7 @@ interface PengamatanMockFormProps {
 /** Generic pengamatan form — renders koordinat or uraian items by type. */
 export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
   const {
-    items, fields, errors, isChecked, isFilled,
+    items, fields, errors, fieldColors, isChecked, isFilled,
     setField, handleSubmit,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "pengamatan")
@@ -40,6 +41,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
             const xVal = fields[String(k.id)]?.x ?? ""
             const yVal = fields[String(k.id)]?.y ?? ""
             const coordErr = errors[`${k.id}_coord`]
+            const color = fieldColors[`${k.id}_coord`]
 
             return (
               <div key={k.id} className="space-y-0.5 md:space-y-1">
@@ -54,7 +56,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                     value={xVal}
                     onChange={(e) => setField(String(k.id), "x", e.target.value)}
                     disabled={isChecked}
-                    className={`w-16 md:w-20 text-center border-4 border-black font-bold text-xs md:text-sm ${coordErr ? "border-destructive" : ""}`}
+                    className={`w-16 md:w-20 text-center border-4 font-bold text-xs md:text-sm ${fieldColorClasses(color, !!coordErr)}`}
                   />
                   <span className="font-bold text-xs md:text-sm">,</span>
                   <Input
@@ -63,7 +65,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                     value={yVal}
                     onChange={(e) => setField(String(k.id), "y", e.target.value)}
                     disabled={isChecked}
-                    className={`w-16 md:w-20 text-center border-4 border-black font-bold text-xs md:text-sm ${coordErr ? "border-destructive" : ""}`}
+                    className={`w-16 md:w-20 text-center border-4 font-bold text-xs md:text-sm ${fieldColorClasses(color, !!coordErr)}`}
                   />
                   <span className="font-bold text-xs md:text-sm">)</span>
                 </div>
@@ -77,6 +79,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
             const u = item as UraianItem
             const val = fields[String(u.id)]?.text ?? ""
             const err = errors[`${u.id}_text`]
+            const color = fieldColors[`${u.id}_text`]
 
             return (
               <div key={u.id} className="space-y-0.5 md:space-y-1">
@@ -88,7 +91,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                   disabled={isChecked}
                   rows={3}
-                  className={`border-4 border-black font-medium resize-none text-xs md:text-sm ${err ? "border-destructive" : ""}`}
+                  className={`border-4 font-medium resize-none text-xs md:text-sm ${fieldColorClasses(color, !!err)}`}
                 />
                 {err && (
                   <span className="text-[10px] md:text-xs text-destructive font-medium">{err}</span>

@@ -5,7 +5,9 @@ import { Textarea } from "@/components/retroui/Textarea"
 import { Select } from "@/components/retroui/Select"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { AttemptBadge } from "../../shared/AttemptBadge"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
 import type { UraianItem, MemasangkanItem } from "@/features/modules/types"
 
 interface PengamatanTitikFormProps {
@@ -16,7 +18,7 @@ interface PengamatanTitikFormProps {
 /** Pengamatan form for translasi titik — renders uraian + memasangkan items from section data. */
 export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
   const {
-    items, fields, errors, isChecked, isFilled, aiFeedback,
+    items, fields, errors, fieldColors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "pengamatan")
@@ -42,6 +44,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
             const u = item as UraianItem
             const val = fields[String(u.id)]?.text ?? ""
             const err = errors[`${u.id}_text`]
+            const color = fieldColors[`${u.id}_text`]
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
                 <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-0.5">•</span>
@@ -56,7 +59,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                     }
                     disabled={isChecked}
                     rows={5}
-                    className={`border-4 border-black font-medium resize-none min-h-20 md:min-h-28 text-xs md:text-sm ${err ? "border-destructive" : ""}`}
+                    className={`border-4 font-medium resize-none min-h-20 md:min-h-28 text-xs md:text-sm ${fieldColorClasses(color, !!err)}`}
                   />
                   {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}
                 </div>
@@ -90,7 +93,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                             >
                               <Select.Trigger
                                 disabled={isChecked}
-                                className={`h-7 md:h-8 w-full max-w-sm border-2 border-black font-semibold text-[10px] md:text-xs bg-white min-w-0 shadow-none capitalize ${err ? "border-destructive" : ""}`}
+                                className={`h-7 md:h-8 w-full max-w-sm border-2 font-semibold text-[10px] md:text-xs bg-white min-w-0 shadow-none capitalize ${fieldColorClasses(fieldColors[`${m.id}_${left.id}`], !!err)}`}
                               >
                                 <Select.Value placeholder="Pilih..." />
                               </Select.Trigger>
@@ -121,12 +124,12 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
         }
       })}
 
-      {/* AI feedback banner */}
-      {isChecked && aiFeedback && (
-        <div className="border-4 border-black bg-background p-3 md:p-4">
-          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
-        </div>
-      )}
+      {/* AI feedback popover */}
+      <SectionFeedbackPopover
+        aiFeedback={aiFeedback ?? ""}
+        isChecked={isChecked}
+        showCobaLagi={showCobaLagi}
+      />
 
       <SectionSubmitButton
         attempt={attempt}

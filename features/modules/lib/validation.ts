@@ -11,7 +11,7 @@ import type {
 } from "../types"
 
 /** Per-field color status after checking answers. */
-export type FieldColor = "green" | "red" | null
+export type FieldColor = "green" | "orange" | "red" | null
 
 export interface ValidationResult {
   isCorrect: boolean

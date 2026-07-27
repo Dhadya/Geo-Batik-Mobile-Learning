@@ -163,6 +163,7 @@ export function PercobaanGarisView({
           {uraianItems.map((u) => {
             const val = fields[String(u.id)]?.text ?? ""
             const err = errors[`${u.id}_text`]
+            const color = fieldColors[`${u.id}_text`]
             return (
               <div key={u.id} className="flex gap-1.5 md:gap-2">
                 <span className="text-base md:text-lg shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
@@ -174,7 +175,7 @@ export function PercobaanGarisView({
                     disabled={isChecked}
                     rows={2}
                     placeholder="Tuliskan jawabanmu..."
-                    className={`w-full border-4 border-black font-medium resize-none text-xs md:text-sm text-black p-2 ${err ? "border-destructive" : ""}`}
+                    className={`w-full border-4 font-medium resize-none text-xs md:text-sm text-black p-2 ${fieldColorClasses(color, !!err)}`}
                   />
                   {err && <Text className="text-destructive text-[10px] md:text-xs font-medium">{err}</Text>}
                 </div>

@@ -9,7 +9,6 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/retroui/Popover"
-import { MaterialIcon } from "@/components/common/MaterialIcon"
 
 interface SectionFeedbackPopoverProps {
   aiFeedback: string
@@ -29,19 +28,20 @@ export function SectionFeedbackPopover({
   const title = showCobaLagi ? "Hint" : "Pembahasan"
 
   return (
-    <Popover>
-      <PopoverTrigger render={<Button variant="outline" className="w-fit font-bold uppercase text-xs md:text-sm" />}>
-        <MaterialIcon className="size-4 mr-1" name="lightbulb" />
-        {label}
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverHeader>
-          <PopoverTitle>{title}</PopoverTitle>
-          <PopoverDescription className="whitespace-pre-wrap text-black">
-            {aiFeedback}
-          </PopoverDescription>
-        </PopoverHeader>
-      </PopoverContent>
-    </Popover>
+    <div className="flex justify-center">
+      <Popover>
+        <PopoverTrigger render={<Button className="font-bold uppercase text-xs md:text-sm" />}>
+          {label}
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverHeader>
+            <PopoverTitle>{title}</PopoverTitle>
+            <PopoverDescription className="whitespace-pre-wrap text-black">
+              {aiFeedback}
+            </PopoverDescription>
+          </PopoverHeader>
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }

@@ -276,6 +276,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                         matrix={q.optionFormat === "matrix"}
                         disabled={isChecked}
                         imageSrc={q.imageOptions?.[oi]}
+                        attempt={attempt}
                       />
                     )
                   })}

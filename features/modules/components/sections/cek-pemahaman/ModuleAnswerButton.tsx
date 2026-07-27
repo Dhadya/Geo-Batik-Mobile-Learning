@@ -15,7 +15,7 @@ interface ModuleAnswerButtonProps {
   isSelected: boolean
   /** Whether this option is marked correct (show green). */
   isCorrect: boolean
-  /** Whether this option is marked wrong (show red). */
+  /** Whether this option is marked wrong (show red/orange). */
   isWrong: boolean
   /** Called when the button is clicked. */
   onSelect: () => void
@@ -25,6 +25,8 @@ interface ModuleAnswerButtonProps {
   disabled?: boolean
   /** Optional image URL to render instead of text. */
   imageSrc?: string
+  /** Current attempt number — determines orange (attempt 1) vs red (attempt 2) for wrong answers. */
+  attempt?: 1 | 2
 }
 
 /** Compact answer button for module context — smaller than quiz version. */
@@ -38,19 +40,21 @@ export function ModuleAnswerButton({
   matrix,
   disabled,
   imageSrc,
+  attempt = 1,
 }: ModuleAnswerButtonProps) {
   const parsed = matrix ? text.match(/\(([^,]+),\s*([^)]+)\)/) : null
+  const isWrongAttempt2 = isWrong && attempt === 2
 
   return (
     <Button
       variant={isSelected ? "default" : "outline"}
-      className={`justify-start flex-row items-center gap-2 md:gap-3 p-2 md:p-3 text-left font-semibold text-sm md:text-base relative ${isCorrect ? "border-green-600 bg-green-50" : isWrong ? "border-destructive bg-destructive/5" : ""
+      className={`justify-start flex-row items-center gap-2 md:gap-3 p-2 md:p-3 text-left font-semibold text-sm md:text-base relative ${isCorrect ? "border-green-600 bg-green-50" : isWrongAttempt2 ? "border-destructive bg-destructive/5" : isWrong ? "border-orange-500 bg-orange-50" : ""
         }`}
       onClick={onSelect}
       disabled={disabled}
     >
       <span
-        className={`w-5 h-5 md:w-7 md:h-7 border-2 border-black flex items-center justify-center text-[10px] md:text-sm shrink-0 ${isCorrect ? "bg-secondary text-white" : isWrong ? "bg-destructive text-white" : "bg-foreground text-background"
+        className={`w-5 h-5 md:w-7 md:h-7 border-2 border-black flex items-center justify-center text-[10px] md:text-sm shrink-0 ${isCorrect ? "bg-secondary text-white" : isWrongAttempt2 ? "bg-destructive text-white" : isWrong ? "bg-orange-500 text-white" : "bg-foreground text-background"
           }`}
       >
         {LABELS[index]}
@@ -92,7 +96,7 @@ export function ModuleAnswerButton({
         </Badge>
       )}
       {isWrong && (
-        <Badge variant="solid" size="sm" className="absolute -top-2 -right-2 uppercase bg-destructive">
+        <Badge variant="solid" size="sm" className={`absolute -top-2 -right-2 uppercase ${isWrongAttempt2 ? "bg-destructive" : "bg-orange-500"}`}>
           Salah
         </Badge>
       )}

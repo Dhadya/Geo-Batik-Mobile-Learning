@@ -80,6 +80,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 key={u.id}
                 fields={fields}
                 errors={errors}
+                fieldColors={fieldColors}
                 isChecked={isChecked}
                 setField={setField}
               />
@@ -107,6 +108,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
               item={u}
               fields={fields}
               errors={errors}
+              fieldColors={fieldColors}
               isChecked={isChecked}
               setField={setField}
             />

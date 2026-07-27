@@ -113,7 +113,7 @@ export function buildPrompt(
 
   const basePrompt = `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
 Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module} - ${tabLabel}.
-${attempt === 2 ? "Ini adalah percobaan kedua (terakhir)." : ""}
+${attempt === 2 ? "Ini adalah percobaan kedua (terakhir) setelah jawaban pertama salah." : "Ini adalah percobaan pertama."}
 
 Soal-soal beserta KUNCI JAWABAN yang sudah diverifikasi kebenarannya:
 ${itemDescriptions}
@@ -128,40 +128,45 @@ ATURAN PENTING YANG HARUS DIPATUHI:
 - Feedback harus berfokus pada membantu siswa, bukan mengevaluasi soal atau kunci jawaban.
 - Gunakan bahasa Indonesia yang sederhana dan sesuai tingkat SMP.
 - Jangan menyebut nomor soal dalam feedback. Gunakan poin-poin bullet saja.
-- Feedback harus singkat, padat, dan to the point. Maksimal 2 kalimat per poin.
 
 `;
 
   if (attempt === 2) {
     return `${basePrompt}
-INSTRUKSI:
-- Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri semangat
-- Jika ada yang salah: isi "isCorrect": false, berikan feedback singkat per poin
-- Jelaskan langkah demi langkah penyelesaiannya secara ringkas
-- Tampilkan jawaban yang benar sebagai bahan evaluasi
-- Berikan semangat untuk terus belajar
+INSTRUKSI — PEMBAHASAN (percobaan kedua):
+Feedback ini akan dibaca siswa setelah kesempatan habis. Tujuannya agar siswa belajar dari kesalahan.
+
+- Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri pujian dan semangat
+- Jika ada yang salah: isi "isCorrect": false, "score" sesuai proporsi benar
+- Untuk setiap soal yang salah: jelaskan LANGKAH demi LANGKAH penyelesaiannya secara ringkas
+- Tunjukkan jawaban yang benar beserta cara mendapatkannya
+- Akhiri dengan semangat untuk terus belajar
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
   "isCorrect": boolean,
   "score": number (0-100) atau null,
-  "feedback": "string dalam Bahasa Indonesia",
+  "feedback": "string dalam Bahasa Indonesia — berisi pembahasan lengkap per poin",
   "errors": { "fieldKey": "alasan kesalahan" }
 }`;
   }
 
   return `${basePrompt}
-INSTRUKSI PENTING:
-- Jika semua jawaban benar: isi "isCorrect": true, "score": 100, "feedback": pujian singkat, "errors": {}
-- Jika ada yang salah: isi "isCorrect": false, beri petunjuk singkat (1-2 kalimat) yang mengarahkan siswa pada letak kekurangan mereka
-- JANGAN menyebutkan jawaban akhir
-- JANGAN memberikan angka atau langkah perhitungan
+INSTRUKSI — HINT (percobaan pertama):
+Feedback ini akan dibaca siswa sebagai petunjuk sebelum mencoba lagi. JANGAN beri jawaban akhir.
+
+- Jika semua jawaban benar: isi "isCorrect": true, "score": 100, beri pujian singkat
+- Jika ada yang salah: isi "isCorrect": false
+- Berikan PETUNJUK ARAH (2-3 kalimat) yang mengarahkan siswa pada letak kekurangan
+- Sebutkan KONSEP apa yang perlu ditinjau ulang (misal: "Perhatikan lagi arah perpindahan pada sumbu x")
+- JANGAN menyebutkan jawaban akhir, angka hasil, atau langkah perhitungan
+- Bersifat membimbing, bukan mengoreksi — siswa masih punya kesempatan mencoba lagi
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
   "isCorrect": boolean,
   "score": number (0-100) atau null,
-  "feedback": "string dalam Bahasa Indonesia",
+  "feedback": "string dalam Bahasa Indonesia — berisi hint/petunjuk, bukan pembahasan",
   "errors": { "fieldKey": "alasan kesalahan" }
 }`;
 }

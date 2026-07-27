@@ -58,6 +58,7 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
                   const isSelected = Number(selected) === oi
                   const isCorrect = isChecked && isSelected && oi === pg.correctIndex
                   const isWrong = isChecked && isSelected && oi !== pg.correctIndex
+                  const isWrongAttempt2 = isWrong && attempt === 2
 
                   return (
                     <Button
@@ -66,9 +67,9 @@ export function PengamatanBangunForm({ slug, tab }: PengamatanBangunFormProps) {
                       variant={isSelected ? "default" : "outline"}
                       disabled={isChecked}
                       onClick={() => setField(String(pg.id), "selected", String(oi))}
-                      className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs  text-black ${
-                        isCorrect ? "border-green-600 bg-green-100 text-green-800" : ""
-                      } ${isWrong ? "border-destructive bg-destructive/10" : ""}`}
+                      className={`px-2 md:px-4 py-1 md:py-1.5 font-bold uppercase text-[10px] md:text-xs text-black ${
+                        isCorrect ? "border-green-600 bg-green-100 text-green-800" : isWrongAttempt2 ? "border-destructive bg-destructive/10 text-destructive" : isWrong ? "border-orange-500 bg-orange-50 text-orange-800" : ""
+                      }`}
                     >
                       {opt}
                     </Button>
