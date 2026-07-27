@@ -20,7 +20,7 @@ interface PercobaanFormProps {
 /** Percobaan form — orchestrator that delegates to view-specific sub-components. */
 export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
   const {
-    items, fields, errors, isChecked, isFilled, aiFeedback,
+    items, fields, errors, fieldColors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit, block,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "percobaan")
@@ -43,6 +43,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           items={items}
           fields={fields}
           errors={errors}
+          fieldColors={fieldColors}
           isChecked={isChecked}
           setField={setField}
           block={block}
@@ -96,6 +97,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           items={tableItems}
           fields={fields}
           errors={errors}
+          fieldColors={fieldColors}
           setField={setField}
           tab={tab}
           refleksiGroups={block?.refleksiGroups}
@@ -108,6 +110,7 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           items={tableItems}
           fields={fields}
           errors={errors}
+          fieldColors={fieldColors}
           setField={setField}
           showPointLetters={tab === "bangun"}
         />

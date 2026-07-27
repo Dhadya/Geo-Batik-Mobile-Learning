@@ -3,12 +3,15 @@
 import { Input } from "@/components/retroui/Input"
 import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
 import { REFLECTION_LABELS } from "@/features/modules/data/moduleConfig"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
+import type { FieldColor } from "@/features/modules/lib/validation"
 import type { KoordinatItem, SectionItem, RefleksiGroup } from "@/features/modules/types"
 
 interface PercobaanRefleksiTableProps {
   items: SectionItem[]
   fields: Record<string, Record<string, string>>
   errors: Record<string, string>
+  fieldColors: Record<string, FieldColor>
   setField: (itemId: string, fieldKey: string, value: string) => void
   tab: string
   refleksiGroups?: RefleksiGroup[]
@@ -19,6 +22,7 @@ export function PercobaanRefleksiTable({
   items,
   fields,
   errors,
+  fieldColors,
   setField,
   tab,
   refleksiGroups,
@@ -88,7 +92,7 @@ export function PercobaanRefleksiTable({
                     value={fields[String(k.id)]?.x ?? ""}
                     onKeyDown={allowOnlyNumbers}
                     onChange={(e) => setField(String(k.id), "x", e.target.value)}
-                    className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${errors[`${k.id}_coord`] ? "border-destructive" : "border-black"}`}
+                    className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_coord`], !!errors[`${k.id}_coord`])}`}
                   />
                   <span className="font-bold text-xs md:text-sm">,</span>
                   <Input
@@ -98,7 +102,7 @@ export function PercobaanRefleksiTable({
                     value={fields[String(k.id)]?.y ?? ""}
                     onKeyDown={allowOnlyNumbers}
                     onChange={(e) => setField(String(k.id), "y", e.target.value)}
-                    className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${errors[`${k.id}_coord`] ? "border-destructive" : "border-black"}`}
+                    className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_coord`], !!errors[`${k.id}_coord`])}`}
                   />
                   <span className="font-bold text-xs md:text-sm">)</span>
                 </div>

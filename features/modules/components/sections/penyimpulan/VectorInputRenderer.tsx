@@ -4,10 +4,13 @@ import { useState } from "react"
 import { Text } from "@/components/retroui/Text"
 import { Input } from "@/components/retroui/Input"
 import { validateVector } from "./conclusionHelpers"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
+import type { FieldColor } from "@/features/modules/lib/validation"
 
 interface VectorInputRendererProps {
   fields: Record<string, Record<string, string>>
   isChecked: boolean
+  fieldColors: Record<string, FieldColor>
   setField: (id: string, subKey: string, value: string) => void
 }
 
@@ -15,11 +18,14 @@ interface VectorInputRendererProps {
 export function VectorInputRenderer({
   fields,
   isChecked,
+  fieldColors,
   setField,
 }: VectorInputRendererProps) {
   const [vectorErr, setVectorErr] = useState<string>("")
   const aVal = fields["11"]?.a_val ?? ""
   const bVal = fields["11"]?.b_val ?? ""
+  const aColor = fieldColors["11_a_val"]
+  const bColor = fieldColors["11_b_val"]
 
   return (
     <div className="flex gap-1.5 md:gap-2">
@@ -51,7 +57,7 @@ export function VectorInputRenderer({
               }}
               disabled={isChecked}
               placeholder="..."
-              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${vectorErr ? "border-destructive" : "border-black"}`}
+              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(aColor, !!vectorErr)}`}
             />
             <Input
               type="text"
@@ -62,7 +68,7 @@ export function VectorInputRenderer({
               }}
               disabled={isChecked}
               placeholder="..."
-              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${vectorErr ? "border-destructive" : "border-black"}`}
+              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(bColor, !!vectorErr)}`}
             />
           </div>
           <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>

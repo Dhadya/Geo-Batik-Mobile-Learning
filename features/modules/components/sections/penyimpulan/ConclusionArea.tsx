@@ -22,7 +22,7 @@ interface ConclusionAreaProps {
 /** Penyimpulan section — renders uraian items with special layouts per item. */
 export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
   const {
-    items, fields, errors, isChecked, isFilled, aiFeedback,
+    items, fields, errors, fieldColors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "penyimpulan")
@@ -67,6 +67,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 key={u.id}
                 fields={fields}
                 isChecked={isChecked}
+                fieldColors={fieldColors}
                 setField={setField}
               />
             )
@@ -93,6 +94,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
                 fields={fields}
                 errors={errors}
                 isChecked={isChecked}
+                fieldColors={fieldColors}
                 setField={setField}
               />
             )
