@@ -6,6 +6,7 @@ import { Textarea } from "@/components/retroui/Textarea"
 import { Button } from "@/components/retroui/Button"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import { UrutkanInput } from "../../shared/UrutkanInput"
 import type { UraianItem, PilihanGandaItem, UrutkanItem as UrutkanItemType } from "@/features/modules/types"
@@ -130,11 +131,11 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
         })}
       </div>
 
-      {isChecked && aiFeedback && (
-        <div className="border-4 border-black bg-background p-3 md:p-4">
-          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
-        </div>
-      )}
+      <SectionFeedbackPopover
+        aiFeedback={aiFeedback ?? ""}
+        isChecked={isChecked}
+        showCobaLagi={showCobaLagi}
+      />
 
 <SectionSubmitButton
         attempt={attempt}

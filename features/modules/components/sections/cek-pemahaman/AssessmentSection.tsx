@@ -8,6 +8,7 @@ import { Badge } from "@/components/retroui/Badge"
 import { Card } from "@/components/retroui/Card"
 import { toast } from "sonner"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import { useAnswerStore } from "../../../store/answerStore"
@@ -291,14 +292,14 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         })}
       </div>
 
-      {/* AI feedback banner */}
-      {isChecked && aiFeedback && (
-        <div className="border-4 border-black bg-background p-3 md:p-4 mt-4 md:mt-6">
-          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">
-            {aiFeedback}
-          </Text>
-        </div>
-      )}
+      {/* AI feedback popover */}
+      <div className="mt-4 md:mt-6">
+        <SectionFeedbackPopover
+          aiFeedback={aiFeedback ?? ""}
+          isChecked={isChecked}
+          showCobaLagi={showCobaLagi}
+        />
+      </div>
 
       {/* Submit button — shown in all states */}
       <div className="mt-4 md:mt-8">

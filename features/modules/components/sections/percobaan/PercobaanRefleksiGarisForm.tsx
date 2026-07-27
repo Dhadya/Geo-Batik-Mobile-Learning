@@ -5,7 +5,9 @@ import { Input } from "@/components/retroui/Input"
 import { Select } from "@/components/retroui/Select"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { allowOnlyNumbers } from "@/features/modules/hooks/allowOnlyNumbers"
+import { fieldColorClasses } from "@/features/modules/lib/fieldColors"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { PilihanRefleksiItem } from "@/features/modules/types"
 
@@ -17,7 +19,7 @@ interface PercobaanRefleksiGarisFormProps {
 /** Percobaan form for refleksi garis — inline coordinate inputs without table. */
 export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGarisFormProps) {
   const {
-    items, fields, errors, isChecked, isFilled, aiFeedback,
+    items, fields, errors, fieldColors, isChecked, isFilled, aiFeedback,
     setField, handleSubmit,
     isLocked, showCobaLagi, isCorrectEvaluation, handleCobaLagi, attempt, isSubmitting,
   } = useSection(slug, tab, "percobaan")
@@ -33,12 +35,10 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
   return (
     <section className="space-y-3 md:space-y-4">
       <AttemptBadge attempt={attempt} showCobaLagi={showCobaLagi} isLocked={isLocked} hasInput={hasAnyInput} />
-      {/* Instruction */}
       <Text as="p" className="text-xs md:text-sm font-medium text-black whitespace-pre-line">
         {refleksiItem.question}
       </Text>
 
-      {/* Select dropdown for reflection type */}
       <div className="space-y-2">
         <Select
           value={selectedOption}
@@ -58,7 +58,6 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
         </Select>
       </div>
 
-      {/* Inline coordinate inputs */}
       {selectedOption && (
         <div className="space-y-2">
           <Text as="p" className="text-xs md:text-sm font-medium text-black">
@@ -66,34 +65,37 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
           </Text>
           <Text as="p" className="text-xs md:text-sm font-medium text-black">
             A&apos;B&apos; dengan{" "}
-            {answers.map((_, idx) => (
-              <span key={idx}>
-                {idx === 0 ? "A’" : "B’"}(
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="x"
-                  value={fields[String(refleksiItem.id)]?.[`x${idx}`] ?? ""}
-                  onKeyDown={allowOnlyNumbers}
-                  onChange={(e) => setField(String(refleksiItem.id), `x${idx}`, e.target.value)}
-                  disabled={isChecked}
-                  className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${errors[`${refleksiItem.id}_coord${idx}`] ? "border-destructive" : "border-black"}`}
-                />
-                ,{" "}
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="y"
-                  value={fields[String(refleksiItem.id)]?.[`y${idx}`] ?? ""}
-                  onKeyDown={allowOnlyNumbers}
-                  onChange={(e) => setField(String(refleksiItem.id), `y${idx}`, e.target.value)}
-                  disabled={isChecked}
-                  className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${errors[`${refleksiItem.id}_coord${idx}`] ? "border-destructive" : "border-black"}`}
-                />
-                )
-                {idx < answers.length - 1 ? " dan " : ""}
-              </span>
-            ))}
+            {answers.map((_, idx) => {
+              const coordColor = fieldColors[`${refleksiItem.id}_coord${idx}`]
+              return (
+                <span key={idx}>
+                  {idx === 0 ? "A'" : "B'"}(
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="x"
+                    value={fields[String(refleksiItem.id)]?.[`x${idx}`] ?? ""}
+                    onKeyDown={allowOnlyNumbers}
+                    onChange={(e) => setField(String(refleksiItem.id), `x${idx}`, e.target.value)}
+                    disabled={isChecked}
+                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(coordColor, !!errors[`${refleksiItem.id}_coord${idx}`])}`}
+                  />
+                  ,{" "}
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="y"
+                    value={fields[String(refleksiItem.id)]?.[`y${idx}`] ?? ""}
+                    onKeyDown={allowOnlyNumbers}
+                    onChange={(e) => setField(String(refleksiItem.id), `y${idx}`, e.target.value)}
+                    disabled={isChecked}
+                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(coordColor, !!errors[`${refleksiItem.id}_coord${idx}`])}`}
+                  />
+                  )
+                  {idx < answers.length - 1 ? " dan " : ""}
+                </span>
+              )
+            })}
           </Text>
         </div>
       )}
@@ -102,7 +104,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
         <Text className="text-destructive text-[10px] md:text-xs">{errors[`${refleksiItem.id}_selected`]}</Text>
       )}
 
-<SectionSubmitButton
+      <SectionSubmitButton
         attempt={attempt}
         isChecked={isChecked}
         isFilled={isFilled}
@@ -114,11 +116,11 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
         isSubmitting={isSubmitting}
       />
 
-      {isChecked && aiFeedback && (
-        <div className="border-4 border-black bg-background p-3 md:p-4">
-          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
-        </div>
-      )}
+      <SectionFeedbackPopover
+        aiFeedback={aiFeedback ?? ""}
+        isChecked={isChecked}
+        showCobaLagi={showCobaLagi}
+      />
     </section>
   )
 }

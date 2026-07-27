@@ -1,8 +1,8 @@
 "use client"
 
-import { Text } from "@/components/retroui/Text"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { AttemptBadge } from "../../shared/AttemptBadge"
 import type { UraianItem } from "@/features/modules/types"
 
@@ -50,7 +50,11 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
           garisTranslasiTable={gtTable}
         />
 
-        <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
+        <SectionFeedbackPopover
+          aiFeedback={aiFeedback ?? ""}
+          isChecked={isChecked}
+          showCobaLagi={showCobaLagi}
+        />
 
         <SectionSubmitButton
           attempt={attempt}
@@ -125,7 +129,11 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         setField={setField}
       />
 
-      <AiFeedbackBanner aiFeedback={aiFeedback} isChecked={isChecked} />
+      <SectionFeedbackPopover
+        aiFeedback={aiFeedback ?? ""}
+        isChecked={isChecked}
+        showCobaLagi={showCobaLagi}
+      />
 
       <SectionSubmitButton
         attempt={attempt}
@@ -138,18 +146,6 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         onCobaLagi={handleCobaLagi}
         requireConfirmation={slug === "translasi" && tab === "titik"}
       />
-    </div>
-  )
-}
-
-// ── Shared mini-components ──────────────────────────────────
-
-/** AI feedback banner — shown after submission. */
-function AiFeedbackBanner({ aiFeedback, isChecked }: { aiFeedback?: string; isChecked: boolean }) {
-  if (!isChecked || !aiFeedback) return null
-  return (
-    <div className="border-4 border-black bg-background p-3 md:p-4">
-      <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
     </div>
   )
 }

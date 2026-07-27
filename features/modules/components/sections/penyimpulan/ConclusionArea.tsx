@@ -3,6 +3,7 @@
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { Text } from "@/components/retroui/Text"
 import { SectionSubmitButton } from "../../shared/SectionSubmitButton"
+import { SectionFeedbackPopover } from "../../shared/SectionFeedbackPopover"
 import { SectionScoreIndicator } from "../../shared/SectionScoreIndicator"
 import { useSection } from "../../../hooks/useSection"
 import { AttemptBadge } from "../../shared/AttemptBadge"
@@ -112,11 +113,11 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
           )
         })}
 
-        {isChecked && aiFeedback && (
-          <div className="border-4 border-black bg-background p-3 md:p-4">
-            <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
-          </div>
-        )}
+        <SectionFeedbackPopover
+          aiFeedback={aiFeedback ?? ""}
+          isChecked={isChecked}
+          showCobaLagi={showCobaLagi}
+        />
 
         <SectionSubmitButton
           isChecked={isChecked}

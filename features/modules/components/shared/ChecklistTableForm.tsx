@@ -5,6 +5,7 @@ import { Text } from "@/components/retroui/Text"
 import { Checkbox } from "@/components/retroui/Checkbox"
 import { useSection } from "@/features/modules/hooks/useSection"
 import { SectionSubmitButton } from "./SectionSubmitButton"
+import { SectionFeedbackPopover } from "./SectionFeedbackPopover"
 import { AttemptBadge } from "./AttemptBadge"
 import type { ChecklistTableItem } from "@/features/modules/types"
 
@@ -85,11 +86,11 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
         <Text className="text-destructive text-[10px] md:text-xs">{errors[`${checklistItem.id}_checklist`]}</Text>
       )}
 
-      {isChecked && aiFeedback && (
-        <div className="border-4 border-black bg-background p-3 md:p-4">
-          <Text className="text-xs md:text-sm font-semibold whitespace-pre-wrap">{aiFeedback}</Text>
-        </div>
-      )}
+      <SectionFeedbackPopover
+        aiFeedback={aiFeedback ?? ""}
+        isChecked={isChecked}
+        showCobaLagi={showCobaLagi}
+      />
 
 <SectionSubmitButton
         attempt={attempt}
