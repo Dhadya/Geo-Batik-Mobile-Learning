@@ -32,21 +32,23 @@ export function SectionFeedbackPopover({
     if (!raw) return null
     const parts = raw.split("•").filter(Boolean)
     if (parts.length <= 1) {
-      return <p className="text-black text-xs md:text-sm">{raw}</p>
+      return <span className="text-black text-xs md:text-sm">{raw}</span>
     }
     return (
-      <ul className="space-y-2 list-none">
+      <span className="text-black text-xs md:text-sm leading-relaxed">
         {parts.map((part, i) => {
           const trimmed = part.trim().replace(/\n/g, " ").replace(/\s+/g, " ")
           if (!trimmed) return null
           return (
-            <li key={i} className="flex items-start gap-2 text-black text-xs md:text-sm leading-relaxed">
-              <span className="shrink-0 mt-0.5">{"\u2022"}</span>
-              <span>{trimmed}</span>
-            </li>
+            <span key={i} className="block mt-2 first:mt-0">
+              <span className="inline-flex items-start gap-2">
+                <span className="shrink-0">{"\u2022"}</span>
+                <span>{trimmed}</span>
+              </span>
+            </span>
           )
         })}
-      </ul>
+      </span>
     )
   }, [aiFeedback])
 

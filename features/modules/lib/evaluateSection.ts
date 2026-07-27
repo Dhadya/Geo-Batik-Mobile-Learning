@@ -35,22 +35,23 @@ export async function evaluateSection(
     const aiCorrect = json.data.isCorrect
     const local = validateSection(items, fields, undefined)
     const aiScore = json.data.score
-    const numericScore = aiScore != null ? aiScore
-      : aiCorrect ? 100
-      : local.correctCount === local.totalItems ? 100
-      : local.correctCount === 0 ? 0
-      : 50
-    const localAllCorrect = local.correctCount === local.totalItems
-    const resolvedCorrect = localAllCorrect || aiCorrect
-    if (resolvedCorrect) {
+
+    // AI is the sole source of truth when it succeeds
+    if (aiCorrect) {
       return {
         ...json.data,
         isCorrect: true,
-        score: numericScore || 100,
+        score: aiScore != null ? Math.max(aiScore, 100) : 100,
         errors: {},
         fieldColors: local.fieldColors,
       }
     }
+
+    // AI says wrong — use its score or fall back to local calculation
+    const numericScore = aiScore != null ? aiScore
+      : local.correctCount === local.totalItems ? 100
+      : local.correctCount === 0 ? 0
+      : 50
     return {
       ...json.data,
       isCorrect: false,
