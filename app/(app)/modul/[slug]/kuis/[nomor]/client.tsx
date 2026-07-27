@@ -47,7 +47,7 @@ export function KuisSoalClient({
     isLast,
     isFirst,
     answers,
-    answeredIds,
+    answeredPositions,
     selectAnswer,
   } = useQuiz(slug, nomor)
 
@@ -140,7 +140,7 @@ export function KuisSoalClient({
         <NumberIndicator
           total={total}
           current={nomor}
-          answeredIds={answeredIds}
+          answeredPositions={answeredPositions}
           onSelect={handleNumberSelect}
         />
 
@@ -152,8 +152,8 @@ export function KuisSoalClient({
           <div className="grow p-3 md:p-4">
             <Card className="w-full border-4 border-black shadow-[4px_4px_0_0_black]">
               <Card.Content className="space-y-4 md:space-y-6">
-                <div className="font-semibold text-sm md:text-base">
-                  <Text as="p" className="inline">
+                <div className="font-semibold">
+                  <Text as="p" className="inline text-sm md:text-base leading-relaxed wrap-break-word">
                     {question.question}
                   </Text>
                   {"questionMatrix" in question && question.questionMatrix && (

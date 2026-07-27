@@ -27,9 +27,15 @@ export function useQuiz(slug: string, nomor: number) {
   const allAnswered = total > 0 && answeredCount >= total
   const isLast = nomor === total
   const isFirst = nomor === 1
-  const answeredIds = packageQuestions
-    .map((q) => q.id)
-    .filter((id) => storeAnswers[id] !== undefined)
+  const answeredPositions = useMemo(
+    () =>
+      new Set(
+        packageQuestions
+          .map((q, idx) => (storeAnswers[q.id] !== undefined ? idx + 1 : null))
+          .filter((p): p is number => p !== null),
+      ),
+    [packageQuestions, storeAnswers],
+  )
 
   return {
     quiz,
@@ -41,7 +47,7 @@ export function useQuiz(slug: string, nomor: number) {
     isLast,
     isFirst,
     answers: storeAnswers,
-    answeredIds,
+    answeredPositions,
     selectAnswer,
   }
 }
