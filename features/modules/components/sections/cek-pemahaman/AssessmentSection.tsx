@@ -55,7 +55,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       : persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2" ? false
         : null
   )
-  const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({})
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const submitMutation = useSubmitSection(slug)
@@ -169,7 +169,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       {/* Questions loop */}
       <div className="space-y-4 md:space-y-6">
         {questions.map((q, qi) => {
-          const hasError = validationErrors[q.id]
+          const errorMsg = validationErrors[q.id]
           const isMulti = q.multiSelect
 
           return (
@@ -282,9 +282,9 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                   })}
                 </div>
 
-                {isChecked && hasError && (
+                {isChecked && errorMsg && (
                   <Text className="text-destructive text-[10px] md:text-xs font-medium text-center">
-                    Jawaban kurang tepat
+                    {errorMsg}
                   </Text>
                 )}
               </Card.Content>

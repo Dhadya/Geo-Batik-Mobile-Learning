@@ -139,7 +139,13 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     setIsSubmitting(true)
 
     try {
-      const result = await evaluateSection(slug, tab, section, items, fields, attempt)
+      // Filter out placeholder koordinat items when pilihan_refleksi exists
+      // (they are validated as part of pilihan_refleksi, not standalone)
+      const hasPilihanRefleksi = items.some((item) => item.type === "pilihan_refleksi")
+      const evaluationItems = hasPilihanRefleksi
+        ? items.filter((item) => item.type !== "koordinat")
+        : items
+      const result = await evaluateSection(slug, tab, section, evaluationItems, fields, attempt)
       setErrors_(result.errors)
       // Orange for wrong answers on attempt 1 (still has a chance); red for attempt 2 (final)
       const adjusted: Record<string, FieldColor> = {}

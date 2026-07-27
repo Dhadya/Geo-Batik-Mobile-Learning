@@ -33,16 +33,28 @@ export async function evaluateSection(
     const json = await response.json()
     if (!json.ok) throw new Error(json.error?.message ?? "AI evaluation failed")
     const aiCorrect = json.data.isCorrect
-    if (aiCorrect) {
+    const local = validateSection(items, fields, undefined)
+    const aiScore = json.data.score
+    const numericScore = aiScore != null ? aiScore
+      : aiCorrect ? 100
+      : local.correctCount === local.totalItems ? 100
+      : local.correctCount === 0 ? 0
+      : 50
+    const localAllCorrect = local.correctCount === local.totalItems
+    const resolvedCorrect = localAllCorrect || aiCorrect
+    if (resolvedCorrect) {
       return {
         ...json.data,
+        isCorrect: true,
+        score: numericScore || 100,
         errors: {},
-        fieldColors: {},
+        fieldColors: local.fieldColors,
       }
     }
-    const local = validateSection(items, fields, undefined)
     return {
       ...json.data,
+      isCorrect: false,
+      score: numericScore,
       errors: json.data.errors ?? local.errors ?? {},
       fieldColors: json.data.fieldColors ?? local.fieldColors ?? {},
     }
@@ -51,9 +63,10 @@ export async function evaluateSection(
     const local = validateSection(items, fields, undefined)
     const allCorrect = local.correctCount === local.totalItems
     const noneCorrect = local.correctCount === 0
+    const fallbackScore = allCorrect ? 100 : noneCorrect ? 0 : 50
     return {
       isCorrect: allCorrect,
-      score: allCorrect ? 100 : noneCorrect ? 0 : 50,
+      score: fallbackScore,
       feedback: allCorrect
         ? "Jawaban kamu benar. Semua jawaban sesuai dengan kunci jawaban yang diharapkan. Pertahankan pemahamanmu dan lanjutkan ke materi selanjutnya."
         : "Jawaban kamu belum sepenuhnya tepat. Periksa kembali setiap pernyataan dan pastikan pemahamanmu tentang konsep yang sedang dipelajari. Coba bandingkan dengan hasil percobaan yang sudah kamu lakukan.",

@@ -2,7 +2,7 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 import { appError } from "@/lib/api/errors";
 import type { SectionItem } from "@/features/modules/types";
 
-const GENERATION_TIMEOUT_MS = 8000;
+const GENERATION_TIMEOUT_MS = 15000;
 const MAX_RETRIES = 2;
 const RETRY_BASE_DELAY_MS = 1000;
 
@@ -154,10 +154,9 @@ ATURAN PENTING YANG HARUS DIPATUHI:
 • Tugasmu HANYA membandingkan jawaban siswa dengan kunci jawaban. Jika cocok, maka jawaban siswa BENAR.
 • JANGAN pernah menyebut atau menulis kata "kekeliruan di kunci jawaban", "sepertinya ada kesalahan", atau sejenisnya.
 • Feedback harus berfokus pada membantu siswa, bukan mengevaluasi soal atau kunci jawaban.
-• Gunakan bahasa Indonesia yang sederhana dan sesuai tingkat SMP.
-• Jangan menyebut nomor soal dalam feedback. Gunakan bullet • untuk setiap poin, jangan gunakan * atau -.  
-• DILARANG menggunakan karakter * (asterisk) dalam feedback. Selalu gunakan • untuk bullet point.
-
+• Jangan menyebut nomor soal dalam feedback.
+• Boleh gunakan kalimat langsung, boleh juga menggunakan • untuk bullet point, jangan gunakan * atau -
+• DILARANG menggunakan karakter * (asterisk) dan — (em dash) dalam feedback.
 `;
 
   if (attempt === 2) {
@@ -297,7 +296,14 @@ export async function evaluateSection(
     throw appError("INTERNAL_ERROR");
   }
 
-  return parseAIResponse(response);
+  const parsed = parseAIResponse(response);
+  console.log(
+    `[ai.evaluate] ${input.module}/${input.tab}/${input.sectionType} attempt=${input.attempt}`,
+    `score=${parsed.score} isCorrect=${parsed.isCorrect}`,
+    `items=${input.items.length}`,
+    `feedback=${parsed.feedback?.slice(0, 60)}...`,
+  );
+  return parsed;
 }
 
 /** Timeout for pembahasan generation (longer — needs per-question analysis). */

@@ -101,13 +101,22 @@ export function validateSection(
       case "pilihan_ganda": {
         const pg = item as PilihanGandaItem
         if (pg.multiSelect && pg.correctIndices) {
-          const selectedStr = fields[String(pg.id)]?.selected ?? ""
-          const selected = selectedStr ? selectedStr.split(",").map(Number) : []
+          const bitmap = Number(fields[String(pg.id)]?.selected ?? 0)
+          const selected: number[] = []
+          let b = bitmap
+          let idx = 0
+          while (b) {
+            if (b & 1) selected.push(idx)
+            b >>= 1
+            idx++
+          }
           const correct = selected.length === pg.correctIndices.length &&
             pg.correctIndices.every((v) => selected.includes(v))
           fieldColors[`${pg.id}_selection`] = correct ? "green" : "red"
           if (correct) {
             correctCount++
+          } else if (selected.some((v) => pg.correctIndices!.includes(v))) {
+            errors[`${pg.id}_selection`] = "Jawaban kurang lengkap, ada opsi lain yang lebih tepat"
           } else {
             errors[`${pg.id}_selection`] = "Pilihan ganda belum tepat, pastikan semua opsi yang dipilih sesuai dengan jawaban yang benar"
           }

@@ -246,7 +246,6 @@ export const useAnswerStore = create<AnswerStore>()(
       setSectionStatus: (slug, tab, section, status, attempt) => {
         const id = `${slug}-${tab}`
         const current = get().answers[id] ?? emptyTab(slug, tab)
-
         set({
           answers: {
             ...get().answers,
