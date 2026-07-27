@@ -12,6 +12,8 @@ export interface PilihanGandaQuestion {
   questionMatrix?: string
   /** Text appended after the matrix display. */
   questionSuffix?: string
+  /** Per-option matrix values for options that render as vertical 2×1 vectors (key: option index). */
+  optionMatrices?: Record<number, string>
 }
 
 /** Quiz module configuration per slug. */

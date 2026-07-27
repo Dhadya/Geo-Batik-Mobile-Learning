@@ -42,7 +42,7 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "flex flex-1 cursor-pointer items-center justify-between gap-4 px-3 py-2 text-left font-bold text-xs transition-colors hover:bg-primary hover:text-primary-foreground data-[open]:bg-primary data-[open]:text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:text-sm [&[data-open]>svg]:rotate-180",
+          "flex flex-1 cursor-pointer items-center justify-between gap-4 px-3 py-2 text-left font-bold text-xs transition-colors hover:bg-primary hover:text-primary-foreground data-[open]:bg-primary data-[open]:text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:text-sm",
           className
         )}
         {...props}
@@ -52,7 +52,7 @@ function AccordionTrigger({
           aria-hidden
           data-slot="accordion-trigger-icon"
           className={cn(
-            "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300",
+            "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 [[data-state=open]>&]:rotate-180",
             EASE
           )}
         />

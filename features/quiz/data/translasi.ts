@@ -26,6 +26,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     correctIndex: 0,
     explanation:
       "Vektor translasi = P' - P = (2-6, 4-(-1)) = (-4, 5).",
+    optionMatrices: { 0: "-4,5", 1: "4,5", 2: "-4,-5", 3: "2,4" },
   },
   {
     id: 3,
@@ -162,6 +163,7 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     correctIndex: 0,
     explanation:
       "Vektor translasi = P' - P = (-1-(-5), -3-2) = (4, -5).",
+    optionMatrices: { 0: "4,-5", 1: "-4,5", 2: "4,5", 3: "-1,-3" },
   },
   {
     id: 13,

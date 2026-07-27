@@ -5,16 +5,33 @@ import { Badge } from "@/components/retroui/Badge"
 
 const LABELS = ["A", "B", "C", "D"]
 
+/** Renders a vertical 2×1 matrix with scaled parentheses. */
+function MatrixInline({ matrix }: { matrix: string }) {
+  const [top, bottom] = matrix.split(",")
+  return (
+    <span className="inline-flex items-center gap-0.5 mx-1 align-middle">
+      <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.5] origin-center">(</span>
+      <span className="flex flex-col items-center gap-0 md:gap-0.5 text-xs md:text-sm font-black align-middle">
+        <span className="leading-none text-center">{top}</span>
+        <span className="leading-none text-center">{bottom}</span>
+      </span>
+      <span className="text-lg md:text-xl font-light select-none inline-block scale-y-[1.5] origin-center">)</span>
+    </span>
+  )
+}
+
 /** Single answer option button with DIPILIH indicator. */
 export function AnswerButton({
   index,
   text,
+  matrix,
   isSelected,
   onSelect,
   disabled,
 }: {
   index: number
   text: string
+  matrix?: string
   isSelected: boolean
   onSelect: () => void
   disabled?: boolean
@@ -30,7 +47,9 @@ export function AnswerButton({
       <span className="w-8 h-8 md:w-10 md:h-10 border-4 border-black bg-foreground text-background flex items-center justify-center text-sm md:text-base shrink-0">
         {LABELS[index]}
       </span>
-      <span className="grow">{text}</span>
+      <span className="grow">
+        {matrix ? <MatrixInline matrix={matrix} /> : text}
+      </span>
       {isSelected && (
         <Badge variant="solid" size="sm" className="absolute -top-2 -right-2 uppercase">
           Dipilih
