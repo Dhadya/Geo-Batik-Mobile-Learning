@@ -1,7 +1,6 @@
 export { ModuleCard } from "./components/ModuleCard"
-export { LabCard } from "./components/LabCard"
-export { ModuleGrid } from "./components/ModuleGrid"
 export { MenuHeader } from "./components/MenuHeader"
+export { ModuleGrid } from "./components/ModuleGrid"
 export { BackLink } from "./components/BackLink"
 export { menuModules } from "./data"
 export type { MenuModule } from "./data"

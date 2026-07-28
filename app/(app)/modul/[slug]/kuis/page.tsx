@@ -131,6 +131,21 @@ export default async function KuisIntroPage(props: {
               Menampilkan 5 percobaan terakhir dari total {allResults.length}.
             </Text>
           )}
+
+          {allResults.length >= 1 && slug === "translasi" && (
+            <div className="pt-2">
+              <Link href="/apersepsi/refleksi">
+                <Button
+                  variant="default"
+                  size="lg"
+                  className="w-full font-black uppercase text-sm md:text-base shadow-[4px_4px_0_0_black]"
+                >
+                  Modul Selanjutnya
+                  <MaterialIcon className="size-6" name="arrow_forward" />
+                </Button>
+              </Link>
+            </div>
+          )}
         </section>
       )}
 

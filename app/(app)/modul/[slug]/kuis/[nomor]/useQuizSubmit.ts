@@ -11,7 +11,7 @@ const PACKAGE_SIZE = 10
 
 /**
  * Orchestrates all-answers submission for the entire quiz when the user presses "Selesai".
- * Reads answers from Zustand, calculates scores locally using correctIndex, and sends to server.
+ * Takes answers directly from the component (reactive) to avoid store rehydration race conditions.
  */
 export function useQuizSubmit(slug: string) {
   const submitMutation = useMutation({
@@ -33,7 +33,7 @@ export function useQuizSubmit(slug: string) {
   })
   const router = useRouter()
 
-  const handleSelesai = () => {
+  const handleSelesai = (currentAnswers: Record<number, number>) => {
     const store = useQuizStore.getState()
     const quiz = getQuizModule(slug)
     if (!quiz) return
@@ -54,12 +54,11 @@ export function useQuizSubmit(slug: string) {
       return
     }
 
-    const answers = store.answers
-
+    // Use the component-provided answers (safe from rehydration races)
     const allAnswers = packageQuestions.map((q) => ({
       questionId: q.id,
-      answer: answers[q.id] ?? -1,
-      isCorrect: answers[q.id] === q.correctIndex,
+      answer: currentAnswers[q.id] ?? -1,
+      isCorrect: currentAnswers[q.id] === q.correctIndex,
     }))
 
     const totalScore = Math.round(

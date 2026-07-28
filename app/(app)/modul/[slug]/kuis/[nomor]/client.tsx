@@ -92,8 +92,8 @@ export function KuisSoalClient({
     if (submittingRef.current) return
     submittingRef.current = true
     setDialogOpen(false)
-    handleSelesai()
-  }, [handleSelesai])
+    handleSelesai(answers)
+  }, [handleSelesai, answers])
 
   if (!sessionStarted) {
     return (
