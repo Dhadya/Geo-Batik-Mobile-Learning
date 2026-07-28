@@ -2,14 +2,13 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 import { appError } from "@/lib/api/errors";
 import type { SectionItem } from "@/features/modules/types";
 
-const GENERATION_TIMEOUT_MS = 15000;
-const MAX_RETRIES = 2;
+const GENERATION_TIMEOUT_MS = 10000;
 const RETRY_BASE_DELAY_MS = 1000;
 
 /** Collect all available Gemini API keys from env vars (GEMINI_API_KEY_1..N, fallback to GEMINI_API_KEY comma-separated). */
 function collectApiKeys(): string[] {
   const keys: string[] = [];
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 30; i++) {
     const k = process.env[`GEMINI_API_KEY_${i}`];
     if (k) keys.push(k);
   }
@@ -21,6 +20,7 @@ function collectApiKeys(): string[] {
 }
 
 const apiKeys = collectApiKeys();
+const MAX_RETRIES = apiKeys.length >= 3 ? 3 : Math.max(1, apiKeys.length);
 let keyIndex = 0;
 
 function getCurrentKey(): string {
@@ -143,59 +143,94 @@ export function buildPrompt(
 Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module} - ${tabLabel}.
 ${attempt === 2 ? "Ini adalah percobaan kedua (terakhir) setelah jawaban pertama salah." : "Ini adalah percobaan pertama."}
 
+FOKUS BAGIAN ${sectionLabel.toUpperCase()}:
+${
+  sectionType === "pengamatan"
+    ? "Fokus mengamati sifat pernyataan di GeoGebranya. Feedback harus menekankan pada pemahaman sifat-sifat geometri yang terlihat pada visualisasi."
+    : sectionType === "percobaan"
+    ? "Fokus mengamati koordinat dan vektornya. Feedback harus menekankan pada perhitungan koordinat titik bayangan dan vektor translasi/refleksi."
+    : sectionType === "penyimpulan"
+    ? "Fokus memberikan feedback berupa penjelasan konsep dari pertanyaan yang diajukan. Feedback harus menjelaskan konsep geometri secara menyeluruh sebagai jawaban dari pertanyaan konseptual."
+    : sectionType === "cek-pemahaman"
+    ? "Fokus memberikan jawaban yang benar seperti apa. Feedback harus menekankan pada kebenaran jawaban dan cara memperolehnya, dengan standar penilaian yang lebih ketat."
+    : ""
+}
+
 Soal-soal beserta KUNCI JAWABAN yang sudah diverifikasi kebenarannya:
 ${itemDescriptions}
 
 Jawaban siswa:
 ${studentAnswers}
 
-ATURAN PENTING YANG HARUS DIPATUHI:
+ATURAN PENILAIAN:
 • KUNCI JAWABAN yang tercantum di atas adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
-• Tugasmu HANYA membandingkan jawaban siswa dengan kunci jawaban. Jika cocok, maka jawaban siswa BENAR.
 • JANGAN pernah menyebut atau menulis kata "kekeliruan di kunci jawaban", "sepertinya ada kesalahan", atau sejenisnya.
 • Feedback harus berfokus pada membantu siswa, bukan mengevaluasi soal atau kunci jawaban.
 • Jangan menyebut nomor soal dalam feedback.
 • Boleh gunakan kalimat langsung, boleh juga menggunakan • untuk bullet point, jangan gunakan * atau -
 • DILARANG menggunakan karakter * (asterisk) dan — (em dash) dalam feedback.
+
+ATURAN SKORING KHUSUS:
+• SOAL URAIAN: penilaian longgar. Jika jawaban siswa mendekati atau mengandung inti yang sama dengan kunci jawaban, anggap BENAR. Tidak harus sama persis kata demi kata.
+• SOAL YA/TIDAK DENGAN ALASAN: nilai berdasarkan jawaban pokok (Ya/Tidak) dulu. Jika jawaban pokok siswa SAMA dengan kunci (sama-sama Ya atau sama-sama Tidak), maka nilai MINIMAL 70, terlepas dari apapun alasannya. Jika jawaban pokok benar DAN alasan kuat/relevan, nilai 100. Jika jawaban pokok berbeda, nilai menyesuaikan.
+• DILARANG memberi nilai 70-99 jika jawaban pokok berbeda dengan kunci.
 `;
 
   if (attempt === 2) {
     return `${basePrompt}
 INSTRUKSI: PEMBAHASAN (percobaan kedua)
-Feedback ini akan dibaca siswa setelah kesempatan habis. Tujuannya agar siswa belajar dari kesalahan.
+Feedback dibaca siswa setelah kesempatan habis. Tujuannya agar siswa belajar dari kesalahan.
 
-• Jika semua jawaban benar: isi "isCorrect": true, "score": 100. Feedback tetap berisi penjelasan singkat mengapa jawaban benar untuk setiap soal.
-• Jika ada yang salah: isi "isCorrect": false, "score" sesuai proporsi benar. Feedback fokus ke soal yang salah.
-• Untuk setiap soal yang salah: sebutkan jawaban benar dan rumus/cara singkat mendapatkannya
-• Untuk setiap soal yang benar: tetap sebutkan sekilas konsep yang digunakan (1 kalimat per soal)
-• JANGAN beri pujian berlebihan, motivasi, atau kalimat penyemangat. Feedback harus to the point.
-• Minimal kata pengantar seperti "Jawaban yang benar adalah...", langsung ke inti koreksi.
+HASIL AKHIR:
+• Jika semua jawaban benar: "isCorrect": true, "score": 100.
+• Jika ada yang salah: "isCorrect": false, "score" sesuai aturan penilaian di atas.
+
+FEEDBACK WAJIB BENTUK POIN-POIN DENGAN PENJELASAN LENGKAP:
+• Tulis feedback sebagai poin-poin (gunakan • di awal tiap baris), BUKAN paragraf panjang.
+• Untuk setiap soal yang salah: 2-4 poin berisi penjelasan konsep, rumus, dan langkah penyelesaian yang benar secara detail.
+• Untuk setiap soal yang benar: 1-2 poin berisi penguatan konsep dan penjelasan mengapa jawaban tersebut tepat.
+• JANGAN beri pujian berlebihan, motivasi, atau kalimat penyemangat.
+• JANGAN menyebut nomor soal dalam feedback. Langsung jelaskan konsep atau penyelesaiannya.
+• Beri penjelasan yang cukup, tidak terlalu pendek. Siswa perlu memahami konsepnya.
+
+CONTOH FORMAT FEEDBACK YANG BENAR:
+• Konsep translasi: setiap titik (x,y) digeser sejauh (a,b) menghasilkan bayangan (x+a, y+b). Pada soal ini, titik A(2,3) ditranslasikan (4,-1) sehingga A'(6,2). Translasi tidak mengubah bentuk atau orientasi, hanya posisi.
+• Refleksi terhadap sumbu X mengubah tanda koordinat y menjadi kebalikannya. Titik (x,y) dicerminkan menjadi (x,-y). Maka B(1,4) setelah direfleksikan terhadap sumbu X menjadi B'(1,-4). Konsep ini berlaku untuk semua bangun datar.
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
   "isCorrect": boolean,
   "score": number (0-100) atau null,
-  "feedback": "string dalam Bahasa Indonesia, berisi pembahasan lengkap per poin",
+  "feedback": "string dalam Bahasa Indonesia, berbentuk poin-poin menggunakan •",
   "errors": { "fieldKey": "alasan kesalahan" }
 }`;
   }
 
   return `${basePrompt}
 INSTRUKSI: HINT (percobaan pertama):
-Feedback ini akan dibaca siswa sebagai petunjuk sebelum mencoba lagi. JANGAN beri jawaban akhir.
+Feedback dibaca siswa sebagai petunjuk sebelum mencoba lagi. JANGAN beri jawaban akhir.
 
-• Jika semua jawaban benar: isi "isCorrect": true, "score": 100. Feedback tetap berisi penjelasan singkat mengapa jawaban benar untuk setiap soal (1 kalimat per soal)
-• Jika ada yang salah: isi "isCorrect": false
-• Berikan PETUNJUK ARAH (2-3 poin kalimat per soal salah) yang mengarahkan siswa pada letak kekurangan
-• Sebutkan KONSEP apa yang perlu ditinjau ulang, terkait soal spesifik yang salah
-• Boleh menyebutkan rumus atau cara singkat, tapi JANGAN berikan jawaban akhir atau angka hasil
-• JANGAN beri pujian, motivasi, atau kalimat pembuka basa-basi
+HASIL:
+• Jika semua jawaban benar: "isCorrect": true, "score": 100. Feedback tetap berisi 1 poin per soal berisi konsep yang digunakan.
+• Jika ada yang salah: "isCorrect": false
+
+FEEDBACK WAJIB BENTUK POIN-POIN DENGAN PENJELASAN:
+• Tulis feedback sebagai poin-poin (gunakan • di awal tiap baris), BUKAN paragraf panjang.
+• Untuk setiap soal yang salah: 2-4 poin berisi petunjuk arah yang mengarahkan siswa pada letak kekurangan, konsep yang harus dipahami, dan cara mendekati soal tersebut.
+• Sebutkan KONSEP apa yang perlu ditinjau ulang dengan penjelasan yang cukup, tidak terlalu pendek.
+• Boleh menyebutkan rumus atau contoh serupa, tapi JANGAN berikan jawaban akhir atau angka hasil.
+• JANGAN beri pujian, motivasi, atau kalimat pembuka basa-basi.
+• JANGAN menyebut nomor soal dalam feedback.
+
+CONTOH FORMAT FEEDBACK YANG BENAR:
+• Untuk soal translasi, ingat kembali rumus: setiap titik (x,y) digeser sejauh (a,b) menghasilkan bayangan (x+a, y+b). Coba terapkan rumus ini dengan nilai a dan b yang diketahui pada soal. Perhatikan tanda positif dan negatif pada pergeseran.
+• Untuk soal refleksi sumbu X, koordinat y berubah tanda menjadi -y sedangkan koordinat x tetap. Coba gambarkan posisi titik awal dan bayangannya pada koordinat kartesius untuk memvisualisasikan perubahan ini.
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format:
 {
   "isCorrect": boolean,
   "score": number (0-100) atau null,
-  "feedback": "string dalam Bahasa Indonesia, berisi hint/petunjuk, bukan pembahasan",
+  "feedback": "string dalam Bahasa Indonesia, berbentuk poin-poin menggunakan •",
   "errors": { "fieldKey": "alasan kesalahan" }
 }`;
 }
@@ -266,6 +301,7 @@ export async function evaluateSection(
   const prompt = buildPrompt(input.module, input.tab, input.sectionType, input.items, input.answers, input.attempt);
 
   const generate = async () => {
+    rotateKey();
     const key = getCurrentKey();
     const genAI = new GoogleGenerativeAI(key);
     const model = genAI.getGenerativeModel({
@@ -307,7 +343,7 @@ export async function evaluateSection(
 }
 
 /** Timeout for pembahasan generation (longer — needs per-question analysis). */
-const PEMBAHASAN_TIMEOUT_MS = 30000;
+const PEMBAHASAN_TIMEOUT_MS = 10000;
 
 /** Build prompt for pembahasan generation. */
 function buildPembahasanPrompt(
@@ -364,6 +400,7 @@ export async function generatePembahasan(
   const prompt = buildPembahasanPrompt(questions, answers);
 
   const generate = async () => {
+    rotateKey();
     const key = getCurrentKey();
     const genAI = new GoogleGenerativeAI(key);
     const model = genAI.getGenerativeModel({
@@ -390,9 +427,13 @@ export async function generatePembahasan(
     return questions.map((q) => {
       const userAns = answers[q.id]
       const isCorrect = userAns === q.correctIndex
+      const correctText = q.options[q.correctIndex]
+      const userText = userAns != null ? q.options[userAns] ?? "Tidak dijawab" : "Tidak dijawab"
       let feedback = q.explanation
-      if (!isCorrect && userAns !== undefined) {
-        feedback = `${q.explanation}\n\nLangkah penyelesaian yang benar:\n1) Identifikasi jawaban yang benar berdasarkan konsep yang sesuai.\n2) Perhatikan bahwa jawaban Anda memilih opsi ke-${userAns + 1} yang tidak sesuai.\n3) Gunakan rumus atau konsep yang tepat untuk memperoleh jawaban yang benar, yaitu opsi ke-${q.correctIndex + 1}.`
+      if (isCorrect) {
+        feedback = `${q.explanation}\n\nJawaban benar: ${correctText}`
+      } else {
+        feedback = `${q.explanation}\n\nJawaban kamu: ${userText}\nJawaban benar: ${correctText}`
       }
       return { questionId: q.id, feedback }
     })

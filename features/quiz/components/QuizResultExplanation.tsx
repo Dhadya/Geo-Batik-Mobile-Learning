@@ -108,7 +108,10 @@ export function QuizResultExplanation({
                     <div className="border-t-2 border-black pt-3">
                       <Text as="p" className="font-medium text-base whitespace-pre-wrap">
                         <span className="font-bold">Pembahasan: </span>
-                        {aiFeedback?.[q.id] ?? q.explanation}
+                        {aiFeedback?.[q.id]
+                          ? aiFeedback[q.id]
+                          : `${q.explanation}\n\nJawaban benar: ${q.options[q.correctIndex]}`
+                        }
                       </Text>
                     </div>
                   )}
