@@ -384,7 +384,9 @@ export async function generatePembahasan(
     const cleaned = text.replace(/```(?:json)?\s*/gi, "").trim();
     const feedback: { questionId: number; feedback: string }[] = JSON.parse(cleaned);
     return feedback;
-  } catch {
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.warn("[ai] generatePembahasan failed, falling back to static explanations:", msg);
     return questions.map((q) => {
       const userAns = answers[q.id]
       const isCorrect = userAns === q.correctIndex
