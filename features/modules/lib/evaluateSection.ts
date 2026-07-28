@@ -47,7 +47,7 @@ function describeCorrectAnswer(item: SectionItem): string {
       return `${c.question} ${stmts}`
     }
     default:
-      return `Item ${item.id}`
+      return `Item ${(item as SectionItem).id}`
   }
 }
 

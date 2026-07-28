@@ -1,4 +1,3 @@
-import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { ModuleGrid, MenuHeader, BackLink } from "@/features/menu"
 
 /* Main menu — bento grid of module cards + back navigation. */
