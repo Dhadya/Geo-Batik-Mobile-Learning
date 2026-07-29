@@ -91,7 +91,7 @@ export function BayanganTableRenderer({
                 onChange={(e) => setField("8", "text", e.target.value)}
                 disabled={isChecked}
                 placeholder="..., ..."
-                className={`w-16 md:w-20 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(textColor, !!err)}`}
+                className={`w-16 md:w-20 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(textColor)}`}
               />
               <span className="text-xs md:text-sm font-bold select-none">)</span>
             </div>

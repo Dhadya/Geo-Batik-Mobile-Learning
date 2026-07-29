@@ -59,7 +59,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                     }
                     disabled={isChecked}
                     rows={5}
-                    className={`border-4 font-medium resize-none min-h-20 md:min-h-28 text-xs md:text-sm ${fieldColorClasses(color, !!err)}`}
+                    className={`border-4 font-medium resize-none min-h-20 md:min-h-28 text-xs md:text-sm ${fieldColorClasses(color)}`}
                   />
                   {err && <Text className="text-destructive text-[10px] md:text-xs">{err}</Text>}
                 </div>
@@ -79,7 +79,6 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                   <div className="space-y-1.5 md:space-y-2">
                     {m.leftItems.map((left) => {
                       const selected = fields[String(m.id)]?.[left.id] ?? ""
-                      const err = errors[`${m.id}_${left.id}`]
                       return (
                         <div key={left.id} className="flex items-center gap-1 md:gap-1.5">
                           <div className="border-2 border-black px-2 md:px-3 py-0.5 md:py-1 font-bold text-xs md:text-sm shrink-0 text-center">
@@ -93,7 +92,7 @@ export function PengamatanTitikForm({ slug, tab }: PengamatanTitikFormProps) {
                             >
                               <Select.Trigger
                                 disabled={isChecked}
-                                className={`h-7 md:h-8 w-full max-w-sm border-2 font-semibold text-[10px] md:text-xs bg-white min-w-0 shadow-none capitalize ${fieldColorClasses(fieldColors[`${m.id}_${left.id}`], !!err)}`}
+                                className={`h-7 md:h-8 w-full max-w-sm border-2 font-semibold text-[10px] md:text-xs bg-white min-w-0 shadow-none capitalize ${fieldColorClasses(fieldColors[`${m.id}_${left.id}`])}`}
                               >
                                 <Select.Value placeholder="Pilih..." />
                               </Select.Trigger>

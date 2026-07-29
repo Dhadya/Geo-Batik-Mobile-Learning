@@ -112,7 +112,7 @@ export function PengamatanGarisForm({ slug, tab }: PengamatanGarisFormProps) {
                     disabled={isChecked}
                     rows={2}
                     placeholder="Tuliskan jawabanmu..."
-                    className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${fieldColorClasses(fc, !!err)}`}
+                    className={`border-4 border-black font-medium resize-none text-xs md:text-sm text-black ${fieldColorClasses(fc)}`}
                   />
                   {err && <Text className="text-destructive text-[10px] md:text-xs font-medium">{err}</Text>}
                 </div>

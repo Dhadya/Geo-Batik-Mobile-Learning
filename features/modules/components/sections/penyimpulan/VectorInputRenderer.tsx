@@ -57,7 +57,7 @@ export function VectorInputRenderer({
               }}
               disabled={isChecked}
               placeholder="..."
-              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(aColor, !!vectorErr)}`}
+              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(aColor)}`}
             />
             <Input
               type="text"
@@ -68,7 +68,7 @@ export function VectorInputRenderer({
               }}
               disabled={isChecked}
               placeholder="..."
-              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(bColor, !!vectorErr)}`}
+              className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(bColor)}`}
             />
           </div>
           <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>

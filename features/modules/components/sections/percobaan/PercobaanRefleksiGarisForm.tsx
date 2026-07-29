@@ -45,7 +45,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
           onValueChange={(val) => { if (val) setField(String(refleksiItem.id), "selected", val) }}
           disabled={isChecked}
         >
-          <Select.Trigger className={`w-full border-2 shadow-[2px_2px_0_0_black] text-xs md:text-sm font-medium ${fieldColorClasses(fieldColors[`${refleksiItem.id}_selected`], !!errors[`${refleksiItem.id}_selected`])}`}>
+          <Select.Trigger className={`w-full border-2 shadow-[2px_2px_0_0_black] text-xs md:text-sm font-medium ${fieldColorClasses(fieldColors[`${refleksiItem.id}_selected`])}`}>
             <Select.Value placeholder="Pilih opsi refleksi" />
           </Select.Trigger>
           <Select.Content>
@@ -78,7 +78,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
                     onKeyDown={allowOnlyNumbers}
                     onChange={(e) => setField(String(refleksiItem.id), `x${idx}`, e.target.value)}
                     disabled={isChecked}
-                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(coordColor, !!errors[`${refleksiItem.id}_coord${idx}`])}`}
+                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(coordColor)}`}
                   />
                   ,{" "}
                   <Input
@@ -89,7 +89,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
                     onKeyDown={allowOnlyNumbers}
                     onChange={(e) => setField(String(refleksiItem.id), `y${idx}`, e.target.value)}
                     disabled={isChecked}
-                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(coordColor, !!errors[`${refleksiItem.id}_coord${idx}`])}`}
+                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(coordColor)}`}
                   />
                   )
                   {idx < answers.length - 1 ? " dan " : ""}

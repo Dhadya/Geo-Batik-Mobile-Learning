@@ -56,7 +56,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                     value={xVal}
                     onChange={(e) => setField(String(k.id), "x", e.target.value)}
                     disabled={isChecked}
-                    className={`w-16 md:w-20 text-center border-4 font-bold text-xs md:text-sm ${fieldColorClasses(color, !!coordErr)}`}
+                    className={`w-16 md:w-20 text-center border-4 font-bold text-xs md:text-sm ${fieldColorClasses(color)}`}
                   />
                   <span className="font-bold text-xs md:text-sm">,</span>
                   <Input
@@ -65,7 +65,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                     value={yVal}
                     onChange={(e) => setField(String(k.id), "y", e.target.value)}
                     disabled={isChecked}
-                    className={`w-16 md:w-20 text-center border-4 font-bold text-xs md:text-sm ${fieldColorClasses(color, !!coordErr)}`}
+                    className={`w-16 md:w-20 text-center border-4 font-bold text-xs md:text-sm ${fieldColorClasses(color)}`}
                   />
                   <span className="font-bold text-xs md:text-sm">)</span>
                 </div>
@@ -91,7 +91,7 @@ export function PengamatanMockForm({ slug, tab }: PengamatanMockFormProps) {
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(u.id), "text", e.target.value)}
                   disabled={isChecked}
                   rows={3}
-                  className={`border-4 font-medium resize-none text-xs md:text-sm ${fieldColorClasses(color, !!err)}`}
+                  className={`border-4 font-medium resize-none text-xs md:text-sm ${fieldColorClasses(color)}`}
                 />
                 {err && (
                   <span className="text-[10px] md:text-xs text-destructive font-medium">{err}</span>
