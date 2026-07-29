@@ -100,7 +100,6 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         <PercobaanRefleksiTable
           items={tableItems}
           fields={fields}
-          errors={errors}
           fieldColors={fieldColors}
           setField={setField}
           tab={tab}

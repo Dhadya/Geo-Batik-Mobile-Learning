@@ -147,12 +147,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         : items
       const result = await evaluateSection(slug, tab, section, evaluationItems, fields, attempt)
       setErrors_(result.errors)
-      // Orange for wrong answers on attempt 1 (still has a chance); red for attempt 2 (final)
-      const adjusted: Record<string, FieldColor> = {}
-      for (const [key, color] of Object.entries(result.fieldColors)) {
-        adjusted[key] = (attempt === 1 && color === "red") ? "orange" : color
-      }
-      setFieldColors_(adjusted)
+      setFieldColors_(result.fieldColors)
       boundSetAIFeedback(result.feedback)
 
       useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)

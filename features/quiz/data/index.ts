@@ -1,7 +1,6 @@
 import type { QuizModule } from "../types"
 import { translasiModule } from "./translasi"
 import { refleksiModule } from "./refleksi"
-import { useQuizStore } from "../store"
 
 /** Jumlah soal per paket dalam satu modul. */
 export const PACKAGE_SIZE = 10

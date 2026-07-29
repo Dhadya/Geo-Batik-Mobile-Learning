@@ -46,7 +46,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
           onValueChange={(val) => { if (val) setField(String(refleksiItem.id), "selected", val) }}
           disabled={isChecked}
         >
-          <Select.Trigger className={`w-full border-2 shadow-[2px_2px_0_0_black] text-xs md:text-sm font-medium ${fieldColorClasses(fieldColors[`${refleksiItem.id}_selected`], !!errors[`${refleksiItem.id}_selected`])}`}>
+          <Select.Trigger className={`w-full border-2 shadow-[2px_2px_0_0_black] text-xs md:text-sm font-medium ${fieldColorClasses(fieldColors[`${refleksiItem.id}_selected`])}`}>
             <Select.Value placeholder="Pilih opsi refleksi" />
           </Select.Trigger>
           <Select.Content>
@@ -99,7 +99,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
                           onKeyDown={allowOnlyNumbers}
                           onChange={(e) => setField(String(refleksiItem.id), `x${idx}`, e.target.value)}
                           disabled={isChecked}
-                          className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor, !!errors[`${refleksiItem.id}_coord${idx}`])}`}
+                           className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor)}`}
                         />
                         <span className="font-bold text-xs md:text-sm">,</span>
                         <Input
@@ -110,7 +110,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
                           onKeyDown={allowOnlyNumbers}
                           onChange={(e) => setField(String(refleksiItem.id), `y${idx}`, e.target.value)}
                           disabled={isChecked}
-                          className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor, !!errors[`${refleksiItem.id}_coord${idx}`])}`}
+                           className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor)}`}
                         />
                         <span className="font-bold text-xs md:text-sm">)</span>
                       </div>

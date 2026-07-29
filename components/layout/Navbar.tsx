@@ -137,7 +137,6 @@ export function Navbar() {
   const isMenuActive = pathname === "/menu"
   const isTranslasiActive = pathname.startsWith("/apersepsi/translasi") || pathname.startsWith("/modul/translasi")
   const isRefleksiActive = pathname.startsWith("/apersepsi/refleksi") || pathname.startsWith("/modul/refleksi")
-  const isLabActive = pathname === "/lab"
 
   const closeDesktopDropdown = () => setNavKey((k) => k + 1)
   const closeMobilePanel = () => setMobileOpen(false)
@@ -207,16 +206,6 @@ export function Navbar() {
                 kuisHref="/modul/refleksi/kuis"
                 onSelect={closeDesktopDropdown}
               />
-
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  render={<Link href="/lab" onClick={closeDesktopDropdown} />}
-                  className={`font-black uppercase text-base h-auto px-0 py-0 bg-transparent hover:bg-transparent focus:bg-transparent data-active:bg-transparent text-primary-foreground ${isLabActive ? "underline underline-offset-4 decoration-4" : ""
-                    }`}
-                >
-                  Lab
-                </NavigationMenuLink>
-              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
@@ -267,14 +256,6 @@ export function Navbar() {
               kuisHref="/modul/refleksi/kuis"
               onClosePanel={closeMobilePanel}
             />
-
-            <Link
-              href="/lab"
-              onClick={() => setMobileOpen(false)}
-              className="block px-4 py-2.5 font-black uppercase text-sm border-2 border-black bg-surface-container hover:bg-secondary-container transition-colors"
-            >
-              Lab
-            </Link>
 
             {/* Profile section in mobile */}
             <div className="pt-3 border-t-2 border-black/20 w-full">

@@ -68,16 +68,30 @@ export function validateSection(
       case "uraian": {
         const u = item as UraianItem
         const userAns = (itemAnswers.text ?? "").trim()
-        const normalize = (s: string) => s.replace(/\u2212/g, "-").replace(/[()\[\]{}]/g, "").replace(/\s+/g, "").toLowerCase()
+        if (!userAns) {
+          fieldColors[`${item.id}_text`] = "red"
+          errors[`${item.id}_text`] = "Jawaban belum diisi"
+          break
+        }
+        const userLower = userAns.toLowerCase().trim()
         const allExpected = [u.answer, ...(u.acceptAnswers ?? [])]
         const isCorrect = allExpected.some((expected) => {
-          const normExpected = normalize(expected)
-          const normUser = normalize(userAns)
-          if (normUser === normExpected) return true
-          return normExpected.split(/[.,;!?]+/).some((p) => p.trim() && normUser.includes(p))
+          const expLower = expected.toLowerCase().trim()
+          if (userLower === expLower) return true
+          if (userLower.includes(expLower) || expLower.includes(userLower)) return true
+          // Keyword matching: split expected into meaningful clauses, check user answer covers most keywords
+          const clauses = expLower.split(/[,.;:!?]+/).map((c) => c.trim()).filter((c) => c.length > 3)
+          if (clauses.length === 0) return false
+          const matchedClauses = clauses.filter((clause) => {
+            const keywords = clause.split(/\s+/).filter((w) => w.length > 2)
+            if (keywords.length === 0) return false
+            const matched = keywords.filter((kw) => userLower.includes(kw))
+            return matched.length >= Math.ceil(keywords.length * 0.4)
+          })
+          return matchedClauses.length >= Math.ceil(clauses.length * 0.4)
         })
-        fieldColors[`${item.id}_text`] = userAns && isCorrect ? "green" : "red"
-        if (!userAns || !isCorrect) {
+        fieldColors[`${item.id}_text`] = isCorrect ? "green" : "red"
+        if (!isCorrect) {
           errors[`${item.id}_text`] = "Jawaban uraian kurang tepat, coba periksa langkah penyelesaian dan pastikan sesuai dengan format yang diminta"
         } else {
           correctCount++

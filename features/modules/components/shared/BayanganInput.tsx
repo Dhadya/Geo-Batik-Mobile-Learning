@@ -8,16 +8,14 @@ import type { FieldColor } from "@/features/modules/lib/validation"
 interface BayanganInputProps {
   x: string
   y: string
-  xError?: string
-  yError?: string
   xColor?: FieldColor
   yColor?: FieldColor
   onXChange: (val: string) => void
   onYChange: (val: string) => void
 }
 
-/** Horizontal (x, y) input pair with parentheses and error styling. */
-export function BayanganInput({ x, y, xError, yError, xColor, yColor, onXChange, onYChange }: BayanganInputProps) {
+/** Horizontal (x, y) input pair with parentheses and AI-derived color styling. */
+export function BayanganInput({ x, y, xColor, yColor, onXChange, onYChange }: BayanganInputProps) {
   return (
     <div className="flex items-center gap-0.5 md:gap-1 justify-center">
       <span className="text-xs md:text-sm font-bold select-none">(</span>
@@ -28,7 +26,7 @@ export function BayanganInput({ x, y, xError, yError, xColor, yColor, onXChange,
         value={x}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onXChange(e.target.value)}
-        className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(xColor, !!xError)}`}
+        className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(xColor)}`}
       />
       <span className="text-xs md:text-sm font-bold select-none">,</span>
       <Input
@@ -38,7 +36,7 @@ export function BayanganInput({ x, y, xError, yError, xColor, yColor, onXChange,
         value={y}
         onKeyDown={allowOnlyNumbers}
         onChange={(e) => onYChange(e.target.value)}
-        className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(yColor, !!yError)}`}
+        className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(yColor)}`}
       />
       <span className="text-xs md:text-sm font-bold select-none">)</span>
     </div>

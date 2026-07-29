@@ -31,7 +31,7 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const percobaanScore = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.score ?? null)
 
   return (
-    <div className="h-auto lg:h-full flex flex-col gap-3 md:gap-4">
+    <div className="h-auto lg:h-full lg:max-h-[calc(100vh-8rem)] flex flex-col gap-3 md:gap-4">
       <Tabs defaultValue="pengamatan" className="flex flex-col h-full gap-3 md:gap-4">
         {/* Tab navigation bar */}
         <Tabs.List className="border-4 border-black bg-white p-1 md:p-1.5 flex gap-1.5 md:gap-2 shadow-[4px_4px_0_0_black] w-full overflow-x-hidden">

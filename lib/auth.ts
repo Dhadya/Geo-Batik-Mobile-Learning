@@ -6,13 +6,8 @@ import { user, session, account, verification } from "@/drizzle/schema";
 
 function getAuthBaseURL() {
   const configuredURL = process.env.BETTER_AUTH_URL;
-  const isLocalURL =
-    configuredURL?.startsWith("http://localhost") ||
-    configuredURL?.startsWith("https://localhost") ||
-    configuredURL?.startsWith("http://127.0.0.1") ||
-    configuredURL?.startsWith("https://127.0.0.1");
 
-  if (configuredURL && !(process.env.VERCEL_URL && isLocalURL)) {
+  if (configuredURL) {
     return configuredURL;
   }
 
@@ -29,7 +24,6 @@ const trustedOrigins = Array.from(
     [
       authBaseURL,
       process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
-      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
     ].filter(Boolean)
   )
 ) as string[];

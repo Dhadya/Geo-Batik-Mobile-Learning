@@ -39,7 +39,7 @@ export function PercobaanUraianList({ items, fields, errors, fieldColors, isChec
                 disabled={isChecked}
                 rows={2}
                 placeholder="Tuliskan jawabanmu..."
-                className={`border-4 font-medium resize-none text-xs md:text-sm text-black ${fieldColorClasses(color, !!err)}`}
+                className={`border-4 font-medium resize-none text-xs md:text-sm text-black ${fieldColorClasses(color)}`}
               />
               {err && <Text className="text-destructive text-[10px] md:text-xs font-medium">{err}</Text>}
             </div>

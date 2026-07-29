@@ -49,7 +49,7 @@ export function AuthFormField({
               onClick={() => setShowPassword((prev) => !prev)}
               className="border-0 shadow-none bg-transparent h-full text-muted-foreground hover:text-foreground hover:bg-transparent"
             >
-              <MaterialIcon className="size-5" name={showPassword ? "visibility_off" : "visibility"} />
+              <MaterialIcon className="size-5" name={showPassword ? "visibility" : "visibility_off"} />
             </Button>
           ) : icon ? (
             <span className="pointer-events-none">{icon}</span>

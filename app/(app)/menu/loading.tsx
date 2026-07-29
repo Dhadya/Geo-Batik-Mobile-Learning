@@ -15,18 +15,6 @@ export default function MenuLoading() {
         <Skeleton className="min-h-[450px] md:min-h-[550px] w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
       </div>
 
-      {/* LabCard — horizontal card with icon + text + trailing icon */}
-      <div className="flex items-center justify-between border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-4 md:p-8">
-        <div className="flex items-center gap-4 md:gap-6">
-          <Skeleton className="size-12 md:size-16 border-4 border-black shadow-md" />
-          <div className="space-y-2">
-            <Skeleton className="h-6 md:h-8 w-32 md:w-40 border-2 border-black" />
-            <Skeleton className="h-4 md:h-5 w-48 md:w-64 border-2 border-black" />
-          </div>
-        </div>
-        <Skeleton className="size-12 md:size-16 border-2 border-black" />
-      </div>
-
       {/* BackLink — centered pill */}
       <div className="flex justify-center pb-8 md:pb-12">
         <Skeleton className="h-10 md:h-12 w-48 md:w-56 border-4 border-black shadow-[4px_4px_0_0_black]" />
