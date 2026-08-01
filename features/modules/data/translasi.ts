@@ -40,6 +40,9 @@ export const translasiTabs: ModuleTab[] = [
               label: "(1, -2)",
               targetBayangan: "(3, 1)",
               answer: { a: 2, b: 3 },
+              hint: "Nilai translasi adalah selisih koordinat bayangan dengan titik awal. Untuk tiap komponen: a = x' - x dan b = y' - y. Hitung selisihnya dengan memperhatikan tanda positif dan negatif.",
+              explanation:
+                "Titik awal (1, -2) mencapai bayangan (3, 1): a = 3 - 1 = 2 dan b = 1 - (-2) = 3, sehingga nilai translasinya adalah (2, 3).",
             },
             {
               id: 2,
@@ -47,6 +50,9 @@ export const translasiTabs: ModuleTab[] = [
               label: "(-1, 4)",
               targetBayangan: "(3, 1)",
               answer: { a: 4, b: -3 },
+              hint: "Gunakan rumus a = x' - x dan b = y' - y dengan titik awal (-1, 4) dan bayangan (3, 1). Perhatikan bahwa komponen bisa bernilai negatif.",
+              explanation:
+                "Titik awal (-1, 4) mencapai bayangan (3, 1): a = 3 - (-1) = 4 dan b = 1 - 4 = -3, sehingga nilai translasinya adalah (4, -3).",
             },
             {
               id: 3,
@@ -54,6 +60,9 @@ export const translasiTabs: ModuleTab[] = [
               label: "(6, 4)",
               targetBayangan: "(3, 1)",
               answer: { a: -3, b: -3 },
+              hint: "Gunakan rumus a = x' - x dan b = y' - y dengan titik awal (6, 4) dan bayangan (3, 1). Perhatikan bahwa hasilnya bisa membuat titik bergeser ke kiri atau ke bawah.",
+              explanation:
+                "Titik awal (6, 4) mencapai bayangan (3, 1): a = 3 - 6 = -3 dan b = 1 - 4 = -3, sehingga nilai translasinya adalah (-3, -3).",
             },
             {
               id: 4,
@@ -61,6 +70,9 @@ export const translasiTabs: ModuleTab[] = [
               label: "(1, -3)",
               bayangan: "T(3, 4)",
               answer: { x: 4, y: 1 },
+              hint: "Terapkan rumus translasi: titik (x, y) digeser sejauh (a, b) menjadi (x + a, y + b). Jumlahkan koordinat (1, -3) dengan vektor translasi (3, 4).",
+              explanation:
+                "(1, -3) ditranslasikan oleh (3, 4): x' = 1 + 3 = 4 dan y' = -3 + 4 = 1, sehingga bayangannya (4, 1).",
             },
           ],
         },
@@ -100,6 +112,9 @@ export const translasiTabs: ModuleTab[] = [
                 "b-pos": "atas",
                 "a-neg": "kiri",
               },
+              hint: "Komponen a mengatur perpindahan mendatar (kiri/kanan) dan komponen b mengatur perpindahan tegak (atas/bawah). Tentukan arah untuk setiap tanda: positif atau negatif.",
+              explanation:
+                "a > 0 menggeser ke kanan, a < 0 menggeser ke kiri, b > 0 menggeser ke atas, dan b < 0 menggeser ke bawah. Jadi a > 0 → Kanan, b < 0 → Bawah, b > 0 → Atas, a < 0 → Kiri.",
             },
           ],
         },
@@ -206,6 +221,7 @@ export const translasiTabs: ModuleTab[] = [
               label: "A(-3, 3)",
               bayangan: "(6, -4)",
               answer: { x: 3, y: -1 },
+              hint: "Setiap titik sudut bangun digeser dengan vektor translasi yang sama (6, -4). Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan komponen translasi: x' = x + a dan y' = y + b.",
             },
             {
               id: 2,
@@ -213,6 +229,7 @@ export const translasiTabs: ModuleTab[] = [
               label: "B(-3, 1)",
               bayangan: "(6, -4)",
               answer: { x: 3, y: -3 },
+              hint: "Setiap titik sudut bangun digeser dengan vektor translasi yang sama (6, -4). Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan komponen translasi: x' = x + a dan y' = y + b.",
             },
             {
               id: 3,
@@ -220,6 +237,7 @@ export const translasiTabs: ModuleTab[] = [
               label: "C(-1, 1)",
               bayangan: "(6, -4)",
               answer: { x: 5, y: -3 },
+              hint: "Setiap titik sudut bangun digeser dengan vektor translasi yang sama (6, -4). Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan komponen translasi: x' = x + a dan y' = y + b.",
             },
             {
               id: 4,
@@ -227,6 +245,7 @@ export const translasiTabs: ModuleTab[] = [
               label: "D(-1, 3)",
               bayangan: "(6, -4)",
               answer: { x: 5, y: -1 },
+              hint: "Setiap titik sudut bangun digeser dengan vektor translasi yang sama (6, -4). Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan komponen translasi: x' = x + a dan y' = y + b.",
             },
           ],
         },
@@ -240,6 +259,9 @@ export const translasiTabs: ModuleTab[] = [
               question: "Bagaimana arah perpindahan titik A, B, C, D?",
               options: ["Berbeda", "Sama"],
               correctIndex: 1,
+              hint: "Perhatikan ke arah mana masing-masing titik A, B, C, D berpindah pada GeoGebra. Bandingkan arah perpindahan keempat titik tersebut.",
+              explanation:
+                "Semua titik A, B, C, D ditranslasikan dengan vektor yang sama, sehingga arah perpindahannya sama untuk setiap titik.",
             },
             {
               id: 6,
@@ -247,6 +269,9 @@ export const translasiTabs: ModuleTab[] = [
               question: "Apakah setiap titik jarak berpindahnya sama?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
+              hint: "Perhatikan panjang pergeseran setiap titik pada GeoGebra. Karena vektor translasi yang digunakan sama, bandingkan jarak perpindahan keempat titik.",
+              explanation:
+                "Setiap titik bergeser dengan vektor translasi yang sama, sehingga jarak perpindahannya sama untuk semua titik.",
             },
             {
               id: 7,
@@ -254,6 +279,9 @@ export const translasiTabs: ModuleTab[] = [
               question: "Apakah bentuk bangun motif berubah saat ditranslasikan?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
+              hint: "Perhatikan bentuk bangun sebelum dan sesudah translasi pada GeoGebra. Apakah ukuran sisi, sudut, dan bentuknya tetap sama?",
+              explanation:
+                "Translasi hanya menggeser posisi bangun tanpa mengubah bentuknya, sehingga bentuk bangun motif tetap sama.",
             },
             {
               id: 8,
@@ -261,6 +289,9 @@ export const translasiTabs: ModuleTab[] = [
               question: "Apakah ukuran bangun motif berubah?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
+              hint: "Perhatikan panjang sisi dan besar sudut bangun sebelum dan sesudah ditranslasikan. Apakah ada yang membesar atau mengecil?",
+              explanation:
+                "Translasi tidak mengubah ukuran bangun, sehingga panjang sisi dan besar sudutnya tetap sama.",
             },
           ],
         },
@@ -380,24 +411,36 @@ export const translasiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "Titik potong sumbu x",
               answer: { x: -4, y: 0 },
+              hint: "Titik potong terhadap sumbu x memiliki nilai y = 0. Substitusikan y = 0 ke persamaan garis k: -x + 2y = 4 untuk mencari nilai x.",
+              explanation:
+                "Titik potong sumbu x berarti y = 0. Substitusi ke persamaan garis: -x + 2(0) = 4 sehingga -x = 4, diperoleh x = -4. Jadi titik potong sumbu x adalah (-4, 0).",
             },
             {
               id: 2,
               type: "koordinat",
               label: "Titik potong sumbu y",
               answer: { x: 0, y: 2 },
+              hint: "Titik potong terhadap sumbu y memiliki nilai x = 0. Substitusikan x = 0 ke persamaan garis k: -x + 2y = 4 untuk mencari nilai y.",
+              explanation:
+                "Titik potong sumbu y berarti x = 0. Substitusi ke persamaan garis: -(0) + 2y = 4 sehingga 2y = 4, diperoleh y = 2. Jadi titik potong sumbu y adalah (0, 2).",
             },
             {
               id: 3,
               type: "koordinat",
               label: "A'",
               answer: { x: 2, y: -2 },
+              hint: "Bayangan A' diperoleh dengan menambahkan vektor translasi pada titik potong sumbu x yang sudah ditemukan: x' = x + a dan y' = y + b.",
+              explanation:
+                "Titik potong sumbu x (-4, 0) ditranslasikan oleh (6, -2): x' = -4 + 6 = 2 dan y' = 0 + (-2) = -2, sehingga bayangannya A'(2, -2).",
             },
             {
               id: 4,
               type: "koordinat",
               label: "B'",
               answer: { x: 6, y: 0 },
+              hint: "Bayangan B' diperoleh dengan menambahkan vektor translasi pada titik potong sumbu y yang sudah ditemukan: x' = x + a dan y' = y + b.",
+              explanation:
+                "Titik potong sumbu y (0, 2) ditranslasikan oleh (6, -2): x' = 0 + 6 = 6 dan y' = 2 + (-2) = 0, sehingga bayangannya B'(6, 0).",
             },
             {
               id: 6,
@@ -421,6 +464,9 @@ export const translasiTabs: ModuleTab[] = [
               question: "Apakah kemiringan garis berubah saat ditranslasi?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
+              hint: "Perhatikan kemiringan garis sebelum dan sesudah translasi pada GeoGebra. Bandingkan gradien garis k dan garis bayangannya.",
+              explanation:
+                "Translasi menggeser setiap titik pada garis dengan vektor yang sama, sehingga kemiringan (gradien) garis tidak berubah.",
             },
             {
               id: 8,
@@ -428,6 +474,9 @@ export const translasiTabs: ModuleTab[] = [
               question: "Bagaimana posisi garis setelah ditranslasi?",
               options: ["Hanya bergeser", "Berputar", "Terbalik"],
               correctIndex: 0,
+              hint: "Perhatikan posisi garis k dan garis bayangannya pada GeoGebra. Apakah garis bayangan berputar, terbalik, atau hanya berpindah tempat?",
+              explanation:
+                "Garis bayangan hanya bergeser mengikuti vektor translasi, tanpa berputar atau terbalik. Kemiringan dan arahnya tetap sama.",
             },
             {
               id: 9,
@@ -446,6 +495,9 @@ export const translasiTabs: ModuleTab[] = [
               questionSuffix: ", apakah titik potong sumbu x dan sumbu y berubah?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
+              hint: "Translasi (0, 0) berarti tidak ada pergeseran sama sekali. Apakah setiap titik pada garis akan berpindah?",
+              explanation:
+                "Translasi (0, 0) tidak menggeser titik sama sekali, sehingga titik potong sumbu x dan sumbu y tetap pada posisi semula dan tidak berubah.",
             },
           ],
         },
@@ -462,6 +514,9 @@ export const translasiTabs: ModuleTab[] = [
                 "Mentranslasikan titik potong sumbu x dan titik potong sumbu y",
                 "Menentukan persamaan garis melalui 2 titik",
               ],
+              hint: "Bayangan sebuah garis ditentukan dengan bantuan dua titik yang berada pada garis tersebut. Pikirkan langkah paling awal hingga langkah terakhir secara berurutan.",
+              explanation:
+                "Urutan yang benar: 1) Persamaan garis diketahui, 2) Menentukan titik potong sumbu x dan titik potong sumbu y, 3) Mentranslasikan titik potong sumbu x dan titik potong sumbu y, 4) Menentukan persamaan garis melalui 2 titik.",
             },
             {
               id: 12,

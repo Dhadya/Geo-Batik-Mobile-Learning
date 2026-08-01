@@ -27,6 +27,16 @@ function joinList(items: string[]): string {
   return `${items.slice(0, -1).join(", ")}, dan ${items[items.length - 1]}`
 }
 
+/** Convert a multi-line authored string into bullet points, one per line. */
+function toBullets(text: string): string {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => `• ${line}`)
+    .join("\n")
+}
+
 /** Check whether an item has any non-empty answer text. */
 function hasAnswerText(
   answers: Record<string, Record<string, string>>,
@@ -50,17 +60,21 @@ export function buildItemFeedback(
   switch (item.type) {
     case "matriks": {
       if (isHint) {
-        return "• Vektor translasi belum tepat. Ingat kembali: vektor translasi diperoleh dari selisih koordinat bayangan dengan titik awal, dihitung per komponen (a = x' - x, b = y' - y). Perhatikan tanda positif dan negatif hasilnya."
+        return item.hint
+          ? toBullets(item.hint)
+          : "• Vektor translasi belum tepat. Ingat kembali: vektor translasi diperoleh dari selisih koordinat bayangan dengan titik awal, dihitung per komponen (a = x' - x, b = y' - y). Perhatikan tanda positif dan negatif hasilnya."
       }
-      return `• Titik ${item.label} ditranslasikan ke ${item.targetBayangan}: a = x' - x dan b = y' - y, sehingga diperoleh T(${item.answer.a}, ${item.answer.b}).`
+      return item.explanation
+        ? toBullets(item.explanation)
+        : `• Titik ${item.label} ditranslasikan ke ${item.targetBayangan}: a = x' - x dan b = y' - y, sehingga diperoleh T(${item.answer.a}, ${item.answer.b}).`
     }
     case "pilihan_ganda": {
       if (isHint) {
-        if (item.hint) return `• ${item.hint}`
+        if (item.hint) return toBullets(item.hint)
         const letters = item.options.map((_, i) => optionLetter(i)).join(", ")
         return `• Cermati kembali pertanyaan dan terapkan konsep yang dipelajari pada bagian ini. Bandingkan setiap pilihan ${letters} sebelum menentukan jawaban.`
       }
-      if (item.explanation) return `• ${item.explanation}`
+      if (item.explanation) return toBullets(item.explanation)
       if (item.multiSelect && item.correctIndices) {
         const letters = item.correctIndices.map((i) => optionLetter(i)).join(", ")
         const texts = item.correctIndices.map((i) => item.options[i]).join(" | ")
@@ -70,8 +84,11 @@ export function buildItemFeedback(
     }
     case "memasangkan": {
       if (isHint) {
-        return "• Periksa kembali setiap pasangan dan cocokkan berdasarkan konsep yang telah dipelajari."
+        return item.hint
+          ? toBullets(item.hint)
+          : "• Periksa kembali setiap pasangan dan cocokkan berdasarkan konsep yang telah dipelajari."
       }
+      if (item.explanation) return toBullets(item.explanation)
       const pairs = Object.entries(item.correctMatches)
         .map(([leftId, rightId]) => {
           const left = item.leftItems.find((l) => l.id === leftId)?.label ?? leftId
@@ -83,27 +100,37 @@ export function buildItemFeedback(
     }
     case "urutkan": {
       if (isHint) {
-        return "• Perhatikan urutan logis langkah-langkah berdasarkan konsep yang dipelajari."
+        return item.hint
+          ? toBullets(item.hint)
+          : "• Perhatikan urutan logis langkah-langkah berdasarkan konsep yang dipelajari."
       }
-      return `• Urutan yang benar: ${item.items.join(" → ")}.`
+      return item.explanation
+        ? toBullets(item.explanation)
+        : `• Urutan yang benar: ${item.items.join(" → ")}.`
     }
     case "pilihan_refleksi": {
       const selected = answers[String(item.id)]?.selected ?? ""
       if (isHint) {
-        return "• Periksa kembali jenis refleksi yang dipilih lalu hitung ulang koordinat bayangan setiap titik dengan rumus refleksi yang sesuai."
+        return item.hint
+          ? toBullets(item.hint)
+          : "• Periksa kembali jenis refleksi yang dipilih lalu hitung ulang koordinat bayangan setiap titik dengan rumus refleksi yang sesuai."
       }
       const coords = item.correctAnswers[selected]
-      if (coords) {
-        const idx = item.options.indexOf(selected)
-        const letter = idx >= 0 ? optionLetter(idx) : selected
-        return `• Koordinat bayangan untuk opsi ${letter}: (${coords.map((c) => `(${c.x}, ${c.y})`).join(" | ")}).`
+      const coordsLine = coords
+        ? `• Koordinat bayangan: (${coords.map((c) => `(${c.x}, ${c.y})`).join(" | ")}).`
+        : "• Pilih salah satu jenis refleksi terlebih dahulu."
+      if (item.explanation) {
+        return `${toBullets(item.explanation)}\n${coordsLine}`
       }
-      return "• Pilih salah satu jenis refleksi terlebih dahulu."
+      return coordsLine
     }
     case "checklist_table": {
       if (isHint) {
-        return "• Periksa kembali setiap pernyataan berdasarkan hasil pengamatan pada GeoGebra."
+        return item.hint
+          ? toBullets(item.hint)
+          : "• Periksa kembali setiap pernyataan berdasarkan hasil pengamatan pada GeoGebra."
       }
+      if (item.explanation) return toBullets(item.explanation)
       const results = item.statements
         .map((s, i) => `${s}: ${item.correctAnswers[i] ? "Ya" : "Tidak"}`)
         .join(" | ")
@@ -112,11 +139,11 @@ export function buildItemFeedback(
     case "uraian": {
       if (isHint) {
         return item.hint
-          ? `• ${item.hint}`
+          ? toBullets(item.hint)
           : `• Jawaban uraian belum diisi. Tinjau kembali: ${item.question}`
       }
       return item.explanation
-        ? `• ${item.explanation}`
+        ? toBullets(item.explanation)
         : `• Kunci jawaban: ${item.answer}`
     }
     default:
@@ -129,17 +156,27 @@ interface KoordinatPoint {
   label: string
   bayangan: { x: number; y: number }
   bayanganText?: string
+  hint?: string
+  explanation?: string
 }
 
 /** Grouping key so koordinat items sharing the same concept merge into one bullet. */
-function koordinatGroupKey(slug: string, tab: string, attempt: 1 | 2, bayangan?: string): string {
+function koordinatGroupKey(
+  slug: string,
+  tab: string,
+  attempt: 1 | 2,
+  bayangan?: string,
+  label?: string,
+): string {
   if (slug === "refleksi") return `refleksi:${tab}:${attempt}`
-  return `translasi:${bayangan ?? "none"}:${attempt}`
+  return `translasi:${bayangan ?? label ?? "none"}:${attempt}`
 }
 
 /**
  * Build one merged bullet for all wrong koordinat items sharing the same concept,
  * listing every affected point instead of repeating the same hint per point.
+ * Hints prefer the authored concept pointer when present; explanations always list
+ * every affected point with its correct result.
  */
 function buildKoordinatFeedback(
   points: KoordinatPoint[],
@@ -150,19 +187,23 @@ function buildKoordinatFeedback(
   const isHint = attempt === 1
   const listed = joinList(points.map((p) => p.label))
 
+  if (isHint) {
+    const authored = points.find((p) => p.hint)?.hint
+    if (authored) return toBullets(authored)
+    if (slug === "refleksi") {
+      const rule = REFLECTION_RULES[tab]
+      const axis = rule?.label ?? tab
+      return `• Ingat kembali sifat refleksi terhadap ${axis}: ${rule?.hint ?? "koordinat yang tegak lurus sumbu berubah tanda"}. Terapkan pada titik ${listed}.`
+    }
+    const vektor = points[0]?.bayanganText ?? "yang diberikan"
+    return `• Terapkan rumus translasi: titik (x, y) digeser sejauh (a, b) menjadi (x + a, y + b). Jumlahkan koordinat ${listed} dengan komponen translasi ${vektor}.`
+  }
+
   if (slug === "refleksi") {
     const rule = REFLECTION_RULES[tab]
     const axis = rule?.label ?? tab
-    if (isHint) {
-      return `• Ingat kembali sifat refleksi terhadap ${axis}: ${rule?.hint ?? "koordinat yang tegak lurus sumbu berubah tanda"}. Terapkan pada titik ${listed}.`
-    }
     const hasil = points.map((p) => `${p.label} → (${p.bayangan.x}, ${p.bayangan.y})`).join("; ")
     return `• Titik ${listed} direfleksikan terhadap ${axis}: ${rule?.rule ?? "koordinat yang sesuai berubah tanda"}, sehingga bayangannya: ${hasil}.`
-  }
-
-  if (isHint) {
-    const vektor = points[0]?.bayanganText ?? "yang diberikan"
-    return `• Terapkan rumus translasi: titik (x, y) digeser sejauh (a, b) menjadi (x + a, y + b). Jumlahkan koordinat ${listed} dengan komponen translasi ${vektor}.`
   }
   const hasil = points.map((p) => `${p.label} → (${p.bayangan.x}, ${p.bayangan.y})`).join("; ")
   return `• Titik ${listed} ditranslasikan: x' = x + a dan y' = y + b, sehingga bayangannya: ${hasil}.`
@@ -195,9 +236,21 @@ export function buildDeterministicFeedback(
     if (!includeAnsweredUraian && item.type === "uraian" && hasAnswerText(context.answers, item.id)) continue // answered uraian goes to Gemini
 
     if (item.type === "koordinat") {
-      const key = koordinatGroupKey(context.module, context.tab, context.attempt, item.bayangan)
+      const key = koordinatGroupKey(
+        context.module,
+        context.tab,
+        context.attempt,
+        item.bayangan,
+        item.label,
+      )
       const group = koordinatGroups.get(key) ?? []
-      group.push({ label: item.label, bayangan: item.answer, bayanganText: item.bayangan })
+      group.push({
+        label: item.label,
+        bayangan: item.answer,
+        bayanganText: item.bayangan,
+        hint: item.hint,
+        explanation: item.explanation,
+      })
       koordinatGroups.set(key, group)
       continue
     }

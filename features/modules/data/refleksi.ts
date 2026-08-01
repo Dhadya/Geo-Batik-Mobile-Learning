@@ -23,18 +23,21 @@ export const refleksiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "A(2, 5)",
               answer: { x: 2, y: -5 },
+              hint: "Refleksi terhadap sumbu x mengubah tanda koordinat y menjadi -y, sedangkan koordinat x tetap: (x, y) → (x, -y). Terapkan pada titik A(2, 5).",
             },
             {
               id: 2,
               type: "koordinat",
               label: "B(-3, 2)",
               answer: { x: -3, y: -2 },
+              hint: "Refleksi terhadap sumbu x mengubah tanda koordinat y menjadi -y, sedangkan koordinat x tetap: (x, y) → (x, -y). Terapkan pada titik B(-3, 2).",
             },
             {
               id: 3,
               type: "koordinat",
               label: "C(-1, -4)",
               answer: { x: -1, y: 4 },
+              hint: "Refleksi terhadap sumbu x mengubah tanda koordinat y menjadi -y, sedangkan koordinat x tetap: (x, y) → (x, -y). Terapkan pada titik C(-1, -4).",
             },
           ],
         },
@@ -47,6 +50,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi titik A dan A' terhadap sumbu x?",
               options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
               correctIndex: 1,
+              hint: "Perhatikan posisi titik A dan A' pada GeoGebra. Keduanya dipisahkan oleh sumbu x, sehingga berada pada sisi yang berbeda terhadap sumbu tersebut.",
+              explanation:
+                "Refleksi memindahkan titik A ke sisi lain sumbu x dengan jarak yang sama, sehingga titik A dan bayangannya A' berada pada sisi yang berlawanan terhadap sumbu x.",
             },
             {
               id: 5,
@@ -54,6 +60,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik A ke sumbu x dengan jarak A' ke sumbu x?",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik A ke sumbu x dan jarak titik A' ke sumbu x pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik A ke sumbu x sama dengan jarak titik A' ke sumbu x, karena refleksi menjaga jarak titik terhadap cermin.",
             },
             {
               id: 6,
@@ -61,6 +70,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap sumbu x?",
               options: ["Sejajar", "Tegak Lurus"],
               correctIndex: 1,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Bagaimana arah ruas garis tersebut terhadap sumbu x?",
+              explanation:
+                "Ruas garis yang menghubungkan titik A dan A' selalu tegak lurus terhadap sumbu x, karena refleksi memindahkan titik mengikuti garis yang tegak lurus cermin.",
             },
             {
               id: 7,
@@ -68,6 +80,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              explanation:
+                "Sifat refleksi terhadap sumbu x berlaku untuk semua titik, yaitu jarak titik ke sumbu sama dengan jarak bayangannya dan keduanya tegak lurus sumbu.",
             },
           ],
         },
@@ -134,18 +149,21 @@ export const refleksiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "A(2, 3)",
               answer: { x: -2, y: 3 },
+              hint: "Refleksi terhadap sumbu y mengubah tanda koordinat x menjadi -x, sedangkan koordinat y tetap: (x, y) → (-x, y). Terapkan pada titik A(2, 3).",
             },
             {
               id: 2,
               type: "koordinat",
               label: "B(-2, 4)",
               answer: { x: 2, y: 4 },
+              hint: "Refleksi terhadap sumbu y mengubah tanda koordinat x menjadi -x, sedangkan koordinat y tetap: (x, y) → (-x, y). Terapkan pada titik B(-2, 4).",
             },
             {
               id: 3,
               type: "koordinat",
               label: "C(1, -6)",
               answer: { x: -1, y: -6 },
+              hint: "Refleksi terhadap sumbu y mengubah tanda koordinat x menjadi -x, sedangkan koordinat y tetap: (x, y) → (-x, y). Terapkan pada titik C(1, -6).",
             },
           ],
         },
@@ -158,6 +176,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi titik A dan A' terhadap sumbu y?",
               options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
               correctIndex: 1,
+              hint: "Perhatikan posisi titik A dan A' pada GeoGebra. Keduanya dipisahkan oleh sumbu y, sehingga berada pada sisi yang berbeda terhadap sumbu tersebut.",
+              explanation:
+                "Refleksi memindahkan titik A ke sisi lain sumbu y dengan jarak yang sama, sehingga titik A dan bayangannya A' berada pada sisi yang berlawanan terhadap sumbu y.",
             },
             {
               id: 5,
@@ -165,6 +186,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik A ke sumbu y dengan jarak A' ke sumbu y!",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik A ke sumbu y dan jarak titik A' ke sumbu y pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik A ke sumbu y sama dengan jarak titik A' ke sumbu y, karena refleksi menjaga jarak titik terhadap cermin.",
             },
             {
               id: 6,
@@ -172,6 +196,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap sumbu y?",
               options: ["Sejajar", "Tegak Lurus"],
               correctIndex: 1,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Bagaimana arah ruas garis tersebut terhadap sumbu y?",
+              explanation:
+                "Ruas garis yang menghubungkan titik A dan A' selalu tegak lurus terhadap sumbu y, karena refleksi memindahkan titik mengikuti garis yang tegak lurus cermin.",
             },
             {
               id: 7,
@@ -179,6 +206,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              explanation:
+                "Sifat refleksi terhadap sumbu y berlaku untuk semua titik, yaitu jarak titik ke sumbu sama dengan jarak bayangannya dan keduanya tegak lurus sumbu.",
             },
           ],
         },
@@ -245,18 +275,21 @@ export const refleksiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "A(5, 3)",
               answer: { x: -5, y: -3 },
+              hint: "Refleksi terhadap titik (0,0) membalikkan tanda kedua koordinat: (x, y) → (-x, -y). Terapkan pada titik A(5, 3).",
             },
             {
               id: 2,
               type: "koordinat",
               label: "B(-3, 5)",
               answer: { x: 3, y: -5 },
+              hint: "Refleksi terhadap titik (0,0) membalikkan tanda kedua koordinat: (x, y) → (-x, -y). Terapkan pada titik B(-3, 5).",
             },
             {
               id: 3,
               type: "koordinat",
               label: "C(2, -5)",
               answer: { x: -2, y: 5 },
+              hint: "Refleksi terhadap titik (0,0) membalikkan tanda kedua koordinat: (x, y) → (-x, -y). Terapkan pada titik C(2, -5).",
             },
           ],
         },
@@ -269,6 +302,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi titik A dan A' terhadap titik (0,0)?",
               options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
               correctIndex: 1,
+              hint: "Perhatikan posisi titik A dan A' pada GeoGebra. Keduanya dipisahkan oleh titik (0,0), sehingga berada pada sisi yang berbeda (arah yang berlawanan) dari titik asal.",
+              explanation:
+                "Refleksi terhadap titik (0,0) memindahkan titik A melewati titik asal, sehingga titik A dan bayangannya A' berada pada sisi yang berlawanan dari titik (0,0).",
             },
             {
               id: 5,
@@ -276,6 +312,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik A ke titik (0,0) dengan jarak A' ke titik (0,0)!",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik A ke titik (0,0) dan jarak titik A' ke titik (0,0) pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik A ke titik (0,0) sama dengan jarak titik A' ke titik (0,0), karena refleksi menjaga jarak titik terhadap pusat cermin.",
             },
             {
               id: 6,
@@ -283,6 +322,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap titik (0,0)?",
               options: ["Sejajar", "Tegak Lurus"],
               correctIndex: 1,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Garis tersebut melewati titik (0,0). Bagaimana kedudukannya terhadap titik tersebut?",
+              explanation:
+                "Ruas garis yang menghubungkan titik A dan A' selalu melewati (tegak lurus arah) titik (0,0), karena refleksi memindahkan titik melalui titik asal.",
             },
             {
               id: 7,
@@ -290,6 +332,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              explanation:
+                "Sifat refleksi terhadap titik (0,0) berlaku untuk semua titik, yaitu jarak titik ke titik asal sama dengan jarak bayangannya dan keduanya segaris melewati titik (0,0).",
             },
           ],
         },
@@ -356,18 +401,21 @@ export const refleksiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "A(3, 4)",
               answer: { x: 4, y: 3 },
+              hint: "Refleksi terhadap garis x=y menukar kedudukan koordinat x dan y: (x, y) → (y, x). Terapkan pada titik A(3, 4).",
             },
             {
               id: 2,
               type: "koordinat",
               label: "B(-4, 3)",
               answer: { x: 3, y: -4 },
+              hint: "Refleksi terhadap garis x=y menukar kedudukan koordinat x dan y: (x, y) → (y, x). Terapkan pada titik B(-4, 3).",
             },
             {
               id: 3,
               type: "koordinat",
               label: "C(1, -6)",
               answer: { x: -6, y: 1 },
+              hint: "Refleksi terhadap garis x=y menukar kedudukan koordinat x dan y: (x, y) → (y, x). Terapkan pada titik C(1, -6).",
             },
           ],
         },
@@ -380,6 +428,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi titik A dan A' terhadap garis x=y?",
               options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
               correctIndex: 1,
+              hint: "Perhatikan posisi titik A dan A' pada GeoGebra. Keduanya dipisahkan oleh garis x=y, sehingga berada pada sisi yang berbeda terhadap garis tersebut.",
+              explanation:
+                "Refleksi memindahkan titik A ke sisi lain garis x=y dengan jarak yang sama, sehingga titik A dan bayangannya A' berada pada sisi yang berlawanan terhadap garis x=y.",
             },
             {
               id: 5,
@@ -387,6 +438,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik A ke garis x=y dengan jarak A' ke garis x=y!",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik A ke garis x=y dan jarak titik A' ke garis x=y pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik A ke garis x=y sama dengan jarak titik A' ke garis x=y, karena refleksi menjaga jarak titik terhadap cermin.",
             },
             {
               id: 6,
@@ -394,6 +448,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap garis x=y?",
               options: ["Sejajar", "Tegak Lurus"],
               correctIndex: 1,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Bagaimana arah ruas garis tersebut terhadap garis x=y?",
+              explanation:
+                "Ruas garis yang menghubungkan titik A dan A' selalu tegak lurus terhadap garis x=y, karena refleksi memindahkan titik mengikuti garis yang tegak lurus cermin.",
             },
             {
               id: 7,
@@ -401,6 +458,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              explanation:
+                "Sifat refleksi terhadap garis x=y berlaku untuk semua titik, yaitu jarak titik ke garis sama dengan jarak bayangannya dan keduanya tegak lurus garis.",
             },
           ],
         },
@@ -467,18 +527,21 @@ export const refleksiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "A(4, 2)",
               answer: { x: -2, y: -4 },
+              hint: "Refleksi terhadap garis x=-y menukar kedudukan koordinat x dan y sekaligus mengubah tanda keduanya: (x, y) → (-y, -x). Terapkan pada titik A(4, 2).",
             },
             {
               id: 2,
               type: "koordinat",
               label: "B(-5, 3)",
               answer: { x: -3, y: 5 },
+              hint: "Refleksi terhadap garis x=-y menukar kedudukan koordinat x dan y sekaligus mengubah tanda keduanya: (x, y) → (-y, -x). Terapkan pada titik B(-5, 3).",
             },
             {
               id: 3,
               type: "koordinat",
               label: "C(2, -6)",
               answer: { x: 6, y: -2 },
+              hint: "Refleksi terhadap garis x=-y menukar kedudukan koordinat x dan y sekaligus mengubah tanda keduanya: (x, y) → (-y, -x). Terapkan pada titik C(2, -6).",
             },
           ],
         },
@@ -491,6 +554,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi titik A dan A' terhadap garis x=-y?",
               options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
               correctIndex: 1,
+              hint: "Perhatikan posisi titik A dan A' pada GeoGebra. Keduanya dipisahkan oleh garis x=-y, sehingga berada pada sisi yang berbeda terhadap garis tersebut.",
+              explanation:
+                "Refleksi memindahkan titik A ke sisi lain garis x=-y dengan jarak yang sama, sehingga titik A dan bayangannya A' berada pada sisi yang berlawanan terhadap garis x=-y.",
             },
             {
               id: 5,
@@ -498,6 +564,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik A ke garis x=-y dengan jarak A' ke garis x=-y!",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik A ke garis x=-y dan jarak titik A' ke garis x=-y pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik A ke garis x=-y sama dengan jarak titik A' ke garis x=-y, karena refleksi menjaga jarak titik terhadap cermin.",
             },
             {
               id: 6,
@@ -505,6 +574,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap garis x=-y?",
               options: ["Sejajar", "Tegak Lurus"],
               correctIndex: 1,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Bagaimana arah ruas garis tersebut terhadap garis x=-y?",
+              explanation:
+                "Ruas garis yang menghubungkan titik A dan A' selalu tegak lurus terhadap garis x=-y, karena refleksi memindahkan titik mengikuti garis yang tegak lurus cermin.",
             },
             {
               id: 7,
@@ -512,6 +584,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              explanation:
+                "Sifat refleksi terhadap garis x=-y berlaku untuk semua titik, yaitu jarak titik ke garis sama dengan jarak bayangannya dan keduanya tegak lurus garis.",
             },
           ],
         },
@@ -582,24 +657,28 @@ export const refleksiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "A(3, 2)",
               answer: { x: 1, y: 2 },
+              hint: "Refleksi terhadap garis vertikal x=h menggunakan rumus x' = 2h - x, sedangkan koordinat y tetap. Terapkan dengan h = 2 pada titik A(3, 2).",
             },
             {
               id: 2,
               type: "koordinat",
               label: "B(-3, -3)",
               answer: { x: 7, y: -3 },
+              hint: "Refleksi terhadap garis vertikal x=h menggunakan rumus x' = 2h - x, sedangkan koordinat y tetap. Terapkan dengan h = 2 pada titik B(-3, -3).",
             },
             {
               id: 3,
               type: "koordinat",
               label: "C(1, 5)",
               answer: { x: -3, y: 5 },
+              hint: "Refleksi terhadap garis vertikal x=h menggunakan rumus x' = 2h - x, sedangkan koordinat y tetap. Terapkan dengan h = -1 pada titik C(1, 5).",
             },
             {
               id: 4,
               type: "koordinat",
               label: "D(-2, 2)",
               answer: { x: 0, y: 2 },
+              hint: "Refleksi terhadap garis vertikal x=h menggunakan rumus x' = 2h - x, sedangkan koordinat y tetap. Terapkan dengan h = -1 pada titik D(-2, 2).",
             },
           ],
         },
@@ -612,6 +691,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi titik A dan A' terhadap garis x=h?",
               options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
               correctIndex: 1,
+              hint: "Perhatikan posisi titik A dan A' pada GeoGebra. Keduanya dipisahkan oleh garis x=h, sehingga berada pada sisi yang berbeda terhadap garis tersebut.",
+              explanation:
+                "Refleksi memindahkan titik A ke sisi lain garis vertikal x=h dengan jarak yang sama, sehingga titik A dan bayangannya A' berada pada sisi yang berlawanan terhadap garis x=h.",
             },
             {
               id: 6,
@@ -619,6 +701,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik A ke garis x=h dengan jarak A' ke garis x=h!",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik A ke garis x=h dan jarak titik A' ke garis x=h pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik A ke garis x=h sama dengan jarak titik A' ke garis x=h, karena refleksi menjaga jarak titik terhadap cermin.",
             },
             {
               id: 7,
@@ -626,6 +711,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap garis x=h?",
               options: ["Sejajar", "Tegak Lurus"],
               correctIndex: 1,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Bagaimana arah ruas garis tersebut terhadap garis vertikal x=h?",
+              explanation:
+                "Ruas garis yang menghubungkan titik A dan A' selalu tegak lurus terhadap garis x=h, karena refleksi memindahkan titik mengikuti garis yang tegak lurus cermin.",
             },
             {
               id: 8,
@@ -633,6 +721,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              explanation:
+                "Sifat refleksi terhadap garis x=h berlaku untuk semua titik, yaitu jarak titik ke garis sama dengan jarak bayangannya dan keduanya tegak lurus garis.",
             },
           ],
         },
@@ -703,24 +794,28 @@ export const refleksiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "A(2, 3)",
               answer: { x: 2, y: 1 },
+              hint: "Refleksi terhadap garis horizontal y=h menggunakan rumus y' = 2h - y, sedangkan koordinat x tetap. Terapkan dengan h = 2 pada titik A(2, 3).",
             },
             {
               id: 2,
               type: "koordinat",
               label: "B(5, -2)",
               answer: { x: 5, y: 6 },
+              hint: "Refleksi terhadap garis horizontal y=h menggunakan rumus y' = 2h - y, sedangkan koordinat x tetap. Terapkan dengan h = 2 pada titik B(5, -2).",
             },
             {
               id: 3,
               type: "koordinat",
               label: "C(5, 1)",
               answer: { x: 5, y: -3 },
+              hint: "Refleksi terhadap garis horizontal y=h menggunakan rumus y' = 2h - y, sedangkan koordinat x tetap. Terapkan dengan h = -1 pada titik C(5, 1).",
             },
             {
               id: 4,
               type: "koordinat",
               label: "D(2, -2)",
               answer: { x: 2, y: 0 },
+              hint: "Refleksi terhadap garis horizontal y=h menggunakan rumus y' = 2h - y, sedangkan koordinat x tetap. Terapkan dengan h = -1 pada titik D(2, -2).",
             },
           ],
         },
@@ -733,6 +828,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi titik A dan A' terhadap garis y=h?",
               options: ["Berada pada sisi yang sama", "Berada pada sisi yang berlawanan"],
               correctIndex: 1,
+              hint: "Perhatikan posisi titik A dan A' pada GeoGebra. Keduanya dipisahkan oleh garis y=h, sehingga berada pada sisi yang berbeda terhadap garis tersebut.",
+              explanation:
+                "Refleksi memindahkan titik A ke sisi lain garis horizontal y=h dengan jarak yang sama, sehingga titik A dan bayangannya A' berada pada sisi yang berlawanan terhadap garis y=h.",
             },
             {
               id: 6,
@@ -740,6 +838,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik A ke garis y=h dengan jarak A' ke garis y=h!",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik A ke garis y=h dan jarak titik A' ke garis y=h pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik A ke garis y=h sama dengan jarak titik A' ke garis y=h, karena refleksi menjaga jarak titik terhadap cermin.",
             },
             {
               id: 7,
@@ -747,6 +848,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap garis y=h?",
               options: ["Sejajar", "Tegak Lurus"],
               correctIndex: 1,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Bagaimana arah ruas garis tersebut terhadap garis horizontal y=h?",
+              explanation:
+                "Ruas garis yang menghubungkan titik A dan A' selalu tegak lurus terhadap garis y=h, karena refleksi memindahkan titik mengikuti garis yang tegak lurus cermin.",
             },
             {
               id: 8,
@@ -754,6 +858,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              explanation:
+                "Sifat refleksi terhadap garis y=h berlaku untuk semua titik, yaitu jarak titik ke garis sama dengan jarak bayangannya dan keduanya tegak lurus garis.",
             },
           ],
         },
@@ -820,6 +927,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "pilihan_refleksi",
               question: "Motif bangun ABCD memiliki titik sudut \nA(\u22124, 0), B(\u22122, 2), C(\u22122, 6), D(\u22124, 4).\nPilih salah satu refleksi berikut:",
               options: ["Sumbu x", "Sumbu y", "Titik (0,0)", "Garis x=y", "Garis x=-y", "Garis x=2", "Garis y=-1"],
+              hint:
+                "Bangun ABCD telah diketahui pada bidang koordinat.\nMenentukan koordinat titik sudut A, B, C, dan D.\nMencerminkan titik sudut A, B, C, dan D sesuai dengan cermin refleksi yang dipilih.\nMenulis koordinat bayangan A', B', C', dan D'.\nMenghubungkan titik-titik sudut bayangan sehingga membentuk bangun yang utuh.",
+              explanation:
+                "Bangun ABCD telah diketahui pada bidang koordinat dengan titik sudut A(-4, 0), B(-2, 2), C(-2, 6), dan D(-4, 4).\nMenentukan koordinat titik sudut A, B, C, dan D.\nMencerminkan titik sudut A, B, C, dan D satu per satu sesuai dengan cermin refleksi yang dipilih menggunakan rumus refleksi yang sesuai.\nMenulis koordinat bayangan A', B', C', dan D' dari hasil pencerminan.\nMenghubungkan titik-titik sudut bayangan sehingga membentuk bangun yang utuh.",
               correctAnswers: {
                 "Sumbu x": [
                   { x: -4, y: 0 },
@@ -905,6 +1016,9 @@ export const refleksiTabs: ModuleTab[] = [
                 "Jarak bangun ke cermin sama dengan jarak bayangan ke cermin",
               ],
               correctAnswers: [false, false, true, true],
+              hint: "Bandingkan bentuk, ukuran, arah hadap, dan jarak bangun sebelum dan sesudah refleksi pada GeoGebra. Refleksi seperti pantulan di cermin, bukan seperti pergeseran.",
+              explanation:
+                "Refleksi tidak mengubah bentuk dan ukuran bangun (jadi pernyataan 1 dan 2 Tidak), tetapi bayangan saling berhadapan seperti pantulan cermin dan jarak bangun ke cermin sama dengan jarak bayangan ke cermin (jadi pernyataan 3 dan 4 Ya).",
             },
           ],
         },
@@ -974,6 +1088,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "pilihan_refleksi",
               question: "Perhatikan ruas garis AB, dengan A(\u22126, 1) dan B(\u22122, 3)\nPilih salah satu refleksi berikut:",
               options: ["Sumbu x", "Sumbu y", "Titik (0,0)", "Garis x=y", "Garis x=-y", "Garis x=2", "Garis y=\u22122"],
+              hint:
+                "Ruas garis AB telah diketahui pada bidang koordinat.\nMenentukan koordinat kedua titik ujungnya, yaitu A dan B.\nMencerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih.\nMenulis koordinat bayangan kedua titik ujung.\nMenghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
+              explanation:
+                "Ruas garis AB telah diketahui pada bidang koordinat dengan A(-6, 1) dan B(-2, 3).\nMenentukan koordinat kedua titik ujungnya, yaitu A dan B.\nMencerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih menggunakan rumus refleksi yang sesuai.\nMenulis koordinat bayangan kedua titik ujung dari hasil pencerminan.\nMenghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus membentuk bayangan ruas garis.",
               correctAnswers: {
                 "Sumbu x": [
                   { x: -6, y: -1 },
@@ -1015,9 +1133,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Bagaimana cara menentukan koordinat A\u2019 dan B\u2019?",
               answer: "Koordinat A\u2019 dan B\u2019 ditentukan dengan mencerminkan titik A dan B",
-              hint: "Bayangan sebuah ruas garis diperoleh dari bayangan titik-titik ujungnya. Terapkan refleksi pada titik A dan titik B menggunakan sumbu/garis refleksi yang sama.",
+              hint:
+                "Ruas garis AB telah diketahui pada bidang koordinat.\nMenentukan koordinat kedua titik ujungnya, yaitu A dan B.\nMencerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih.\nMenulis koordinat bayangan kedua titik ujung.\nMenghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
               explanation:
-                "Koordinat A' dan B' ditentukan dengan mencerminkan titik A dan titik B (kedua ujung ruas garis) terhadap cermin/garis refleksi yang sama. Hasil refleksi kedua titik tersebut kemudian dihubungkan untuk membentuk ruas garis bayangan A'B'.",
+                "Ruas garis AB telah diketahui pada bidang koordinat dengan A(-6, 1) dan B(-2, 3).\nKoordinat A' dan B' ditentukan dengan mencerminkan titik A dan titik B (kedua ujung ruas garis) terhadap cermin/garis refleksi yang sama.\nSetiap titik ujung dicerminkan sesuai dengan cermin refleksinya menggunakan rumus refleksi yang sesuai.\nMenulis koordinat bayangan A' dan B' dari hasil pencerminan.\nHasil refleksi kedua titik tersebut kemudian dihubungkan dengan garis lurus untuk membentuk ruas garis bayangan A'B'.",
               acceptAnswers: [
                 "Mencerminkan titik A dan B terhadap cermin refleksi",
                 "Dengan mencerminkan kedua titik ujung ruas garis",
@@ -1030,6 +1149,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik A ke cermin dengan titik A\u2019 ke cermin?",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik A ke cermin dan jarak titik A' ke cermin pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik A ke cermin sama dengan jarak titik A' ke cermin, karena refleksi menjaga jarak titik terhadap cerminnya.",
             },
             {
               id: 6,
@@ -1037,6 +1159,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik B ke cermin dengan titik B\u2019 ke cermin?",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
+              hint: "Perhatikan jarak titik B ke cermin dan jarak titik B' ke cermin pada GeoGebra. Ukur keduanya dan bandingkan.",
+              explanation:
+                "Jarak titik B ke cermin sama dengan jarak titik B' ke cermin, karena refleksi menjaga jarak titik terhadap cerminnya.",
             },
             {
               id: 7,
@@ -1044,6 +1169,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah panjang ruas garis awal dengan bayangannya sama?",
               options: ["Iya", "Tidak"],
               correctIndex: 0,
+              hint: "Perhatikan panjang ruas garis AB dan panjang ruas garis bayangannya A'B' pada GeoGebra. Apakah panjang keduanya sama?",
+              explanation:
+                "Refleksi tidak mengubah ukuran objek, sehingga panjang ruas garis AB sama dengan panjang ruas garis bayangannya A'B'.",
             },
             {
               id: 8,
@@ -1051,6 +1179,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah posisi ruas garis awal dengan bayangannya sama?",
               options: ["Iya", "Tidak"],
               correctIndex: 1,
+              hint: "Perhatikan kedudukan ruas garis AB dan ruas garis bayangannya A'B' pada GeoGebra. Apakah arah dan letaknya sama seperti semula?",
+              explanation:
+                "Posisi ruas garis bayangan berbeda dari ruas garis awal, karena refleksi membalik arah hadap ruas garis seolah-olah dipantulkan oleh cermin.",
             },
           ],
         },
@@ -1068,6 +1199,10 @@ export const refleksiTabs: ModuleTab[] = [
                 "Menulis koordinat bayangan kedua titik ujung",
                 "Menghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus",
               ],
+              hint:
+                "Bayangan sebuah ruas garis ditentukan oleh bayangan kedua titik ujungnya.\nPikirkan langkah paling awal hingga langkah terakhir secara berurutan: mulai dari ruas garis diketahui, lalu tentukan kedua titik ujung, cerminkan kedua titik ujung, tulis koordinat bayangan, dan terakhir hubungkan kedua titik bayangan.",
+              explanation:
+                "Urutan yang benar: 1) Ruas garis diketahui\n2) Menentukan koordinat kedua titik ujungnya\n3) Mencerminkan kedua titik ujung sesuai dengan cermin refleksinya\n4) Menulis koordinat bayangan kedua titik ujung\n5) Menghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
             },
             {
               id: 10,
