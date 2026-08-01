@@ -74,6 +74,9 @@ export const translasiTabs: ModuleTab[] = [
                 "Apakah nilai translasi mempengaruhi arah perpindahan? Jelaskan alasanmu.",
               answer:
                 "Iya, karena arah perpindahannya bergantung pada nilai translasi, nilai a mempengaruhi arah perpindahan ke kiri dan kanan, nilai b mempengaruhi arah perpindahan ke atas dan bawah",
+              hint: "Perhatikan dua komponen vektor translasi. Komponen pertama menentukan perpindahan horizontal, komponen kedua menentukan perpindahan vertikal. Periksa tanda positif dan negatifnya.",
+              explanation:
+                "Ya. Arah perpindahan ditentukan oleh nilai translasi (a, b): nilai a > 0 menggeser ke kanan, a < 0 ke kiri; nilai b > 0 menggeser ke atas, b < 0 ke bawah. Komponen a mengatur perpindahan mendatar (kiri/kanan) dan komponen b mengatur perpindahan tegak (atas/bawah).",
             },
             {
               id: 6,
@@ -110,6 +113,9 @@ export const translasiTabs: ModuleTab[] = [
                 "Apa arti dari translasi berikut?\n( 2 )\n( 1 )",
               answer:
                 "Objek geometri atau titik mengalami pergeseran sejauh 2 satuan ke kanan dan 1 satuan ke atas",
+              hint: "Translasi (2, 1) berarti setiap titik bergeser 2 satuan mendatar dan 1 satuan tegak. Tentukan arah untuk masing-masing komponen berdasarkan tandanya.",
+              explanation:
+                "Translasi (2, 1) memindahkan setiap titik sejauh 2 satuan ke kanan (komponen a = 2 bernilai positif) dan 1 satuan ke atas (komponen b = 1 bernilai positif). Jadi objek atau titik bergeser 2 satuan ke kanan dan 1 satuan ke atas.",
             },
             {
               id: 8,
@@ -117,6 +123,9 @@ export const translasiTabs: ModuleTab[] = [
               question:
                 "Jika titik awal (x, y) ditranslasikan oleh (a, b), tentukan titik bayangannya.",
               answer: "(x + a, y + b)",
+              hint: "Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan vektor translasinya, komponen x dengan komponen a dan komponen y dengan komponen b.",
+              explanation:
+                "Bayangan titik (x, y) oleh translasi (a, b) adalah (x + a, y + b). Komponen x digeser sejauh a dan komponen y digeser sejauh b, sehingga koordinatnya ditambah dengan vektor translasi.",
             },
             {
               id: 9,
@@ -125,6 +134,9 @@ export const translasiTabs: ModuleTab[] = [
                 "Apakah titik yang ditranslasikan pasti berubah posisi?",
               answer:
                 "Belum pasti, semua titik yang ditranslasikan biasanya berubah posisi, tetapi jika nilai translasinya (0, 0) objek tidak berubah posisi",
+              hint: "Bayangkan geseran sejauh (0, 0). Apakah ada perpindahan yang terjadi? Ingat ada satu nilai translasi khusus yang tidak menggeser apa pun.",
+              explanation:
+                "Belum tentu. Titik yang ditranslasikan pada umumnya berubah posisi, kecuali jika nilai translasinya (0, 0). Geseran sebesar nol satuan ke setiap arah membuat titik tetap pada posisi semula, sehingga posisinya tidak berubah.",
             },
           ],
         },
@@ -254,18 +266,27 @@ export const translasiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Bagaimana hubungan translasi titik terhadap translasi bangun?",
               answer: "Pada translasi bangun, semua titik sudutnya ditranslasikan. Jadi, translasi bangun tetap menggunakan translasi titik.",
+              hint: "Bangun datar dibentuk oleh titik-titik sudutnya. Bagaimana cara menentukan bayangan bangun jika semua titik sudutnya sudah diketahui bayangannya?",
+              explanation:
+                "Translasi pada bangun dilakukan dengan mentranslasikan semua titik sudutnya. Karena bangun merupakan gabungan titik-titik sudut, maka menentukan bayangan bangun sama dengan menentukan bayangan tiap titik sudutnya, lalu menghubungkan kembali titik-titik bayangan tersebut.",
             },
             {
               id: 10,
               type: "uraian",
               question: "Apakah bangun yang ditranslasikan pasti berubah posisi?",
               answer: "Belum pasti, semua bangun yang ditranslasikan biasanya berubah posisi, tetapi jika nilai translasinya (0, 0) bangun tidak berubah posisi.",
+              hint: "Perhatikan nilai translasi yang membuat bangun tetap pada tempatnya. Geseran sejauh apa yang membuat semua titik sudut kembali ke posisi semula?",
+              explanation:
+                "Belum tentu. Bangun yang ditranslasikan biasanya berubah posisi, tetapi jika nilai translasinya (0, 0) maka semua titik sudutnya tidak berpindah, sehingga bangun tidak berubah posisi.",
             },
             {
               id: 11,
               type: "uraian",
               question: "Jika salah satu titik sebuah bangun ditranslasikan oleh (a, b) maka seluruh titik lainnya ditranslasikan oleh",
               answer: "(a, b)",
+              hint: "Translasi berlaku seragam pada seluruh bangun. Semua titik pada bangun yang sama mendapat geseran yang identik.",
+              explanation:
+                "Semua titik pada bangun yang sama ditranslasikan dengan vektor translasi yang sama, yaitu (a, b). Translasi satu titik oleh (a, b) berarti seluruh titik lainnya juga digeser sejauh (a, b).",
             },
           ],
         },
@@ -372,6 +393,9 @@ export const translasiTabs: ModuleTab[] = [
               question: "Tuliskan persamaan garis bayangan k' yang terbentuk!",
               answer: "x - 2y = 6",
               acceptAnswers: ["y = x/2 - 3", "x = 2y + 6", "-2y + x = 6"],
+              hint: "Translasi menggeser setiap titik pada garis, tetapi tidak mengubah kemiringannya. Translasikan dua titik pada garis, misalnya titik potong terhadap sumbu x dan sumbu y, lalu susun persamaan garis yang melalui dua titik bayangan tersebut.",
+              explanation:
+                "Garis k ditranslasikan sehingga semua titiknya bergeser dengan vektor yang sama. Kemiringan garis tidak berubah karena translasi hanya memindahkan posisi. Dengan mentranslasikan dua titik (misal titik potong dengan sumbu x dan sumbu y), lalu menentukan persamaan garis yang melalui kedua titik bayangannya, diperoleh persamaan garis bayangan k': x - 2y = 6.",
             },
           ],
         },
@@ -398,6 +422,9 @@ export const translasiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Apa yang terjadi pada titik potong garis terhadap sumbu x dan y setelah ditranslasi?",
               answer: "Titik potongnya berubah menyesuaikan pergeseran yang bergantung oleh nilai translasi",
+              hint: "Perhatikan titik potong sumbu x dan sumbu y sebelum dan sesudah translasi pada GeoGebra. Apakah koordinatnya tetap atau ikut bergeser mengikuti nilai translasi?",
+              explanation:
+                "Titik potong garis terhadap sumbu x dan sumbu y ikut bergeser mengikuti nilai translasi yang diberikan. Karena setiap titik pada garis ditranslasikan, maka titik potongnya juga berpindah sesuai dengan besar dan arah translasi.",
             },
             {
               id: 10,
@@ -429,6 +456,9 @@ export const translasiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Mengapa cukup mentranslasikan dua titik untuk menentukan garis hasil translasi?",
               answer: "Karena untuk mengetahui persamaan garis bisa dengan mengetahui 2 titik yang berada di garis tersebut",
+              hint: "Sebuah garis lurus ditentukan secara unik oleh dua titik yang berbeda. Cukup dua titik bayangan yang diketahui koordinatnya untuk menyusun kembali garis tersebut.",
+              explanation:
+                "Sebuah garis lurus dapat ditentukan secara unik hanya dengan dua titik yang berbeda. Oleh karena itu, cukup mentranslasikan dua titik pada garis (misalnya titik potong sumbu x dan sumbu y), lalu melalui kedua titik bayangan tersebut persamaan garis hasil translasi dapat ditentukan.",
             },
           ],
         },

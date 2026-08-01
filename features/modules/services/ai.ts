@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { appError } from "@/lib/api/errors";
 import { validateSection, type ValidationResult } from "../lib/validation";
-import { SECTION_TYPE_LABELS } from "../data/moduleConfig";
+import { buildDeterministicFeedback, feedbackForCorrect, localScore, mergeFeedback } from "../lib/feedback";
 import type { SectionItem } from "@/features/modules/types";
 
 const GENERATION_TIMEOUT_MS = 10000;
@@ -127,18 +127,6 @@ function describeAnswers(items: SectionItem[], answers: Record<string, Record<st
     .join("\n");
 }
 
-/** Deterministic score from correct/total ratio, rounded to an integer 0-100. */
-function localScore(local: ValidationResult): number {
-  if (local.totalItems === 0) return 0;
-  return Math.round((local.correctCount / local.totalItems) * 100);
-}
-
-/** Section-type-aware reinforcement text for a fully correct submission. */
-function feedbackForCorrect(input: EvaluateSectionInput): string {
-  const label = SECTION_TYPE_LABELS[input.sectionType] ?? input.sectionType;
-  return `Semua jawaban pada bagian ${label} sudah tepat. Konsep yang kamu pahami sudah sesuai dengan kunci jawaban. Pertahankan dan lanjutkan ke materi selanjutnya.`;
-}
-
 /** Map a local ValidationResult into the EvaluateSectionOutput shape. */
 function localToOutput(
   input: EvaluateSectionInput,
@@ -148,8 +136,8 @@ function localToOutput(
     isCorrect: local.isCorrect,
     score: local.isCorrect ? 100 : localScore(local),
     feedback: local.isCorrect
-      ? feedbackForCorrect(input)
-      : buildDeterministicFeedback(input.items, input.answers, local),
+      ? feedbackForCorrect(input.sectionType)
+      : buildDeterministicFeedback(input, local),
     errors: local.errors,
   };
 }
@@ -169,38 +157,6 @@ function collectWrongUraian(
       wrongIds.has(i.id) &&
       Object.values(answers[String(i.id)] ?? {}).some((v) => v && v.trim() !== ""),
   );
-}
-
-/** Build per-item feedback for wrong deterministic items and unanswered uraian from local results. */
-function buildDeterministicFeedback(
-  items: SectionItem[],
-  answers: Record<string, Record<string, string>>,
-  local: ValidationResult,
-): string {
-  if (local.isCorrect) {
-    return "Semua jawaban sudah tepat. Pertahankan pemahamanmu.";
-  }
-  const lines: string[] = [];
-  for (const item of items) {
-    const wrong = Object.keys(local.errors).some((k) => k.startsWith(`${item.id}_`));
-    if (!wrong) continue;
-    if (item.type === "uraian") {
-      const hasText = Object.values(answers[String(item.id)] ?? {}).some(
-        (v) => v && v.trim() !== "",
-      );
-      if (hasText) continue; // answered uraian goes to the Gemini mini-prompt
-      lines.push(`• Soal ${item.id} belum diisi, lengkapi jawaban uraian tersebut.`);
-      continue;
-    }
-    lines.push(`• ${describeItem(item)}`);
-  }
-  return lines.join("\n");
-}
-
-/** Prepend deterministic hints to AI feedback without duplicating content. */
-function mergeFeedback(deterministic: string, ai: string): string {
-  const parts = [deterministic, ai].filter((s) => s && s.trim() !== "");
-  return parts.join("\n\n");
 }
 
 /** Build a prompt for Gemini based on attempt number and correctness handling. */
@@ -385,13 +341,13 @@ export async function evaluateSection(
     return {
       isCorrect: true,
       score: 100,
-      feedback: feedbackForCorrect(input),
+      feedback: feedbackForCorrect(input.sectionType),
       errors: {},
     };
   }
 
   const wrongUraian = collectWrongUraian(input.items, input.answers, local.errors);
-  const deterministicFeedback = buildDeterministicFeedback(input.items, input.answers, local);
+  const deterministicFeedback = buildDeterministicFeedback(input, local);
 
   // Only deterministic items wrong → no AI needed at all.
   if (wrongUraian.length === 0) {

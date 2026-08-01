@@ -124,6 +124,8 @@ export interface UraianItem extends BaseItem {
   question: string
   answer: string
   acceptAnswers?: string[]
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ── Memasangkan (drag-and-drop matching) ───────────────────
