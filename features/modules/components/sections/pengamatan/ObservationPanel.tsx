@@ -31,47 +31,52 @@ export function ObservationPanel({ slug, tab }: ObservationPanelProps) {
   const percobaanScore = useAnswerStore((s) => s.answers[tabKey]?.percobaan?.score ?? null)
 
   return (
-    <div className="h-auto lg:h-full lg:max-h-[calc(100vh-8rem)] flex flex-col gap-3 md:gap-4">
-      <Tabs defaultValue="pengamatan" className="flex flex-col h-full gap-3 md:gap-4">
-        {/* Tab navigation bar */}
-        <Tabs.List className="border-4 border-black bg-white p-1 md:p-1.5 flex gap-1.5 md:gap-2 shadow-[4px_4px_0_0_black] w-full overflow-x-hidden">
-          <Tabs.Trigger
-            value="pengamatan"
-            className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_black] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150 flex items-center justify-center gap-1 md:gap-1.5"
-          >
-            <span>Pengamatan</span>
-            <SectionScoreIndicator score={pengamatanScore} />
-          </Tabs.Trigger>
-          <Tabs.Trigger
-            value="percobaan"
-            className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_black] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150 flex items-center justify-center gap-1 md:gap-1.5"
-          >
-            <span>Percobaan</span>
-            <SectionScoreIndicator score={percobaanScore} />
-          </Tabs.Trigger>
-        </Tabs.List>
+    <div className="flex flex-col shadow-[4px_4px_0_0_black]">
+      {/* Scrolling area — top + side borders */}
+      <div className="max-h-[calc(100dvh-7rem)] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none border-t-4 border-x-4 border-black bg-white">
+        <Tabs defaultValue="pengamatan" className="flex flex-col h-full">
+          {/* Tab navigation bar */}
+          <Tabs.List className="p-1 md:p-1.5 flex gap-1.5 md:gap-2 w-full overflow-x-hidden border-b-4 border-black shrink-0">
+            <Tabs.Trigger
+              value="pengamatan"
+              className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_black] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150 flex items-center justify-center gap-1 md:gap-1.5"
+            >
+              <span>Pengamatan</span>
+              <SectionScoreIndicator score={pengamatanScore} />
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="percobaan"
+              className="flex-1 py-1.5 md:py-2.5 text-center font-black uppercase cursor-pointer border-2 border-transparent text-muted-foreground text-xs sm:text-sm md:text-lg data-active:border-black data-active:bg-primary data-active:text-foreground data-active:shadow-[2px_2px_0_0_black] data-active:-translate-y-0.5 data-active:-translate-x-0.5 transition-all duration-150 flex items-center justify-center gap-1 md:gap-1.5"
+            >
+              <span>Percobaan</span>
+              <SectionScoreIndicator score={percobaanScore} />
+            </Tabs.Trigger>
+          </Tabs.List>
 
-        {/* Tab content container */}
-        <div className="border-4 border-black bg-white grow flex flex-col shadow-lg overflow-hidden">
-          {/* Percobaan tab — structured experiment table from section data */}
-          <Tabs.Content value="percobaan" className="p-3 md:p-6 grow overflow-y-auto space-y-3 md:space-y-6 mt-0">
-            {isRefleksiBangun && <PilihanRefleksiForm slug={slug} tab={tab} />}
-            {isRefleksiGaris && <PercobaanRefleksiGarisForm slug={slug} tab={tab} />}
-            {!isRefleksiBangun && !isRefleksiGaris && <PercobaanForm slug={slug} tab={tab} />}
-          </Tabs.Content>
+          {/* Tab content */}
+          <div className="grow flex flex-col">
+            {/* Percobaan tab — structured experiment table from section data */}
+            <Tabs.Content value="percobaan" className="p-3 md:p-6 grow space-y-3 md:space-y-6 mt-0">
+              {isRefleksiBangun && <PilihanRefleksiForm slug={slug} tab={tab} />}
+              {isRefleksiGaris && <PercobaanRefleksiGarisForm slug={slug} tab={tab} />}
+              {!isRefleksiBangun && !isRefleksiGaris && <PercobaanForm slug={slug} tab={tab} />}
+            </Tabs.Content>
 
-          {/* Pengamatan tab — form variant based on module/tab */}
-          <Tabs.Content value="pengamatan" className="p-3 md:p-6 grow overflow-y-auto space-y-3 md:space-y-4 mt-0">
-            {isTranslasiTitik && <PengamatanTitikForm slug={slug} tab={tab} />}
-            {isTranslasiBangun && <PengamatanBangunForm slug={slug} tab={tab} />}
-            {isRefleksiBangun && <ChecklistTableForm slug={slug} tab={tab} />}
-            {isRefleksiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
-            {isRefleksi && !isRefleksiBangun && !isRefleksiGaris && <PengamatanBangunForm slug={slug} tab={tab} />}
-            {isTranslasiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
-            {!isTranslasiTitik && !isTranslasiBangun && !isTranslasiGaris && !isRefleksi && <PengamatanMockForm slug={slug} tab={tab} />}
-          </Tabs.Content>
-        </div>
-      </Tabs>
+            {/* Pengamatan tab — form variant based on module/tab */}
+            <Tabs.Content value="pengamatan" className="p-3 md:p-6 grow space-y-3 md:space-y-4 mt-0">
+              {isTranslasiTitik && <PengamatanTitikForm slug={slug} tab={tab} />}
+              {isTranslasiBangun && <PengamatanBangunForm slug={slug} tab={tab} />}
+              {isRefleksiBangun && <ChecklistTableForm slug={slug} tab={tab} />}
+              {isRefleksiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
+              {isRefleksi && !isRefleksiBangun && !isRefleksiGaris && <PengamatanBangunForm slug={slug} tab={tab} />}
+              {isTranslasiGaris && <PengamatanGarisForm slug={slug} tab={tab} />}
+              {!isTranslasiTitik && !isTranslasiBangun && !isTranslasiGaris && !isRefleksi && <PengamatanMockForm slug={slug} tab={tab} />}
+            </Tabs.Content>
+          </div>
+        </Tabs>
+      </div>
+      {/* Bottom border — stays fixed outside scroll area */}
+      <div className="border-b-4 border-black bg-white shrink-0" />
     </div>
   )
 }

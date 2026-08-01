@@ -231,7 +231,7 @@ export function ModuleContent({
 
       {/* Penyimpulan: shown on mobile below observation panel, hidden on lg+ (rendered inside left col) */}
       {!(slug === "refleksi" && decodedTab === "bangun") && (
-        <div className="lg:hidden">
+        <div className="mt-4 md:mt-6 lg:hidden">
           <ConclusionArea slug={slug} tab={decodedTab} />
         </div>
       )}
