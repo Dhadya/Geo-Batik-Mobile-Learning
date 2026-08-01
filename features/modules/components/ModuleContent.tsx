@@ -155,14 +155,15 @@ export function ModuleContent({
     (s) => s.answers[`${slug}-${decodedTab}`],
   )
   const activeSections = getSectionsForTab(slug, decodedTab)
-  const completedCount = activeSections.filter((sec) => {
+  const incompleteSections = activeSections.filter((sec) => {
     if (sec === "cekPemahaman") {
       const cpStatus = tabAnswers?.cekPemahaman?.status
-      return cpStatus === "correct" || cpStatus === "wrong_attempt2"
+      return cpStatus !== "correct" && cpStatus !== "wrong_attempt2"
     }
     const s = tabAnswers?.[sec as "percobaan"]
-    return s?.status === "correct" || s?.status === "wrong_attempt2"
-  }).length
+    return s?.status !== "correct" && s?.status !== "wrong_attempt2"
+  })
+  const completedCount = activeSections.length - incompleteSections.length
 
   // Check if this tab is locked for preview-only mode
   const tabProgressList = useTabProgressStore((s) => s.progress[slug])
@@ -205,7 +206,7 @@ export function ModuleContent({
         {isTabLocked && (
           <LockOverlay
             title="Tab Belum Terbuka"
-            description={`Selesaikan tab ${tabs[tabIndex - 1]?.label ?? "sebelumnya"} terlebih dahulu untuk mulai mengerjakan bagian ini.`}
+            description={`Tab ini terkunci. Selesaikan seluruh bagian pada tab ${tabs[tabIndex - 1]?.label ?? "sebelumnya"} terlebih dahulu, sampai benar atau setelah 2 kali percobaan, untuk membuka tab ini.`}
             fullScreen
             backHref={backHref}
           />
@@ -259,8 +260,7 @@ export function ModuleContent({
           slug={slug}
           tab={decodedTab}
           tabs={tabs}
-          completedCount={completedCount}
-          activeSections={activeSections}
+          incompleteSections={incompleteSections}
         />
       </div>
 

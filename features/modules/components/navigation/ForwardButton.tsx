@@ -5,27 +5,43 @@ import { toast } from "sonner"
 import { Button } from "@/components/retroui/Button"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 
+/** Human-readable labels for section keys, shown in the block toast message. */
+const SECTION_LABELS: Record<string, string> = {
+  pengamatan: "Pengamatan",
+  percobaan: "Percobaan",
+  penyimpulan: "Penyimpulan",
+  cekPemahaman: "Cek Pemahaman",
+}
+
+/** Join a list into Indonesian phrasing: "Pengamatan dan Percobaan" or "Pengamatan, Percobaan, dan Cek Pemahaman". */
+function joinIncomplete(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? ""
+  if (items.length === 2) return `${items[0]} dan ${items[1]}`
+  return `${items.slice(0, -1).join(", ")}, dan ${items[items.length - 1]}`
+}
+
 /** Forward button: shows "MATERI SELANJUTNYA" (non-last tab) or "KERJAKAN KUIS" (last tab). Blocks navigation if sections incomplete. */
 export function ForwardButton({
   slug,
   tab,
   tabs,
-  completedCount,
-  activeSections,
+  incompleteSections,
 }: {
   slug: string
   tab: string
   tabs: { label: string; value: string }[]
-  completedCount: number
-  activeSections: readonly string[]
+  incompleteSections: readonly string[]
 }) {
   const router = useRouter()
   const isLastTab = tabs[tabs.length - 1].value === tab
-  const allDone = completedCount === activeSections.length
+  const allDone = incompleteSections.length === 0
 
   const handleClick = () => {
     if (!allDone) {
-      toast.warning(`Selesaikan semua bagian terlebih dahulu`)
+      const names = joinIncomplete(incompleteSections.map((s) => SECTION_LABELS[s] ?? s))
+      toast.warning("Bagian belum selesai", {
+        description: `Selesaikan dulu bagian ${names}. Setiap bagian harus selesai hingga benar, atau setelah 2 kali percobaan, sebelum lanjut ke materi berikutnya.`,
+      })
       return
     }
     if (isLastTab) {

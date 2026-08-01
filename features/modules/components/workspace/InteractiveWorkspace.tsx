@@ -12,7 +12,7 @@ export function InteractiveWorkspace({ materialId }: { materialId?: string }) {
   })
 
   return (
-    <div className="border-4 border-black bg-white h-[300px] md:h-[600px] relative isolate overflow-hidden shadow-lg flex flex-col">{/* Main GeoGebra canvas container — isolate creates stacking context to contain GeoGebra z-index */}
+    <div className="border-4 border-black bg-white h-75 md:h-150 relative isolate overflow-hidden shadow-lg flex flex-col">{/* Main GeoGebra canvas container — isolate creates stacking context to contain GeoGebra z-index */}
       {materialId ? (
         <div className="w-full h-full relative grow [&>div]:h-full [&>div]:w-full">{/* Live canvas via containerRef */}
           <div ref={containerRef} className="w-full h-full [&>div]:h-full [&>div]:w-full" />
