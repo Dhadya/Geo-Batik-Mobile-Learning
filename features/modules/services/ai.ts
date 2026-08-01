@@ -1,5 +1,7 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { appError } from "@/lib/api/errors";
+import { validateSection, type ValidationResult } from "../lib/validation";
+import { SECTION_TYPE_LABELS } from "../data/moduleConfig";
 import type { SectionItem } from "@/features/modules/types";
 
 const GENERATION_TIMEOUT_MS = 10000;
@@ -123,6 +125,82 @@ function describeAnswers(items: SectionItem[], answers: Record<string, Record<st
       return `  Soal ${item.id}: ${JSON.stringify(ans)}`;
     })
     .join("\n");
+}
+
+/** Deterministic score from correct/total ratio, rounded to an integer 0-100. */
+function localScore(local: ValidationResult): number {
+  if (local.totalItems === 0) return 0;
+  return Math.round((local.correctCount / local.totalItems) * 100);
+}
+
+/** Section-type-aware reinforcement text for a fully correct submission. */
+function feedbackForCorrect(input: EvaluateSectionInput): string {
+  const label = SECTION_TYPE_LABELS[input.sectionType] ?? input.sectionType;
+  return `Semua jawaban pada bagian ${label} sudah tepat. Konsep yang kamu pahami sudah sesuai dengan kunci jawaban. Pertahankan dan lanjutkan ke materi selanjutnya.`;
+}
+
+/** Map a local ValidationResult into the EvaluateSectionOutput shape. */
+function localToOutput(
+  input: EvaluateSectionInput,
+  local: ValidationResult,
+): EvaluateSectionOutput {
+  return {
+    isCorrect: local.isCorrect,
+    score: local.isCorrect ? 100 : localScore(local),
+    feedback: local.isCorrect
+      ? feedbackForCorrect(input)
+      : buildDeterministicFeedback(input.items, input.answers, local),
+    errors: local.errors,
+  };
+}
+
+/** Collect uraian items the student answered but got wrong — the only items Gemini needs to judge. */
+function collectWrongUraian(
+  items: SectionItem[],
+  answers: Record<string, Record<string, string>>,
+  errors: Record<string, string>,
+): SectionItem[] {
+  const wrongIds = new Set(
+    Object.keys(errors).map((k) => Number(k.split("_")[0])),
+  );
+  return items.filter(
+    (i) =>
+      i.type === "uraian" &&
+      wrongIds.has(i.id) &&
+      Object.values(answers[String(i.id)] ?? {}).some((v) => v && v.trim() !== ""),
+  );
+}
+
+/** Build per-item feedback for wrong deterministic items and unanswered uraian from local results. */
+function buildDeterministicFeedback(
+  items: SectionItem[],
+  answers: Record<string, Record<string, string>>,
+  local: ValidationResult,
+): string {
+  if (local.isCorrect) {
+    return "Semua jawaban sudah tepat. Pertahankan pemahamanmu.";
+  }
+  const lines: string[] = [];
+  for (const item of items) {
+    const wrong = Object.keys(local.errors).some((k) => k.startsWith(`${item.id}_`));
+    if (!wrong) continue;
+    if (item.type === "uraian") {
+      const hasText = Object.values(answers[String(item.id)] ?? {}).some(
+        (v) => v && v.trim() !== "",
+      );
+      if (hasText) continue; // answered uraian goes to the Gemini mini-prompt
+      lines.push(`• Soal ${item.id} belum diisi, lengkapi jawaban uraian tersebut.`);
+      continue;
+    }
+    lines.push(`• ${describeItem(item)}`);
+  }
+  return lines.join("\n");
+}
+
+/** Prepend deterministic hints to AI feedback without duplicating content. */
+function mergeFeedback(deterministic: string, ai: string): string {
+  const parts = [deterministic, ai].filter((s) => s && s.trim() !== "");
+  return parts.join("\n\n");
 }
 
 /** Build a prompt for Gemini based on attempt number and correctness handling. */
@@ -285,10 +363,6 @@ export function parseAIResponse(response: string): EvaluateSectionOutput {
 export async function evaluateSection(
   input: EvaluateSectionInput,
 ): Promise<EvaluateSectionOutput> {
-  if (apiKeys.length === 0) {
-    throw appError("INTERNAL_ERROR");
-  }
-
   if (!input.items?.length || Object.keys(input.answers).length === 0) {
     return {
       isCorrect: false,
@@ -298,7 +372,54 @@ export async function evaluateSection(
     };
   }
 
-  const prompt = buildPrompt(input.module, input.tab, input.sectionType, input.items, input.answers, input.attempt);
+  // Deterministic fast-path: Gemini only judges wrong, answered uraian items.
+  const local = validateSection(input.items, input.answers);
+  const hasUraian = input.items.some((i) => i.type === "uraian");
+
+  // No uraian items → local check is authoritative; never call Gemini.
+  if (!hasUraian) {
+    return localToOutput(input, local);
+  }
+  // All answers correct → no AI needed, return locally.
+  if (local.isCorrect) {
+    return {
+      isCorrect: true,
+      score: 100,
+      feedback: feedbackForCorrect(input),
+      errors: {},
+    };
+  }
+
+  const wrongUraian = collectWrongUraian(input.items, input.answers, local.errors);
+  const deterministicFeedback = buildDeterministicFeedback(input.items, input.answers, local);
+
+  // Only deterministic items wrong → no AI needed at all.
+  if (wrongUraian.length === 0) {
+    return {
+      isCorrect: false,
+      score: localScore(local),
+      feedback: deterministicFeedback,
+      errors: local.errors,
+    };
+  }
+
+  if (apiKeys.length === 0) {
+    throw appError("INTERNAL_ERROR");
+  }
+
+  // Mini-prompt: send only the wrong uraian items Gemini must judge.
+  const miniAnswers: Record<string, Record<string, string>> = {};
+  for (const item of wrongUraian) {
+    miniAnswers[String(item.id)] = input.answers[String(item.id)] ?? {};
+  }
+  const prompt = buildPrompt(
+    input.module,
+    input.tab,
+    input.sectionType,
+    wrongUraian,
+    miniAnswers,
+    input.attempt,
+  );
 
   const generate = async () => {
     rotateKey();
@@ -333,6 +454,20 @@ export async function evaluateSection(
   }
 
   const parsed = parseAIResponse(response);
+  parsed.feedback = mergeFeedback(deterministicFeedback, parsed.feedback);
+
+  // AI judged only the uraian items — factor deterministic correctness into the final verdict.
+  const deterministicAllCorrect = Object.keys(local.errors).every((k) =>
+    wrongUraian.some((i) => i.id === Number(k.split("_")[0])),
+  );
+  const finalCorrect = parsed.isCorrect === true && deterministicAllCorrect;
+  if (finalCorrect) {
+    return { isCorrect: true, score: 100, feedback: parsed.feedback, errors: {} };
+  }
+
+  parsed.isCorrect = false;
+  parsed.score = localScore(local);
+  parsed.errors = { ...local.errors, ...parsed.errors };
   console.log(
     `[ai.evaluate] ${input.module}/${input.tab}/${input.sectionType} attempt=${input.attempt}`,
     `score=${parsed.score} isCorrect=${parsed.isCorrect}`,
@@ -345,9 +480,18 @@ export async function evaluateSection(
 /** Timeout for pembahasan generation (longer — needs per-question analysis). */
 const PEMBAHASAN_TIMEOUT_MS = 10000;
 
+/** A quiz question with a static explanation, used for pembahasan generation. */
+interface PembahasanQuestion {
+  id: number
+  question: string
+  options: string[]
+  correctIndex: number
+  explanation: string
+}
+
 /** Build prompt for pembahasan generation. */
 function buildPembahasanPrompt(
-  questions: { id: number; question: string; options: string[]; correctIndex: number; explanation: string }[],
+  questions: PembahasanQuestion[],
   answers: Record<number, number>,
 ): string {
   const lines = questions.map((q) => {
@@ -388,13 +532,38 @@ Keluarkan JSON SAJA (tanpa markdown) dengan format array:
 ]`;
 }
 
+/** Build per-question pembahasan from static explanations, pointing out the correct option. */
+function buildStaticPembahasan(
+  questions: PembahasanQuestion[],
+  answers: Record<number, number>,
+): { questionId: number; feedback: string }[] {
+  return questions.map((q) => {
+    const userAns = answers[q.id];
+    const isCorrect = userAns === q.correctIndex;
+    const correctText = q.options[q.correctIndex];
+    const userText = userAns != null ? q.options[userAns] ?? "Tidak dijawab" : "Tidak dijawab";
+    let feedback = q.explanation;
+    if (isCorrect) {
+      feedback = `${q.explanation}\n\nJawaban benar: ${correctText}`;
+    } else {
+      feedback = `${q.explanation}\n\nJawaban kamu: ${userText}\nJawaban benar: ${correctText}`;
+    }
+    return { questionId: q.id, feedback };
+  });
+}
+
 /** Generate AI-powered pembahasan for a completed quiz. Returns per-question feedback, falling back to static explanations on failure. */
 export async function generatePembahasan(
-  questions: { id: number; question: string; options: string[]; correctIndex: number; explanation: string }[],
+  questions: PembahasanQuestion[],
   answers: Record<number, number>,
 ): Promise<{ questionId: number; feedback: string }[]> {
+  // Static explanations are the default path — Gemini is optional enrichment only.
+  if (process.env.AI_PEMBAHASAN_ENABLED !== "true") {
+    return buildStaticPembahasan(questions, answers);
+  }
+
   if (apiKeys.length === 0) {
-    return questions.map((q) => ({ questionId: q.id, feedback: q.explanation }));
+    return buildStaticPembahasan(questions, answers);
   }
 
   const prompt = buildPembahasanPrompt(questions, answers);
@@ -424,18 +593,6 @@ export async function generatePembahasan(
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.warn("[ai] generatePembahasan failed, falling back to static explanations:", msg);
-    return questions.map((q) => {
-      const userAns = answers[q.id]
-      const isCorrect = userAns === q.correctIndex
-      const correctText = q.options[q.correctIndex]
-      const userText = userAns != null ? q.options[userAns] ?? "Tidak dijawab" : "Tidak dijawab"
-      let feedback = q.explanation
-      if (isCorrect) {
-        feedback = `${q.explanation}\n\nJawaban benar: ${correctText}`
-      } else {
-        feedback = `${q.explanation}\n\nJawaban kamu: ${userText}\nJawaban benar: ${correctText}`
-      }
-      return { questionId: q.id, feedback }
-    })
+    return buildStaticPembahasan(questions, answers);
   }
 }

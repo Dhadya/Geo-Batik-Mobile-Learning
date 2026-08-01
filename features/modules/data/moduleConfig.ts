@@ -26,3 +26,11 @@ export const REFLECTION_LABELS: Record<string, string> = {
   "garis-x=h": "Garis x=h",
   "garis-y=h": "Garis y=h",
 } as const
+
+/** Human-readable labels for section types (used in feedback prose). */
+export const SECTION_TYPE_LABELS: Record<string, string> = {
+  percobaan: "Percobaan",
+  pengamatan: "Pengamatan",
+  penyimpulan: "Penyimpulan",
+  "cek-pemahaman": "Cek Pemahaman",
+} as const
