@@ -209,7 +209,7 @@ function localToOutput(
     isCorrect: local.isCorrect,
     score: local.isCorrect ? 100 : localScore(local),
     feedback: local.isCorrect
-      ? feedbackForCorrect(input.sectionType)
+      ? feedbackForCorrect(input.sectionType, input.items, input.answers)
       : buildDeterministicFeedback(input, local),
     errors: local.errors,
   };
@@ -380,7 +380,7 @@ export async function evaluateSection(
     return {
       isCorrect: true,
       score: 100,
-      feedback: feedbackForCorrect(input.sectionType),
+      feedback: feedbackForCorrect(input.sectionType, input.items, input.answers),
       errors: {},
     };
   }

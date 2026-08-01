@@ -1226,7 +1226,7 @@ export const refleksiTabs: ModuleTab[] = [
               id: 11,
               type: "pilihan_ganda",
               question: "Perhatikan gambar berikut! Tentukan bayangan dari ruas garis berikut jika direfleksikan terhadap sumbu x",
-              questionImage: "/questions/ruas garis_soal.webp",
+              questionImage: "/questions/ruas-garis_soal.webp",
               options: ["Gambar a", "Gambar b", "Gambar c", "Gambar d"],
               imageOptions: [
                 "/questions/ruas_a.webp",

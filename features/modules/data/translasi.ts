@@ -342,12 +342,12 @@ export const translasiTabs: ModuleTab[] = [
               explanation:
                 "Gambar yang menunjukkan translasi adalah gambar di mana bangun bayangan kongruen dengan bangun awal dan hanya bergeser (tidak diputar, dibalik, atau diubah ukurannya), yaitu gambar a, c, dan e.",
               imageOptions: [
-                "/questions/translasi bangun_1a.webp",
-                "/questions/translasi bangun_1b.webp",
-                "/questions/translasi bangun_1c.webp",
-                "/questions/translasi bangun_1d.webp",
-                "/questions/translasi bangun_1e.webp",
-                "/questions/translasi bangun_1f.webp",
+                "/questions/translasi-bangun_1a.webp",
+                "/questions/translasi-bangun_1b.webp",
+                "/questions/translasi-bangun_1c.webp",
+                "/questions/translasi-bangun_1d.webp",
+                "/questions/translasi-bangun_1e.webp",
+                "/questions/translasi-bangun_1f.webp",
               ],
             },
             {
@@ -358,12 +358,12 @@ export const translasiTabs: ModuleTab[] = [
               correctIndex: 0,
               optionFormat: "image",
               imageOptions: [
-                "/questions/translasi bangun_2a.webp",
-                "/questions/translasi bangun_2b.webp",
-                "/questions/translasi bangun_2c.webp",
-                "/questions/translasi bangun_2d.webp",
+                "/questions/translasi-bangun_2a.webp",
+                "/questions/translasi-bangun_2b.webp",
+                "/questions/translasi-bangun_2c.webp",
+                "/questions/translasi-bangun_2d.webp",
               ],
-              questionImage: "/questions/translasi bangun_2_soal.webp",
+              questionImage: "/questions/translasi-bangun_2_soal.webp",
               questionMatrix: "5,2",
               hint: "Translasi sejauh (5, 2) menggeser setiap titik 5 satuan ke kanan dan 2 satuan ke atas. Geser setiap titik sudut bangun dan cari gambar yang seluruh titik sudutnya berpindah sejauh itu tanpa mengubah bentuk.",
               explanation:

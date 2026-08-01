@@ -340,8 +340,20 @@ export function localScore(local: ValidationResult): number {
   return Math.round((local.correctCount / local.totalItems) * 100)
 }
 
-/** Section-type-aware reinforcement text for a fully correct submission. */
-export function feedbackForCorrect(sectionType: string): string {
+/** Build review feedback for a fully correct submission — shows each item's explanation. */
+export function feedbackForCorrect(
+  sectionType: string,
+  items: SectionItem[],
+  answers: Record<string, Record<string, string>>,
+): string {
   const label = SECTION_TYPE_LABELS[sectionType] ?? sectionType
-  return `Semua jawaban pada bagian ${label} sudah tepat. Konsep yang kamu pahami sudah sesuai dengan kunci jawaban. Pertahankan dan lanjutkan ke materi selanjutnya.`
+  const explanations: string[] = []
+  for (const item of items) {
+    const bullet = buildItemFeedback(item, answers, 2)
+    if (bullet) explanations.push(bullet)
+  }
+  if (explanations.length === 0) {
+    return `Semua jawaban pada bagian ${label} sudah tepat. Pertahankan pemahamanmu.`
+  }
+  return `Semua jawaban pada bagian ${label} sudah tepat.\n\nPembahasan:\n${explanations.join("\n")}`
 }

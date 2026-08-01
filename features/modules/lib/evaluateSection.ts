@@ -115,7 +115,7 @@ export async function evaluateSection(
       isCorrect: local.isCorrect,
       score: local.isCorrect ? 100 : localScore(local),
       feedback: local.isCorrect
-        ? feedbackForCorrect(sectionType)
+        ? feedbackForCorrect(sectionType, items, fields)
         : buildDeterministicFeedback({ module: slug, tab, sectionType, items, answers: fields, attempt }, local, true),
       errors: local.errors ?? {},
       fieldColors: local.fieldColors ?? {},
