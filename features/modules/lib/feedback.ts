@@ -1,5 +1,5 @@
 import type { SectionItem } from "../types"
-import { SECTION_TYPE_LABELS, SECTION_FOCUS, REFLECTION_RULES } from "../data/moduleConfig"
+import { SECTION_TYPE_LABELS, SECTION_FOCUS, REFLECTION_LABELS } from "../data/moduleConfig"
 import type { ValidationResult } from "./validation"
 
 /** Option letters A–F for student-facing feedback. */
@@ -62,11 +62,11 @@ export function buildItemFeedback(
       if (isHint) {
         return item.hint
           ? toBullets(item.hint)
-          : "• Vektor translasi belum tepat. Ingat kembali: vektor translasi diperoleh dari selisih koordinat bayangan dengan titik awal, dihitung per komponen (a = x' - x, b = y' - y). Perhatikan tanda positif dan negatif hasilnya."
+          : "• Vektor translasi belum tepat. Amati kembali pada GeoGebra bagaimana titik awal berpindah menuju titik bayangannya, lalu tentukan besar pergeseran mendatar dan tegaknya."
       }
       return item.explanation
         ? toBullets(item.explanation)
-        : `• Titik ${item.label} ditranslasikan ke ${item.targetBayangan}: a = x' - x dan b = y' - y, sehingga diperoleh T(${item.answer.a}, ${item.answer.b}).`
+        : `• Titik ${item.label} ditranslasikan ke ${item.targetBayangan}, sehingga nilai translasinya T(${item.answer.a}, ${item.answer.b}).`
     }
     case "pilihan_ganda": {
       if (isHint) {
@@ -175,8 +175,9 @@ function koordinatGroupKey(
 /**
  * Build one merged bullet for all wrong koordinat items sharing the same concept,
  * listing every affected point instead of repeating the same hint per point.
- * Hints prefer the authored concept pointer when present; explanations always list
- * every affected point with its correct result.
+ * Hints never state the general transformation formula (that rumus is concluded in
+ * penyimpulan) — they direct the student back to the GeoGebra observation. Explanations
+ * give the specific bayangan result for each affected point without restating the formula.
  */
 function buildKoordinatFeedback(
   points: KoordinatPoint[],
@@ -186,27 +187,25 @@ function buildKoordinatFeedback(
 ): string {
   const isHint = attempt === 1
   const listed = joinList(points.map((p) => p.label))
+  const axis = REFLECTION_LABELS[tab] ?? tab
 
   if (isHint) {
     const authored = points.find((p) => p.hint)?.hint
     if (authored) return toBullets(authored)
     if (slug === "refleksi") {
-      const rule = REFLECTION_RULES[tab]
-      const axis = rule?.label ?? tab
-      return `• Ingat kembali sifat refleksi terhadap ${axis}: ${rule?.hint ?? "koordinat yang tegak lurus sumbu berubah tanda"}. Terapkan pada titik ${listed}.`
+      return `• Amati kembali pada GeoGebra posisi titik ${listed} dan bayangannya terhadap ${axis}. Bandingkan koordinat titik awal dengan bayangannya, lalu tentukan koordinat bayangan yang benar.`
     }
     const vektor = points[0]?.bayanganText ?? "yang diberikan"
-    return `• Terapkan rumus translasi: titik (x, y) digeser sejauh (a, b) menjadi (x + a, y + b). Jumlahkan koordinat ${listed} dengan komponen translasi ${vektor}.`
+    return `• Amati kembali pada GeoGebra arah dan besar pergeseran titik ${listed} oleh vektor ${vektor}. Perhatikan bagaimana koordinat x dan y berubah, lalu tentukan koordinat bayangan yang benar.`
   }
 
   if (slug === "refleksi") {
-    const rule = REFLECTION_RULES[tab]
-    const axis = rule?.label ?? tab
     const hasil = points.map((p) => `${p.label} → (${p.bayangan.x}, ${p.bayangan.y})`).join("; ")
-    return `• Titik ${listed} direfleksikan terhadap ${axis}: ${rule?.rule ?? "koordinat yang sesuai berubah tanda"}, sehingga bayangannya: ${hasil}.`
+    return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} direfleksikan terhadap ${axis}, sehingga bayangannya: ${hasil}.`
   }
+  const vektor = points[0]?.bayanganText ?? "yang diberikan"
   const hasil = points.map((p) => `${p.label} → (${p.bayangan.x}, ${p.bayangan.y})`).join("; ")
-  return `• Titik ${listed} ditranslasikan: x' = x + a dan y' = y + b, sehingga bayangannya: ${hasil}.`
+  return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} digeser sejauh ${vektor}, sehingga bayangannya: ${hasil}.`
 }
 
 /**

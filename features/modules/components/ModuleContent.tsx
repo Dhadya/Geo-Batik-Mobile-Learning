@@ -69,6 +69,8 @@ export function ModuleContent({
         questionImage: i.questionImage,
         questionMatrix: i.questionMatrix,
         questionSuffix: i.questionSuffix,
+        hint: i.hint,
+        explanation: i.explanation,
       }))
 
   // Fallback to legacy assessment prop if no sections defined

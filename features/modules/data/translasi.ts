@@ -40,9 +40,9 @@ export const translasiTabs: ModuleTab[] = [
               label: "(1, -2)",
               targetBayangan: "(3, 1)",
               answer: { a: 2, b: 3 },
-              hint: "Nilai translasi adalah selisih koordinat bayangan dengan titik awal. Untuk tiap komponen: a = x' - x dan b = y' - y. Hitung selisihnya dengan memperhatikan tanda positif dan negatif.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik (1, -2) bergeser menuju titik bayangan (3, 1). Amati besar pergeseran mendatar dan tegaknya, lalu tentukan nilai translasinya.",
               explanation:
-                "Titik awal (1, -2) mencapai bayangan (3, 1): a = 3 - 1 = 2 dan b = 1 - (-2) = 3, sehingga nilai translasinya adalah (2, 3).",
+                "Titik awal (1, -2) bergeser menuju bayangan (3, 1): perpindahan mendatar 2 satuan dan perpindahan tegak 3 satuan, sehingga nilai translasinya adalah (2, 3).",
             },
             {
               id: 2,
@@ -50,9 +50,9 @@ export const translasiTabs: ModuleTab[] = [
               label: "(-1, 4)",
               targetBayangan: "(3, 1)",
               answer: { a: 4, b: -3 },
-              hint: "Gunakan rumus a = x' - x dan b = y' - y dengan titik awal (-1, 4) dan bayangan (3, 1). Perhatikan bahwa komponen bisa bernilai negatif.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik (-1, 4) bergeser menuju titik bayangan (3, 1). Amati besar pergeseran mendatar dan tegaknya, lalu tentukan nilai translasinya.",
               explanation:
-                "Titik awal (-1, 4) mencapai bayangan (3, 1): a = 3 - (-1) = 4 dan b = 1 - 4 = -3, sehingga nilai translasinya adalah (4, -3).",
+                "Titik awal (-1, 4) bergeser menuju bayangan (3, 1): perpindahan mendatar 4 satuan ke kanan dan perpindahan tegak 3 satuan ke bawah, sehingga nilai translasinya adalah (4, -3).",
             },
             {
               id: 3,
@@ -60,9 +60,9 @@ export const translasiTabs: ModuleTab[] = [
               label: "(6, 4)",
               targetBayangan: "(3, 1)",
               answer: { a: -3, b: -3 },
-              hint: "Gunakan rumus a = x' - x dan b = y' - y dengan titik awal (6, 4) dan bayangan (3, 1). Perhatikan bahwa hasilnya bisa membuat titik bergeser ke kiri atau ke bawah.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik (6, 4) bergeser menuju titik bayangan (3, 1). Amati besar pergeseran mendatar dan tegaknya, lalu tentukan nilai translasinya.",
               explanation:
-                "Titik awal (6, 4) mencapai bayangan (3, 1): a = 3 - 6 = -3 dan b = 1 - 4 = -3, sehingga nilai translasinya adalah (-3, -3).",
+                "Titik awal (6, 4) bergeser menuju bayangan (3, 1): perpindahan mendatar 3 satuan ke kiri dan perpindahan tegak 3 satuan ke bawah, sehingga nilai translasinya adalah (-3, -3).",
             },
             {
               id: 4,
@@ -70,9 +70,9 @@ export const translasiTabs: ModuleTab[] = [
               label: "(1, -3)",
               bayangan: "T(3, 4)",
               answer: { x: 4, y: 1 },
-              hint: "Terapkan rumus translasi: titik (x, y) digeser sejauh (a, b) menjadi (x + a, y + b). Jumlahkan koordinat (1, -3) dengan vektor translasi (3, 4).",
+              hint: "Perhatikan kembali pada GeoGebra arah dan besar pergeseran titik (1, -3) oleh vektor translasi T(3, 4). Perhatikan bagaimana koordinat x dan koordinat y berubah, lalu tentukan koordinat bayangan yang benar.",
               explanation:
-                "(1, -3) ditranslasikan oleh (3, 4): x' = 1 + 3 = 4 dan y' = -3 + 4 = 1, sehingga bayangannya (4, 1).",
+                "(1, -3) digeser oleh (3, 4): koordinat bergeser 3 satuan ke kanan dan 4 satuan ke atas, sehingga bayangannya (4, 1).",
             },
           ],
         },
@@ -221,7 +221,7 @@ export const translasiTabs: ModuleTab[] = [
               label: "A(-3, 3)",
               bayangan: "(6, -4)",
               answer: { x: 3, y: -1 },
-              hint: "Setiap titik sudut bangun digeser dengan vektor translasi yang sama (6, -4). Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan komponen translasi: x' = x + a dan y' = y + b.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik sudut A(-3, 3) digeser oleh vektor translasi (6, -4). Perhatikan bagaimana koordinat x dan koordinat y berubah, lalu tentukan koordinat bayangan yang benar.",
             },
             {
               id: 2,
@@ -229,7 +229,7 @@ export const translasiTabs: ModuleTab[] = [
               label: "B(-3, 1)",
               bayangan: "(6, -4)",
               answer: { x: 3, y: -3 },
-              hint: "Setiap titik sudut bangun digeser dengan vektor translasi yang sama (6, -4). Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan komponen translasi: x' = x + a dan y' = y + b.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik sudut B(-3, 1) digeser oleh vektor translasi (6, -4). Perhatikan bagaimana koordinat x dan koordinat y berubah, lalu tentukan koordinat bayangan yang benar.",
             },
             {
               id: 3,
@@ -237,7 +237,7 @@ export const translasiTabs: ModuleTab[] = [
               label: "C(-1, 1)",
               bayangan: "(6, -4)",
               answer: { x: 5, y: -3 },
-              hint: "Setiap titik sudut bangun digeser dengan vektor translasi yang sama (6, -4). Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan komponen translasi: x' = x + a dan y' = y + b.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik sudut C(-1, 1) digeser oleh vektor translasi (6, -4). Perhatikan bagaimana koordinat x dan koordinat y berubah, lalu tentukan koordinat bayangan yang benar.",
             },
             {
               id: 4,
@@ -245,7 +245,7 @@ export const translasiTabs: ModuleTab[] = [
               label: "D(-1, 3)",
               bayangan: "(6, -4)",
               answer: { x: 5, y: -1 },
-              hint: "Setiap titik sudut bangun digeser dengan vektor translasi yang sama (6, -4). Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan komponen translasi: x' = x + a dan y' = y + b.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik sudut D(-1, 3) digeser oleh vektor translasi (6, -4). Perhatikan bagaimana koordinat x dan koordinat y berubah, lalu tentukan koordinat bayangan yang benar.",
             },
           ],
         },
@@ -429,18 +429,18 @@ export const translasiTabs: ModuleTab[] = [
               type: "koordinat",
               label: "A'",
               answer: { x: 2, y: -2 },
-              hint: "Bayangan A' diperoleh dengan menambahkan vektor translasi pada titik potong sumbu x yang sudah ditemukan: x' = x + a dan y' = y + b.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik potong sumbu x yang sudah ditemukan digeser oleh vektor translasi (6, -2). Perhatikan bagaimana koordinat x dan koordinat y berubah, lalu tentukan koordinat bayangan A'.",
               explanation:
-                "Titik potong sumbu x (-4, 0) ditranslasikan oleh (6, -2): x' = -4 + 6 = 2 dan y' = 0 + (-2) = -2, sehingga bayangannya A'(2, -2).",
+                "Titik potong sumbu x (-4, 0) digeser oleh vektor translasi (6, -2): koordinat bergeser 6 satuan ke kanan dan 2 satuan ke bawah, sehingga bayangannya A'(2, -2).",
             },
             {
               id: 4,
               type: "koordinat",
               label: "B'",
               answer: { x: 6, y: 0 },
-              hint: "Bayangan B' diperoleh dengan menambahkan vektor translasi pada titik potong sumbu y yang sudah ditemukan: x' = x + a dan y' = y + b.",
+              hint: "Perhatikan kembali pada GeoGebra bagaimana titik potong sumbu y yang sudah ditemukan digeser oleh vektor translasi (6, -2). Perhatikan bagaimana koordinat x dan koordinat y berubah, lalu tentukan koordinat bayangan B'.",
               explanation:
-                "Titik potong sumbu y (0, 2) ditranslasikan oleh (6, -2): x' = 0 + 6 = 6 dan y' = 2 + (-2) = 0, sehingga bayangannya B'(6, 0).",
+                "Titik potong sumbu y (0, 2) digeser oleh vektor translasi (6, -2): koordinat bergeser 6 satuan ke kanan dan 2 satuan ke bawah, sehingga bayangannya B'(6, 0).",
             },
             {
               id: 6,

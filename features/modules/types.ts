@@ -35,6 +35,8 @@ export interface AssessmentQuestion {
   questionImage?: string
   questionMatrix?: string
   questionSuffix?: string
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ============================================================
