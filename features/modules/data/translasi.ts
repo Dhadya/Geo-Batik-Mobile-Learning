@@ -157,6 +157,9 @@ export const translasiTabs: ModuleTab[] = [
               correctIndex: 2,
               questionMatrix: "5,-1",
               questionSuffix: ". Berapakah koordinat bayangannya?",
+              hint: "Bayangan diperoleh dengan menjumlahkan koordinat titik awal dengan vektor translasinya: x' = x + a dan y' = y + b. Terapkan pada titik A(-3, 2) dengan vektor (5, -1).",
+              explanation:
+                "A(-3, 2) ditranslasikan oleh (5, -1): x' = -3 + 5 = 2 dan y' = 2 + (-1) = 1, sehingga bayangannya A'(2, 1).",
             },
             {
               id: 11,
@@ -171,6 +174,9 @@ export const translasiTabs: ModuleTab[] = [
               ],
               optionFormat: "matrix",
               correctIndex: 0,
+              hint: "Nilai translasi adalah selisih koordinat bayangan dengan titik awal: a = x' - x dan b = y' - y. Hitung selisih setiap komponen dari B(10, -5) ke B'(20, 5).",
+              explanation:
+                "a = x' - x = 20 - 10 = 10 dan b = y' - y = 5 - (-5) = 10, sehingga translasinya adalah (10, 10).",
             },
           ],
         },
@@ -301,6 +307,9 @@ export const translasiTabs: ModuleTab[] = [
               correctIndex: 0,
               multiSelect: true,
               correctIndices: [0, 2, 4],
+              hint: "Translasi menggeser bangun tanpa mengubah bentuk, ukuran, maupun arah hadapnya. Periksa setiap gambar: bangun bayangan harus kongruen dengan bangun awal dan hanya berpindah posisi, tidak diputar atau dibalik.",
+              explanation:
+                "Gambar yang menunjukkan translasi adalah gambar di mana bangun bayangan kongruen dengan bangun awal dan hanya bergeser (tidak diputar, dibalik, atau diubah ukurannya), yaitu gambar a, c, dan e.",
               imageOptions: [
                 "/questions/translasi bangun_1a.webp",
                 "/questions/translasi bangun_1b.webp",
@@ -325,6 +334,9 @@ export const translasiTabs: ModuleTab[] = [
               ],
               questionImage: "/questions/translasi bangun_2_soal.webp",
               questionMatrix: "5,2",
+              hint: "Translasi sejauh (5, 2) menggeser setiap titik 5 satuan ke kanan dan 2 satuan ke atas. Geser setiap titik sudut bangun dan cari gambar yang seluruh titik sudutnya berpindah sejauh itu tanpa mengubah bentuk.",
+              explanation:
+                "Setiap titik sudut bangun digeser sejauh (5, 2): 5 satuan ke kanan dan 2 satuan ke atas. Bangun bayangan tetap kongruen dengan bangun awal, dan posisinya berpindah sesuai vektor translasi tersebut.",
             },
           ],
         },
@@ -473,6 +485,9 @@ export const translasiTabs: ModuleTab[] = [
               correctIndex: 1,
               questionMatrix: "3,-4",
               questionSuffix: ". Tentukan persamaan garis hasil translasi!",
+              hint: "Translasi tidak mengubah kemiringan garis, hanya menggeser posisinya. Tentukan titik potong garis h terhadap sumbu x dan sumbu y, geser kedua titik tersebut sejauh (3, -4), lalu susun persamaan garis yang melalui kedua titik bayangan.",
+              explanation:
+                "Garis h: 2x + 3y = 6 memotong sumbu x di (3, 0) dan sumbu y di (0, 2). Kedua titik digeser (3, -4): (3, 0) → (6, -4) dan (0, 2) → (3, -2). Persamaan garis yang melalui kedua titik bayangan adalah 2x + 3y = 0.",
             },
           ],
         },

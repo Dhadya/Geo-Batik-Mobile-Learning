@@ -56,9 +56,11 @@ export function buildItemFeedback(
     }
     case "pilihan_ganda": {
       if (isHint) {
+        if (item.hint) return `• ${item.hint}`
         const letters = item.options.map((_, i) => optionLetter(i)).join(", ")
         return `• Cermati kembali pertanyaan dan terapkan konsep yang dipelajari pada bagian ini. Bandingkan setiap pilihan ${letters} sebelum menentukan jawaban.`
       }
+      if (item.explanation) return `• ${item.explanation}`
       if (item.multiSelect && item.correctIndices) {
         const letters = item.correctIndices.map((i) => optionLetter(i)).join(", ")
         const texts = item.correctIndices.map((i) => item.options[i]).join(" | ")

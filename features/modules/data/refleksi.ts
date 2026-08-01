@@ -94,6 +94,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Tentukan bayangan titik P(4, -3) jika dicerminkan terhadap sumbu x!",
               options: ["P'(-4, 3)", "P'(-4, -3)", "P'(3, 4)", "P'(4, 3)"],
               correctIndex: 3,
+              hint: "Refleksi terhadap sumbu x mengubah tanda koordinat y menjadi -y, sedangkan koordinat x tetap. Terapkan pada titik P(4, -3).",
+              explanation:
+                "Refleksi terhadap sumbu x: (x, y) → (x, -y). P(4, -3) menjadi P'(4, 3), sehingga jawaban yang benar adalah P'(4, 3).",
             },
             {
               id: 10,
@@ -101,6 +104,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Titik Q'(2, -5) merupakan bayangan titik Q terhadap sumbu x. Tentukan koordinat titik Q!",
               options: ["Q(-2, 5)", "Q(2, 5)", "Q(-2, -5)", "Q(-5, 2)"],
               correctIndex: 1,
+              hint: "Refleksi terhadap sumbu x mengubah tanda koordinat y menjadi -y, sedangkan koordinat x tetap. Kerjakan kebalikannya: titik asal Q diperoleh dari Q'(2, -5) dengan membalik tanda koordinat y.",
+              explanation:
+                "Refleksi terhadap sumbu x: (x, y) → (x, -y). Karena Q'(2, -5) = (x, -y), maka x = 2 dan y = 5, sehingga titik asal Q(2, 5).",
             },
           ],
         },
@@ -199,6 +205,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Tentukan bayangan titik P(8, -2) jika dicerminkan terhadap sumbu y!",
               options: ["P'(8, 2)", "P'(-8, 2)", "P'(-8, -2)", "P'(-2, 8)"],
               correctIndex: 2,
+              hint: "Refleksi terhadap sumbu y mengubah tanda koordinat x menjadi -x, sedangkan koordinat y tetap. Terapkan pada titik P(8, -2).",
+              explanation:
+                "Refleksi terhadap sumbu y: (x, y) → (-x, y). P(8, -2) menjadi P'(-8, -2), sehingga jawaban yang benar adalah P'(-8, -2).",
             },
             {
               id: 10,
@@ -206,6 +215,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Titik Q'(4, -6) merupakan bayangan titik Q terhadap sumbu y. Tentukan koordinat titik Q!",
               options: ["Q(6, 4)", "Q(6, -4)", "Q(-6, -4)", "Q(-4, -6)"],
               correctIndex: 3,
+              hint: "Refleksi terhadap sumbu y mengubah tanda koordinat x menjadi -x, sedangkan koordinat y tetap. Kerjakan kebalikannya: titik asal Q diperoleh dari Q' dengan membalik tanda koordinat x.",
+              explanation:
+                "Refleksi terhadap sumbu y: (x, y) → (-x, y). Karena Q'(4, -6) = (-x, y), maka x = -4 dan y = -6, sehingga titik asal Q(-4, -6).",
             },
           ],
         },
@@ -304,6 +316,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Tentukan bayangan titik P(7, 3) jika dicerminkan terhadap titik (0,0)!",
               options: ["P'(-7, -3)", "P'(7, 3)", "P'(-7, 3)", "P'(3, -7)"],
               correctIndex: 0,
+              hint: "Refleksi terhadap titik (0,0) membalikkan titik melewati titik asal sehingga kedua koordinat berubah tanda: (x, y) → (-x, -y). Terapkan pada titik P(7, 3).",
+              explanation:
+                "Refleksi terhadap titik (0,0): (x, y) → (-x, -y). P(7, 3) menjadi P'(-7, -3), sehingga jawaban yang benar adalah P'(-7, -3).",
             },
             {
               id: 10,
@@ -311,6 +326,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Titik Q'(-8, -2) merupakan bayangan titik Q terhadap titik (0,0). Tentukan koordinat titik Q!",
               options: ["Q(-8, 2)", "Q(8, -2)", "Q(8, 2)", "Q(2, 8)"],
               correctIndex: 2,
+              hint: "Refleksi terhadap titik (0,0) membalikkan tanda kedua koordinat: (x, y) → (-x, -y). Kerjakan kebalikannya: titik asal Q diperoleh dari Q'(-8, -2) dengan membalik tanda kedua koordinatnya.",
+              explanation:
+                "Refleksi terhadap titik (0,0): (x, y) → (-x, -y). Karena Q'(-8, -2) = (-x, -y), maka x = 8 dan y = 2, sehingga titik asal Q(8, 2).",
             },
           ],
         },
@@ -409,6 +427,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Tentukan bayangan titik P(6, 6) jika dicerminkan terhadap garis x=y!",
               options: ["P'(6, 6)", "P'(-6, 6)", "P'(6, -6)", "P'(-6, 0)"],
               correctIndex: 0,
+              hint: "Refleksi terhadap garis x=y menukar kedudukan koordinat x dan y: (x, y) → (y, x). Terapkan pada titik P(6, 6).",
+              explanation:
+                "Refleksi terhadap garis x=y: (x, y) → (y, x). P(6, 6) menjadi P'(6, 6) karena koordinatnya sama, sehingga jawaban yang benar adalah P'(6, 6).",
             },
             {
               id: 10,
@@ -416,6 +437,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Titik Q'(-3, 2) merupakan bayangan titik Q terhadap garis x=y. Tentukan koordinat titik asalnya!",
               options: ["Q(3, 2)", "Q(3, -2)", "Q(2, -3)", "Q(-3, 2)"],
               correctIndex: 2,
+              hint: "Refleksi terhadap garis x=y menukar kedudukan koordinat x dan y: (x, y) → (y, x). Kerjakan kebalikannya: titik asal Q diperoleh dari Q'(-3, 2) dengan menukar kembali koordinatnya.",
+              explanation:
+                "Refleksi terhadap garis x=y: (x, y) → (y, x). Karena Q'(-3, 2) = (y, x), maka koordinat titik asal adalah Q(2, -3).",
             },
           ],
         },
@@ -514,6 +538,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Tentukan bayangan titik P(4, 5) jika dicerminkan terhadap garis x=-y!",
               options: ["P'(-5, -4)", "P'(-4, -5)", "P'(4, 5)", "P'(-5, 4)"],
               correctIndex: 0,
+              hint: "Refleksi terhadap garis x=-y menukar kedudukan koordinat x dan y sekaligus mengubah tanda keduanya: (x, y) → (-y, -x). Terapkan pada titik P(4, 5).",
+              explanation:
+                "Refleksi terhadap garis x=-y: (x, y) → (-y, -x). P(4, 5) menjadi P'(-5, -4), sehingga jawaban yang benar adalah P'(-5, -4).",
             },
             {
               id: 10,
@@ -521,6 +548,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Titik Q'(8, -9) merupakan bayangan titik Q terhadap garis x=-y. Tentukan koordinat titik asalnya!",
               options: ["Q(-9, 8)", "Q(9, -8)", "Q(-9, -8)", "Q(8, -9)"],
               correctIndex: 1,
+              hint: "Refleksi terhadap garis x=-y: (x, y) → (-y, -x). Kerjakan kebalikannya: dari Q'(8, -9) = (-y, -x), tentukan nilai x dan y asalnya.",
+              explanation:
+                "Refleksi terhadap garis x=-y: (x, y) → (-y, -x). Karena Q'(8, -9) = (-y, -x), maka -y = 8 dan -x = -9, sehingga y = -8 dan x = 9, titik asal Q(9, -8).",
             },
           ],
         },
@@ -629,6 +659,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Tentukan bayangan titik P(6, 7) jika dicerminkan terhadap garis x=3!",
               options: ["P'(7, 0)", "P'(7, 6)", "P'(3, 7)", "P'(0, 7)"],
               correctIndex: 3,
+              hint: "Refleksi terhadap garis vertikal x=h menggunakan rumus x' = 2h - x, sedangkan koordinat y tetap. Terapkan dengan h = 3 pada titik P(6, 7).",
+              explanation:
+                "Refleksi terhadap garis x=3: x' = 2h - x = 2(3) - 6 = 0 dan y' = 7, sehingga bayangannya P'(0, 7).",
             },
             {
               id: 10,
@@ -636,6 +669,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Titik Q'(-3, 6) merupakan bayangan titik Q terhadap garis x=-2. Tentukan koordinat titik asalnya!",
               options: ["Q(-1, 6)", "Q(1, 6)", "Q(3, 6)", "Q(6, 6)"],
               correctIndex: 0,
+              hint: "Refleksi terhadap garis vertikal x=h memenuhi x' = 2h - x. Masukkan x' = -3 dan h = -2, lalu selesaikan untuk mencari x asal; koordinat y tetap.",
+              explanation:
+                "Refleksi terhadap garis x=-2: x' = 2h - x = 2(-2) - x = -4 - x. Karena x' = -3, maka -3 = -4 - x sehingga x = -1, dan y = 6. Jadi titik asal Q(-1, 6).",
             },
           ],
         },
@@ -744,6 +780,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Tentukan bayangan titik P(6, 6) jika dicerminkan terhadap garis y=3!",
               options: ["P'(6, 3)", "P'(3, 6)", "P'(6, 0)", "P'(6, 12)"],
               correctIndex: 2,
+              hint: "Refleksi terhadap garis horizontal y=h menggunakan rumus y' = 2h - y, sedangkan koordinat x tetap. Terapkan dengan h = 3 pada titik P(6, 6).",
+              explanation:
+                "Refleksi terhadap garis y=3: y' = 2h - y = 2(3) - 6 = 0 dan x' = 6, sehingga bayangannya P'(6, 0).",
             },
             {
               id: 10,
@@ -751,6 +790,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Titik Q'(6, -3) merupakan bayangan titik Q terhadap garis y=-2. Tentukan koordinat titik asalnya!",
               options: ["Q(1, -6)", "Q(6, -1)", "Q(6, -5)", "Q(6, -6)"],
               correctIndex: 1,
+              hint: "Refleksi terhadap garis horizontal y=h memenuhi y' = 2h - y. Masukkan y' = -3 dan h = -2, lalu selesaikan untuk mencari y asal; koordinat x tetap.",
+              explanation:
+                "Refleksi terhadap garis y=-2: y' = 2h - y = 2(-2) - y = -4 - y. Karena y' = -3, maka -3 = -4 - y sehingga y = -1, dan x = 6. Jadi titik asal Q(6, -1).",
             },
           ],
         },
@@ -885,6 +927,9 @@ export const refleksiTabs: ModuleTab[] = [
               multiSelect: true,
               correctIndex: 0,
               correctIndices: [1, 2, 3, 4],
+              hint: "Refleksi menghasilkan bayangan yang kongruen dengan bangun asal tetapi dicerminkan (seperti pantulan di cermin), bukan sekadar digeser. Jarak setiap titik ke cermin sama dengan jarak bayangannya ke cermin. Periksa setiap gambar apakah menampilkan pencerminan.",
+              explanation:
+                "Gambar yang menunjukkan refleksi adalah gambar b, c, d, dan e, karena bangun bayangannya kongruen dan dibalik seolah-olah dipantulkan oleh cermin. Gambar a hanya menggeser bangun, sehingga bukan refleksi.",
             },
             {
               id: 9,
@@ -899,6 +944,9 @@ export const refleksiTabs: ModuleTab[] = [
               ],
               optionFormat: "image",
               correctIndex: 1,
+              hint: "Refleksi terhadap sumbu y membalikkan bangun ke sisi lain sumbu y: setiap titik (x, y) menjadi (-x, y). Perhatikan arah hadap bangun yang mencerminkan pembalikan terhadap sumbu tegak.",
+              explanation:
+                "Refleksi terhadap sumbu y mengubah koordinat x setiap titik menjadi -x, sehingga bayangan bangun tampak dibalik ke kiri. Gambar b adalah bayangan yang benar.",
             },
           ],
         },
@@ -1053,10 +1101,13 @@ export const refleksiTabs: ModuleTab[] = [
               ],
               optionFormat: "image",
               correctIndex: 1,
+              hint: "Refleksi terhadap sumbu x membalikkan ruas garis ke sisi bawah sumbu x: setiap titik (x, y) menjadi (x, -y). Cari gambar di mana kedua titik ujung ruas garis berpindah ke bawah dengan jarak yang sama ke sumbu x.",
+              explanation:
+                "Refleksi terhadap sumbu x mengubah koordinat y setiap titik menjadi -y, sehingga ruas garis bayangan berada di bawah sumbu x dengan jarak yang sama. Gambar b adalah bayangan yang benar.",
             },
           ],
         },
       },
     },
-]
+  ]
 ;
