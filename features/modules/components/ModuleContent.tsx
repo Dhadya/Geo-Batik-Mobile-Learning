@@ -173,11 +173,13 @@ export function ModuleContent({
     ? !thisTabProgress.unlocked
     : tabIndex > 0
 
-  // Compute backHref: navigate to latest unlocked tab
-  const latestUnlockedTab = tabProgressList
-    ? [...tabProgressList].reverse().find((p) => p.unlocked)
-    : null
-  const backHref = `/modul/${slug}/${latestUnlockedTab?.tab ?? tabs[0].value}`
+  // Compute backHref: navigate to the last unlocked tab in tab order (rows from the
+  // server are unordered, so scan the canonical tabs array instead of reversing the list)
+  const backIndex = tabs.reduce((last, t, i) => {
+    const p = tabProgressList?.find((x) => x.tab === t.value)
+    return p?.unlocked ? i : last
+  }, 0)
+  const backHref = `/modul/${slug}/${tabs[backIndex].value}`
 
   return (
     <div className="space-y-3 md:space-y-6">

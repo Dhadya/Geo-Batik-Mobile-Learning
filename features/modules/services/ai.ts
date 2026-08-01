@@ -1,4 +1,10 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+  SchemaType,
+  type GenerationConfig,
+} from "@google/generative-ai";
 import { appError } from "@/lib/api/errors";
 import { validateSection, type ValidationResult } from "../lib/validation";
 import { buildDeterministicFeedback, feedbackForCorrect, localScore, mergeFeedback } from "../lib/feedback";
@@ -68,6 +74,73 @@ const SAFETY_SETTINGS = [
   { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
   { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
 ];
+
+/** Static evaluation rules sent once as the system instruction — keeps the user prompt dynamic only. */
+const SECTION_SYSTEM_INSTRUCTION = `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
+
+ATURAN PENILAIAN:
+• KUNCI JAWABAN yang tercantum di prompt adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
+• JANGAN pernah menyebut atau menulis kata "kekeliruan di kunci jawaban", "sepertinya ada kesalahan", atau sejenisnya.
+• Feedback harus berfokus pada membantu siswa, bukan mengevaluasi soal atau kunci jawaban.
+• Jangan menyebut nomor soal dalam feedback.
+• Boleh gunakan kalimat langsung, boleh juga menggunakan • untuk bullet point, jangan gunakan * atau -.
+• DILARANG menggunakan karakter * (asterisk) dan — (em dash) dalam feedback.
+
+ATURAN SKORING KHUSUS:
+• SOAL URAIAN: penilaian longgar. Jika jawaban siswa mendekati atau mengandung inti yang sama dengan kunci jawaban, anggap BENAR. Tidak harus sama persis kata demi kata.
+• SOAL YA/TIDAK DENGAN ALASAN: nilai berdasarkan jawaban pokok (Ya/Tidak) dulu. Jika jawaban pokok siswa SAMA dengan kunci (sama-sama Ya atau sama-sama Tidak), maka nilai MINIMAL 70, terlepas dari apapun alasannya. Jika jawaban pokok benar DAN alasan kuat/relevan, nilai 100. Jika jawaban pokok berbeda, nilai menyesuaikan.
+• DILARANG memberi nilai 70-99 jika jawaban pokok berbeda dengan kunci.`;
+
+/** Build the structured-output generation config for a section evaluation call. Attempt 1 caps output at 800 tokens, attempt 2 at 1500. */
+function buildSectionGenerationConfig(attempt: 1 | 2): GenerationConfig {
+  return {
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: SchemaType.OBJECT,
+      properties: {
+        isCorrect: { type: SchemaType.BOOLEAN },
+        score: { type: SchemaType.NUMBER, nullable: true },
+        feedback: { type: SchemaType.STRING },
+      },
+      required: ["isCorrect", "score", "feedback"],
+    },
+    maxOutputTokens: attempt === 1 ? 800 : 1500,
+  };
+}
+
+/** Static quiz pembahasan rules sent as the system instruction. */
+const PEMBAHASAN_SYSTEM_INSTRUCTION = `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
+
+ATURAN PENTING:
+• KUNCI JAWABAN yang tercantum di prompt adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
+• Feedback harus berfokus pada membantu siswa memahami konsep, bukan mengevaluasi soal atau kunci jawaban.
+• DILARANG menggunakan karakter * (asterisk) dan — (em dash) dalam feedback.
+• Gunakan bahasa Indonesia yang sederhana dan mudah dipahami siswa SMP.
+
+Tugasmu: Berikan feedback/pembahasan untuk SETIAP soal:
+• Jika jawaban benar: berikan konfirmasi singkat dan penguatan konsep (1-2 kalimat).
+• Jika jawaban salah: jelaskan langkah demi langkah penyelesaian yang benar, dan tunjukkan di mana letak kesalahan siswa.
+• JANGAN beri pujian berlebihan, motivasi, atau kalimat penyemangat. Feedback harus to the point.
+• Jangan menyebut nomor soal dalam feedback.`;
+
+/** Build the structured-output generation config for quiz pembahasan — an array of per-question feedback. */
+function buildPembahasanGenerationConfig(): GenerationConfig {
+  return {
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: SchemaType.ARRAY,
+      items: {
+        type: SchemaType.OBJECT,
+        properties: {
+          questionId: { type: SchemaType.NUMBER },
+          feedback: { type: SchemaType.STRING },
+        },
+        required: ["questionId", "feedback"],
+      },
+    },
+    maxOutputTokens: 1500,
+  };
+}
 
 export interface EvaluateSectionInput {
   module: string;
@@ -173,8 +246,7 @@ export function buildPrompt(
   const sectionLabel = sectionType.replace(/_/g, " ");
   const tabLabel = tab.replace(/-/g, " ");
 
-  const basePrompt = `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
-Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module} - ${tabLabel}.
+  const basePrompt = `Seorang siswa menjawab soal pada bagian ${sectionLabel} di modul ${module} - ${tabLabel}.
 ${attempt === 2 ? "Ini adalah percobaan kedua (terakhir) setelah jawaban pertama salah." : "Ini adalah percobaan pertama."}
 
 FOKUS BAGIAN ${sectionLabel.toUpperCase()}:
@@ -195,19 +267,6 @@ ${itemDescriptions}
 
 Jawaban siswa:
 ${studentAnswers}
-
-ATURAN PENILAIAN:
-• KUNCI JAWABAN yang tercantum di atas adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
-• JANGAN pernah menyebut atau menulis kata "kekeliruan di kunci jawaban", "sepertinya ada kesalahan", atau sejenisnya.
-• Feedback harus berfokus pada membantu siswa, bukan mengevaluasi soal atau kunci jawaban.
-• Jangan menyebut nomor soal dalam feedback.
-• Boleh gunakan kalimat langsung, boleh juga menggunakan • untuk bullet point, jangan gunakan * atau -
-• DILARANG menggunakan karakter * (asterisk) dan — (em dash) dalam feedback.
-
-ATURAN SKORING KHUSUS:
-• SOAL URAIAN: penilaian longgar. Jika jawaban siswa mendekati atau mengandung inti yang sama dengan kunci jawaban, anggap BENAR. Tidak harus sama persis kata demi kata.
-• SOAL YA/TIDAK DENGAN ALASAN: nilai berdasarkan jawaban pokok (Ya/Tidak) dulu. Jika jawaban pokok siswa SAMA dengan kunci (sama-sama Ya atau sama-sama Tidak), maka nilai MINIMAL 70, terlepas dari apapun alasannya. Jika jawaban pokok benar DAN alasan kuat/relevan, nilai 100. Jika jawaban pokok berbeda, nilai menyesuaikan.
-• DILARANG memberi nilai 70-99 jika jawaban pokok berbeda dengan kunci.
 `;
 
   if (attempt === 2) {
@@ -224,24 +283,13 @@ FEEDBACK WAJIB BENTUK POIN-POIN DENGAN PENJELASAN LENGKAP:
 • Untuk setiap soal yang salah: 2-4 poin berisi penjelasan konsep, rumus, dan langkah penyelesaian yang benar secara detail.
 • Untuk setiap soal yang benar: 1-2 poin berisi penguatan konsep dan penjelasan mengapa jawaban tersebut tepat.
 • JANGAN beri pujian berlebihan, motivasi, atau kalimat penyemangat.
-• JANGAN menyebut nomor soal dalam feedback. Langsung jelaskan konsep atau penyelesaiannya.
-• Beri penjelasan yang cukup, tidak terlalu pendek. Siswa perlu memahami konsepnya.
+• JANGAN menyebut nomor soal dalam feedback.
 
-CONTOH FORMAT FEEDBACK YANG BENAR:
-• Konsep translasi: setiap titik (x,y) digeser sejauh (a,b) menghasilkan bayangan (x+a, y+b). Pada soal ini, titik A(2,3) ditranslasikan (4,-1) sehingga A'(6,2). Translasi tidak mengubah bentuk atau orientasi, hanya posisi.
-• Refleksi terhadap sumbu X mengubah tanda koordinat y menjadi kebalikannya. Titik (x,y) dicerminkan menjadi (x,-y). Maka B(1,4) setelah direfleksikan terhadap sumbu X menjadi B'(1,-4). Konsep ini berlaku untuk semua bangun datar.
-
-Keluarkan JSON SAJA (tanpa markdown) dengan format:
-{
-  "isCorrect": boolean,
-  "score": number (0-100) atau null,
-  "feedback": "string dalam Bahasa Indonesia, berbentuk poin-poin menggunakan •",
-  "errors": { "fieldKey": "alasan kesalahan" }
-}`;
+CONTOH FORMAT: "• Konsep translasi: setiap titik (x,y) digeser sejauh (a,b) menghasilkan bayangan (x+a, y+b). Titik A(2,3) ditranslasikan (4,-1) sehingga A'(6,2)."`;
   }
 
   return `${basePrompt}
-INSTRUKSI: HINT (percobaan pertama):
+INSTRUKSI: HINT (percobaan pertama)
 Feedback dibaca siswa sebagai petunjuk sebelum mencoba lagi. JANGAN beri jawaban akhir.
 
 HASIL:
@@ -256,17 +304,7 @@ FEEDBACK WAJIB BENTUK POIN-POIN DENGAN PENJELASAN:
 • JANGAN beri pujian, motivasi, atau kalimat pembuka basa-basi.
 • JANGAN menyebut nomor soal dalam feedback.
 
-CONTOH FORMAT FEEDBACK YANG BENAR:
-• Untuk soal translasi, ingat kembali rumus: setiap titik (x,y) digeser sejauh (a,b) menghasilkan bayangan (x+a, y+b). Coba terapkan rumus ini dengan nilai a dan b yang diketahui pada soal. Perhatikan tanda positif dan negatif pada pergeseran.
-• Untuk soal refleksi sumbu X, koordinat y berubah tanda menjadi -y sedangkan koordinat x tetap. Coba gambarkan posisi titik awal dan bayangannya pada koordinat kartesius untuk memvisualisasikan perubahan ini.
-
-Keluarkan JSON SAJA (tanpa markdown) dengan format:
-{
-  "isCorrect": boolean,
-  "score": number (0-100) atau null,
-  "feedback": "string dalam Bahasa Indonesia, berbentuk poin-poin menggunakan •",
-  "errors": { "fieldKey": "alasan kesalahan" }
-}`;
+CONTOH FORMAT: "• Untuk soal translasi, ingat kembali rumus: setiap titik (x,y) digeser sejauh (a,b) menghasilkan bayangan (x+a, y+b). Perhatikan tanda positif dan negatif pada pergeseran."`;
 }
 
 /** Parse Gemini's response into structured output. */
@@ -286,6 +324,7 @@ export function parseAIResponse(response: string): EvaluateSectionOutput {
       return JSON.parse(jsonStr) as EvaluateSectionOutput
     } catch {
       // Final fallback: regex extraction with multiline support
+      console.warn("[ai] parseAIResponse regex fallback executed — structured output not applied");
       const section = cleaned.slice(cleaned.indexOf("{"), cleaned.lastIndexOf("}") + 1) || cleaned
       const isCorrect = /"isCorrect"\s*:\s*true/i.test(section)
       const scoreMatch = section.match(/"score"\s*:\s*(\d+|null)/i)
@@ -384,6 +423,8 @@ export async function evaluateSection(
     const model = genAI.getGenerativeModel({
       model: "gemini-3.5-flash-lite",
       safetySettings: SAFETY_SETTINGS,
+      systemInstruction: SECTION_SYSTEM_INSTRUCTION,
+      generationConfig: buildSectionGenerationConfig(input.attempt),
     });
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("Gemini API timed out")), GENERATION_TIMEOUT_MS),
@@ -403,6 +444,12 @@ export async function evaluateSection(
     console.warn("[ai] Gemini API call failed:", isQuota ? "quota/rate limit" : msg);
     throw appError(isQuota ? "AI_EVALUATION_FAILED" : "INTERNAL_ERROR");
   }
+
+  const usage = result.response.usageMetadata;
+  console.log(
+    `[ai.usage] evaluateSection (${input.module}/${input.tab}/${input.sectionType}) attempt=${input.attempt}`,
+    `prompt=${usage?.promptTokenCount} output=${usage?.candidatesTokenCount} total=${usage?.totalTokenCount}`,
+  );
 
   const response = result.response.text();
   if (!response) {
@@ -445,7 +492,7 @@ interface PembahasanQuestion {
   explanation: string
 }
 
-/** Build prompt for pembahasan generation. */
+/** Build prompt for pembahasan generation — static rules live in PEMBAHASAN_SYSTEM_INSTRUCTION. */
 function buildPembahasanPrompt(
   questions: PembahasanQuestion[],
   answers: Record<number, number>,
@@ -461,23 +508,9 @@ Jawaban siswa: ${userAns != null ? q.options[userAns] ?? "Tidak dijawab" : "Tida
 Hasil: ${isCorrect ? "BENAR" : "SALAH"}`;
   }).join("\n\n");
 
-  return `Kamu adalah asisten pembelajaran geometri transformasi untuk siswa SMP.
-
-Seorang siswa telah menyelesaikan kuis dengan hasil sebagai berikut:
+  return `Seorang siswa telah menyelesaikan kuis dengan hasil sebagai berikut:
 
 ${lines}
-
-ATURAN PENTING:
-- KUNCI JAWABAN yang tercantum di atas adalah MUTLAK dan sudah diverifikasi oleh ahli matematika. JANGAN PERNAH mempertanyakan atau menyebutkan bahwa kunci jawaban salah.
-- Feedback harus berfokus pada membantu siswa memahami konsep, bukan mengevaluasi soal atau kunci jawaban.
-- DILARANG menggunakan karakter * (asterisk) dan — (em dash) dalam feedback.
-- Gunakan bahasa Indonesia yang sederhana dan mudah dipahami siswa SMP.
-
-Tugasmu: Berikan feedback/pembahasan untuk SETIAP soal:
-- Jika jawaban benar: berikan konfirmasi singkat dan penguatan konsep (1-2 kalimat)
-- Jika jawaban salah: jelaskan langkah demi langkah penyelesaian yang benar, dan tunjukkan di mana letak kesalahan siswa
-- JANGAN beri pujian berlebihan, motivasi, atau kalimat penyemangat. Feedback harus to the point.
-- Jangan menyebut nomor soal dalam feedback.
 
 Keluarkan JSON SAJA (tanpa markdown) dengan format array:
 [
@@ -531,6 +564,8 @@ export async function generatePembahasan(
     const model = genAI.getGenerativeModel({
       model: "gemini-3.5-flash-lite",
       safetySettings: SAFETY_SETTINGS,
+      systemInstruction: PEMBAHASAN_SYSTEM_INSTRUCTION,
+      generationConfig: buildPembahasanGenerationConfig(),
     });
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("AI timed out")), PEMBAHASAN_TIMEOUT_MS),
@@ -540,6 +575,10 @@ export async function generatePembahasan(
 
   try {
     const result = await withRetry(generate, "generatePembahasan");
+    const usage = result.response.usageMetadata;
+    console.log(
+      `[ai.usage] generatePembahasan prompt=${usage?.promptTokenCount} output=${usage?.candidatesTokenCount} total=${usage?.totalTokenCount}`,
+    );
     const text = result.response.text();
     if (!text) throw new Error("AI returned empty response");
 
