@@ -10,7 +10,6 @@ import type { MatriksItem, KoordinatItem, SectionItem } from "@/features/modules
 interface PercobaanTranslasiTableProps {
   items: SectionItem[]
   fields: Record<string, Record<string, string>>
-  errors: Record<string, string>
   fieldColors: Record<string, FieldColor>
   setField: (itemId: string, fieldKey: string, value: string) => void
   /** Whether to prefix bayangan labels with A'/B'/C'/D' (used for bangun tab). */
@@ -21,7 +20,6 @@ interface PercobaanTranslasiTableProps {
 export function PercobaanTranslasiTable({
   items,
   fields,
-  errors,
   fieldColors,
   setField,
   showPointLetters,
