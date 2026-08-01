@@ -34,11 +34,3 @@ export const SECTION_TYPE_LABELS: Record<string, string> = {
   penyimpulan: "Penyimpulan",
   "cek-pemahaman": "Cek Pemahaman",
 } as const
-
-/** Section-specific focus guidance for feedback (matching AI prompt instructions). */
-export const SECTION_FOCUS: Record<string, string> = {
-  percobaan: "fokus pada perhitungan koordinat dan vektornya",
-  pengamatan: "fokus pada sifat-sifat yang terlihat pada visualisasi GeoGebra",
-  penyimpulan: "fokus pada penjelasan konsep dari pertanyaan yang diajukan",
-  "cek-pemahaman": "fokus pada kebenaran jawaban dan cara memperolehnya",
-} as const

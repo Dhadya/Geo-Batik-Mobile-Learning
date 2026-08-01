@@ -39,9 +39,7 @@ export function ForwardButton({
   const handleClick = () => {
     if (!allDone) {
       const names = joinIncomplete(incompleteSections.map((s) => SECTION_LABELS[s] ?? s))
-      toast.warning("Bagian belum selesai", {
-        description: `Selesaikan dulu bagian ${names}. Setiap bagian harus selesai hingga benar, atau setelah 2 kali percobaan, sebelum lanjut ke materi berikutnya.`,
-      })
+      toast.warning(`Selesaikan bagian ${names} terlebih dahulu. Setiap bagian harus selesai hingga benar, atau setelah 2 kali percobaan.`)
       return
     }
     if (isLastTab) {

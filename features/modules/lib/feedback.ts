@@ -1,5 +1,5 @@
 import type { SectionItem } from "../types"
-import { SECTION_TYPE_LABELS, SECTION_FOCUS, REFLECTION_LABELS } from "../data/moduleConfig"
+import { SECTION_TYPE_LABELS, REFLECTION_LABELS } from "../data/moduleConfig"
 import type { ValidationResult } from "./validation"
 
 /** Option letters A–F for student-facing feedback. */
@@ -160,6 +160,14 @@ interface KoordinatPoint {
   explanation?: string
 }
 
+/** A single wrong matriks item collected into a concept group. */
+interface MatriksPoint {
+  label: string
+  bayangan: string
+  hint?: string
+  explanation?: string
+}
+
 /** Grouping key so koordinat items sharing the same concept merge into one bullet. */
 function koordinatGroupKey(
   slug: string,
@@ -209,6 +217,24 @@ function buildKoordinatFeedback(
 }
 
 /**
+ * Build one merged bullet for all wrong matriks items sharing the same translasi vector.
+ * Avoids repeating the same hint per point — lists all affected points in one bullet.
+ */
+function buildMatriksFeedback(
+  points: MatriksPoint[],
+  attempt: 1 | 2,
+): string {
+  const isHint = attempt === 1
+  const listed = joinList(points.map((p) => p.label))
+
+  if (isHint) {
+    return `• Perhatikan kembali pada GeoGebra bagaimana titik ${listed} bergeser oleh vektor translasi yang sama. Amati besar pergeseran mendatar dan tegaknya, lalu tentukan nilai translasinya.`
+  }
+  const hasil = points.map((p) => `${p.label} → T${p.bayangan}`).join("; ")
+  return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} ditranslasikan, sehingga hasilnya: ${hasil}.`
+}
+
+/**
  * Build section-aware feedback for wrong deterministic items and unanswered uraian from local results.
  * Identical bullets are shown once; koordinat items sharing one concept are merged into a single
  * bullet listing every affected point.
@@ -223,34 +249,44 @@ export function buildDeterministicFeedback(
   if (local.isCorrect) {
     return "Semua jawaban sudah tepat. Pertahankan pemahamanmu."
   }
-  const focus = SECTION_FOCUS[context.sectionType] ?? ""
-  const lines: string[] = [`• Pelajari kembali bagian ini dengan ${focus}.`]
+  const lines: string[] = []
 
   const seen = new Set<string>()
-  const koordinatGroups = new Map<string, KoordinatPoint[]>()
+  const koordinatGroups = new Map<string, { points: KoordinatPoint[]; firstIdx: number }>()
+  const matriksGroups = new Map<string, { points: MatriksPoint[]; firstIdx: number }>()
+  const emittedGroups = new Set<string>()
 
-  for (const item of context.items) {
+  for (let idx = 0; idx < context.items.length; idx++) {
+    const item = context.items[idx]
     const wrong = Object.keys(local.errors).some((k) => k.startsWith(`${item.id}_`))
     if (!wrong) continue
-    if (!includeAnsweredUraian && item.type === "uraian" && hasAnswerText(context.answers, item.id)) continue // answered uraian goes to Gemini
+    if (!includeAnsweredUraian && item.type === "uraian" && hasAnswerText(context.answers, item.id)) continue
 
     if (item.type === "koordinat") {
-      const key = koordinatGroupKey(
-        context.module,
-        context.tab,
-        context.attempt,
-        item.bayangan,
-        item.label,
-      )
-      const group = koordinatGroups.get(key) ?? []
-      group.push({
-        label: item.label,
-        bayangan: item.answer,
-        bayanganText: item.bayangan,
-        hint: item.hint,
-        explanation: item.explanation,
-      })
-      koordinatGroups.set(key, group)
+      const key = koordinatGroupKey(context.module, context.tab, context.attempt, item.bayangan, item.label)
+      const existing = koordinatGroups.get(key)
+      if (existing) {
+        existing.points.push({ label: item.label, bayangan: item.answer, bayanganText: item.bayangan, hint: item.hint, explanation: item.explanation })
+      } else {
+        koordinatGroups.set(key, {
+          points: [{ label: item.label, bayangan: item.answer, bayanganText: item.bayangan, hint: item.hint, explanation: item.explanation }],
+          firstIdx: idx,
+        })
+      }
+      continue
+    }
+
+    if (item.type === "matriks" && item.targetBayangan) {
+      const key = `matriks:${item.targetBayangan}:${context.attempt}`
+      const existing = matriksGroups.get(key)
+      if (existing) {
+        existing.points.push({ label: item.label, bayangan: item.targetBayangan, hint: item.hint, explanation: item.explanation })
+      } else {
+        matriksGroups.set(key, {
+          points: [{ label: item.label, bayangan: item.targetBayangan, hint: item.hint, explanation: item.explanation }],
+          firstIdx: idx,
+        })
+      }
       continue
     }
 
@@ -258,12 +294,35 @@ export function buildDeterministicFeedback(
     if (!bullet) continue
     if (seen.has(bullet)) continue
     seen.add(bullet)
+
+    // Before pushing this bullet, emit any groups whose first item came before this item
+    // and haven't been emitted yet
+    for (const [gKey, g] of koordinatGroups) {
+      if (!emittedGroups.has(gKey) && g.firstIdx < idx) {
+        emittedGroups.add(gKey)
+        lines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
+      }
+    }
+    for (const [gKey, g] of matriksGroups) {
+      if (!emittedGroups.has(gKey) && g.firstIdx < idx) {
+        emittedGroups.add(gKey)
+        lines.push(buildMatriksFeedback(g.points, context.attempt))
+      }
+    }
+
     lines.push(bullet)
   }
 
-  for (const [key, points] of koordinatGroups) {
-    void key
-    lines.push(buildKoordinatFeedback(points, context.module, context.tab, context.attempt))
+  // Emit any remaining groups that weren't emitted yet (at the end)
+  for (const [gKey, g] of koordinatGroups) {
+    if (!emittedGroups.has(gKey)) {
+      lines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
+    }
+  }
+  for (const [gKey, g] of matriksGroups) {
+    if (!emittedGroups.has(gKey)) {
+      lines.push(buildMatriksFeedback(g.points, context.attempt))
+    }
   }
 
   return lines.join("\n")
