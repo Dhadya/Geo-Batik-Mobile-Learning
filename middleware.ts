@@ -23,8 +23,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Public routes that don't require authentication (homepage, API auth)
-  const publicRoutes = ["/", "/api/auth"];
+  // Public routes that don't require authentication (homepage, API auth, logout)
+  const publicRoutes = ["/", "/api/auth", "/logout"];
   if (publicRoutes.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
     return NextResponse.next();
   }
