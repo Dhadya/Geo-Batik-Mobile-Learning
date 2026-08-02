@@ -14,7 +14,6 @@ import type { QuizAnswers } from "../types"
 export function QuizResult({
   slug,
   title,
-  badge,
   icon,
   bgColor,
   serverScore,
@@ -24,7 +23,6 @@ export function QuizResult({
 }: {
   slug: string
   title: string
-  badge: string
   icon?: ReactNode
   bgColor?: string
   serverScore?: number | null
@@ -118,7 +116,7 @@ export function QuizResult({
 
   return (
     <div className="space-y-4 md:space-y-6">
-      <QuizHeader title={title} badge={badge} icon={icon} bgColor={bgColor} description={description} />
+      <QuizHeader title={title} icon={icon} bgColor={bgColor} description={description} />
 
       <QuizResultScore score={displayScore} attemptLabel={attemptLabel} />
 

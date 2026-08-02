@@ -58,7 +58,6 @@ export default async function KuisHasilPage(props: {
       <QuizResult
         slug={slug}
         title={quiz.title}
-        badge={quiz.badge}
         icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />}
         bgColor={MODULE_BG[slug] ?? "bg-primary"}
         serverScore={targetResult?.totalScore ?? null}
