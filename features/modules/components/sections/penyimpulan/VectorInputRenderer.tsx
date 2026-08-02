@@ -9,6 +9,7 @@ import type { FieldColor } from "@/features/modules/lib/validation"
 
 interface VectorInputRendererProps {
   fields: Record<string, Record<string, string>>
+  errors: Record<string, string>
   isChecked: boolean
   fieldColors: Record<string, FieldColor>
   setField: (id: string, subKey: string, value: string) => void
@@ -17,6 +18,7 @@ interface VectorInputRendererProps {
 /** Render translation vector (a, b) input for penyimpulan section. */
 export function VectorInputRenderer({
   fields,
+  errors,
   isChecked,
   fieldColors,
   setField,
@@ -26,6 +28,8 @@ export function VectorInputRenderer({
   const bVal = fields["11"]?.b_val ?? ""
   const aColor = fieldColors["11_a_val"]
   const bColor = fieldColors["11_b_val"]
+  const aErr = errors["11_a_val"]
+  const bErr = errors["11_b_val"]
 
   return (
     <div className="flex gap-1.5 md:gap-2">
@@ -73,7 +77,13 @@ export function VectorInputRenderer({
           </div>
           <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
         </div>
-        {isChecked && vectorErr && (
+        {isChecked && aErr && (
+          <Text className="text-destructive text-[10px] md:text-xs font-medium">{aErr}</Text>
+        )}
+        {isChecked && bErr && (
+          <Text className="text-destructive text-[10px] md:text-xs font-medium">{bErr}</Text>
+        )}
+        {isChecked && vectorErr && !aErr && !bErr && (
           <Text className="text-destructive text-[10px] md:text-xs font-medium">{vectorErr}</Text>
         )}
       </div>

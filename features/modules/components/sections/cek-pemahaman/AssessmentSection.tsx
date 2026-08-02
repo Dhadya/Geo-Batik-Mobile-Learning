@@ -58,16 +58,17 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const submitMutation = useSubmitSection(slug)
+      const submitMutation = useSubmitSection(slug)
+      const cekPemahamanFieldColors = useMemo(() => rawTab?.cekPemahaman?.fieldColors ?? {}, [rawTab])
 
-  const allAnswered = useMemo(
-    () =>
-      questions.every((q, qi) => {
-        if (q.multiSelect) return true
-        return selections[qi] != null
-      }),
-    [questions, selections],
-  )
+      const allAnswered = useMemo(
+        () =>
+          questions.every((q, qi) => {
+            if (q.multiSelect) return true
+            return selections[qi] != null
+          }),
+        [questions, selections],
+      )
 
   /** Bitmap-encoded selection: toggles option on/off for multi-select; stores single index for single-select */
   const handleSelect = useCallback(
@@ -99,7 +100,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
     try {
       const result = await evaluateSection(slug, tab, "cek-pemahaman", items, fields, attempt)
       const localErrors = computeErrors(selections, questions)
-      const isCorrectResult = result.isCorrect
+        const isCorrectResult = result.isCorrect
       const finalErrors = isCorrectResult ? {} : localErrors
 
       const savePayload = {
@@ -109,6 +110,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         answer: fields as Record<string, unknown>,
         score: result.score,
         feedback: result.feedback,
+        fieldColors: result.fieldColors,
       }
 
       if (isCorrectResult) {
@@ -120,6 +122,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         setShowCobaLagi(false)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
+        useAnswerStore.getState().setCekPemahamanFieldColors(slug, tab, result.fieldColors)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "correct", attempt)
         toast.success("Jawaban kamu benar, selamat!")
         await triggerTabUnlockIfComplete(slug, tab)

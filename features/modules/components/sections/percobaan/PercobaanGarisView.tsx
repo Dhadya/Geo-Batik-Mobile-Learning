@@ -66,7 +66,7 @@ export function PercobaanGarisView({
                   value={fields[String(k.id)]?.x ?? ""}
                   onKeyDown={allowOnlyNumbers}
                   onChange={(e) => setField(String(k.id), "x", e.target.value)}
-                  className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_coord`])}`}
+                  className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_x`])}`}
                 />
                 <Text as="p" className="text-xs md:text-sm font-bold text-black">,</Text>
                 <Input
@@ -76,11 +76,12 @@ export function PercobaanGarisView({
                   value={fields[String(k.id)]?.y ?? ""}
                   onKeyDown={allowOnlyNumbers}
                   onChange={(e) => setField(String(k.id), "y", e.target.value)}
-                  className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_coord`])}`}
+                  className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_y`])}`}
                 />
                 <Text as="p" className="text-xs md:text-sm font-bold text-black">)</Text>
               </div>
-              {errors[`${k.id}_coord`] && <Text className="text-destructive text-[10px] md:text-xs font-medium">{errors[`${k.id}_coord`]}</Text>}
+              {errors[`${k.id}_x`] && <Text className="text-destructive text-[10px] md:text-xs font-medium">{errors[`${k.id}_x`]}</Text>}
+              {errors[`${k.id}_y`] && <Text className="text-destructive text-[10px] md:text-xs font-medium">{errors[`${k.id}_y`]}</Text>}
             </div>
           </div>
         )
@@ -124,7 +125,7 @@ export function PercobaanGarisView({
                       value={fields[String(k.id)]?.x ?? ""}
                       onKeyDown={allowOnlyNumbers}
                       onChange={(e) => setField(String(k.id), "x", e.target.value)}
-                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_coord`])}`}
+                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_x`])}`}
                     />
                     <span className="font-bold text-xs md:text-sm">,</span>
                     <Input
@@ -134,7 +135,7 @@ export function PercobaanGarisView({
                       value={fields[String(k.id)]?.y ?? ""}
                       onKeyDown={allowOnlyNumbers}
                       onChange={(e) => setField(String(k.id), "y", e.target.value)}
-                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_coord`])}`}
+                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(fieldColors[`${k.id}_y`])}`}
                     />
                     <span className="font-bold text-xs md:text-sm">)</span>
                   </div>

@@ -152,6 +152,17 @@ export function ModuleContent({
     }
   }, [sections, slug, decodedTab])
 
+  // Mount-time self-heal: if the client store says this tab is complete but the server
+  // hasn't unlocked the next one yet (e.g. a persist failed mid-flow), reconcile + unlock.
+  useEffect(() => {
+    const tabProgressList = useTabProgressStore.getState().getProgress(slug)
+    const tabRow = tabProgressList?.find((p) => p.tab === decodedTab)
+    if (tabRow?.completed) return
+    import("../lib/progressSync").then(({ triggerTabUnlockIfComplete }) =>
+      triggerTabUnlockIfComplete(slug, decodedTab),
+    )
+  }, [sections, slug, decodedTab])
+
   // Calculate section progress for this tab
   const tabAnswers = useAnswerStore(
     (s) => s.answers[`${slug}-${decodedTab}`],

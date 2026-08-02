@@ -1,4 +1,4 @@
-﻿import type { ModuleTab } from "../types"
+import type { ModuleTab } from "../types"
 
 export const refleksiTabs: ModuleTab[] = [
     {
@@ -319,20 +319,20 @@ export const refleksiTabs: ModuleTab[] = [
             {
               id: 6,
               type: "pilihan_ganda",
-              question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap titik (0,0)?",
-              options: ["Sejajar", "Tegak Lurus"],
-              correctIndex: 1,
-              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Garis tersebut melewati titik (0,0). Bagaimana kedudukannya terhadap titik tersebut?",
+              question: "Apakah jarak A ke A' dua kali jarak A ke O?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 0,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Bagaimana besar jarak A ke A' terhadap jarak A ke O?",
               explanation:
-                "Ruas garis yang menghubungkan titik A dan A' selalu melewati (tegak lurus arah) titik (0,0), karena refleksi memindahkan titik melalui titik asal.",
+                "Dalam refleksi, jarak antara titik dan bayangannya A ke A' selalu dua kali jarak dari titik A ke titik O, karena refleksi memindahkan titik melintasi titik tersebut.",
             },
             {
               id: 7,
               type: "pilihan_ganda",
-              question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
+              question: "Apakah hasil pengamatan di atas selalu berlaku untuk sembarang titik saat dicerminkan?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
-              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku untuk setiap titik baru.",
               explanation:
                 "Sifat refleksi terhadap titik (0,0) berlaku untuk semua titik, yaitu jarak titik ke titik asal sama dengan jarak bayangannya dan keduanya segaris melewati titik (0,0).",
             },
@@ -1067,9 +1067,9 @@ export const refleksiTabs: ModuleTab[] = [
       },
     },
     {
-      label: "GARIS",
+      label: "RUAS GARIS",
       value: "garis",
-      title: "Refleksi Garis",
+      title: "Refleksi Ruas Garis",
       instruction:
         "Amati perpindahan ruas garis setelah direfleksikan.",
       materialId: "nqw7mzat",
@@ -1129,29 +1129,14 @@ export const refleksiTabs: ModuleTab[] = [
           instruction: "Jawab pertanyaan berikut berdasarkan percobaan ruas garis tersebut.",
           items: [
             {
-              id: 4,
-              type: "uraian",
-              question: "Bagaimana cara menentukan koordinat A\u2019 dan B\u2019?",
-              answer: "Koordinat A\u2019 dan B\u2019 ditentukan dengan mencerminkan titik A dan B",
-              hint:
-                "Ruas garis AB telah diketahui pada bidang koordinat.\nTentukan koordinat kedua titik ujungnya, yaitu A dan B.\nCerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih.\nTulis koordinat bayangan kedua titik ujung.\nHubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
-              explanation:
-                "Ruas garis AB telah diketahui pada bidang koordinat dengan A(-6, 1) dan B(-2, 3).\nKoordinat A' dan B' ditentukan dengan mencerminkan titik A dan titik B (kedua ujung ruas garis) terhadap cermin/garis refleksi yang sama.\nSetiap titik ujung dicerminkan sesuai dengan cermin refleksinya menggunakan rumus refleksi yang sesuai.\nTulis koordinat bayangan A' dan B' dari hasil pencerminan.\nHasil refleksi kedua titik tersebut kemudian dihubungkan dengan garis lurus untuk membentuk ruas garis bayangan A'B'.",
-              acceptAnswers: [
-                "Mencerminkan titik A dan B terhadap cermin refleksi",
-                "Dengan mencerminkan kedua titik ujung ruas garis",
-                "Mencerminkan titik A dan B sesuai dengan cermin refleksinya",
-              ],
-            },
-            {
               id: 5,
               type: "pilihan_ganda",
               question: "Bandingkan jarak titik A ke cermin dengan titik A\u2019 ke cermin?",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
-              hint: "Perhatikan jarak titik A ke cermin dan jarak titik A' ke cermin pada GeoGebra. Ukur keduanya dan bandingkan.",
+              hint: "Perhatikan jarak titik A ke cermin dan jarak titik A\u2019 ke cermin pada GeoGebra. Ukur keduanya dan bandingkan.",
               explanation:
-                "Jarak titik A ke cermin sama dengan jarak titik A' ke cermin, karena refleksi menjaga jarak titik terhadap cerminnya.",
+                "Jarak titik A ke cermin sama dengan jarak titik A\u2019 ke cermin, karena refleksi menjaga jarak titik terhadap cerminnya.",
             },
             {
               id: 6,
@@ -1159,19 +1144,19 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bandingkan jarak titik B ke cermin dengan titik B\u2019 ke cermin?",
               options: ["Sama", "Berbeda"],
               correctIndex: 0,
-              hint: "Perhatikan jarak titik B ke cermin dan jarak titik B' ke cermin pada GeoGebra. Ukur keduanya dan bandingkan.",
+              hint: "Perhatikan jarak titik B ke cermin dan jarak titik B\u2019 ke cermin pada GeoGebra. Ukur keduanya dan bandingkan.",
               explanation:
-                "Jarak titik B ke cermin sama dengan jarak titik B' ke cermin, karena refleksi menjaga jarak titik terhadap cerminnya.",
+                "Jarak titik B ke cermin sama dengan jarak titik B\u2019 ke cermin, karena refleksi menjaga jarak titik terhadap cerminnya.",
             },
             {
               id: 7,
               type: "pilihan_ganda",
-              question: "Apakah panjang ruas garis awal dengan bayangannya sama?",
+              question: "Apakah panjang ruas garis awal dengan panjang ruas garis bayangannya sama?",
               options: ["Iya", "Tidak"],
               correctIndex: 0,
-              hint: "Perhatikan panjang ruas garis AB dan panjang ruas garis bayangannya A'B' pada GeoGebra. Apakah panjang keduanya sama?",
+              hint: "Perhatikan panjang ruas garis AB dan panjang ruas garis bayangannya A\u2019B\u2019 pada GeoGebra. Apakah panjang keduanya sama?",
               explanation:
-                "Refleksi tidak mengubah ukuran objek, sehingga panjang ruas garis AB sama dengan panjang ruas garis bayangannya A'B'.",
+                "Refleksi tidak mengubah ukuran objek, sehingga panjang ruas garis AB sama dengan panjang ruas garis bayangannya A\u2019B\u2019.",
             },
             {
               id: 8,
@@ -1179,7 +1164,7 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Apakah posisi ruas garis awal dengan bayangannya sama?",
               options: ["Iya", "Tidak"],
               correctIndex: 1,
-              hint: "Perhatikan kedudukan ruas garis AB dan ruas garis bayangannya A'B' pada GeoGebra. Apakah arah dan letaknya sama seperti semula?",
+              hint: "Perhatikan kedudukan ruas garis AB dan ruas garis bayangannya A\u2019B\u2019 pada GeoGebra. Apakah arah dan letaknya sama seperti semula?",
               explanation:
                 "Posisi ruas garis bayangan berbeda dari ruas garis awal, karena refleksi membalik arah hadap ruas garis seolah-olah dipantulkan oleh cermin.",
             },
@@ -1207,7 +1192,7 @@ export const refleksiTabs: ModuleTab[] = [
             {
               id: 10,
               type: "uraian",
-              question: "Mengapa cukup mencerminkan dua titik untuk menentukan ruas garis hasil refleksi?",
+              question: "Mengapa cukup mencerminkan dua titik ujung untuk menentukan garis refleksi?",
               answer: "Karena untuk mengetahui ruas garis harus mengetahui 2 titik ujung ruas garis tersebut",
               hint: "Sebuah ruas garis dibentuk oleh dua titik ujung. Jika kedua ujungnya sudah diketahui bayangannya, maka ruas garis bayangan dapat langsung digambar.",
               explanation:

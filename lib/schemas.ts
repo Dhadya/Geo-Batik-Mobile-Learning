@@ -39,9 +39,22 @@ export const saveSectionSchema = z.object({
 /** Inferred input type for saving a section attempt. */
 export type SaveSectionInput = z.infer<typeof saveSectionSchema>;
 
-/** Validates an unlock request: which tab was completed to trigger the next unlock. */
+/** Validates a client-supplied terminal section claim used to reconcile + unlock a tab. */
+export const sectionClaimSchema = z.object({
+  sectionType: z.enum(["percobaan", "pengamatan", "penyimpulan", "cek-pemahaman"]),
+  status: z.enum(["correct", "wrong_attempt2"]),
+  score: z.number().int().min(0).max(100).nullable().optional(),
+  attempt: z.union([z.literal(1), z.literal(2)]).optional(),
+  answer: z.record(z.string(), z.unknown()).optional(),
+});
+
+/** Inferred type for a client-supplied terminal section claim. */
+export type SectionClaim = z.infer<typeof sectionClaimSchema>;
+
+/** Validates an unlock request: which tab was completed to trigger the next unlock, plus optional terminal section claims. */
 export const unlockSchema = z.object({
   completedTab: z.string().min(1),
+  sections: z.array(sectionClaimSchema).optional(),
 });
 
 /** Validates a section evaluation request for Gemini AI. */
