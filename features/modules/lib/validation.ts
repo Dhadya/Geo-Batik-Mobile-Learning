@@ -67,6 +67,19 @@ export function validateSection(
       }
       case "uraian": {
         const u = item as UraianItem
+        // Vector uraian (item 11): answer stored as a_val/b_val, validated per-field
+        if (u.id === 11) {
+          const aVal = (itemAnswers.a_val ?? "").trim()
+          const bVal = (itemAnswers.b_val ?? "").trim()
+          const aOk = aVal.toLowerCase() === "a"
+          const bOk = bVal.toLowerCase() === "b"
+          fieldColors[`${item.id}_a_val`] = aOk ? "green" : "red"
+          fieldColors[`${item.id}_b_val`] = bOk ? "green" : "red"
+          if (!aOk) errors[`${item.id}_a_val`] = aVal ? "Komponen a belum sesuai, isi dengan variabel a" : "Komponen a belum diisi"
+          if (!bOk) errors[`${item.id}_b_val`] = bVal ? "Komponen b belum sesuai, isi dengan variabel b" : "Komponen b belum diisi"
+          if (aOk && bOk) correctCount++
+          break
+        }
         const userAns = (itemAnswers.text ?? "").trim()
         if (!userAns) {
           fieldColors[`${item.id}_text`] = "red"
@@ -190,12 +203,13 @@ export function validateSection(
         for (let idx = 0; idx < correctAnswers.length; idx++) {
           const xVal = Number(itemAnswers[`x${idx}`])
           const yVal = Number(itemAnswers[`y${idx}`])
-          const ok = xVal === correctAnswers[idx].x && yVal === correctAnswers[idx].y
-          fieldColors[`${item.id}_coord${idx}`] = ok ? "green" : "red"
-          if (!ok) {
-            errors[`${item.id}_coord${idx}`] = "Koordinat bayangan belum sesuai, hitung kembali berdasarkan jenis refleksi yang dipilih"
-            allCorrect = false
-          }
+          const xOk = xVal === correctAnswers[idx].x
+          const yOk = yVal === correctAnswers[idx].y
+          fieldColors[`${item.id}_x${idx}`] = xOk ? "green" : "red"
+          fieldColors[`${item.id}_y${idx}`] = yOk ? "green" : "red"
+          if (!xOk) errors[`${item.id}_x${idx}`] = "Komponen x belum sesuai, hitung kembali berdasarkan jenis refleksi yang dipilih"
+          if (!yOk) errors[`${item.id}_y${idx}`] = "Komponen y belum sesuai, hitung kembali berdasarkan jenis refleksi yang dipilih"
+          if (!xOk || !yOk) allCorrect = false
         }
         if (allCorrect) correctCount++
         break

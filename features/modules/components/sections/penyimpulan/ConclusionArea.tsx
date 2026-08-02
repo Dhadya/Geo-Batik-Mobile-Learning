@@ -67,6 +67,7 @@ export function ConclusionArea({ slug, tab }: ConclusionAreaProps) {
               <VectorInputRenderer
                 key={u.id}
                 fields={fields}
+                errors={errors}
                 isChecked={isChecked}
                 fieldColors={fieldColors}
                 setField={setField}
