@@ -319,20 +319,20 @@ export const refleksiTabs: ModuleTab[] = [
             {
               id: 6,
               type: "pilihan_ganda",
-              question: "Bagaimana posisi garis yang menghubungkan A dan A' terhadap titik (0,0)?",
-              options: ["Sejajar", "Tegak Lurus"],
-              correctIndex: 1,
-              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Garis tersebut melewati titik (0,0). Bagaimana kedudukannya terhadap titik tersebut?",
+              question: "Apakah jarak A ke A' dua kali jarak A ke O?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 0,
+              hint: "Perhatikan ruas garis yang menghubungkan titik A dan A' pada GeoGebra. Bagaimana besar jarak A ke A' terhadap jarak A ke O?",
               explanation:
-                "Ruas garis yang menghubungkan titik A dan A' selalu melewati (tegak lurus arah) titik (0,0), karena refleksi memindahkan titik melalui titik asal.",
+                "Dalam refleksi, jarak antara titik dan bayangannya A ke A' selalu dua kali jarak dari titik A ke titik O, karena refleksi memindahkan titik melintasi titik tersebut.",
             },
             {
               id: 7,
               type: "pilihan_ganda",
-              question: "Apakah hasil pengamatan selalu berlaku untuk semua titik?",
+              question: "Apakah hasil pengamatan di atas selalu berlaku untuk sembarang titik saat dicerminkan?",
               options: ["Ya", "Tidak"],
               correctIndex: 0,
-              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku.",
+              hint: "Coba pindahkan titik A ke berbagai posisi pada GeoGebra dan perhatikan apakah sifat yang diamati tetap berlaku untuk setiap titik baru.",
               explanation:
                 "Sifat refleksi terhadap titik (0,0) berlaku untuk semua titik, yaitu jarak titik ke titik asal sama dengan jarak bayangannya dan keduanya segaris melewati titik (0,0).",
             },

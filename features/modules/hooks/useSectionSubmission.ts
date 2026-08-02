@@ -11,6 +11,7 @@ export interface SaveSectionInput {
   score?: number | null
   status?: string
   feedback?: string
+  fieldColors?: Record<string, FieldColor>
 }
 
 /** Result from saving a section attempt. */

@@ -15,6 +15,8 @@ export interface SectionAnswers {
   attempt?: 1 | 2
   /** Numeric score (0–100) from AI evaluation. Only student-visible as color indicator. */
   score?: number | null
+  /** Field-level colors (green for correct, red/orange for wrong). Must be preserved across attempts. */
+  fieldColors?: Record<string, FieldColor>
 }
 
 export interface CekPemahamanAnswers {
@@ -25,6 +27,8 @@ export interface CekPemahamanAnswers {
   attempt?: 1 | 2
   /** Numeric score (0–100) from AI evaluation. Only student-visible as color indicator. */
   score?: number | null
+  /** Per-field colors (green for correct, orange/red for wrong). Must be preserved across attempts. */
+  fieldColors?: Record<string, FieldColor>
 }
 
 export interface TabAnswers {
@@ -72,8 +76,10 @@ interface AnswerStore {
   ) => void
   /** Set score for a standard section (percobaan/pengamatan/penyimpulan). Score is never shown as raw number — only used for color indicator. */
   setSectionScore: (slug: string, tab: string, section: SectionName, score: number | null) => void
+  setSectionFieldColors: (slug: string, tab: string, section: SectionName, colors: Record<string, FieldColor>) => void
   /** Set score for cekPemahaman section. */
   setCekPemahamanScore: (slug: string, tab: string, score: number | null) => void
+  setCekPemahamanFieldColors: (slug: string, tab: string, colors: Record<string, FieldColor>) => void
   getTabAnswers: (slug: string, tab: string) => TabAnswers
   resetTab: (slug: string, tab: string) => void
   resetAll: () => void
@@ -227,6 +233,23 @@ export const useAnswerStore = create<AnswerStore>()(
         })
       },
 
+      setSectionFieldColors: (slug, tab, section, colors) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              [section]: {
+                ...current[section] as SectionAnswers,
+                fieldColors: colors,
+              },
+            },
+          },
+        })
+      },
+
       setCekPemahamanScore: (slug, tab, score) => {
         const id = `${slug}-${tab}`
         const current = get().answers[id] ?? emptyTab(slug, tab)
@@ -238,6 +261,20 @@ export const useAnswerStore = create<AnswerStore>()(
             [id]: {
               ...current,
               cekPemahaman: { ...current.cekPemahaman, score: highest },
+            },
+          },
+        })
+      },
+
+      setCekPemahamanFieldColors: (slug, tab, colors) => {
+        const id = `${slug}-${tab}`
+        const current = get().answers[id] ?? emptyTab(slug, tab)
+        set({
+          answers: {
+            ...get().answers,
+            [id]: {
+              ...current,
+              cekPemahaman: { ...current.cekPemahaman, fieldColors: colors },
             },
           },
         })

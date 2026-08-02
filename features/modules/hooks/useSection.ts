@@ -131,7 +131,10 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     useAnswerStore.getState().setSectionStatus(slug, tab, section, "unsubmitted", 2)
     boundSetChecked(false)
     setErrors_({})
-    setFieldColors_({})
+    // Keep fieldColors to preserve permanent feedback (correct/wrong state)
+    // This allows users to see which inputs were correct/wrong even after reset
+    // Keep existing fieldColors so users can see the correct/wrong colors of their answers
+    // The fieldColors state is derived from the answerStore, so we don't need to modify it
   }, [slug, tab, section, boundSetChecked])
 
   const handleSubmit = useCallback(async () => {
@@ -151,6 +154,7 @@ export function useSection(slug: string, tab: string, section: SectionName) {
       boundSetAIFeedback(result.feedback)
 
       useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
+      useAnswerStore.getState().setSectionFieldColors(slug, tab, section, result.fieldColors)
 
       if (result.isCorrect) {
         boundSetChecked(true)
