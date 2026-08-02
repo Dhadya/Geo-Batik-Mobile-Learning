@@ -2,48 +2,28 @@ import { handleAuthError } from "@/lib/api/auth-error"
 import { toast } from "sonner"
 import { validateSection } from "./validation"
 import type { FieldColor } from "./validation"
-import { getScoreColor } from "./scoreColors"
 import { buildDeterministicFeedback, feedbackForCorrect, localScore } from "./feedback"
 import type { SectionItem } from "../types"
 
 /**
- * Derive field colors uniformly from the AI section score tier.
- * All user-answered fields receive the same color based on score thresholds
- * (matching SectionScoreIndicator):
- * - 71-100 (green tier): all fields green
- * - 31-70  (orange tier): all fields orange
- * - 0-30   (red tier):   all fields red
+ * Derive per-field colors using local validation (green/red per input),
+ * enhanced by AI error messages. Each field gets its own individual color
+ * based on whether that specific input is correct or wrong.
  *
- * Per-field error messages are still shown as text below each input —
- * only the border/background color is determined by the section score.
+ * When AI reports errors for specific fields, those are overridden to red.
+ * This lets students see exactly which inputs are wrong, not just a
+ * uniform color based on the section score.
  */
-function deriveFieldColorsFromAI(
-  fields: Record<string, Record<string, string>>,
+function deriveFieldColors(
   localFieldColors: Record<string, FieldColor>,
-  _aiErrors: Record<string, string>,
-  aiScore: number | null,
+  aiErrors: Record<string, string>,
 ): Record<string, FieldColor> {
-  const colors: Record<string, FieldColor> = {}
-  const scoreColor = getScoreColor(aiScore)
-
-  // Collect all field keys that have user answers
-  const userKeys = new Set<string>()
-  for (const [itemId, itemFields] of Object.entries(fields)) {
-    for (const key of Object.keys(itemFields)) {
-      if (itemFields[key]?.trim()) {
-        userKeys.add(`${itemId}_${key}`)
-      }
+  const colors = { ...localFieldColors }
+  for (const key of Object.keys(aiErrors)) {
+    if (colors[key] !== undefined) {
+      colors[key] = "red"
     }
   }
-  // Include local validation keys for coverage (e.g. items where answer format differs from fields)
-  for (const key of Object.keys(localFieldColors)) {
-    userKeys.add(key)
-  }
-
-  for (const key of userKeys) {
-    colors[key] = scoreColor === "gray" ? null : scoreColor
-  }
-
   return colors
 }
 
@@ -79,11 +59,10 @@ export async function evaluateSection(
     const local = validateSection(items, fields, undefined)
     const aiScore = json.data.score
 
-    // Use effective score for field colors: when AI says correct, force green tier (71-100)
-    // so all fields appear green regardless of raw AI score, matching SectionScoreIndicator
-    const effectiveScore = aiCorrect ? (aiScore != null ? Math.max(aiScore, 100) : 100) : aiScore
-    const aiFieldColors = deriveFieldColorsFromAI(
-      fields, local.fieldColors, json.data.errors ?? {}, effectiveScore,
+    // Per-field colors: local validation gives green/red per input,
+    // AI errors override specific fields to red when the AI disagrees.
+    const fieldColors = deriveFieldColors(
+      local.fieldColors, json.data.errors ?? {},
     )
     if (aiCorrect) {
       return {
@@ -91,7 +70,7 @@ export async function evaluateSection(
         isCorrect: true,
         score: aiScore != null ? Math.max(aiScore, 100) : 100,
         errors: {},
-        fieldColors: aiFieldColors,
+        fieldColors,
       }
     }
 
@@ -105,7 +84,7 @@ export async function evaluateSection(
       isCorrect: false,
       score: numericScore,
       errors: json.data.errors ?? local.errors ?? {},
-      fieldColors: aiFieldColors,
+      fieldColors,
     }
   } catch {
     toast.error(`Gagal memuat feedback AI, menggunakan penilaian lokal`)

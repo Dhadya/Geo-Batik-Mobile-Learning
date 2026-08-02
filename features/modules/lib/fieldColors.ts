@@ -1,9 +1,9 @@
 import type { FieldColor } from "./validation"
 
 /**
- * Returns Tailwind classes for input border/bg based on AI-derived field color.
- * Color is determined solely by the section AI score tier (green/orange/red),
- * not by local error presence — the AI score is the source of truth.
+ * Returns Tailwind classes for input border/bg based on per-field color.
+ * Each input field gets its own individual color based on whether that
+ * specific input is correct (green) or wrong (red).
  */
 export function fieldColorClasses(color?: FieldColor): string {
   if (color === "green") return "border-green-600 bg-green-50"

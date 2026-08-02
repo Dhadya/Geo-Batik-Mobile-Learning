@@ -56,13 +56,13 @@ export function validateSection(
         const k = item as KoordinatItem
         const xVal = Number(itemAnswers.x)
         const yVal = Number(itemAnswers.y)
-        const coordOk = xVal === k.answer.x && yVal === k.answer.y
-        fieldColors[`${item.id}_coord`] = coordOk ? "green" : "red"
-        if (!coordOk) {
-          errors[`${item.id}_coord`] = "Koordinat titik belum sesuai, pastikan x dan y dihitung berdasarkan vektor translasi"
-        } else {
-          correctCount++
-        }
+        const xOk = xVal === k.answer.x
+        const yOk = yVal === k.answer.y
+        fieldColors[`${item.id}_x`] = xOk ? "green" : "red"
+        fieldColors[`${item.id}_y`] = yOk ? "green" : "red"
+        if (!xOk) errors[`${item.id}_x`] = "Komponen x belum sesuai, periksa kembali hasil translasi"
+        if (!yOk) errors[`${item.id}_y`] = "Komponen y belum sesuai, periksa kembali hasil translasi"
+        if (xOk && yOk) correctCount++
         break
       }
       case "uraian": {
