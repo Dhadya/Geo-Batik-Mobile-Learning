@@ -510,13 +510,13 @@ export const translasiTabs: ModuleTab[] = [
               question: "Urutkan cara menentukan bayangan dari sebuah persamaan garis yang mengalami proses translasi!",
               items: [
                 "Persamaan garis diketahui",
-                "Menentukan titik potong sumbu x dan titik potong sumbu y",
-                "Mentranslasikan titik potong sumbu x dan titik potong sumbu y",
-                "Menentukan persamaan garis melalui 2 titik",
+                "Tentukan titik potong sumbu x dan titik potong sumbu y",
+                "Translasikan titik potong sumbu x dan titik potong sumbu y",
+                "Tentukan persamaan garis melalui 2 titik",
               ],
               hint: "Bayangan sebuah garis ditentukan dengan bantuan dua titik yang berada pada garis tersebut. Pikirkan langkah paling awal hingga langkah terakhir secara berurutan.",
               explanation:
-                "Urutan yang benar: 1) Persamaan garis diketahui, 2) Menentukan titik potong sumbu x dan titik potong sumbu y, 3) Mentranslasikan titik potong sumbu x dan titik potong sumbu y, 4) Menentukan persamaan garis melalui 2 titik.",
+                "Urutan yang benar: 1) Persamaan garis diketahui, 2) Tentukan titik potong sumbu x dan titik potong sumbu y, 3) Translasikan titik potong sumbu x dan titik potong sumbu y, 4) Tentukan persamaan garis melalui 2 titik.",
             },
             {
               id: 12,

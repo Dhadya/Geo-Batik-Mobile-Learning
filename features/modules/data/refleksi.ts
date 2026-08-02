@@ -928,9 +928,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Motif bangun ABCD memiliki titik sudut \nA(\u22124, 0), B(\u22122, 2), C(\u22122, 6), D(\u22124, 4).\nPilih salah satu refleksi berikut:",
               options: ["Sumbu x", "Sumbu y", "Titik (0,0)", "Garis x=y", "Garis x=-y", "Garis x=2", "Garis y=-1"],
               hint:
-                "Bangun ABCD telah diketahui pada bidang koordinat.\nMenentukan koordinat titik sudut A, B, C, dan D.\nMencerminkan titik sudut A, B, C, dan D sesuai dengan cermin refleksi yang dipilih.\nMenulis koordinat bayangan A', B', C', dan D'.\nMenghubungkan titik-titik sudut bayangan sehingga membentuk bangun yang utuh.",
+                "Bangun ABCD telah diketahui pada bidang koordinat.\nTentukan koordinat titik sudut A, B, C, dan D.\nCerminkan titik sudut A, B, C, dan D sesuai dengan cermin refleksi yang dipilih.\nTulis koordinat bayangan A', B', C', dan D'.\nHubungkan titik-titik sudut bayangan sehingga membentuk bangun yang utuh.",
               explanation:
-                "Bangun ABCD telah diketahui pada bidang koordinat dengan titik sudut A(-4, 0), B(-2, 2), C(-2, 6), dan D(-4, 4).\nMenentukan koordinat titik sudut A, B, C, dan D.\nMencerminkan titik sudut A, B, C, dan D satu per satu sesuai dengan cermin refleksi yang dipilih menggunakan rumus refleksi yang sesuai.\nMenulis koordinat bayangan A', B', C', dan D' dari hasil pencerminan.\nMenghubungkan titik-titik sudut bayangan sehingga membentuk bangun yang utuh.",
+                "Bangun ABCD telah diketahui pada bidang koordinat dengan titik sudut A(-4, 0), B(-2, 2), C(-2, 6), dan D(-4, 4).\nTentukan koordinat titik sudut A, B, C, dan D.\nCerminkan titik sudut A, B, C, dan D satu per satu sesuai dengan cermin refleksi yang dipilih menggunakan rumus refleksi yang sesuai.\nTulis koordinat bayangan A', B', C', dan D' dari hasil pencerminan.\nHubungkan titik-titik sudut bayangan sehingga membentuk bangun yang utuh.",
               correctAnswers: {
                 "Sumbu x": [
                   { x: -4, y: 0 },
@@ -1089,9 +1089,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Perhatikan ruas garis AB, dengan A(\u22126, 1) dan B(\u22122, 3)\nPilih salah satu refleksi berikut:",
               options: ["Sumbu x", "Sumbu y", "Titik (0,0)", "Garis x=y", "Garis x=-y", "Garis x=2", "Garis y=\u22122"],
               hint:
-                "Ruas garis AB telah diketahui pada bidang koordinat.\nMenentukan koordinat kedua titik ujungnya, yaitu A dan B.\nMencerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih.\nMenulis koordinat bayangan kedua titik ujung.\nMenghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
+                "Ruas garis AB telah diketahui pada bidang koordinat.\nTentukan koordinat kedua titik ujungnya, yaitu A dan B.\nCerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih.\nTulis koordinat bayangan kedua titik ujung.\nHubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
               explanation:
-                "Ruas garis AB telah diketahui pada bidang koordinat dengan A(-6, 1) dan B(-2, 3).\nMenentukan koordinat kedua titik ujungnya, yaitu A dan B.\nMencerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih menggunakan rumus refleksi yang sesuai.\nMenulis koordinat bayangan kedua titik ujung dari hasil pencerminan.\nMenghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus membentuk bayangan ruas garis.",
+                "Ruas garis AB telah diketahui pada bidang koordinat dengan A(-6, 1) dan B(-2, 3).\nTentukan koordinat kedua titik ujungnya, yaitu A dan B.\nCerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih menggunakan rumus refleksi yang sesuai.\nTulis koordinat bayangan kedua titik ujung dari hasil pencerminan.\nHubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus membentuk bayangan ruas garis.",
               correctAnswers: {
                 "Sumbu x": [
                   { x: -6, y: -1 },
@@ -1134,9 +1134,9 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Bagaimana cara menentukan koordinat A\u2019 dan B\u2019?",
               answer: "Koordinat A\u2019 dan B\u2019 ditentukan dengan mencerminkan titik A dan B",
               hint:
-                "Ruas garis AB telah diketahui pada bidang koordinat.\nMenentukan koordinat kedua titik ujungnya, yaitu A dan B.\nMencerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih.\nMenulis koordinat bayangan kedua titik ujung.\nMenghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
+                "Ruas garis AB telah diketahui pada bidang koordinat.\nTentukan koordinat kedua titik ujungnya, yaitu A dan B.\nCerminkan kedua titik ujung sesuai dengan cermin refleksi yang dipilih.\nTulis koordinat bayangan kedua titik ujung.\nHubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
               explanation:
-                "Ruas garis AB telah diketahui pada bidang koordinat dengan A(-6, 1) dan B(-2, 3).\nKoordinat A' dan B' ditentukan dengan mencerminkan titik A dan titik B (kedua ujung ruas garis) terhadap cermin/garis refleksi yang sama.\nSetiap titik ujung dicerminkan sesuai dengan cermin refleksinya menggunakan rumus refleksi yang sesuai.\nMenulis koordinat bayangan A' dan B' dari hasil pencerminan.\nHasil refleksi kedua titik tersebut kemudian dihubungkan dengan garis lurus untuk membentuk ruas garis bayangan A'B'.",
+                "Ruas garis AB telah diketahui pada bidang koordinat dengan A(-6, 1) dan B(-2, 3).\nKoordinat A' dan B' ditentukan dengan mencerminkan titik A dan titik B (kedua ujung ruas garis) terhadap cermin/garis refleksi yang sama.\nSetiap titik ujung dicerminkan sesuai dengan cermin refleksinya menggunakan rumus refleksi yang sesuai.\nTulis koordinat bayangan A' dan B' dari hasil pencerminan.\nHasil refleksi kedua titik tersebut kemudian dihubungkan dengan garis lurus untuk membentuk ruas garis bayangan A'B'.",
               acceptAnswers: [
                 "Mencerminkan titik A dan B terhadap cermin refleksi",
                 "Dengan mencerminkan kedua titik ujung ruas garis",
@@ -1194,15 +1194,15 @@ export const refleksiTabs: ModuleTab[] = [
               question: "Urutkan cara menentukan bayangan ruas garis mengalami proses refleksi!",
               items: [
                 "Ruas garis diketahui",
-                "Menentukan koordinat kedua titik ujungnya",
-                "Mencerminkan kedua titik ujung sesuai dengan cermin refleksinya",
-                "Menulis koordinat bayangan kedua titik ujung",
-                "Menghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus",
+                "Tentukan koordinat kedua titik ujungnya",
+                "Cerminkan kedua titik ujung sesuai dengan cermin refleksinya",
+                "Tulis koordinat bayangan kedua titik ujung",
+                "Hubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus",
               ],
               hint:
                 "Bayangan sebuah ruas garis ditentukan oleh bayangan kedua titik ujungnya.\nPikirkan langkah paling awal hingga langkah terakhir secara berurutan: mulai dari ruas garis diketahui, lalu tentukan kedua titik ujung, cerminkan kedua titik ujung, tulis koordinat bayangan, dan terakhir hubungkan kedua titik bayangan.",
               explanation:
-                "Urutan yang benar: 1) Ruas garis diketahui\n2) Menentukan koordinat kedua titik ujungnya\n3) Mencerminkan kedua titik ujung sesuai dengan cermin refleksinya\n4) Menulis koordinat bayangan kedua titik ujung\n5) Menghubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
+                "Urutan yang benar: 1) Ruas garis diketahui\n2) Tentukan koordinat kedua titik ujungnya\n3) Cerminkan kedua titik ujung sesuai dengan cermin refleksinya\n4) Tulis koordinat bayangan kedua titik ujung\n5) Hubungkan titik ujung satu dengan titik ujung kedua dengan garis lurus.",
             },
             {
               id: 10,
