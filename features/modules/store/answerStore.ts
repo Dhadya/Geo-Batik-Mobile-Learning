@@ -4,6 +4,7 @@ import {
   createUserScopedStorage,
   getGlobalUserId,
 } from "@/lib/user-scoped-storage"
+import type { FieldColor } from "../lib/validation"
 
 // ── Per-section answer shapes ──
 

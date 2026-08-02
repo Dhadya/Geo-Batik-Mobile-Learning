@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation, useQuery } from "@tanstack/react-query"
+import type { FieldColor } from "@/features/modules/lib/validation"
 
 /** Payload for saving a section attempt. */
 export interface SaveSectionInput {

@@ -67,8 +67,14 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const aiFeedback = sectionAnswers?.aiFeedback
 
   const [errors, setErrors_] = useState<Record<string, string>>({})
-  const [fieldColors, setFieldColors_] = useState<Record<string, FieldColor>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Read fieldColors directly from the persisted store so they survive tab/page navigation.
+  // The store is already updated via setSectionFieldColors on every evaluation.
+  const fieldColors = useMemo(
+    () => (sectionAnswers?.fieldColors ?? {}) as Record<string, FieldColor>,
+    [sectionAnswers],
+  )
 
   // Derive evaluation state directly from the persisted store state
   const storedAttempt = sectionAnswers?.attempt ?? 1
@@ -150,7 +156,6 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         : items
       const result = await evaluateSection(slug, tab, section, evaluationItems, fields, attempt)
       setErrors_(result.errors)
-      setFieldColors_(result.fieldColors)
       boundSetAIFeedback(result.feedback)
 
       useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
@@ -192,13 +197,14 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [attempt, isLocked, isSubmitting, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
+  }, [attempt, isLocked, isSubmitting, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback])
 
   return {
     items,
     fields,
     errors: isChecked ? errors : {},
-    fieldColors: isChecked ? fieldColors : {},
+    // Show stored fieldColors when section is checked/locked; empty otherwise so colors only appear after submission.
+    fieldColors: (isChecked || isLocked) ? fieldColors : {},
     isChecked,
     isFilled,
     aiFeedback,

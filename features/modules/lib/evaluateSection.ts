@@ -87,7 +87,7 @@ export async function evaluateSection(
       fieldColors,
     }
   } catch {
-    toast.error(`Gagal memuat feedback AI, menggunakan penilaian lokal`)
+    // toast.error(`Gagal memuat feedback AI, menggunakan penilaian lokal`)
     const local = validateSection(items, fields, undefined)
 
     return {
