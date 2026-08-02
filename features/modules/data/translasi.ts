@@ -142,17 +142,6 @@ export const translasiTabs: ModuleTab[] = [
               explanation:
                 "Bayangan titik (x, y) oleh translasi (a, b) adalah (x + a, y + b). Komponen x digeser sejauh a dan komponen y digeser sejauh b, sehingga koordinatnya ditambah dengan vektor translasi.",
             },
-            {
-              id: 9,
-              type: "uraian",
-              question:
-                "Apakah titik yang ditranslasikan pasti berubah posisi?",
-              answer:
-                "Belum pasti, semua titik yang ditranslasikan biasanya berubah posisi, tetapi jika nilai translasinya (0, 0) objek tidak berubah posisi",
-              hint: "Bayangkan geseran sejauh (0, 0). Apakah ada perpindahan yang terjadi? Ingat ada satu nilai translasi khusus yang tidak menggeser apa pun.",
-              explanation:
-                "Belum tentu. Titik yang ditranslasikan pada umumnya berubah posisi, kecuali jika nilai translasinya (0, 0). Geseran sebesar nol satuan ke setiap arah membuat titik tetap pada posisi semula, sehingga posisinya tidak berubah.",
-            },
           ],
         },
         cekPemahaman: {
