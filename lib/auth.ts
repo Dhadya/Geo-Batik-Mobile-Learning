@@ -44,7 +44,7 @@ function createAuthInstance(): ReturnType<typeof betterAuth> {
         google: {
           clientId: process.env.GOOGLE_CLIENT_ID!,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-          disableImplicitSignUp: true,
+          accountLinking: { enabled: true },
         },
       },
       plugins: [nextCookies()],
