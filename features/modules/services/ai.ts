@@ -232,6 +232,18 @@ function collectWrongUraian(
   );
 }
 
+/** Collect all answered uraian items — used when Gemini is the authority (penyimpulan). */
+function collectAnsweredUraian(
+  items: SectionItem[],
+  answers: Record<string, Record<string, string>>,
+): SectionItem[] {
+  return items.filter(
+    (i) =>
+      i.type === "uraian" &&
+      Object.values(answers[String(i.id)] ?? {}).some((v) => v && v.trim() !== ""),
+  );
+}
+
 /** Build a prompt for Gemini based on attempt number and correctness handling. */
 export function buildPrompt(
   module: string,
@@ -256,7 +268,7 @@ ${
     : sectionType === "percobaan"
     ? "Fokus mengamati koordinat dan vektornya. Feedback harus menekankan pada perhitungan koordinat titik bayangan dan vektor translasi/refleksi."
     : sectionType === "penyimpulan"
-    ? "Fokus memberikan feedback berupa penjelasan konsep dari pertanyaan yang diajukan. Feedback harus menjelaskan konsep geometri secara menyeluruh sebagai jawaban dari pertanyaan konseptual."
+    ? "Kamu adalah PENILAI untuk bagian ini: bandingkan setiap jawaban siswa dengan KUNCI JAWABAN dan putuskan benar/salah serta nilai sesuai aturan penilaian. Feedback harus menjelaskan konsep geometri secara menyeluruh sebagai jawaban dari pertanyaan konseptual."
     : sectionType === "cek-pemahaman"
     ? "Fokus memberikan jawaban yang benar seperti apa. Feedback harus menekankan pada kebenaran jawaban dan cara memperolehnya, dengan standar penilaian yang lebih ketat."
     : ""
@@ -367,51 +379,58 @@ export async function evaluateSection(
     };
   }
 
-  // Deterministic fast-path: Gemini only judges wrong, answered uraian items.
+  // Deterministic fast-path: Gemini is the authority on uraian answers.
   const local = validateSection(input.items, input.answers);
   const hasUraian = input.items.some((i) => i.type === "uraian");
+  const isPenyimpulan = input.sectionType === "penyimpulan";
 
   // No uraian items → local check is authoritative; never call Gemini.
   if (!hasUraian) {
     return localToOutput(input, local);
   }
-  // All answers correct → no AI needed, return locally.
-  if (local.isCorrect) {
-    return {
-      isCorrect: true,
-      score: 100,
-      feedback: feedbackForCorrect(input.sectionType, input.items, input.answers),
-      errors: {},
-    };
-  }
 
-  const wrongUraian = collectWrongUraian(input.items, input.answers, local.errors);
   const deterministicFeedback = buildDeterministicFeedback(input, local);
 
-  // Only deterministic items wrong → no AI needed at all.
-  if (wrongUraian.length === 0) {
-    return {
-      isCorrect: false,
-      score: localScore(local),
-      feedback: deterministicFeedback,
-      errors: local.errors,
-    };
+  // Penyimpulan: Gemini is the higher authority for uraian answers — always
+  // consult it with ALL answered uraian items, even when local validation says
+  // everything is correct. Local keyword matching cannot reliably judge
+  // mathematical/conceptual text, so Gemini confirms or overrides the verdict.
+  // Other sections: only the wrong, answered uraian items reach Gemini.
+  const uraianToJudge = isPenyimpulan
+    ? collectAnsweredUraian(input.items, input.answers)
+    : collectWrongUraian(input.items, input.answers, local.errors);
+
+  // No answered uraian items to judge → local verdict stands.
+  if (uraianToJudge.length === 0) {
+    return local.isCorrect
+      ? {
+          isCorrect: true,
+          score: 100,
+          feedback: feedbackForCorrect(input.sectionType, input.items, input.answers),
+          errors: {},
+        }
+      : {
+          isCorrect: false,
+          score: localScore(local),
+          feedback: deterministicFeedback,
+          errors: local.errors,
+        };
   }
 
   if (apiKeys.length === 0) {
     throw appError("INTERNAL_ERROR");
   }
 
-  // Mini-prompt: send only the wrong uraian items Gemini must judge.
+  // Mini-prompt: send only the uraian items Gemini must judge.
   const miniAnswers: Record<string, Record<string, string>> = {};
-  for (const item of wrongUraian) {
+  for (const item of uraianToJudge) {
     miniAnswers[String(item.id)] = input.answers[String(item.id)] ?? {};
   }
   const prompt = buildPrompt(
     input.module,
     input.tab,
     input.sectionType,
-    wrongUraian,
+    uraianToJudge,
     miniAnswers,
     input.attempt,
   );
@@ -461,7 +480,7 @@ export async function evaluateSection(
 
   // AI judged only the uraian items — factor deterministic correctness into the final verdict.
   const deterministicAllCorrect = Object.keys(local.errors).every((k) =>
-    wrongUraian.some((i) => i.id === Number(k.split("_")[0])),
+    uraianToJudge.some((i) => i.id === Number(k.split("_")[0])),
   );
   const finalCorrect = parsed.isCorrect === true && deterministicAllCorrect;
   if (finalCorrect) {
@@ -469,7 +488,13 @@ export async function evaluateSection(
   }
 
   parsed.isCorrect = false;
-  parsed.score = localScore(local);
+  // Penyimpulan: Gemini's score is authoritative for the uraian verdict, but only
+  // when deterministic items are all correct — otherwise the local score reflects
+  // the deterministic failures Gemini didn't judge. Elsewhere local score stands.
+  parsed.score =
+    isPenyimpulan && deterministicAllCorrect && parsed.score != null
+      ? parsed.score
+      : localScore(local);
   parsed.errors = { ...local.errors, ...parsed.errors };
   console.log(
     `[ai.evaluate] ${input.module}/${input.tab}/${input.sectionType} attempt=${input.attempt}`,
