@@ -10,8 +10,8 @@ import { validateSection, type ValidationResult } from "../lib/validation";
 import { buildDeterministicFeedback, feedbackForCorrect, localScore, mergeFeedback } from "../lib/feedback";
 import type { SectionItem } from "@/features/modules/types";
 
-const GENERATION_TIMEOUT_MS = 10000;
-const RETRY_BASE_DELAY_MS = 1000;
+const GENERATION_TIMEOUT_MS = 4000;
+const RETRY_BASE_DELAY_MS = 250;
 
 /** Collect all available Gemini API keys from env vars (GEMINI_API_KEY_1..N, fallback to GEMINI_API_KEY comma-separated). */
 function collectApiKeys(): string[] {
@@ -506,7 +506,7 @@ export async function evaluateSection(
 }
 
 /** Timeout for pembahasan generation (longer — needs per-question analysis). */
-const PEMBAHASAN_TIMEOUT_MS = 10000;
+const PEMBAHASAN_TIMEOUT_MS = 5000;
 
 /** A quiz question with a static explanation, used for pembahasan generation. */
 interface PembahasanQuestion {

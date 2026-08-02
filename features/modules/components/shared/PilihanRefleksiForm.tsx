@@ -76,7 +76,8 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
               {answers.map((ans, idx) => {
                 const origItem = items[idx + 1]
                 const origLabel = origItem?.type === "koordinat" ? (origItem as import("@/features/modules/types").KoordinatItem).label : "(?, ?)"
-                const coordColor = fieldColors[`${refleksiItem.id}_coord${idx}`]
+                const xColor = fieldColors[`${refleksiItem.id}_x${idx}`]
+                const yColor = fieldColors[`${refleksiItem.id}_y${idx}`]
 
                 return (
                   <tr key={idx} className="text-center">
@@ -99,7 +100,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
                           onKeyDown={allowOnlyNumbers}
                           onChange={(e) => setField(String(refleksiItem.id), `x${idx}`, e.target.value)}
                           disabled={isChecked}
-                           className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor)}`}
+                          className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(xColor)}`}
                         />
                         <span className="font-bold text-xs md:text-sm">,</span>
                         <Input
@@ -110,7 +111,7 @@ export function PilihanRefleksiForm({ slug, tab }: PilihanRefleksiFormProps) {
                           onKeyDown={allowOnlyNumbers}
                           onChange={(e) => setField(String(refleksiItem.id), `y${idx}`, e.target.value)}
                           disabled={isChecked}
-                           className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor)}`}
+                          className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(yColor)}`}
                         />
                         <span className="font-bold text-xs md:text-sm">)</span>
                       </div>

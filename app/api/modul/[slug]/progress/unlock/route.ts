@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
-import { unlockNextTab } from "@/features/modules/services/progress";
+import { unlockNextTab, reconcileAndUnlockNextTab } from "@/features/modules/services/progress";
 import { unlockSchema } from "@/lib/schemas";
 import { getModuleTabs } from "@/features/modules/data";
 import type { ModuleSlug } from "@/features/modules/types";
@@ -39,7 +39,10 @@ export async function POST(
       );
     }
 
-    const result = await unlockNextTab(user.id, slug as ModuleSlug, parsed.data.completedTab);
+    const result =
+      parsed.data.sections?.length
+        ? await reconcileAndUnlockNextTab(user.id, slug as ModuleSlug, parsed.data.completedTab, parsed.data.sections)
+        : await unlockNextTab(user.id, slug as ModuleSlug, parsed.data.completedTab);
     return NextResponse.json({ ok: true, data: result });
   } catch (e) {
     return handleError(e);

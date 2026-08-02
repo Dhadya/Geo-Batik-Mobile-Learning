@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation, useQuery } from "@tanstack/react-query"
+import type { FieldColor } from "@/features/modules/lib/validation"
 
 /** Payload for saving a section attempt. */
 export interface SaveSectionInput {
@@ -11,6 +12,7 @@ export interface SaveSectionInput {
   score?: number | null
   status?: string
   feedback?: string
+  fieldColors?: Record<string, FieldColor>
 }
 
 /** Result from saving a section attempt. */

@@ -66,7 +66,8 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
           <Text as="p" className="text-xs md:text-sm font-medium text-black">
             A&apos;B&apos; dengan{" "}
             {answers.map((_, idx) => {
-              const coordColor = fieldColors[`${refleksiItem.id}_coord${idx}`]
+              const xColor = fieldColors[`${refleksiItem.id}_x${idx}`]
+              const yColor = fieldColors[`${refleksiItem.id}_y${idx}`]
               return (
                 <span key={idx}>
                   {idx === 0 ? "A'" : "B'"}(
@@ -78,7 +79,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
                     onKeyDown={allowOnlyNumbers}
                     onChange={(e) => setField(String(refleksiItem.id), `x${idx}`, e.target.value)}
                     disabled={isChecked}
-                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(coordColor)}`}
+                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(xColor)}`}
                   />
                   ,{" "}
                   <Input
@@ -89,7 +90,7 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
                     onKeyDown={allowOnlyNumbers}
                     onChange={(e) => setField(String(refleksiItem.id), `y${idx}`, e.target.value)}
                     disabled={isChecked}
-                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(coordColor)}`}
+                    className={`w-10 md:w-12 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-5 md:h-6 shadow-none inline-block ${fieldColorClasses(yColor)}`}
                   />
                   )
                   {idx < answers.length - 1 ? " dan " : ""}

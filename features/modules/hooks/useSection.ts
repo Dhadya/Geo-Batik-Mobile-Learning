@@ -67,8 +67,14 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   const aiFeedback = sectionAnswers?.aiFeedback
 
   const [errors, setErrors_] = useState<Record<string, string>>({})
-  const [fieldColors, setFieldColors_] = useState<Record<string, FieldColor>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Read fieldColors directly from the persisted store so they survive tab/page navigation.
+  // The store is already updated via setSectionFieldColors on every evaluation.
+  const fieldColors = useMemo(
+    () => (sectionAnswers?.fieldColors ?? {}) as Record<string, FieldColor>,
+    [sectionAnswers],
+  )
 
   // Derive evaluation state directly from the persisted store state
   const storedAttempt = sectionAnswers?.attempt ?? 1
@@ -131,7 +137,10 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     useAnswerStore.getState().setSectionStatus(slug, tab, section, "unsubmitted", 2)
     boundSetChecked(false)
     setErrors_({})
-    setFieldColors_({})
+    // Keep fieldColors to preserve permanent feedback (correct/wrong state)
+    // This allows users to see which inputs were correct/wrong even after reset
+    // Keep existing fieldColors so users can see the correct/wrong colors of their answers
+    // The fieldColors state is derived from the answerStore, so we don't need to modify it
   }, [slug, tab, section, boundSetChecked])
 
   const handleSubmit = useCallback(async () => {
@@ -147,10 +156,10 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         : items
       const result = await evaluateSection(slug, tab, section, evaluationItems, fields, attempt)
       setErrors_(result.errors)
-      setFieldColors_(result.fieldColors)
       boundSetAIFeedback(result.feedback)
 
       useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
+      useAnswerStore.getState().setSectionFieldColors(slug, tab, section, result.fieldColors)
 
       if (result.isCorrect) {
         boundSetChecked(true)
@@ -188,13 +197,14 @@ export function useSection(slug: string, tab: string, section: SectionName) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [attempt, isLocked, isSubmitting, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
+  }, [attempt, isLocked, isSubmitting, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback])
 
   return {
     items,
     fields,
     errors: isChecked ? errors : {},
-    fieldColors: isChecked ? fieldColors : {},
+    // Show stored fieldColors when section is checked/locked; empty otherwise so colors only appear after submission.
+    fieldColors: (isChecked || isLocked) ? fieldColors : {},
     isChecked,
     isFilled,
     aiFeedback,

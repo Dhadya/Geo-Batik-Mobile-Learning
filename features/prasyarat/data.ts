@@ -23,7 +23,7 @@ export const prerequisiteConcepts: PrerequisiteConcept[] = [
   {
     title: "Garis",
     description:
-      "Himpunan titik-titik berderet yang memanjang tanpa batas ke dua arah (kanan-kiri atau atas-bawah). Garis memiliki dimensi panjang, tetapi tidak memiliki dimensi lebar. Berada di dimensi 1. Penamaannya berupa persamaan garis.",
+      "Himpunan titik-titik berderet yang memanjang tanpa batas ke dua arah. Garis memiliki dimensi panjang, tetapi tidak memiliki dimensi lebar. Berada di dimensi 1. Penamaannya berupa persamaan garis.",
     icon: "horizontal_rule",
   },
   {

@@ -62,7 +62,8 @@ export function PercobaanTranslasiTable({
               const match = bayanganVal.match(/\((-?\d+),\s*(-?\d+)\)/)
               const bx = match?.[1] ?? ""
               const by = match?.[2] ?? ""
-              const coordColor = fieldColors[`${k.id}_coord`]
+              const xColor = fieldColors[`${k.id}_x`]
+              const yColor = fieldColors[`${k.id}_y`]
 
               return (
                 <div key={k.id} className="grid grid-cols-3 items-center py-2 md:py-3 text-center">
@@ -85,7 +86,7 @@ export function PercobaanTranslasiTable({
                       value={fields[String(k.id)]?.x ?? ""}
                       onKeyDown={allowOnlyNumbers}
                       onChange={(e) => setField(String(k.id), "x", e.target.value)}
-                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor)}`}
+                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(xColor)}`}
                     />
                     <span className="font-bold text-xs md:text-sm">,</span>
                     <Input
@@ -95,7 +96,7 @@ export function PercobaanTranslasiTable({
                       value={fields[String(k.id)]?.y ?? ""}
                       onKeyDown={allowOnlyNumbers}
                       onChange={(e) => setField(String(k.id), "y", e.target.value)}
-                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(coordColor)}`}
+                      className={`w-8 md:w-10 text-center p-0.5 md:p-1 font-black border-2 text-[10px] md:text-xs h-6 md:h-7 shadow-none ${fieldColorClasses(yColor)}`}
                     />
                     <span className="font-bold text-xs md:text-sm">)</span>
                   </div>

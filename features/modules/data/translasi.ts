@@ -142,17 +142,6 @@ export const translasiTabs: ModuleTab[] = [
               explanation:
                 "Bayangan titik (x, y) oleh translasi (a, b) adalah (x + a, y + b). Komponen x digeser sejauh a dan komponen y digeser sejauh b, sehingga koordinatnya ditambah dengan vektor translasi.",
             },
-            {
-              id: 9,
-              type: "uraian",
-              question:
-                "Apakah titik yang ditranslasikan pasti berubah posisi?",
-              answer:
-                "Belum pasti, semua titik yang ditranslasikan biasanya berubah posisi, tetapi jika nilai translasinya (0, 0) objek tidak berubah posisi",
-              hint: "Bayangkan geseran sejauh (0, 0). Apakah ada perpindahan yang terjadi? Ingat ada satu nilai translasi khusus yang tidak menggeser apa pun.",
-              explanation:
-                "Belum tentu. Titik yang ditranslasikan pada umumnya berubah posisi, kecuali jika nilai translasinya (0, 0). Geseran sebesar nol satuan ke setiap arah membuat titik tetap pada posisi semula, sehingga posisinya tidak berubah.",
-            },
           ],
         },
         cekPemahaman: {
@@ -480,24 +469,29 @@ export const translasiTabs: ModuleTab[] = [
             },
             {
               id: 9,
-              type: "uraian",
-              question: "Apa yang terjadi pada titik potong garis terhadap sumbu x dan y setelah ditranslasi?",
-              answer: "Titik potongnya berubah menyesuaikan pergeseran yang bergantung oleh nilai translasi",
-              hint: "Perhatikan titik potong sumbu x dan sumbu y sebelum dan sesudah translasi pada GeoGebra. Apakah koordinatnya tetap atau ikut bergeser mengikuti nilai translasi?",
+              type: "pilihan_ganda",
+              question:
+                "Jika garis -x + 2y = 4 ditranslasikan sejauh",
+              questionMatrix: "4,1",
+              questionSuffix:
+                ", apakah titik potong sumbu x dan titik potong sumbu y berubah?",
+              options: ["Ya", "Tidak"],
+              correctIndex: 1,
+              hint: "Tentukan titik potong garis terhadap sumbu x dan sumbu y sebelum translasi, lalu tentukan titik potongnya setelah ditranslasikan. Bandingkan kedua titik tersebut.",
               explanation:
-                "Titik potong garis terhadap sumbu x dan sumbu y ikut bergeser mengikuti nilai translasi yang diberikan. Karena setiap titik pada garis ditranslasikan, maka titik potongnya juga berpindah sesuai dengan besar dan arah translasi.",
+                "Titik potong sumbu x garis -x + 2y = 4 adalah (-4, 0) dan titik potong sumbu y adalah (0, 2). Setelah ditranslasikan sejauh (4, 1), kedua titik berpindah menjadi (0, 1) dan (4, 3). Namun, perhatikan bahwa pertanyaan ini menguji pemahamanmu tentang konsep translasi garis secara menyeluruh.",
             },
             {
               id: 10,
               type: "pilihan_ganda",
               question: "Bagaimana jika ditranslasikan oleh",
-              questionMatrix: "0,0",
+              questionMatrix: "2,1",
               questionSuffix: ", apakah titik potong sumbu x dan sumbu y berubah?",
               options: ["Ya", "Tidak"],
               correctIndex: 1,
-              hint: "Translasi (0, 0) berarti tidak ada pergeseran sama sekali. Apakah setiap titik pada garis akan berpindah?",
+              hint: "Tentukan titik potong garis terhadap sumbu x dan sumbu y sebelum translasi, lalu translasikan kedua titik tersebut sejauh (2, 1). Bandingkan hasilnya.",
               explanation:
-                "Translasi (0, 0) tidak menggeser titik sama sekali, sehingga titik potong sumbu x dan sumbu y tetap pada posisi semula dan tidak berubah.",
+                "Titik potong sumbu x garis -x + 2y = 4 adalah (-4, 0) dan titik potong sumbu y adalah (0, 2). Setelah ditranslasikan sejauh (2, 1), titik potong sumbu x berubah menjadi (-2, 1) dan titik potong sumbu y berubah menjadi (2, 3). Translasi menggeser setiap titik pada garis, termasuk titik potong sumbu x dan sumbu y.",
             },
           ],
         },
@@ -510,13 +504,13 @@ export const translasiTabs: ModuleTab[] = [
               question: "Urutkan cara menentukan bayangan dari sebuah persamaan garis yang mengalami proses translasi!",
               items: [
                 "Persamaan garis diketahui",
-                "Tentukan titik potong sumbu x dan titik potong sumbu y",
-                "Translasikan titik potong sumbu x dan titik potong sumbu y",
+                "Tentukan koordinat dua titik dari persamaan garis yang sudah diketahui",
+                "Translasikan dua titik tersebut",
                 "Tentukan persamaan garis melalui 2 titik",
               ],
               hint: "Bayangan sebuah garis ditentukan dengan bantuan dua titik yang berada pada garis tersebut. Pikirkan langkah paling awal hingga langkah terakhir secara berurutan.",
               explanation:
-                "Urutan yang benar: 1) Persamaan garis diketahui, 2) Tentukan titik potong sumbu x dan titik potong sumbu y, 3) Translasikan titik potong sumbu x dan titik potong sumbu y, 4) Tentukan persamaan garis melalui 2 titik.",
+                "Urutan yang benar: 1) Persamaan garis diketahui, 2) Tentukan koordinat dua titik dari persamaan garis yang sudah diketahui, 3) Translasikan dua titik tersebut, 4) Tentukan persamaan garis melalui 2 titik.",
             },
             {
               id: 12,

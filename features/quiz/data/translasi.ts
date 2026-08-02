@@ -182,7 +182,9 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
     type: "pilihan_ganda",
     module: "translasi",
     tab: "titik",
-    question: "Titik Q(3, -1) ditranslasikan oleh (a, b) sehingga bayangannya Q'(-2, 4). Nilai a+b adalah ...",
+    question: "Titik Q(3, -1) ditranslasikan oleh",
+    questionMatrix: "a,b",
+    questionSuffix: "sehingga bayangannya Q'(-2, 4). Nilai a+b adalah ...",
     options: ["-10", "0", "5", "-5"],
     correctIndex: 1,
     explanation:
