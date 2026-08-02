@@ -26,6 +26,10 @@ export function KuisStartButton({ slug }: { slug: string }) {
   const startNewAttempt = useQuizStore((s) => s.startNewAttempt)
   const history = useQuizStore((s) => s.history)
   const sessionStarted = useQuizStore((s) => s.sessionStarted)
+  const answers = useQuizStore((s) => s.answers)
+
+  // A resumable attempt only exists once the user has saved at least one answer.
+  const hasInProgressAttempt = sessionStarted && Object.keys(answers).length > 0
 
   const handleStart = useCallback(() => {
     if (sessionStarted) {
@@ -44,7 +48,7 @@ export function KuisStartButton({ slug }: { slug: string }) {
       className="px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-black uppercase gap-3 md:gap-4"
       onClick={handleStart}
     >
-      {sessionStarted ? "Lanjutkan Kuis" : "Mulai Kuis"}
+      {hasInProgressAttempt ? "Lanjutkan Kuis" : "Mulai Kuis"}
       <MaterialIcon className="size-5 md:size-6" name="arrow_forward" />
     </Button>
   )

@@ -149,14 +149,6 @@ body {
   html {
     @apply font-sans;
   }
-  /* Material Symbols font settings — default to outline style */
-  .material-symbols-outlined {
-    font-variation-settings:
-      "FILL" 0,
-      "wght" 400,
-      "GRAD" 0,
-      "opsz" 24;
-  }
 }
 
 /* ── Custom animations ───────────────────────────────────── */

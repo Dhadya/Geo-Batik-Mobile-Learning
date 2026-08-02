@@ -2,8 +2,8 @@ import type { GeoGebraToggle } from "./types"
 
 /** GeoGebra object names that correspond to the checkboxes in the saved material. */
 export const toggles: GeoGebraToggle[] = [
-  { label: "Sumbu X", icon: "east", objects: ["i"], conceptKey: "Sumbu x" },
-  { label: "Sumbu Y", icon: "north", objects: ["j"], conceptKey: "Sumbu y" },
+  { label: "Sumbu X", icon: "axis_horizontal", objects: ["i"], conceptKey: "Sumbu x" },
+  { label: "Sumbu Y", icon: "axis_vertical", objects: ["j"], conceptKey: "Sumbu y" },
   { label: "Kuadran", icon: "grid_view", objects: ["t"], conceptKey: "Kuadran" },
   { label: "K1", icon: "grid_view", objects: ["e"], conceptKey: "K1" },
   { label: "K2", icon: "grid_view", objects: ["k"], conceptKey: "K2" },
