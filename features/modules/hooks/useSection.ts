@@ -9,7 +9,7 @@ import { triggerTabUnlockIfComplete } from "../lib/progressSync"
 import type { FieldColor } from "../lib/validation"
 import type { SectionItem, SectionBlock } from "../types"
 
-type SectionName = "percobaan" | "pengamatan" | "penyimpulan" | "cekPemahaman"
+type SectionName = "percobaan" | "pengamatan" | "penyimpulan"
 
 /** Check whether all fields for a set of items are filled. */
 function isSectionFilled(items: SectionItem[], fields: Record<string, Record<string, string>>): boolean {
@@ -135,53 +135,60 @@ export function useSection(slug: string, tab: string, section: SectionName) {
   }, [slug, tab, section, boundSetChecked])
 
   const handleSubmit = useCallback(async () => {
-      if (isLocked || isSubmitting) return
-      setIsSubmitting(true)
+    if (isLocked || isSubmitting) return
+    setIsSubmitting(true)
 
-      try {
-        // Filter out placeholder koordinat items when pilihan_refleksi exists
-        // (they are validated as part of pilihan_refleksi, not standalone)
-        const hasPilihanRefleksi = items.some((item) => item.type === "pilihan_refleksi")
-        const evaluationItems = hasPilihanRefleksi
-          ? items.filter((item) => item.type !== "koordinat")
-          : items
-        const result = await evaluateSection(slug, tab, section, evaluationItems, fields, attempt)
-        setErrors_(result.errors)
-        setFieldColors_(result.fieldColors)
-        boundSetAIFeedback(result.feedback)
+    try {
+      // Filter out placeholder koordinat items when pilihan_refleksi exists
+      // (they are validated as part of pilihan_refleksi, not standalone)
+      const hasPilihanRefleksi = items.some((item) => item.type === "pilihan_refleksi")
+      const evaluationItems = hasPilihanRefleksi
+        ? items.filter((item) => item.type !== "koordinat")
+        : items
+      const result = await evaluateSection(slug, tab, section, evaluationItems, fields, attempt)
+      setErrors_(result.errors)
+      setFieldColors_(result.fieldColors)
+      boundSetAIFeedback(result.feedback)
 
-        // IMMEDIATE ACTION for quiz: mark answers as submitted immediately
-        // so UI shows "sudah dijawab" on quiz results page
+      useAnswerStore.getState().setSectionScore(slug, tab, section, result.score)
+
+      if (result.isCorrect) {
         boundSetChecked(true)
-        useAnswerStore.getState().setSectionStatus(slug, tab, section, result.isCorrect ? "correct" : (attempt === 1 ? "wrong_attempt1" : "wrong_attempt2"), attempt)
-
-        // Show success feedback immediately
-        if (result.isCorrect) {
-          toast.success("Jawaban kamu benar, selamat!")
-        } else if (attempt === 1) {
-          toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
-        } else {
-          toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
-        }
-
-        // Persist to DB in background (fire and forget) - UI already updated
-        persistSectionAttempt({
+        useAnswerStore.getState().setSectionStatus(slug, tab, section, "correct", attempt)
+        toast.success("Jawaban kamu benar, selamat!")
+        await persistSectionAttempt({
           slug, tab, sectionType: section, attempt,
           answer: fields, feedback: result.feedback, score: result.score,
-          status: result.isCorrect ? "correct" : (attempt === 1 ? "wrong_attempt1" : "wrong_attempt2"),
-        }).catch((e) => {
-          // Silently fail - UI already updated
+          status: "correct",
         })
-
-        // Trigger tab unlock if all sections are complete
         await triggerTabUnlockIfComplete(slug, tab)
-      } catch (e) {
-        if (e instanceof Error) handleAuthError(e)
-        throw e
-      } finally {
-        setIsSubmitting(false)
+      } else if (attempt === 1) {
+        boundSetChecked(true)
+        useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt1", 2)
+        toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
+        await persistSectionAttempt({
+          slug, tab, sectionType: section, attempt,
+          answer: fields, feedback: result.feedback, score: result.score,
+          status: "wrong_attempt1",
+        })
+      } else {
+        boundSetChecked(true)
+        useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt2", 2)
+        toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
+        await persistSectionAttempt({
+          slug, tab, sectionType: section, attempt,
+          answer: fields, feedback: result.feedback, score: result.score,
+          status: "wrong_attempt2",
+        })
+        await triggerTabUnlockIfComplete(slug, tab)
       }
-    }, [attempt, isLocked, isSubmitting, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
+    } catch (e) {
+      if (e instanceof Error) handleAuthError(e)
+      throw e
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [attempt, isLocked, isSubmitting, slug, tab, section, items, fields, boundSetChecked, boundSetAIFeedback, setErrors_])
 
   return {
     items,
