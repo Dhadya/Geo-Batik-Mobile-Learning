@@ -30,7 +30,7 @@ export default function PrasyaratPage() {
       <div className="w-full max-w-5xl mx-auto">
         <VideoEmbed
           label="Video Penjelasan"
-          src="https://www.youtube.com/embed/pcoG-VM2sq4"
+          src="https://www.youtube.com/embed/MCvaOl5-0u0?si=tLh-pK_U9uJBMdLd"
           alt="Video, Elemen Dasar Geometri"
         />
       </div>
