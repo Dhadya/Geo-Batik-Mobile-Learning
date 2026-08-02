@@ -78,7 +78,10 @@ export function validateSection(
         const isCorrect = allExpected.some((expected) => {
           const expLower = expected.toLowerCase().trim()
           if (userLower === expLower) return true
-          if (userLower.includes(expLower) || expLower.includes(userLower)) return true
+          if (userLower.includes(expLower)) return true
+          // Only allow expected-contains-user when the user answer is substantial (>= 50% of expected length)
+          // to prevent partial fragments like ", y" matching "(2h - x, y)".
+          if (expLower.includes(userLower) && userLower.length >= expLower.length * 0.5) return true
           // Keyword matching: split expected into meaningful clauses, check user answer covers most keywords
           const clauses = expLower.split(/[,.;:!?]+/).map((c) => c.trim()).filter((c) => c.length > 3)
           if (clauses.length === 0) return false

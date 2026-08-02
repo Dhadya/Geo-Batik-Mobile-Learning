@@ -26,11 +26,12 @@ export async function saveSectionAttempt(
   });
 
   if (existing?.status === "correct" || existing?.status === "wrong_attempt2") {
+    console.log("[section.save] SECTION_ALREADY_COMPLETED", { userId, module, tab: input.tab, sectionType: input.sectionType, status: existing.status, attempt: input.attempt })
     throw appError("SECTION_ALREADY_COMPLETED");
   }
 
   if (input.attempt === 2 && !existing) {
-    throw appError("SECTION_NOT_FOUND");
+    console.warn("[section.save] attempt 2 without attempt 1 row — creating new row", { userId, module, tab: input.tab, sectionType: input.sectionType })
   }
 
   const attemptField = input.attempt === 1 ? "attempt1" : "attempt2";

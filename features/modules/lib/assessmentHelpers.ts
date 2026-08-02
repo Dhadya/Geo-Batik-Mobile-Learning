@@ -42,6 +42,8 @@ export function toSectionItems(qs: AssessmentQuestion[]): PilihanGandaItem[] {
     questionImage: q.questionImage,
     questionMatrix: q.questionMatrix,
     questionSuffix: q.questionSuffix,
+    hint: q.hint,
+    explanation: q.explanation,
   }))
 }
 

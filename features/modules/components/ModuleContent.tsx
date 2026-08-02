@@ -69,6 +69,8 @@ export function ModuleContent({
         questionImage: i.questionImage,
         questionMatrix: i.questionMatrix,
         questionSuffix: i.questionSuffix,
+        hint: i.hint,
+        explanation: i.explanation,
       }))
 
   // Fallback to legacy assessment prop if no sections defined
@@ -155,14 +157,15 @@ export function ModuleContent({
     (s) => s.answers[`${slug}-${decodedTab}`],
   )
   const activeSections = getSectionsForTab(slug, decodedTab)
-  const completedCount = activeSections.filter((sec) => {
+  const incompleteSections = activeSections.filter((sec) => {
     if (sec === "cekPemahaman") {
       const cpStatus = tabAnswers?.cekPemahaman?.status
-      return cpStatus === "correct" || cpStatus === "wrong_attempt2"
+      return cpStatus !== "correct" && cpStatus !== "wrong_attempt2"
     }
     const s = tabAnswers?.[sec as "percobaan"]
-    return s?.status === "correct" || s?.status === "wrong_attempt2"
-  }).length
+    return s?.status !== "correct" && s?.status !== "wrong_attempt2"
+  })
+  const completedCount = activeSections.length - incompleteSections.length
 
   // Check if this tab is locked for preview-only mode
   const tabProgressList = useTabProgressStore((s) => s.progress[slug])
@@ -172,11 +175,13 @@ export function ModuleContent({
     ? !thisTabProgress.unlocked
     : tabIndex > 0
 
-  // Compute backHref: navigate to latest unlocked tab
-  const latestUnlockedTab = tabProgressList
-    ? [...tabProgressList].reverse().find((p) => p.unlocked)
-    : null
-  const backHref = `/modul/${slug}/${latestUnlockedTab?.tab ?? tabs[0].value}`
+  // Compute backHref: navigate to the last unlocked tab in tab order (rows from the
+  // server are unordered, so scan the canonical tabs array instead of reversing the list)
+  const backIndex = tabs.reduce((last, t, i) => {
+    const p = tabProgressList?.find((x) => x.tab === t.value)
+    return p?.unlocked ? i : last
+  }, 0)
+  const backHref = `/modul/${slug}/${tabs[backIndex].value}`
 
   return (
     <div className="space-y-3 md:space-y-6">
@@ -205,7 +210,7 @@ export function ModuleContent({
         {isTabLocked && (
           <LockOverlay
             title="Tab Belum Terbuka"
-            description={`Selesaikan tab ${tabs[tabIndex - 1]?.label ?? "sebelumnya"} terlebih dahulu untuk mulai mengerjakan bagian ini.`}
+            description={`Tab ini terkunci. Selesaikan seluruh bagian pada tab ${tabs[tabIndex - 1]?.label ?? "sebelumnya"} terlebih dahulu, sampai benar atau setelah 2 kali percobaan, untuk membuka tab ini.`}
             fullScreen
             backHref={backHref}
           />
@@ -231,7 +236,7 @@ export function ModuleContent({
 
       {/* Penyimpulan: shown on mobile below observation panel, hidden on lg+ (rendered inside left col) */}
       {!(slug === "refleksi" && decodedTab === "bangun") && (
-        <div className="lg:hidden">
+        <div className="mt-4 md:mt-6 lg:hidden">
           <ConclusionArea slug={slug} tab={decodedTab} />
         </div>
       )}
@@ -259,8 +264,7 @@ export function ModuleContent({
           slug={slug}
           tab={decodedTab}
           tabs={tabs}
-          completedCount={completedCount}
-          activeSections={activeSections}
+          incompleteSections={incompleteSections}
         />
       </div>
 

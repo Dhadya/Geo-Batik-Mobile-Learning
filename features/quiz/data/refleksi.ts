@@ -263,6 +263,5 @@ export const refleksiQuestions: PilihanGandaQuestion[] = [
 export const refleksiModule: QuizModule = {
   slug: "refleksi",
   title: "KUIS REFLEKSI",
-  badge: "Refleksi",
   questions: refleksiQuestions,
 }

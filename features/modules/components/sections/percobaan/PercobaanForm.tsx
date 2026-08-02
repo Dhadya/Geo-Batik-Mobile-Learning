@@ -112,7 +112,6 @@ export function PercobaanForm({ slug, tab }: PercobaanFormProps) {
         <PercobaanTranslasiTable
           items={tableItems}
           fields={fields}
-          errors={errors}
           fieldColors={fieldColors}
           setField={setField}
           showPointLetters={tab === "bangun"}
