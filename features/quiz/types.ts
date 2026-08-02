@@ -20,7 +20,6 @@ export interface PilihanGandaQuestion {
 export interface QuizModule {
   slug: string
   title: string
-  badge: string
   questions: PilihanGandaQuestion[]
 }
 

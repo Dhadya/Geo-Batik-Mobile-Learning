@@ -280,6 +280,5 @@ export const translasiQuestions: PilihanGandaQuestion[] = [
 export const translasiModule: QuizModule = {
   slug: "translasi",
   title: "KUIS TRANSLASI",
-  badge: "Translasi",
   questions: translasiQuestions,
 }

@@ -65,7 +65,7 @@ export default async function KuisIntroPage(props: {
 
       <QuizBreadcrumb slug={slug} label={label} />
 
-      <QuizHeader title={quiz.title} badge={quiz.badge} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />} />
+      <QuizHeader title={quiz.title} bgColor={MODULE_BG[slug] ?? "bg-primary"} icon={<MaterialIcon name={MODULE_ICONS[slug] ?? "quiz"} className="text-2xl md:text-3xl" />} />
 
       <section className="border-4 border-black bg-white shadow-[4px_4px_0_0_black] p-6 md:p-8 space-y-4">
         <Text as="h2" className="text-lg md:text-xl font-black uppercase">
@@ -85,7 +85,7 @@ export default async function KuisIntroPage(props: {
             Hasil dan pembahasan akan ditampilkan setelah semua jawaban dikirim.
           </li>
           <li>
-            Hanya <span className="font-bold">percobaan pertama</span> yang dihitung sebagai nilai final — percobaan berikutnya untuk latihan.
+            Hanya <span className="font-bold">percobaan pertama</span> yang dihitung sebagai nilai final, percobaan berikutnya untuk latihan.
           </li>
         </ul>
       </section>

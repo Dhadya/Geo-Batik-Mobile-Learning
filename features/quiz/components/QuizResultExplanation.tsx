@@ -12,6 +12,16 @@ import type { PilihanGandaQuestion, QuizAnswers } from "../types"
 
 const LABELS = ["A", "B", "C", "D", "E", "F"]
 
+/**
+ * Break numbered steps in pembahasan text onto their own lines.
+ * Matches a step opener " 1) <letter>" — a number, closing paren, space, then a
+ * letter — and rejects steps preceded by "," or "(" so coordinates like
+ * "(-3, 4)" or "T(5, -2)" are left untouched.
+ */
+function formatPembahasan(text: string): string {
+  return text.replace(/(?<![,(])\s(\d+)\)\s(?=[A-Za-z])/g, "\n$1) ")
+}
+
 export function QuizResultExplanation({
   questions,
   answers,
@@ -108,10 +118,11 @@ export function QuizResultExplanation({
                     <div className="border-t-2 border-black pt-3">
                       <Text as="p" className="font-medium text-base whitespace-pre-wrap">
                         <span className="font-bold">Pembahasan: </span>
-                        {aiFeedback?.[q.id]
-                          ? aiFeedback[q.id]
-                          : `${q.explanation}\n\nJawaban benar: ${q.options[q.correctIndex]}`
-                        }
+                        {formatPembahasan(
+                          aiFeedback?.[q.id]
+                            ? aiFeedback[q.id]
+                            : `${q.explanation}\n\nJawaban benar: ${q.options[q.correctIndex]}`,
+                        )}
                       </Text>
                     </div>
                   )}

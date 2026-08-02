@@ -36,7 +36,7 @@ export async function persistSectionAttempt(data: {
       const json = await response.json().catch(() => null)
       const code = json?.error?.code
       if (response.status === 409 || code === "SECTION_ALREADY_COMPLETED") return
-      console.error("[persistSectionAttempt] failed", { status: response.status, code })
+      console.error("[persistSectionAttempt] failed", { status: response.status, code, slug: data.slug, tab: data.tab, sectionType: data.sectionType, attempt: data.attempt })
       toast.error("Gagal menyimpan jawaban")
     }
   } catch (e) {

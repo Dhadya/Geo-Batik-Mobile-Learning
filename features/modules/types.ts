@@ -35,6 +35,8 @@ export interface AssessmentQuestion {
   questionImage?: string
   questionMatrix?: string
   questionSuffix?: string
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ============================================================
@@ -104,6 +106,8 @@ export interface MatriksItem extends BaseItem {
   label: string
   targetBayangan: string
   answer: { a: number; b: number }
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ── Koordinat (horizontal coordinate input: x/y side by side) ─
@@ -114,6 +118,8 @@ export interface KoordinatItem extends BaseItem {
   label: string
   bayangan?: string
   answer: { x: number; y: number }
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ── Uraian (free-text essay answer) ────────────────────────
@@ -124,6 +130,8 @@ export interface UraianItem extends BaseItem {
   question: string
   answer: string
   acceptAnswers?: string[]
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ── Memasangkan (drag-and-drop matching) ───────────────────
@@ -135,6 +143,8 @@ export interface MemasangkanItem extends BaseItem {
   leftItems: MatchItem[]
   rightItems: MatchItem[]
   correctMatches: Record<string, string>
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 /** A matchable item with an id and display label. */
@@ -158,6 +168,8 @@ export interface PilihanGandaItem extends BaseItem {
   questionImage?: string
   questionMatrix?: string
   questionSuffix?: string
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ── Urutkan (drag-and-drop sorting) ────────────────────────
@@ -167,6 +179,8 @@ export interface UrutkanItem extends BaseItem {
   type: "urutkan"
   question: string
   items: string[]
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ── Pilihan Refleksi (radio select reflection type) ─────────
@@ -177,6 +191,8 @@ export interface PilihanRefleksiItem extends BaseItem {
   question: string
   options: string[]
   correctAnswers: Record<string, { x: number; y: number }[]>
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ── Checklist Table (Ya/Tidak checkboxes) ───────────────────
@@ -187,6 +203,8 @@ export interface ChecklistTableItem extends BaseItem {
   question: string
   statements: string[]
   correctAnswers: boolean[] // true = Ya, false = Tidak
+  hint?: string // attempt 1 — concept pointer, never reveals the answer
+  explanation?: string // attempt 2 — full correct solution
 }
 
 // ============================================================

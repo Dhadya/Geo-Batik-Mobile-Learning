@@ -9,6 +9,7 @@ import {
   AccordionContent,
 } from "@/components/retroui/Accordion"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
+import { AxisIcon } from "./AxisIcon"
 import { toggles, accordionGroups, accordionItemLabels } from "../toggles"
 import { prerequisiteConcepts } from "../data"
 import { ConceptSheet } from "./ConceptSheet"
@@ -18,6 +19,12 @@ import type { PrerequisiteConcept } from "../data"
 interface ControlPanelProps {
   activeToggles: Record<string, boolean>
   onToggle: (toggle: GeoGebraToggle) => void
+}
+
+function PanelIcon({ icon, className }: { icon: string; className?: string }) {
+  if (icon === "axis_horizontal") return <AxisIcon axis="horizontal" className={className} />
+  if (icon === "axis_vertical") return <AxisIcon axis="vertical" className={className} />
+  return <MaterialIcon name={icon} className={className} />
 }
 
 /** Control panel with toggles and accordion groups for GeoGebra canvas. */
@@ -68,7 +75,7 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
         {accordionGroups.map(group => (
           <AccordionItem key={group.label} value={group.label}>
             <AccordionTrigger value={group.label}>
-              <MaterialIcon name={group.icon} className="text-sm md:text-base" />
+              <PanelIcon icon={group.icon} className="text-sm md:text-base" />
               <span className="flex-1 text-left">{group.label}</span>
             </AccordionTrigger>
             <AccordionContent>
@@ -115,7 +122,7 @@ function ToggleButton({ toggle, isActive, onToggle }: {
       size="sm"
       className="border-2 border-black font-bold text-xs md:text-sm shadow-sm hover:shadow justify-start px-2 md:px-2.5"
     >
-      <MaterialIcon name={toggle.icon} className="text-sm md:text-base" />
+      <PanelIcon icon={toggle.icon} className="text-sm md:text-base" />
       <span>{toggle.label}</span>
     </Toggle>
   )

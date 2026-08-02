@@ -14,7 +14,6 @@ import type { QuizAnswers } from "../types"
 export function QuizResult({
   slug,
   title,
-  badge,
   icon,
   bgColor,
   serverScore,
@@ -24,7 +23,6 @@ export function QuizResult({
 }: {
   slug: string
   title: string
-  badge: string
   icon?: ReactNode
   bgColor?: string
   serverScore?: number | null
@@ -40,8 +38,31 @@ export function QuizResult({
   const answers = Object.keys(submittedAnswers).length > 0 ? submittedAnswers : serverAnswers
   const hasAnswers = answers != null && Object.keys(answers).length > 0
 
+  // Resolve which package (0 or 1) the student actually answered — the answers'
+  // question ids only match one slice, so a mismatched package would show
+  // "Tidak dijawab" for every question.
+  const packageIndex = (() => {
+    if (!quiz || !hasAnswers) return 0
+    const keySet = new Set(Object.keys(answers ?? {}).map(Number))
+    let best = 0
+    let bestMatch = -1
+    for (let p = 0; p * PACKAGE_SIZE < quiz.questions.length; p++) {
+      const slice = quiz.questions.slice(p * PACKAGE_SIZE, p * PACKAGE_SIZE + PACKAGE_SIZE)
+      const match = slice.filter((q) => keySet.has(q.id)).length
+      if (match > bestMatch) {
+        bestMatch = match
+        best = p
+      }
+    }
+    return best
+  })()
+  const packageQuestions = quiz?.questions.slice(
+    packageIndex * PACKAGE_SIZE,
+    packageIndex * PACKAGE_SIZE + PACKAGE_SIZE,
+  ) ?? []
+
   const { data: aiFeedback } = useQuizPembahasan(
-    quiz?.questions ?? [],
+    packageQuestions,
     answers ?? {},
     hasAnswers,
   )
@@ -57,7 +78,7 @@ export function QuizResult({
   const correctCount = (() => {
     if (hasAnswers) {
       // Use actual answers (live submitted or server stored) to calculate correct count
-      return quiz.questions.slice(0, PACKAGE_SIZE).filter((q) => answers![q.id] === q.correctIndex).length
+      return packageQuestions.filter((q) => answers![q.id] === q.correctIndex).length
     }
     if (serverScore != null) {
       // Fallback: derive from server score when no answers available
@@ -95,12 +116,12 @@ export function QuizResult({
 
   return (
     <div className="space-y-4 md:space-y-6">
-      <QuizHeader title={title} badge={badge} icon={icon} bgColor={bgColor} description={description} />
+      <QuizHeader title={title} icon={icon} bgColor={bgColor} description={description} />
 
       <QuizResultScore score={displayScore} attemptLabel={attemptLabel} />
 
       {hasAnswers && (
-        <QuizResultExplanation questions={quiz.questions.slice(0, PACKAGE_SIZE)} answers={answers!} aiFeedback={aiFeedback} />
+        <QuizResultExplanation questions={packageQuestions} answers={answers!} aiFeedback={aiFeedback} />
       )}
       <QuizResultActions slug={slug} />
     </div>

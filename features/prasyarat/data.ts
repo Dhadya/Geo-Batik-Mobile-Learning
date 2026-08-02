@@ -48,12 +48,12 @@ export const prerequisiteConcepts: PrerequisiteConcept[] = [
     title: "Sumbu x",
     description:
       "Sumbu x adalah garis bilangan real horizontal pada bidang Kartesius. Nilai pada sumbu x disebut absis.",
-    icon: "east",
+    icon: "axis_horizontal",
   },
   {
     title: "Sumbu y",
     description:
       "Sumbu y adalah garis bilangan real vertikal pada bidang Kartesius. Nilai pada sumbu y disebut ordinat.",
-    icon: "north",
+    icon: "axis_vertical",
   },
 ]
