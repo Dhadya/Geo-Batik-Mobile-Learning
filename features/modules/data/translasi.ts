@@ -387,7 +387,7 @@ export const translasiTabs: ModuleTab[] = [
         percobaan: {
           instruction:
             "Diberikan persamaan garis k : -x + 2y = 4. Garis k akan ditranslasikan sejauh",
-          instructionMatrix: "4,-2",
+          instructionMatrix: "6,-2",
           instructionSuffix: ". Ikuti langkah-langkah berikut untuk menentukan bayangan garis k:",
           garisTranslasiTable: {
             sourceItemIds: [1, 2],
@@ -476,10 +476,10 @@ export const translasiTabs: ModuleTab[] = [
               questionSuffix:
                 ", apakah titik potong sumbu x dan titik potong sumbu y berubah?",
               options: ["Ya", "Tidak"],
-              correctIndex: 1,
-              hint: "Tentukan titik potong garis terhadap sumbu x dan sumbu y sebelum translasi, lalu tentukan titik potongnya setelah ditranslasikan. Bandingkan kedua titik tersebut.",
+              correctIndex: 0,
+              hint: "Tentukan titik potong garis terhadap sumbu x dan sumbu y sebelum translasi, lalu translasikan kedua titik tersebut sejauh (4, 1). Bandingkan hasilnya.",
               explanation:
-                "Titik potong sumbu x garis -x + 2y = 4 adalah (-4, 0) dan titik potong sumbu y adalah (0, 2). Setelah ditranslasikan sejauh (4, 1), kedua titik berpindah menjadi (0, 1) dan (4, 3). Namun, perhatikan bahwa pertanyaan ini menguji pemahamanmu tentang konsep translasi garis secara menyeluruh.",
+                "Titik potong sumbu x garis -x + 2y = 4 adalah (-4, 0) dan titik potong sumbu y adalah (0, 2). Setelah ditranslasikan sejauh (4, 1), kedua titik berpindah menjadi (0, 1) dan (4, 3). Translasi menggeser setiap titik pada garis, termasuk titik potong sumbu x dan sumbu y.",
             },
             {
               id: 10,
