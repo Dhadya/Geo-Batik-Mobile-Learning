@@ -86,10 +86,12 @@ export function validateSection(
           errors[`${item.id}_text`] = "Jawaban belum diisi"
           break
         }
-        const userLower = userAns.toLowerCase().trim()
+        /** Normalize whitespace: trim and collapse spaces around commas/parentheses. */
+        const normalize = (s: string) => s.toLowerCase().replace(/\s*,\s*/g, ",").replace(/\s*\(\s*/g, "(").replace(/\s*\)\s*/g, ")").trim()
+        const userLower = normalize(userAns)
         const allExpected = [u.answer, ...(u.acceptAnswers ?? [])]
         const isCorrect = allExpected.some((expected) => {
-          const expLower = expected.toLowerCase().trim()
+          const expLower = normalize(expected)
           if (userLower === expLower) return true
           if (userLower.includes(expLower)) return true
           // Only allow expected-contains-user when the user answer is substantial (>= 50% of expected length)

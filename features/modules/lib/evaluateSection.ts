@@ -1,5 +1,4 @@
 import { handleAuthError } from "@/lib/api/auth-error"
-import { toast } from "sonner"
 import { validateSection } from "./validation"
 import type { FieldColor } from "./validation"
 import { buildDeterministicFeedback, feedbackForCorrect, localScore } from "./feedback"
