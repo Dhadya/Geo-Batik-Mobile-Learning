@@ -59,7 +59,6 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const [isSubmitting, setIsSubmitting] = useState(false)
 
       const submitMutation = useSubmitSection(slug)
-      const cekPemahamanFieldColors = useMemo(() => rawTab?.cekPemahaman?.fieldColors ?? {}, [rawTab])
 
       const allAnswered = useMemo(
         () =>
