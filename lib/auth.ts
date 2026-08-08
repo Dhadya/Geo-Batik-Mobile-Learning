@@ -4,21 +4,56 @@ import { nextCookies } from "better-auth/next-js";
 import { getDb } from "@/lib/db";
 import { user, session, account, verification } from "@/drizzle/schema";
 
-function getAuthBaseURL() {
-  const configuredURL = process.env.BETTER_AUTH_URL;
+const isLocalURL = (url: string) =>
+  url.includes("localhost") || url.includes("127.0.0.1");
 
-  if (configuredURL) {
+/**
+ * Resolves the absolute base URL used to build OAuth redirect URIs.
+ * Priority: explicit BETTER_AUTH_URL (when not a loopback address) → Vercel
+ * production URL → Vercel deployment URL → localhost fallback for dev.
+ */
+function getAuthBaseURL() {
+  const configuredURL = process.env.BETTER_AUTH_URL?.trim();
+
+  if (configuredURL && !isLocalURL(configuredURL)) {
     return configuredURL;
   }
 
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
+  if (process.env.VERCEL === "1") {
+    const productionURL = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    if (productionURL) {
+      return `https://${productionURL}`;
+    }
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}`;
+    }
+  }
+
+  if (configuredURL) {
+    return configuredURL;
   }
 
   return "http://localhost:3000";
 }
 
 const authBaseURL = getAuthBaseURL();
+
+if (process.env.VERCEL === "1") {
+  console.info(
+    "[auth] baseURL resolved to:",
+    authBaseURL,
+    "| BETTER_AUTH_URL:",
+    process.env.BETTER_AUTH_URL ?? "(not set)",
+    "| VERCEL_PROJECT_PRODUCTION_URL:",
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ?? "(not set)",
+  );
+  if (isLocalURL(authBaseURL)) {
+    console.warn(
+      "[auth] baseURL is localhost on Vercel — Google OAuth redirect_uri will be http://localhost:3000 and fail. " +
+        "Fix the BETTER_AUTH_URL value in the Production environment of your Vercel project."
+    );
+  }
+}
 const trustedOrigins = Array.from(
   new Set(
     [
