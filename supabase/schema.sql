@@ -180,3 +180,22 @@ CREATE POLICY "Users manage own quiz results"
   ON quiz_results FOR ALL
   USING (user_id = auth.uid()::text)
   WITH CHECK (user_id = auth.uid()::text);
+
+-- ============================================================================
+-- 5. AI FEEDBACK CACHE — shared deduplicated AI evaluation results
+-- ============================================================================
+CREATE TABLE ai_feedback_cache (
+  id          SERIAL PRIMARY KEY,
+  cache_key   TEXT NOT NULL UNIQUE,
+  result      JSONB NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+COMMENT ON TABLE ai_feedback_cache IS $$Deduplicated AI evaluation results$$;
+
+ALTER TABLE ai_feedback_cache ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access to ai_feedback_cache"
+  ON ai_feedback_cache FOR SELECT
+  USING (true);
+

@@ -7,6 +7,7 @@ import {
   timestamp,
   uniqueIndex,
   index,
+  serial,
 } from "drizzle-orm/pg-core"
 
 // ─── BetterAuth Tables ───────────────────────────────────────────────────
@@ -151,3 +152,12 @@ export const quizResults = pgTable(
     index("idx_quiz_results_module").on(table.module),
   ],
 )
+
+// AI Feedback Cache
+export const aiFeedbackCache = pgTable("ai_feedback_cache", {
+  id: serial("id").primaryKey(),
+  cacheKey: text("cache_key").notNull().unique(),
+  result: jsonb("result").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+

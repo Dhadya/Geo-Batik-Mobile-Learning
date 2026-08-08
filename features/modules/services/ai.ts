@@ -9,6 +9,7 @@ import { appError } from "@/lib/api/errors";
 import { validateSection, type ValidationResult } from "../lib/validation";
 import { buildDeterministicFeedback, feedbackForCorrect, localScore, mergeFeedback } from "../lib/feedback";
 import type { SectionItem } from "@/features/modules/types";
+import { getCachedEvaluation, setCachedEvaluation, cacheKeyFor } from "./aiCache";
 import {
   pickKeyIndex,
   markKeyUsed,
@@ -434,6 +435,13 @@ export async function evaluateSection(
     return localToOutput(input, local);
   }
 
+  const cacheKey = cacheKeyFor(input);
+  const cached = await getCachedEvaluation(cacheKey);
+  if (cached) {
+    console.log(`[ai.evaluate] ${input.module}/${input.tab}/${input.sectionType} attempt=${input.attempt} cache hit`);
+    return cached;
+  }
+
   const deterministicFeedback = buildDeterministicFeedback(input, local);
 
   // Penyimpulan: Gemini is the higher authority for uraian answers — always
@@ -538,7 +546,9 @@ export async function evaluateSection(
   );
   const finalCorrect = parsed.isCorrect === true && deterministicAllCorrect;
   if (finalCorrect) {
-    return { isCorrect: true, score: 100, feedback: parsed.feedback, errors: {} };
+    const finalResult = { isCorrect: true, score: 100, feedback: parsed.feedback, errors: {} };
+    await setCachedEvaluation(cacheKey, finalResult);
+    return finalResult;
   }
 
   parsed.isCorrect = false;
@@ -556,6 +566,8 @@ export async function evaluateSection(
     `items=${input.items.length}`,
     `feedback=${parsed.feedback?.slice(0, 60)}...`,
   );
+  
+  await setCachedEvaluation(cacheKey, parsed);
   return parsed;
 }
 
