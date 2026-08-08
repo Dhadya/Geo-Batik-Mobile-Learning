@@ -16,9 +16,10 @@ import {
   cooldownKey,
   acquireSlot,
   releaseSlot,
+  getQuotaStatus,
 } from "@/lib/rate-limit/coordinator";
 
-const GENERATION_TIMEOUT_MS = 4000;
+const GENERATION_TIMEOUT_MS = 12000;
 const RETRY_BASE_DELAY_MS = 250;
 
 /** Collect all available Gemini API keys from env vars (GEMINI_API_KEY_1..N, fallback to GEMINI_API_KEY comma-separated). */
@@ -501,10 +502,10 @@ export async function evaluateSection(
       systemInstruction: SECTION_SYSTEM_INSTRUCTION,
       generationConfig: buildSectionGenerationConfig(input.attempt),
     });
+    await acquireSlot();
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("Gemini API timed out")), GENERATION_TIMEOUT_MS),
     );
-    await acquireSlot();
     try {
       return await Promise.race([model.generateContent(prompt), timeoutPromise]);
     } finally {
@@ -661,10 +662,10 @@ export async function generatePembahasan(
       systemInstruction: PEMBAHASAN_SYSTEM_INSTRUCTION,
       generationConfig: buildPembahasanGenerationConfig(),
     });
+    await acquireSlot();
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("AI timed out")), PEMBAHASAN_TIMEOUT_MS),
     );
-    await acquireSlot();
     try {
       return await Promise.race([model.generateContent(prompt), timeoutPromise]);
     } finally {
@@ -689,4 +690,9 @@ export async function generatePembahasan(
     console.warn("[ai] generatePembahasan failed, falling back to static explanations:", msg);
     return buildStaticPembahasan(questions, answers);
   }
+}
+
+/** Get live status metrics for AI scaling and quota tracking. */
+export async function getAiStatus() {
+  return getQuotaStatus(apiKeys.length);
 }

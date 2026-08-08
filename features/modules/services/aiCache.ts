@@ -10,12 +10,16 @@ export function cacheKeyFor(input: EvaluateSectionInput): string {
 }
 
 export async function getCachedEvaluation(key: string): Promise<EvaluateSectionOutput | null> {
-  const db = getDb()
-  const cached = await db.query.aiFeedbackCache.findFirst({
-    where: eq(aiFeedbackCache.cacheKey, key),
-  })
-  if (cached && cached.result) {
-    return cached.result as unknown as EvaluateSectionOutput
+  try {
+    const db = getDb()
+    const cached = await db.query.aiFeedbackCache.findFirst({
+      where: eq(aiFeedbackCache.cacheKey, key),
+    })
+    if (cached && cached.result) {
+      return cached.result as unknown as EvaluateSectionOutput
+    }
+  } catch (e) {
+    console.warn("[aiCache] Error reading cache (table may not exist yet):", e instanceof Error ? e.message : e)
   }
   return null
 }

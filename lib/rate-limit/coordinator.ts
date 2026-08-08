@@ -50,6 +50,39 @@ function rpmKey(index: number): string {
   return `gemini:rpm:${index}:${minuteBucket()}`;
 }
 
+function dateBucket(): string {
+  const now = new Date();
+  const yyyy = now.getUTCFullYear();
+  const mm = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(now.getUTCDate()).padStart(2, "0");
+  return `${yyyy}${mm}${dd}`;
+}
+
+function rpdKey(index: number): string {
+  return `gemini:rpd:${index}:${dateBucket()}`;
+}
+
+/**
+ * Tracks daily RPD usage for a key and emits a warning at 80% quota (800 requests).
+ */
+export async function trackDailyQuota(index: number): Promise<void> {
+  const redis = getRedis();
+  if (!redis) return;
+  try {
+    const key = rpdKey(index);
+    const count = await redis.incr(key);
+    if (count === 1) {
+      await redis.expire(key, 172_800); // 48h TTL
+    }
+    const RPD_WARN_THRESHOLD = 800; // 80% of 1000 free-tier limit
+    if (count >= RPD_WARN_THRESHOLD) {
+      console.warn(`[coordinator] Key ${index + 1} daily RPD reached ${count}/1000 (>= 80% quota)`);
+    }
+  } catch (err) {
+    console.warn("[coordinator] trackDailyQuota Redis error:", err);
+  }
+}
+
 /**
  * Picks the API key index with the lowest RPM usage in the current window,
  * skipping any keys that are cooling down after a 429.
@@ -125,6 +158,7 @@ export async function markKeyUsed(index: number): Promise<void> {
     const key = rpmKey(index);
     await redis.incr(key);
     await redis.expire(key, 120);
+    await trackDailyQuota(index);
   } catch (err) {
     console.warn("[coordinator] markKeyUsed Redis error:", err);
   }
@@ -187,5 +221,68 @@ export async function releaseSlot(): Promise<void> {
     await redis.decr(SEMAPHORE_KEY);
   } catch (err) {
     console.warn("[coordinator] releaseSlot Redis error:", err);
+  }
+}
+
+export interface KeyStatusInfo {
+  index: number;
+  rpm: number;
+  rpd: number;
+  isCoolingDown: boolean;
+}
+
+export interface CoordinatorStatusResponse {
+  redisConfigured: boolean;
+  maxInflight: number;
+  currentInflight: number;
+  keys: KeyStatusInfo[];
+}
+
+/**
+ * Returns current usage statistics across all configured Gemini keys.
+ */
+export async function getQuotaStatus(keyCount: number): Promise<CoordinatorStatusResponse> {
+  const redis = getRedis();
+  if (!redis) {
+    return {
+      redisConfigured: false,
+      maxInflight: MAX_INFLIGHT,
+      currentInflight: 0,
+      keys: Array.from({ length: keyCount }, (_, i) => ({
+        index: i,
+        rpm: 0,
+        rpd: 0,
+        isCoolingDown: false,
+      })),
+    };
+  }
+
+  try {
+    const [inflight, rpms, rpds, cooldowns] = await Promise.all([
+      redis.get<number>(SEMAPHORE_KEY),
+      Promise.all(Array.from({ length: keyCount }, (_, i) => redis.get<number>(rpmKey(i)))),
+      Promise.all(Array.from({ length: keyCount }, (_, i) => redis.get<number>(rpdKey(i)))),
+      Promise.all(Array.from({ length: keyCount }, (_, i) => redis.get<string>(`gemini:cooldown:${i}`))),
+    ]);
+
+    return {
+      redisConfigured: true,
+      maxInflight: MAX_INFLIGHT,
+      currentInflight: Math.max(0, inflight ?? 0),
+      keys: Array.from({ length: keyCount }, (_, i) => ({
+        index: i,
+        rpm: rpms[i] ?? 0,
+        rpd: rpds[i] ?? 0,
+        isCoolingDown: cooldowns[i] !== null,
+      })),
+    };
+  } catch (err) {
+    console.warn("[coordinator] getQuotaStatus Redis error:", err);
+    return {
+      redisConfigured: false,
+      maxInflight: MAX_INFLIGHT,
+      currentInflight: 0,
+      keys: [],
+    };
   }
 }
