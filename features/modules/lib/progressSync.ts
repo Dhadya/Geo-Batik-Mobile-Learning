@@ -97,11 +97,16 @@ export async function triggerTabUnlockIfComplete(slug: string, tab: string): Pro
       body: JSON.stringify({ completedTab: tab, sections: claims }),
       cache: "no-store",
     })
-    const json = await res.json()
-    if (!json.ok) {
+
+    // Non-JSON bodies (e.g. an HTML error/redirect page) must not crash the sync flow —
+    // treat them as a rejected unlock and roll back the optimistic update.
+    const json = await res.json().catch(() => null)
+
+    if (!json?.ok) {
       console.error("[progressSync] unlock rejected", {
         slug,
         tab,
+        status: res.status,
         code: json?.error?.code,
         message: json?.error?.message,
       })
@@ -113,7 +118,11 @@ export async function triggerTabUnlockIfComplete(slug: string, tab: string): Pro
       store.setProgress(slug, json.data.progress)
     }
   } catch (e) {
-    console.error("[progressSync] unlock failed", { slug, tab, error: e })
+    console.error("[progressSync] unlock failed", {
+      slug,
+      tab,
+      error: e instanceof Error ? e.message : String(e),
+    })
     if (previous) store.setProgress(slug, previous)
   }
 }

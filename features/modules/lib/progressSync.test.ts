@@ -216,6 +216,27 @@ describe("triggerTabUnlockIfComplete", () => {
     expect(console.error).toHaveBeenCalled()
     expect(store.setProgress).not.toHaveBeenCalled()
   })
+
+  it("treats a non-JSON response body as a rejection instead of throwing", async () => {
+    store.getTabAnswers.mockReturnValue(terminalTab())
+    const previous = [
+      { tab: "titik", unlocked: true, completed: false },
+      { tab: "bangun", unlocked: false, completed: false },
+    ]
+    store.getProgress.mockReturnValue(previous)
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => {
+        throw new SyntaxError("Unexpected token '<'")
+      },
+    })
+
+    await expect(triggerTabUnlockIfComplete("translasi", "titik")).resolves.toBeUndefined()
+
+    expect(console.error).toHaveBeenCalled()
+    expect(store.setProgress).toHaveBeenLastCalledWith("translasi", previous)
+  })
 })
 
 describe("syncTabProgress", () => {

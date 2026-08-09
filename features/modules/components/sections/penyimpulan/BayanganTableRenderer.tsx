@@ -39,14 +39,9 @@ export function BayanganTableRenderer({
           Amati percobaanmu.
         </Text>
         {slug === "refleksi" ? (
-          <div className="flex items-center gap-0.5">
-            <Text as="p" className="text-xs md:text-sm font-medium text-black">
-              Jika titik awal (<span className="italic">x, y</span>) direfleksikan terhadap {reflectLabel}
-            </Text>
-            <Text as="p" className="text-xs md:text-sm font-medium text-black">
-              , tentukan titik bayangannya dengan mengisi tabel berikut.
-            </Text>
-          </div>
+          <Text as="p" className="text-xs md:text-sm font-medium text-black leading-relaxed">
+            Jika titik awal (<span className="italic">x, y</span>) direfleksikan terhadap {reflectLabel}, tentukan titik bayangannya dengan mengisi tabel berikut.
+          </Text>
         ) : (
           <p className="text-xs md:text-sm font-medium text-black leading-relaxed">
             Jika titik awal (<span className="italic">x, y</span>) ditranslasikan oleh{" "}

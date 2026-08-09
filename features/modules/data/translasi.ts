@@ -32,7 +32,7 @@ export const translasiTabs: ModuleTab[] = [
       sections: {
         percobaan: {
           instruction:
-            "Lakukan percobaan menggunakan GeoGebra.",
+            "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.",
           items: [
             {
               id: 1,
@@ -211,7 +211,7 @@ export const translasiTabs: ModuleTab[] = [
       sections: {
         percobaan: {
           instruction:
-            "Lakukan percobaan menggunakan GeoGebra.",
+            "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.\nTentukan bayangan dari titik-titik berikut jika ditranslasikan oleh",
           items: [
             {
               id: 1,
@@ -407,7 +407,7 @@ export const translasiTabs: ModuleTab[] = [
       sections: {
         percobaan: {
           instruction:
-            "Lakukan percobaan menggunakan GeoGebra.",
+            "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.\nDiberikan persamaan garis k : -x + 2y = 4. Garis k akan ditranslasikan sejauh",
           instructionMatrix: "6,-2",
           instructionSuffix: ". Ikuti langkah-langkah berikut untuk menentukan bayangan garis k:",
           garisTranslasiTable: {

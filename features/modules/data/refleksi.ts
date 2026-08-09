@@ -16,7 +16,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Lakukan percobaan menggunakan GeoGebra.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.",
           items: [
             {
               id: 1,
@@ -146,7 +146,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Lakukan percobaan menggunakan GeoGebra.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.",
           items: [
             {
               id: 1,
@@ -276,7 +276,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Lakukan percobaan menggunakan GeoGebra.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.",
           items: [
             {
               id: 1,
@@ -406,7 +406,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Lakukan percobaan menggunakan GeoGebra.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.",
           items: [
             {
               id: 1,
@@ -536,7 +536,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Lakukan percobaan menggunakan GeoGebra.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.",
           items: [
             {
               id: 1,
@@ -666,7 +666,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Lakukan percobaan menggunakan GeoGebra.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.",
           refleksiGroups: [
             { garis: "x = 2", itemIds: [1, 2] },
             { garis: "x = -1", itemIds: [3, 4] },
@@ -807,7 +807,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Lakukan percobaan menggunakan GeoGebra.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra untuk mengisi jawaban berikut.",
           refleksiGroups: [
             { garis: "y = 2", itemIds: [1, 2] },
             { garis: "y = -1", itemIds: [3, 4] },
