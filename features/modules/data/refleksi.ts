@@ -16,7 +16,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh sumbu x.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra.",
           items: [
             {
               id: 1,
@@ -42,7 +42,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 4,
@@ -87,7 +87,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 8,
@@ -142,7 +142,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh sumbu y.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra.",
           items: [
             {
               id: 1,
@@ -168,7 +168,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 4,
@@ -213,7 +213,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 8,
@@ -268,7 +268,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh titik (0,0).",
+          instruction: "Lakukan percobaan menggunakan GeoGebra.",
           items: [
             {
               id: 1,
@@ -294,7 +294,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 4,
@@ -339,7 +339,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 8,
@@ -394,7 +394,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh garis x=y.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra.",
           items: [
             {
               id: 1,
@@ -420,7 +420,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 4,
@@ -465,7 +465,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 8,
@@ -520,7 +520,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh garis x=-y.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra.",
           items: [
             {
               id: 1,
@@ -546,7 +546,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 4,
@@ -591,7 +591,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 8,
@@ -646,7 +646,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh garis x=h.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra.",
           refleksiGroups: [
             { garis: "x = 2", itemIds: [1, 2] },
             { garis: "x = -1", itemIds: [3, 4] },
@@ -683,7 +683,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 5,
@@ -728,7 +728,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 8,
@@ -783,7 +783,7 @@ export const refleksiTabs: ModuleTab[] = [
       assessment: [],
       sections: {
         percobaan: {
-          instruction: "Tentukan bayangan dari titik-titik berikut jika direfleksikan oleh garis y=h.",
+          instruction: "Lakukan percobaan menggunakan GeoGebra.",
           refleksiGroups: [
             { garis: "y = 2", itemIds: [1, 2] },
             { garis: "y = -1", itemIds: [3, 4] },
@@ -820,7 +820,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut berdasarkan percobaan tersebut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 5,
@@ -865,7 +865,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 8,
@@ -1003,7 +1003,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Berdasarkan pengamatanmu, tentukan sifat-sifat refleksi bangun dengan checklist pernyataan berikut!",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 6,
@@ -1126,7 +1126,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut berdasarkan percobaan ruas garis tersebut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 5,
@@ -1171,7 +1171,7 @@ export const refleksiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 9,

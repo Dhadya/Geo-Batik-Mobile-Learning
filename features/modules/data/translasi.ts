@@ -32,7 +32,7 @@ export const translasiTabs: ModuleTab[] = [
       sections: {
         percobaan: {
           instruction:
-            "Tentukan nilai translasi agar titik mencapai bayangan yang dituju.",
+            "Lakukan percobaan menggunakan GeoGebra.",
           items: [
             {
               id: 1,
@@ -77,7 +77,7 @@ export const translasiTabs: ModuleTab[] = [
           ],
         },
         pengamatan: {
-          instruction: "Jawab pertanyaan berikut.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 5,
@@ -119,7 +119,7 @@ export const translasiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 7,
@@ -202,7 +202,7 @@ export const translasiTabs: ModuleTab[] = [
       sections: {
         percobaan: {
           instruction:
-            "Tentukan bayangan dari titik-titik berikut jika ditranslasikan oleh",
+            "Lakukan percobaan menggunakan GeoGebra.",
           items: [
             {
               id: 1,
@@ -240,7 +240,7 @@ export const translasiTabs: ModuleTab[] = [
         },
         pengamatan: {
           instruction:
-            "Amati perpindahan bangun datar berikut dan jawab pertanyaan di bawah.",
+            "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 5,
@@ -285,7 +285,7 @@ export const translasiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 9,
@@ -386,7 +386,7 @@ export const translasiTabs: ModuleTab[] = [
       sections: {
         percobaan: {
           instruction:
-            "Diberikan persamaan garis k : -x + 2y = 4. Garis k akan ditranslasikan sejauh",
+            "Lakukan percobaan menggunakan GeoGebra.",
           instructionMatrix: "6,-2",
           instructionSuffix: ". Ikuti langkah-langkah berikut untuk menentukan bayangan garis k:",
           garisTranslasiTable: {
@@ -445,7 +445,7 @@ export const translasiTabs: ModuleTab[] = [
         },
         pengamatan: {
           instruction:
-            "Jawab pertanyaan berikut berdasarkan percobaan garis tersebut.",
+            "Jawab pertanyaan berikut berdasarkan pengamatanmu pada GeoGebra.",
           items: [
             {
               id: 7,
@@ -496,7 +496,7 @@ export const translasiTabs: ModuleTab[] = [
           ],
         },
         penyimpulan: {
-          instruction: "Simpulkan hasil percobaanmu.",
+          instruction: "Jawab pertanyaan berikut berdasarkan pengamatan dan percobaanmu.",
           items: [
             {
               id: 11,
