@@ -24,7 +24,7 @@ export function useQuizResult(slug: string) {
   return useQuery<QuizResultResponse>({
     queryKey: ["quiz-result", slug],
     queryFn: async () => {
-      const response = await fetch(`/api/modul/${slug}/quiz/result`)
+      const response = await fetch(`/api/modul/${slug}/quiz/result`, { cache: "no-store" })
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal memuat hasil kuis")
       return body.data

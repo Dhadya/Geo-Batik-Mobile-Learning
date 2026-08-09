@@ -9,8 +9,18 @@ import { appError } from "@/lib/api/errors";
 import { validateSection, type ValidationResult } from "../lib/validation";
 import { buildDeterministicFeedback, feedbackForCorrect, localScore, mergeFeedback } from "../lib/feedback";
 import type { SectionItem } from "@/features/modules/types";
+import { getCachedEvaluation, setCachedEvaluation, cacheKeyFor } from "./aiCache";
+import { getOrSet } from "@/lib/cache";
+import {
+  pickKeyIndex,
+  markKeyUsed,
+  cooldownKey,
+  acquireSlot,
+  releaseSlot,
+  getQuotaStatus,
+} from "@/lib/rate-limit/coordinator";
 
-const GENERATION_TIMEOUT_MS = 4000;
+const GENERATION_TIMEOUT_MS = 12000;
 const RETRY_BASE_DELAY_MS = 250;
 
 /** Collect all available Gemini API keys from env vars (GEMINI_API_KEY_1..N, fallback to GEMINI_API_KEY comma-separated). */
@@ -29,15 +39,10 @@ function collectApiKeys(): string[] {
 
 const apiKeys = collectApiKeys();
 const MAX_RETRIES = apiKeys.length >= 3 ? 3 : Math.max(1, apiKeys.length);
-let keyIndex = 0;
 
-function getCurrentKey(): string {
-  return apiKeys[keyIndex] ?? "";
-}
-
-function rotateKey(): void {
-  keyIndex = (keyIndex + 1) % apiKeys.length;
-  console.warn(`[ai] rotating to key ${keyIndex + 1}/${apiKeys.length}`);
+/** Returns the API key at the given index, or empty string if index is out of range. */
+function getKeyAt(index: number): string {
+  return apiKeys[index] ?? "";
 }
 
 /** Check if an error is a quota/rate-limit error from Gemini. */
@@ -46,23 +51,62 @@ function isQuotaError(e: unknown): boolean {
   return msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("RATE_LIMIT");
 }
 
-/** Retry a promise-returning function with exponential backoff and key rotation on any error. */
-async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
+/**
+ * Extracts the `retryAfter` seconds from a Gemini 429 error message.
+ * Returns 0 if no value is found (treat as unknown / short wait).
+ */
+function extractRetryAfter(e: unknown): number {
+  const msg = e instanceof Error ? e.message : String(e);
+  // Gemini SDK surfaces: "Retry after X seconds" or "retry_delay: { seconds: X }"
+  const secMatch = msg.match(/retry[\s_-]*(?:after|delay)[\s:,"]*(?:seconds[\s:,"]*)?([0-9]+)/i);
+  if (secMatch) return Number(secMatch[1]);
+  return 0;
+}
+
+/**
+ * Retry a promise-returning function with exponential backoff and 429-aware key rotation.
+ *
+ * @param fn           - Async call to retry, receives the zero-based key index to use.
+ * @param label        - Log label for the call (e.g. module/tab/section).
+ * @param initialIndex - The key index picked before the first attempt.
+ */
+async function withRetry<T>(
+  fn: (keyIdx: number) => Promise<T>,
+  label: string,
+  initialIndex: number,
+): Promise<T> {
   let lastError: unknown;
+  let currentIndex = initialIndex;
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
-      return await fn();
+      return await fn(currentIndex);
     } catch (e) {
       lastError = e;
-      if (attempt < MAX_RETRIES - 1) {
-        const delay = RETRY_BASE_DELAY_MS * Math.pow(2, attempt);
-        const ctx = isQuotaError(e) ? "quota" : "transient";
-        console.warn(`[ai] ${label} ${ctx} error, rotating key and retrying in ${delay}ms (attempt ${attempt + 2}/${MAX_RETRIES})`);
-        rotateKey();
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        continue;
+      if (attempt >= MAX_RETRIES - 1) throw e;
+
+      if (isQuotaError(e)) {
+        const retryAfter = extractRetryAfter(e);
+        if (retryAfter >= 60) {
+          // RPD exhausted — no point retrying within this session.
+          console.warn(`[ai] ${label} RPD exhausted (retryAfter=${retryAfter}s), aborting retries`);
+          throw e;
+        }
+        // RPM/TPM hit — cool down this key and pick a fresh one.
+        const coolSecs = retryAfter > 0 ? retryAfter : 10;
+        await cooldownKey(currentIndex, coolSecs);
+        console.warn(
+          `[ai] ${label} 429 (retryAfter=${coolSecs}s), cooling key ${currentIndex + 1} and picking new key`,
+        );
+      } else {
+        console.warn(`[ai] ${label} transient error on attempt ${attempt + 1}/${MAX_RETRIES}:`, e);
       }
-      throw e;
+
+      // Pick a fresh key (coordinator will skip cooled-down keys).
+      currentIndex = await pickKeyIndex(apiKeys.length);
+      await markKeyUsed(currentIndex);
+
+      const delay = RETRY_BASE_DELAY_MS * Math.pow(2, attempt);
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
   throw lastError;
@@ -101,8 +145,12 @@ function buildSectionGenerationConfig(attempt: 1 | 2): GenerationConfig {
         isCorrect: { type: SchemaType.BOOLEAN },
         score: { type: SchemaType.NUMBER, nullable: true },
         feedback: { type: SchemaType.STRING },
+        errors: {
+          type: SchemaType.OBJECT,
+          properties: {},
+        },
       },
-      required: ["isCorrect", "score", "feedback"],
+      required: ["isCorrect", "score", "feedback", "errors"],
     },
     maxOutputTokens: attempt === 1 ? 800 : 1500,
   };
@@ -389,6 +437,19 @@ export async function evaluateSection(
     return localToOutput(input, local);
   }
 
+  const cacheKey = cacheKeyFor(input);
+  // Hot layer: Redis read-through in front of the DB cache. DB remains the source
+  // of truth; getOrSet degrades to a direct DB read when Redis is unavailable.
+  const cached = await getOrSet(
+    `ai:cache:${cacheKey}`,
+    () => getCachedEvaluation(cacheKey),
+    6 * 3600,
+  );
+  if (cached) {
+    console.log(`[ai.evaluate] ${input.module}/${input.tab}/${input.sectionType} attempt=${input.attempt} cache hit`);
+    return cached;
+  }
+
   const deterministicFeedback = buildDeterministicFeedback(input, local);
 
   // Penyimpulan: Gemini is the higher authority for uraian answers — always
@@ -435,9 +496,12 @@ export async function evaluateSection(
     input.attempt,
   );
 
-  const generate = async () => {
-    rotateKey();
-    const key = getCurrentKey();
+  // Pick the best key before the first attempt; withRetry will re-pick on retries.
+  const initialIndex = await pickKeyIndex(apiKeys.length);
+  await markKeyUsed(initialIndex);
+
+  const generate = async (keyIdx: number) => {
+    const key = getKeyAt(keyIdx);
     const genAI = new GoogleGenerativeAI(key);
     const model = genAI.getGenerativeModel({
       model: "gemini-3.5-flash-lite",
@@ -445,10 +509,15 @@ export async function evaluateSection(
       systemInstruction: SECTION_SYSTEM_INSTRUCTION,
       generationConfig: buildSectionGenerationConfig(input.attempt),
     });
+    await acquireSlot();
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("Gemini API timed out")), GENERATION_TIMEOUT_MS),
     );
-    return await Promise.race([model.generateContent(prompt), timeoutPromise]);
+    try {
+      return await Promise.race([model.generateContent(prompt), timeoutPromise]);
+    } finally {
+      await releaseSlot();
+    }
   };
 
   let result;
@@ -456,6 +525,7 @@ export async function evaluateSection(
     result = await withRetry(
       generate,
       `evaluateSection (${input.module}/${input.tab}/${input.sectionType})`,
+      initialIndex,
     );
   } catch (e) {
     const msg = e instanceof Error ? e.message : "AI evaluation failed";
@@ -484,7 +554,9 @@ export async function evaluateSection(
   );
   const finalCorrect = parsed.isCorrect === true && deterministicAllCorrect;
   if (finalCorrect) {
-    return { isCorrect: true, score: 100, feedback: parsed.feedback, errors: {} };
+    const finalResult = { isCorrect: true, score: 100, feedback: parsed.feedback, errors: {} };
+    await setCachedEvaluation(cacheKey, finalResult);
+    return finalResult;
   }
 
   parsed.isCorrect = false;
@@ -502,6 +574,8 @@ export async function evaluateSection(
     `items=${input.items.length}`,
     `feedback=${parsed.feedback?.slice(0, 60)}...`,
   );
+  
+  await setCachedEvaluation(cacheKey, parsed);
   return parsed;
 }
 
@@ -582,9 +656,12 @@ export async function generatePembahasan(
 
   const prompt = buildPembahasanPrompt(questions, answers);
 
-  const generate = async () => {
-    rotateKey();
-    const key = getCurrentKey();
+  // Pick the best key before the first attempt; withRetry will re-pick on retries.
+  const initialIndex = await pickKeyIndex(apiKeys.length);
+  await markKeyUsed(initialIndex);
+
+  const generate = async (keyIdx: number) => {
+    const key = getKeyAt(keyIdx);
     const genAI = new GoogleGenerativeAI(key);
     const model = genAI.getGenerativeModel({
       model: "gemini-3.5-flash-lite",
@@ -592,14 +669,19 @@ export async function generatePembahasan(
       systemInstruction: PEMBAHASAN_SYSTEM_INSTRUCTION,
       generationConfig: buildPembahasanGenerationConfig(),
     });
+    await acquireSlot();
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error("AI timed out")), PEMBAHASAN_TIMEOUT_MS),
     );
-    return await Promise.race([model.generateContent(prompt), timeoutPromise]);
+    try {
+      return await Promise.race([model.generateContent(prompt), timeoutPromise]);
+    } finally {
+      await releaseSlot();
+    }
   };
 
   try {
-    const result = await withRetry(generate, "generatePembahasan");
+    const result = await withRetry(generate, "generatePembahasan", initialIndex);
     const usage = result.response.usageMetadata;
     console.log(
       `[ai.usage] generatePembahasan prompt=${usage?.promptTokenCount} output=${usage?.candidatesTokenCount} total=${usage?.totalTokenCount}`,
@@ -615,4 +697,9 @@ export async function generatePembahasan(
     console.warn("[ai] generatePembahasan failed, falling back to static explanations:", msg);
     return buildStaticPembahasan(questions, answers);
   }
+}
+
+/** Get live status metrics for AI scaling and quota tracking. */
+export async function getAiStatus() {
+  return getQuotaStatus(apiKeys.length);
 }

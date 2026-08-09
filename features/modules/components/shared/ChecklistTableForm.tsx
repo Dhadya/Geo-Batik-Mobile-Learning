@@ -60,10 +60,10 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
               : ""
             return (
               <tr key={idx} className="text-center">
-                <td className={`py-3 md:py-4 px-2 md:px-3 font-medium text-left border-r-2 border-black border-b-2 ${cellBg}`}>
+                <td className={`py-3 md:py-4 px-2 md:px-3 font-medium text-left border-r-2 border-b-2 border-black ${cellBg}`}>
                   {statement}
                 </td>
-                <td className={`py-3 md:py-4 border-r-2 border-b-2 ${currentValue === "ya" ? cellBg : ""}`}>
+                <td className={`py-3 md:py-4 border-r-2 border-b-2 border-black ${cellBg}`}>
                   <div className="flex items-center justify-center">
                     <Checkbox
                       checked={currentValue === "ya"}
@@ -72,7 +72,7 @@ export function ChecklistTableForm({ slug, tab }: ChecklistTableFormProps) {
                     />
                   </div>
                 </td>
-                <td className={`py-3 md:py-4 border-b-2 border-black ${currentValue === "tidak" ? cellBg : ""}`}>
+                <td className={`py-3 md:py-4 border-b-2 border-black ${cellBg}`}>
                   <div className="flex items-center justify-center">
                     <Checkbox
                       checked={currentValue === "tidak"}

@@ -27,8 +27,8 @@ export function ConceptSheet({ concept, open, onClose }: ConceptSheetProps) {
             <SheetTitle className="text-xl md:text-2xl font-black uppercase">
               {concept.title}
             </SheetTitle>
-            <SheetDescription className="max-w-5xl text-base md:text-lg leading-relaxed whitespace-pre-line text-foreground">
-              {concept.description}
+            <SheetDescription className="max-w-5xl text-base md:text-lg leading-relaxed text-foreground">
+              {concept.sheetDescription}
             </SheetDescription>
           </div>
         </SheetHeader>

@@ -17,7 +17,7 @@ interface InteractiveCanvasProps {
 export function InteractiveCanvas({ materialId, alt = "Interactive canvas" }: InteractiveCanvasProps) {
   const onAppletReady = useCallback((applet: GGBApplet) => {
     try {
-      if (applet.exists("i")) applet.setValue("i", true)
+      if (applet.exists("i")) applet.setValue("i", false)
       if (applet.exists("j")) applet.setValue("j", false)
       if (applet.exists("t")) applet.setValue("t", false)
       if (applet.exists("e")) applet.setValue("e", false)

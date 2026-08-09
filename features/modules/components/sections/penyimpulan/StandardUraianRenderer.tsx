@@ -32,9 +32,33 @@ export function StandardUraianRenderer({
     <div className="flex gap-1.5 md:gap-2">
       <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right -mt-1">•</span>
       <div className="grow space-y-1">
-        <Text as="p" className="text-xs md:text-sm font-medium text-black">
-          {item.question}
-        </Text>
+        {item.questionMatrix ? (
+          <p className="text-xs md:text-sm font-medium text-black leading-relaxed">
+            {item.question}{" "}
+            {(() => {
+              const [top, bottom] = item.questionMatrix!.split(",")
+              return (
+                <span className="inline-flex items-center gap-0.5 mx-0.5 align-middle">
+                  <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">
+                    (
+                  </span>
+                  <span className="flex flex-col items-center gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
+                    <span className="text-center leading-none select-none">{top}</span>
+                    <span className="text-center leading-none select-none">{bottom}</span>
+                  </span>
+                  <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">
+                    )
+                  </span>
+                </span>
+              )
+            })()}
+            {item.questionSuffix && ` ${item.questionSuffix}`}
+          </p>
+        ) : (
+          <Text as="p" className="text-xs md:text-sm font-medium text-black">
+            {item.question}
+          </Text>
+        )}
         <Textarea
           value={val}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField(String(item.id), "text", e.target.value)}

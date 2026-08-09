@@ -1,6 +1,7 @@
 "use client"
 
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import type { QueryKey } from "@tanstack/react-query"
 import type { FieldColor } from "@/features/modules/lib/validation"
 
 /** Payload for saving a section attempt. */
@@ -36,9 +37,15 @@ export interface SectionProgressEntry {
   completedAt: string | null
 }
 
+/** Snapshot of section-progress cache entries captured before an optimistic update. */
+export interface SectionProgressSnapshot {
+  previous: [QueryKey, SectionProgressEntry[] | undefined][]
+}
+
 /** Mutates a section attempt submission. */
 export function useSubmitSection(slug: string) {
-  return useMutation<SaveSectionResult, Error, SaveSectionInput>({
+  const queryClient = useQueryClient()
+  return useMutation<SaveSectionResult, Error, SaveSectionInput, SectionProgressSnapshot>({
     mutationFn: async (input) => {
       const response = await fetch(`/api/modul/${slug}/section`, {
         method: "POST",
@@ -48,6 +55,31 @@ export function useSubmitSection(slug: string) {
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal menyimpan")
       return body.data
+    },
+    onMutate: async (input) => {
+      await queryClient.cancelQueries({ queryKey: ["section-progress", slug] })
+      const previous = queryClient.getQueriesData<SectionProgressEntry[]>({
+        queryKey: ["section-progress", slug],
+      })
+      queryClient.setQueriesData<SectionProgressEntry[]>(
+        { queryKey: ["section-progress", slug] },
+        (old) => {
+          if (!old) return old
+          return old.map((s) =>
+            s.tab === input.tab && s.sectionType === input.sectionType
+              ? { ...s, status: input.status ?? s.status, finalScore: input.score ?? s.finalScore }
+              : s,
+          )
+        },
+      )
+      return { previous }
+    },
+    onError: (_err, _input, context) => {
+      context?.previous.forEach(([key, data]) => queryClient.setQueryData(key, data))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["section-progress", slug] })
+      queryClient.invalidateQueries({ queryKey: ["tab-progress", slug] })
     },
   })
 }
@@ -65,11 +97,12 @@ export function useSectionProgress(
   return useQuery<SectionProgressEntry[]>({
     queryKey: ["section-progress", slug, options?.tab, options?.sectionType],
     queryFn: async () => {
-      const response = await fetch(`/api/modul/${slug}/section${qs ? `?${qs}` : ""}`)
+      const response = await fetch(`/api/modul/${slug}/section${qs ? `?${qs}` : ""}`, { cache: "no-store" })
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal memuat progres")
       return body.data?.sections ?? []
     },
     enabled: slug.length > 0,
+    staleTime: 30000,
   })
 }

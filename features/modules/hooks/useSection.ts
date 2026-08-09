@@ -165,7 +165,8 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         boundSetChecked(true)
         useAnswerStore.getState().setSectionStatus(slug, tab, section, "correct", attempt)
         toast.success("Jawaban kamu benar, selamat!")
-        await persistSectionAttempt({
+        // Fire-and-forget: UI state is already updated; persist in background
+        persistSectionAttempt({
           slug, tab, sectionType: section, attempt,
           answer: fields, feedback: result.feedback, score: result.score,
           status: "correct",
@@ -175,7 +176,8 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         boundSetChecked(true)
         useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt1", 2)
         toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
-        await persistSectionAttempt({
+        // Fire-and-forget: UI state is already updated; persist in background
+        persistSectionAttempt({
           slug, tab, sectionType: section, attempt,
           answer: fields, feedback: result.feedback, score: result.score,
           status: "wrong_attempt1",
@@ -184,7 +186,8 @@ export function useSection(slug: string, tab: string, section: SectionName) {
         boundSetChecked(true)
         useAnswerStore.getState().setSectionStatus(slug, tab, section, "wrong_attempt2", 2)
         toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
-        await persistSectionAttempt({
+        // Fire-and-forget: UI state is already updated; persist in background
+        persistSectionAttempt({
           slug, tab, sectionType: section, attempt,
           answer: fields, feedback: result.feedback, score: result.score,
           status: "wrong_attempt2",

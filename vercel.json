@@ -1,0 +1,20 @@
+{
+  "regions": ["sin1"],
+  "functions": {
+    "app/api/modul/[slug]/section/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/ai/**": {
+      "maxDuration": 30
+    },
+    "app/api/cron/ai-cache-cleanup/route.ts": {
+      "maxDuration": 60
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/ai-cache-cleanup",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}

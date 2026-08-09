@@ -1,5 +1,6 @@
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { AxisIcon } from "./AxisIcon"
+import { LineIcon } from "./LineIcon"
 
 /* Props for a prerequisite concept card. */
 interface ConceptCardProps {
@@ -14,6 +15,8 @@ interface ConceptCardProps {
 function ConceptIcon({ icon, className }: { icon: string; className?: string }) {
   if (icon === "axis_horizontal") return <AxisIcon axis="horizontal" className={className} />
   if (icon === "axis_vertical") return <AxisIcon axis="vertical" className={className} />
+  if (icon === "line_garis") return <LineIcon variant="garis" className={className} />
+  if (icon === "line_ruas_garis") return <LineIcon variant="ruas_garis" className={className} />
   return <MaterialIcon name={icon} className={className} />
 }
 
@@ -29,7 +32,27 @@ export function ConceptCard({ title, description, icon }: ConceptCardProps) {
       {/* Content */}
       <div className="min-w-0">
         <h3 className="font-black uppercase text-base md:text-lg mb-1">{title}</h3>
-        <p className="text-xs md:text-sm leading-relaxed whitespace-pre-line">{description}</p>
+        <div className="text-xs md:text-sm leading-relaxed">
+          {description.split("\n").map((line, i) => {
+            const isNumberedItem = /^\d+\.\s/.test(line)
+            const isSubItem = /^[a-d]\.\s/.test(line)
+
+            const style: React.CSSProperties = {}
+            if (isNumberedItem) {
+              style.paddingLeft = "1.5rem"
+              style.textIndent = "-1rem"
+            } else if (isSubItem) {
+              style.paddingLeft = "2.5rem"
+              style.textIndent = "-1rem"
+            }
+
+            return (
+              <span key={i} className="block" style={style}>
+                {line}
+              </span>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

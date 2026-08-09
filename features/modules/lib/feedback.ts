@@ -49,7 +49,8 @@ function hasAnswerText(
  * Build a single feedback bullet for one wrong item, matching AI feedback rules:
  * hints (attempt 1) never reveal the answer, pembahasan (attempt 2) gives the
  * correct result and how to obtain it, options are shown as A/B/C/D.
- * Koordinat items are handled by buildKoordinatFeedback (grouped per concept).
+ * Koordinat items are handled by buildKoordinatFeedback (grouped per concept) when wrong;
+ * this case covers correct koordinat items shown in the attempt-2 pembahasan block.
  */
 export function buildItemFeedback(
   item: SectionItem,
@@ -67,6 +68,18 @@ export function buildItemFeedback(
       return item.explanation
         ? toBullets(item.explanation)
         : `• Titik ${item.label} ditranslasikan ke ${item.targetBayangan}, sehingga nilai translasinya T(${item.answer.a}, ${item.answer.b}).`
+    }
+    case "koordinat": {
+      // Wrong koordinat items are grouped via buildKoordinatFeedback; this handles correct
+      // koordinat items that appear in the attempt-2 pembahasan block.
+      if (isHint) {
+        return item.hint
+          ? toBullets(item.hint)
+          : `• Perhatikan kembali pada GeoGebra arah dan besar pergeseran titik ${item.label}. Tentukan koordinat bayangan yang benar.`
+      }
+      return item.explanation
+        ? toBullets(item.explanation)
+        : `• Titik ${item.label} digeser${item.bayangan ? ` oleh ${item.bayangan}` : ""}, sehingga bayangannya (${item.answer.x}, ${item.answer.y}).`
     }
     case "pilihan_ganda": {
       if (isHint) {
@@ -151,6 +164,7 @@ export function buildItemFeedback(
   }
 }
 
+
 /** A single wrong koordinat item collected into a concept group. */
 interface KoordinatPoint {
   label: string
@@ -187,6 +201,12 @@ function koordinatGroupKey(
  * penyimpulan) — they direct the student back to the GeoGebra observation. Explanations
  * give the specific bayangan result for each affected point without restating the formula.
  */
+/** Helper to extract coordinate part from label (e.g. "B(-4, 3)" -> "(-4, 3)" or "(-4, 3)" -> "(-4, 3)"). */
+function stripLabel(label: string): string {
+  const match = label.match(/\([^)]+\)/)
+  return match ? match[0] : label
+}
+
 function buildKoordinatFeedback(
   points: KoordinatPoint[],
   slug: string,
@@ -194,26 +214,30 @@ function buildKoordinatFeedback(
   attempt: 1 | 2,
 ): string {
   const isHint = attempt === 1
-  const listed = joinList(points.map((p) => p.label))
   const axis = REFLECTION_LABELS[tab] ?? tab
 
   if (isHint) {
-    const authored = points.find((p) => p.hint)?.hint
-    if (authored) return toBullets(authored)
-    if (slug === "refleksi") {
-      return `• Amati kembali pada GeoGebra posisi titik ${listed} dan bayangannya terhadap ${axis}. Bandingkan koordinat titik awal dengan bayangannya, lalu tentukan koordinat bayangan yang benar.`
-    }
-    const vektor = points[0]?.bayanganText ?? "yang diberikan"
-    return `• Amati kembali pada GeoGebra arah dan besar pergeseran titik ${listed} oleh vektor ${vektor}. Perhatikan bagaimana koordinat x dan y berubah, lalu tentukan koordinat bayangan yang benar.`
+    // Generate individual hint bullets for every wrong point
+    return points
+      .map((p) => {
+        if (p.hint) return toBullets(p.hint)
+        const pointLabel = stripLabel(p.label)
+        if (slug === "refleksi") {
+          return `• Perhatikan kembali pada GeoGebra posisi titik ${pointLabel} dan bayangannya terhadap ${axis}. Bandingkan jarak titik awal ke garis dan koordinat bayangannya, lalu tentukan koordinat bayangan yang benar.`
+        }
+        const vektor = p.bayanganText ?? "yang diberikan"
+        return `• Perhatikan kembali pada GeoGebra arah dan besar pergeseran titik ${pointLabel} oleh vektor ${vektor}. Perhatikan bagaimana koordinat x dan y berubah, lalu tentukan koordinat bayangan yang benar.`
+      })
+      .join("\n")
   }
 
+  const listed = joinList(points.map((p) => stripLabel(p.label)))
+  const hasilLines = points.map((p) => `  ${stripLabel(p.label)} → (${p.bayangan.x}, ${p.bayangan.y})`).join("\n")
   if (slug === "refleksi") {
-    const hasil = points.map((p) => `${p.label} → (${p.bayangan.x}, ${p.bayangan.y})`).join("; ")
-    return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} direfleksikan terhadap ${axis}, sehingga bayangannya: ${hasil}.`
+    return `• Perhatikan kembali hasil pengamatan pada GeoGebra:\n  titik ${listed} direfleksikan terhadap ${axis}, sehingga bayangannya:\n${hasilLines}`
   }
   const vektor = points[0]?.bayanganText ?? "yang diberikan"
-  const hasil = points.map((p) => `${p.label} → (${p.bayangan.x}, ${p.bayangan.y})`).join("; ")
-  return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} digeser sejauh ${vektor}, sehingga bayangannya: ${hasil}.`
+  return `• Perhatikan kembali hasil pengamatan pada GeoGebra:\n  titik ${listed} digeser sejauh ${vektor}, sehingga bayangannya:\n${hasilLines}`
 }
 
 /**
@@ -225,13 +249,20 @@ function buildMatriksFeedback(
   attempt: 1 | 2,
 ): string {
   const isHint = attempt === 1
-  const listed = joinList(points.map((p) => p.label))
 
   if (isHint) {
-    return `• Perhatikan kembali pada GeoGebra bagaimana titik ${listed} bergeser oleh vektor translasi yang sama. Amati besar pergeseran mendatar dan tegaknya, lalu tentukan nilai translasinya.`
+    return points
+      .map((p) => {
+        if (p.hint) return toBullets(p.hint)
+        const pointLabel = stripLabel(p.label)
+        return `• Perhatikan kembali pada GeoGebra bagaimana titik ${pointLabel} bergeser oleh vektor translasi. Amati besar pergeseran mendatar dan tegaknya, lalu tentukan nilai translasinya.`
+      })
+      .join("\n")
   }
-  const hasil = points.map((p) => `${p.label} → T${p.bayangan}`).join("; ")
-  return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} ditranslasikan, sehingga hasilnya: ${hasil}.`
+
+  const listed = joinList(points.map((p) => stripLabel(p.label)))
+  const hasilLines = points.map((p) => `  ${stripLabel(p.label)} → T${p.bayangan}`).join("\n")
+  return `• Perhatikan kembali hasil pengamatan pada GeoGebra:\n  titik ${listed} ditranslasikan, sehingga hasilnya:\n${hasilLines}`
 }
 
 /**
@@ -240,6 +271,9 @@ function buildMatriksFeedback(
  * bullet listing every affected point.
  * Answered-but-wrong uraian items are skipped by default because Gemini judges them server-side;
  * pass `includeAnsweredUraian` (client fallback, no AI) to include their authored hints/explanations.
+ *
+ * When called with attempt 2 (pembahasan), also builds correct-item bullets and emits a §WRONG§ /
+ * §CORRECT§ structured block so the popover can render them in separate groups.
  */
 export function buildDeterministicFeedback(
   context: FeedbackContext,
@@ -249,7 +283,9 @@ export function buildDeterministicFeedback(
   if (local.isCorrect) {
     return "Semua jawaban sudah tepat. Pertahankan pemahamanmu."
   }
-  const lines: string[] = []
+
+  const wrongLines: string[] = []
+  const correctLines: string[] = []
 
   const seen = new Set<string>()
   const koordinatGroups = new Map<string, { points: KoordinatPoint[]; firstIdx: number }>()
@@ -259,6 +295,17 @@ export function buildDeterministicFeedback(
   for (let idx = 0; idx < context.items.length; idx++) {
     const item = context.items[idx]
     const wrong = Object.keys(local.errors).some((k) => k.startsWith(`${item.id}_`))
+
+    // --- Correct items (attempt 2 only: build pembahasan bullet) ---
+    if (!wrong && context.attempt === 2) {
+      const bullet = buildItemFeedback(item, context.answers, 2)
+      if (bullet && !seen.has(bullet)) {
+        seen.add(bullet)
+        correctLines.push(bullet)
+      }
+      continue
+    }
+
     if (!wrong) continue
     if (!includeAnsweredUraian && item.type === "uraian" && hasAnswerText(context.answers, item.id)) continue
 
@@ -300,32 +347,45 @@ export function buildDeterministicFeedback(
     for (const [gKey, g] of koordinatGroups) {
       if (!emittedGroups.has(gKey) && g.firstIdx < idx) {
         emittedGroups.add(gKey)
-        lines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
+        wrongLines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
       }
     }
     for (const [gKey, g] of matriksGroups) {
       if (!emittedGroups.has(gKey) && g.firstIdx < idx) {
         emittedGroups.add(gKey)
-        lines.push(buildMatriksFeedback(g.points, context.attempt))
+        wrongLines.push(buildMatriksFeedback(g.points, context.attempt))
       }
     }
 
-    lines.push(bullet)
+    wrongLines.push(bullet)
   }
 
   // Emit any remaining groups that weren't emitted yet (at the end)
   for (const [gKey, g] of koordinatGroups) {
     if (!emittedGroups.has(gKey)) {
-      lines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
+      wrongLines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
     }
   }
   for (const [gKey, g] of matriksGroups) {
     if (!emittedGroups.has(gKey)) {
-      lines.push(buildMatriksFeedback(g.points, context.attempt))
+      wrongLines.push(buildMatriksFeedback(g.points, context.attempt))
     }
   }
 
-  return lines.join("\n")
+  // attempt 1 (hint): no correct-item section — just the wrong bullets
+  if (context.attempt === 1) {
+    return wrongLines.join("\n")
+  }
+
+  // attempt 2 (pembahasan): if all wrong (correctLines is empty)
+  if (correctLines.length === 0) {
+    return `${FEEDBACK_SECTION_DELIMITER.WRONG}Pembahasan:\n${wrongLines.join("\n")}`
+  }
+
+  // attempt 2 (pembahasan): mixed (some wrong, some correct)
+  const wrongBlock = `${FEEDBACK_SECTION_DELIMITER.WRONG}Ada jawaban yang kurang tepat.\nPembahasan:\n${wrongLines.join("\n")}`
+  const correctBlock = `${FEEDBACK_SECTION_DELIMITER.CORRECT}Jawaban lainnya sudah tepat.\nPembahasan:\n${correctLines.join("\n")}`
+  return `${wrongBlock}\n\n${correctBlock}`
 }
 
 /** Prepend deterministic hints to AI feedback without duplicating content. */
@@ -340,6 +400,16 @@ export function localScore(local: ValidationResult): number {
   return Math.round((local.correctCount / local.totalItems) * 100)
 }
 
+/**
+ * Delimiter used to split the feedback string into correct/wrong sections.
+ * §CORRECT§ opens a correct-answers block; §WRONG§ opens a wrong-answers block.
+ * Plain feedback strings (legacy / pure AI) contain neither and are rendered as-is.
+ */
+export const FEEDBACK_SECTION_DELIMITER = {
+  CORRECT: "§CORRECT§",
+  WRONG: "§WRONG§",
+} as const
+
 /** Build review feedback for a fully correct submission — shows each item's explanation. */
 export function feedbackForCorrect(
   sectionType: string,
@@ -352,8 +422,7 @@ export function feedbackForCorrect(
     const bullet = buildItemFeedback(item, answers, 2)
     if (bullet) explanations.push(bullet)
   }
-  if (explanations.length === 0) {
-    return `Semua jawaban pada bagian ${label} sudah tepat. Pertahankan pemahamanmu.`
-  }
-  return `Semua jawaban pada bagian ${label} sudah tepat.\n\nPembahasan:\n${explanations.join("\n")}`
+  const header = `Semua jawaban pada bagian ${label} sudah tepat.`
+  if (explanations.length === 0) return header
+  return `${FEEDBACK_SECTION_DELIMITER.CORRECT}${header}\n\nPembahasan:\n${explanations.join("\n")}`
 }

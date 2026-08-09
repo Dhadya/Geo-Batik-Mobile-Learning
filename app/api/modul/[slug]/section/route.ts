@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
+import { withRequestLog } from "@/lib/api/logger";
 import { saveSectionAttempt, getSectionProgress } from "@/features/modules/services/section";
 import { saveSectionSchema } from "@/lib/schemas";
 import type { ModuleSlug } from "@/features/modules/types";
 
 /** POST /api/modul/[slug]/section — save a student's section attempt (percobaan/pengamatan/penyimpulan/cek-pemahaman). */
-export async function POST(
+export const POST = withRequestLog(async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
@@ -46,14 +48,14 @@ export async function POST(
       `sectionType=${parsed.data.sectionType} attempt=${parsed.data.attempt}`,
       `status=${parsed.data.status} score=${parsed.data.score}`,
     );
-    return NextResponse.json({ ok: true, data: result }, { status: 200 });
+    return NextResponse.json({ ok: true, data: result }, { status: 200, headers: cacheControl("noStore") });
   } catch (e) {
     return handleError(e);
   }
-}
+});
 
 /** GET /api/modul/[slug]/section — fetch section progress, optionally filtered by tab and/or sectionType query params. */
-export async function GET(
+export const GET = withRequestLog(async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
@@ -76,8 +78,8 @@ export async function GET(
       `count=${sections.length}`,
       sections.map((s) => `${s.sectionType}[${s.tab}]:${s.status}`).join(" "),
     );
-    return NextResponse.json({ ok: true, data: { sections } });
+    return NextResponse.json({ ok: true, data: { sections } }, { headers: cacheControl("private") });
   } catch (e) {
     return handleError(e);
   }
-}
+});

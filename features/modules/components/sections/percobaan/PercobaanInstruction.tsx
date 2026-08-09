@@ -11,7 +11,7 @@ interface PercobaanInstructionProps {
 /** Renders the instruction text with an optional inline matrix. */
 export function PercobaanInstruction({ instruction, instructionMatrix, instructionSuffix }: PercobaanInstructionProps) {
   return (
-    <Text as="p" className="text-xs md:text-sm text-black font-semibold leading-relaxed">
+    <Text as="p" className="text-xs md:text-sm text-black font-semibold leading-relaxed whitespace-pre-line">
       {instruction}
       {instructionMatrix && (() => {
         const [top, bottom] = instructionMatrix.split(",")

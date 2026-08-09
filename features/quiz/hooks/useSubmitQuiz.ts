@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 /** Single question answer data sent to the server. */
 export interface QuizAnswerPayload {
@@ -35,6 +35,7 @@ export interface SubmitQuizResult {
 
 /** Mutates quiz submission for a given module. */
 export function useSubmitQuiz(slug: string) {
+  const queryClient = useQueryClient()
   return useMutation<SubmitQuizResult, Error, SubmitQuizInput>({
     mutationFn: async (input) => {
       const response = await fetch(`/api/modul/${slug}/quiz/submit`, {
@@ -45,6 +46,10 @@ export function useSubmitQuiz(slug: string) {
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal menyimpan kuis")
       return body.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["quiz-result", slug] })
+      queryClient.invalidateQueries({ queryKey: ["quiz-status", slug] })
     },
   })
 }

@@ -36,25 +36,19 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const setSelections = useAnswerStore((s) => s.setSelections)
   const hasInput = selections.some((s) => s != null)
 
-  const [attempt, setAttempt] = useState<1 | 2>(() => {
-    if (persistedStatus === "correct" || persistedStatus === "wrong_attempt2") return 2
-    if (persistedStatus === "wrong_attempt1") return 2
-    return persistedAttempt ?? 1
-  })
-  const [isLocked, setIsLocked] = useState(() =>
-    persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
-  )
-  const [showCobaLagi, setShowCobaLagi] = useState(() =>
-    persistedStatus === "wrong_attempt1"
-  )
-  const [isChecked, setIsChecked] = useState(() =>
-    persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
-  )
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(() =>
-    persistedStatus === "correct" ? true
-      : persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2" ? false
-        : null
-  )
+  const attempt = useMemo<1 | 2>(() => {
+    // wrong_attempt1 → show orange styling (attempt 1 colour)
+    // wrong_attempt2 → show red styling (attempt 2 colour)
+    if (persistedStatus === "wrong_attempt1") return 1
+    if (persistedStatus === "wrong_attempt2") return 2
+    return (persistedAttempt ?? 1) as 1 | 2
+  }, [persistedStatus, persistedAttempt])
+
+  const isLocked = persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
+  const showCobaLagi = persistedStatus === "wrong_attempt1"
+  const isChecked = persistedStatus === "correct" || persistedStatus === "wrong_attempt2" || persistedStatus === "wrong_attempt1"
+  const isCorrect = persistedStatus === "correct" ? true : (persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2") ? false : null
+
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -113,39 +107,33 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       }
 
       if (isCorrectResult) {
-        await submitMutation.mutateAsync({ ...savePayload, status: "correct" })
-        setIsChecked(true)
-        setValidationErrors(finalErrors)
-        setIsCorrect(true)
-        setIsLocked(true)
-        setShowCobaLagi(false)
+        // Write final status to store BEFORE mutateAsync so the optimistic-update
+        // guard in ModuleContent sees the correct status when onMutate fires.
+        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "correct", attempt)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         useAnswerStore.getState().setCekPemahamanFieldColors(slug, tab, result.fieldColors)
-        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "correct", attempt)
+        await submitMutation.mutateAsync({ ...savePayload, status: "correct" })
+        setValidationErrors(finalErrors)
         toast.success("Jawaban kamu benar, selamat!")
         await triggerTabUnlockIfComplete(slug, tab)
       } else if (attempt === 1) {
-        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt1" })
-        setIsChecked(true)
-        setValidationErrors(finalErrors)
-        setIsCorrect(false)
-        setShowCobaLagi(true)
-        setAttempt(2)
+        // wrong attempt 1: status → wrong_attempt1 BEFORE mutateAsync
+        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt1", 2)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
-        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt1", 2)
+        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt1" })
+        setValidationErrors(finalErrors)
         toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
       } else {
-        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt2" })
-        setIsChecked(true)
-        setValidationErrors(finalErrors)
-        setIsCorrect(false)
-        setIsLocked(true)
-        setShowCobaLagi(false)
+        // wrong attempt 2: status → wrong_attempt2 BEFORE mutateAsync so the guard in
+        // ModuleContent skips the optimistic cache snapshot (which has no attempt2Answer),
+        // preventing a flash of the attempt-1 selections before the real refetch arrives.
+        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt2", 2)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
-        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt2", 2)
+        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt2" })
+        setValidationErrors(finalErrors)
         toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
         await triggerTabUnlockIfComplete(slug, tab)
       }
@@ -258,13 +246,9 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                     const isCorrect = isChecked && isSelected
                       ? isMulti
                         ? q.correctIndices?.includes(oi)
-                        : selections[qi] === q.correctIndex
+                        : oi === q.correctIndex
                       : false
-                    const isWrong = isChecked && isSelected
-                      ? isMulti
-                        ? !q.correctIndices?.includes(oi)
-                        : selections[qi] !== q.correctIndex
-                      : false
+                    const isWrong = isChecked && isSelected && !isCorrect
 
                     return (
                       <ModuleAnswerButton
@@ -314,10 +298,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
           attempt={attempt}
           onSubmit={doSubmit}
           onCobaLagi={() => {
-            setIsChecked(false)
-            setIsCorrect(null)
             setValidationErrors({})
-            setShowCobaLagi(false)
             useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "unsubmitted", 2)
           }}
           requireConfirmation={slug === "translasi" && tab === "titik"}

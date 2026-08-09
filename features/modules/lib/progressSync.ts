@@ -1,4 +1,4 @@
-import { getSectionsForTab } from "../data"
+import { getModuleTabs, getSectionsForTab } from "../data"
 import { useTabProgressStore, type TabProgressEntry } from "../store/tabProgressStore"
 import { useAnswerStore } from "../store/answerStore"
 import type { SectionClaim } from "@/lib/schemas"
@@ -12,7 +12,7 @@ const MODUL_API = "/api/modul"
  */
 export async function syncTabProgress(slug: string): Promise<TabProgressEntry[] | null> {
   try {
-    const res = await fetch(`${MODUL_API}/${slug}/progress`)
+    const res = await fetch(`${MODUL_API}/${slug}/progress`, { cache: "no-store" })
     if (!res.ok) return null
     const json = await res.json()
     if (!json.ok) return null
@@ -61,35 +61,91 @@ function buildTerminalClaims(slug: string, tab: string): SectionClaim[] {
 }
 
 /**
- * Checks if all sections in the given tab are in terminal state.
- * If yes, POSTs the terminal section claims to /api/modul/[slug]/progress/unlock so the
- * server can reconcile missing rows and unlock the next tab, then updates the local store.
+ * In-flight unlock promises keyed by "slug/tab".
+ * Prevents duplicate concurrent unlock POSTs when multiple sections complete
+ * at the same time and all call triggerTabUnlockIfComplete simultaneously.
  */
-export async function triggerTabUnlockIfComplete(slug: string, tab: string): Promise<void> {
+const inflightUnlocks = new Map<string, Promise<void>>()
+
+/** Internal implementation — wrapped by the exported deduplicating function below. */
+async function _triggerTabUnlockIfComplete(slug: string, tab: string): Promise<void> {
   const claims = buildTerminalClaims(slug, tab)
   if (claims.length === 0) return
+
+  const tabs = getModuleTabs(slug) ?? []
+  const currentIndex = tabs.findIndex((t) => t.value === tab)
+  const nextTab = tabs[currentIndex + 1]?.value
+
+  const store = useTabProgressStore.getState()
+  const previous = store.getProgress(slug)
+
+  if (previous) {
+    store.setProgress(
+      slug,
+      previous.map((p) => {
+        if (p.tab === tab) return { ...p, completed: true }
+        if (nextTab && p.tab === nextTab) return { ...p, unlocked: true }
+        return p
+      }),
+    )
+  }
 
   try {
     const res = await fetch(`${MODUL_API}/${slug}/progress/unlock`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ completedTab: tab, sections: claims }),
+      cache: "no-store",
     })
-    const json = await res.json()
-    if (!json.ok) {
+
+    // Non-JSON bodies (e.g. an HTML error/redirect page) must not crash the sync flow —
+    // treat them as a rejected unlock and roll back the optimistic update.
+    const json = await res.json().catch(() => null)
+
+    if (!json?.ok) {
       console.error("[progressSync] unlock rejected", {
         slug,
         tab,
+        status: res.status,
         code: json?.error?.code,
         message: json?.error?.message,
       })
+      if (previous) store.setProgress(slug, previous)
       return
     }
 
     if (json.data?.progress) {
-      useTabProgressStore.getState().setProgress(slug, json.data.progress)
+      store.setProgress(slug, json.data.progress)
     }
   } catch (e) {
-    console.error("[progressSync] unlock failed", { slug, tab, error: e })
+    console.error("[progressSync] unlock failed", {
+      slug,
+      tab,
+      error: e instanceof Error ? e.message : String(e),
+    })
+    if (previous) store.setProgress(slug, previous)
   }
+}
+
+/**
+ * Checks if all sections in the given tab are in terminal state.
+ * If yes, POSTs the terminal section claims to /api/modul/[slug]/progress/unlock so the
+ * server can reconcile missing rows and unlock the next tab, then updates the local store.
+ *
+ * Optimistically marks the tab completed and unlocks the next tab in the store before the
+ * POST resolves, so the UI updates instantly; rolls back the snapshot on failure.
+ *
+ * Concurrent calls for the same slug/tab share one in-flight promise to prevent
+ * duplicate network requests when multiple sections complete simultaneously.
+ */
+export function triggerTabUnlockIfComplete(slug: string, tab: string): Promise<void> {
+  const key = `${slug}/${tab}`
+  const existing = inflightUnlocks.get(key)
+  if (existing) return existing
+
+  const promise = _triggerTabUnlockIfComplete(slug, tab).finally(() => {
+    inflightUnlocks.delete(key)
+  })
+  inflightUnlocks.set(key, promise)
+  return promise
 }

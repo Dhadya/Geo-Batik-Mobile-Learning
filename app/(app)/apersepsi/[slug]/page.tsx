@@ -8,6 +8,11 @@ import { QuizBreadcrumb } from "@/features/quiz"
 import { RefleksiLockGuard } from "@/features/modules/components/RefleksiLockGuard"
 import type { ApersepsiSlug } from "@/features/apersepsi"
 
+/** Prerenders the two known apersepsi pages so they are served static. */
+export function generateStaticParams(): { slug: ApersepsiSlug }[] {
+  return [{ slug: "translasi" }, { slug: "refleksi" }]
+}
+
 export default async function ApersepsiPage(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params
   const data = apersepsiData[slug as ApersepsiSlug]

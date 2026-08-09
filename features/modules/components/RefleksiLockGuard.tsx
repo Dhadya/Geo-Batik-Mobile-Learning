@@ -1,13 +1,21 @@
-import { headers } from "next/headers"
-import { auth } from "@/lib/auth"
-import { hasModuleAttempt } from "@/features/modules/services/quiz"
+"use client"
+
+import { authClient } from "@/lib/auth-client"
+import { useQuizStatus } from "@/features/quiz/hooks/useQuizStatus"
 import { LockOverlay } from "./LockOverlay"
 
-/** Server component that guards Refleksi routes — renders children with a fullScreen LockOverlay on top if Translasi quiz not yet attempted, or if the user is not authenticated. Content is still visible underneath for preview. */
-export async function RefleksiLockGuard({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({ headers: await headers() })
+/**
+ * Client-side guard for Refleksi routes — renders children with a fullScreen
+ * LockOverlay on top if the Translasi quiz has not been attempted, or if the
+ * user is unauthenticated. Content stays visible underneath for preview.
+ */
+export function RefleksiLockGuard({ children }: { children: React.ReactNode }) {
+  const { data: session, isPending: sessionPending } = authClient.useSession()
+  const { data: status, isPending: statusPending } = useQuizStatus("translasi")
 
-  if (!session?.user) {
+  const isLoading = sessionPending || statusPending
+
+  if (!isLoading && !session?.user) {
     return (
       <div className="relative">
         {children}
@@ -16,8 +24,7 @@ export async function RefleksiLockGuard({ children }: { children: React.ReactNod
     )
   }
 
-  const translasiDone = await hasModuleAttempt(session.user.id, "translasi")
-  if (!translasiDone) {
+  if (!isLoading && status?.hasAttempt === false) {
     return (
       <div className="relative">
         {children}
