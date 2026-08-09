@@ -1,4 +1,4 @@
-import { getSectionsForTab } from "../data"
+import { getModuleTabs, getSectionsForTab } from "../data"
 import { useTabProgressStore, type TabProgressEntry } from "../store/tabProgressStore"
 import { useAnswerStore } from "../store/answerStore"
 import type { SectionClaim } from "@/lib/schemas"
@@ -64,10 +64,31 @@ function buildTerminalClaims(slug: string, tab: string): SectionClaim[] {
  * Checks if all sections in the given tab are in terminal state.
  * If yes, POSTs the terminal section claims to /api/modul/[slug]/progress/unlock so the
  * server can reconcile missing rows and unlock the next tab, then updates the local store.
+ *
+ * Optimistically marks the tab completed and unlocks the next tab in the store before the
+ * POST resolves, so the UI updates instantly; rolls back the snapshot on failure.
  */
 export async function triggerTabUnlockIfComplete(slug: string, tab: string): Promise<void> {
   const claims = buildTerminalClaims(slug, tab)
   if (claims.length === 0) return
+
+  const tabs = getModuleTabs(slug) ?? []
+  const currentIndex = tabs.findIndex((t) => t.value === tab)
+  const nextTab = tabs[currentIndex + 1]?.value
+
+  const store = useTabProgressStore.getState()
+  const previous = store.getProgress(slug)
+
+  if (previous) {
+    store.setProgress(
+      slug,
+      previous.map((p) => {
+        if (p.tab === tab) return { ...p, completed: true }
+        if (nextTab && p.tab === nextTab) return { ...p, unlocked: true }
+        return p
+      }),
+    )
+  }
 
   try {
     const res = await fetch(`${MODUL_API}/${slug}/progress/unlock`, {
@@ -83,13 +104,15 @@ export async function triggerTabUnlockIfComplete(slug: string, tab: string): Pro
         code: json?.error?.code,
         message: json?.error?.message,
       })
+      if (previous) store.setProgress(slug, previous)
       return
     }
 
     if (json.data?.progress) {
-      useTabProgressStore.getState().setProgress(slug, json.data.progress)
+      store.setProgress(slug, json.data.progress)
     }
   } catch (e) {
     console.error("[progressSync] unlock failed", { slug, tab, error: e })
+    if (previous) store.setProgress(slug, previous)
   }
 }

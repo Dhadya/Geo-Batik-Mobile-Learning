@@ -3,6 +3,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { useEffect } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { Badge } from "@/components/retroui/Badge"
@@ -162,6 +163,26 @@ export function ModuleContent({
       triggerTabUnlockIfComplete(slug, decodedTab),
     )
   }, [sections, slug, decodedTab])
+
+  // Prefetch the next tab's section progress so navigating forward is instant
+  const queryClient = useQueryClient()
+  const currentTabIndex = tabs.findIndex((t) => t.value === decodedTab)
+  const nextTabValue = tabs[currentTabIndex + 1]?.value
+  useEffect(() => {
+    if (!nextTabValue) return
+    queryClient.prefetchQuery({
+      queryKey: ["section-progress", slug, nextTabValue, undefined],
+      queryFn: async () => {
+        const response = await fetch(
+          `/api/modul/${slug}/section?tab=${encodeURIComponent(nextTabValue)}`,
+        )
+        const body = await response.json()
+        if (!body.ok) return []
+        return body.data?.sections ?? []
+      },
+      staleTime: 30 * 1000,
+    })
+  }, [slug, nextTabValue, queryClient])
 
   // Calculate section progress for this tab
   const tabAnswers = useAnswerStore(

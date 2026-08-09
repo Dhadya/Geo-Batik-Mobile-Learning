@@ -1,0 +1,11 @@
+{
+  "regions": ["sin1"],
+  "functions": {
+    "app/api/modul/[slug]/section/route.ts": {
+      "maxDuration": 10
+    },
+    "app/api/ai/**": {
+      "maxDuration": 30
+    }
+  }
+}

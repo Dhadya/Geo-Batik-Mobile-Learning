@@ -5,8 +5,9 @@ import { triggerTabUnlockIfComplete, syncTabProgress } from "./progressSync"
 // Hoisted mocks so store behavior is configurable per test.
 const store = vi.hoisted(() => {
   const getTabAnswers = vi.fn()
+  const getProgress = vi.fn()
   const setProgress = vi.fn()
-  return { getTabAnswers, setProgress }
+  return { getTabAnswers, getProgress, setProgress }
 })
 
 vi.mock("../store/answerStore", () => ({
@@ -25,7 +26,7 @@ vi.mock("../store/answerStore", () => ({
 
 vi.mock("../store/tabProgressStore", () => ({
   useTabProgressStore: {
-    getState: () => ({ setProgress: store.setProgress }),
+    getState: () => ({ getProgress: store.getProgress, setProgress: store.setProgress }),
   },
 }))
 
@@ -50,6 +51,7 @@ function jsonResponse(payload: unknown) {
 describe("triggerTabUnlockIfComplete", () => {
   beforeEach(() => {
     store.getTabAnswers.mockReset()
+    store.getProgress.mockReset()
     store.setProgress.mockReset()
     fetchMock.mockReset()
     vi.spyOn(console, "error").mockImplementation(() => {})
@@ -143,6 +145,66 @@ describe("triggerTabUnlockIfComplete", () => {
 
     expect(console.error).toHaveBeenCalled()
     expect(store.setProgress).not.toHaveBeenCalled()
+  })
+
+  it("optimistically marks the tab completed and unlocks the next tab before the POST resolves", async () => {
+    store.getTabAnswers.mockReturnValue(terminalTab())
+    const previous = [
+      { tab: "titik", unlocked: true, completed: false },
+      { tab: "bangun", unlocked: false, completed: false },
+    ]
+    store.getProgress.mockReturnValue(previous)
+    fetchMock.mockResolvedValue(
+      jsonResponse({ ok: true, data: { progress: previous } }),
+    )
+
+    // Capture the first setProgress call (the optimistic write) by resolving fetch lazily.
+    let resolveFetch: (value: unknown) => void
+    fetchMock.mockImplementation(
+      () => new Promise((resolve) => (resolveFetch = resolve)),
+    )
+
+    const pending = triggerTabUnlockIfComplete("translasi", "titik")
+
+    expect(store.setProgress).toHaveBeenCalledWith("translasi", [
+      { tab: "titik", unlocked: true, completed: true },
+      { tab: "bangun", unlocked: true, completed: false },
+    ])
+
+    resolveFetch!(jsonResponse({ ok: true, data: { progress: previous } }))
+    await pending
+  })
+
+  it("rolls back the optimistic update when the API rejects", async () => {
+    store.getTabAnswers.mockReturnValue(terminalTab())
+    const previous = [
+      { tab: "titik", unlocked: true, completed: false },
+      { tab: "bangun", unlocked: false, completed: false },
+    ]
+    store.getProgress.mockReturnValue(previous)
+    fetchMock.mockResolvedValue(
+      jsonResponse({ ok: false, error: { code: "TAB_LOCKED", message: "locked" } }),
+    )
+
+    await triggerTabUnlockIfComplete("translasi", "titik")
+
+    expect(store.setProgress).toHaveBeenCalledTimes(2)
+    expect(store.setProgress).toHaveBeenLastCalledWith("translasi", previous)
+  })
+
+  it("rolls back the optimistic update when the fetch throws", async () => {
+    store.getTabAnswers.mockReturnValue(terminalTab())
+    const previous = [
+      { tab: "titik", unlocked: true, completed: false },
+      { tab: "bangun", unlocked: false, completed: false },
+    ]
+    store.getProgress.mockReturnValue(previous)
+    fetchMock.mockRejectedValue(new Error("network down"))
+
+    await triggerTabUnlockIfComplete("translasi", "titik")
+
+    expect(store.setProgress).toHaveBeenCalledTimes(2)
+    expect(store.setProgress).toHaveBeenLastCalledWith("translasi", previous)
   })
 
   it("logs an error when the fetch itself throws", async () => {

@@ -1,7 +1,7 @@
 "use client"
 
 import { handleAuthError } from "@/lib/api/auth-error"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { useQuizStore } from "@/features/quiz"
@@ -14,6 +14,7 @@ const PACKAGE_SIZE = 10
  * Takes answers directly from the component (reactive) to avoid store rehydration race conditions.
  */
 export function useQuizSubmit(slug: string) {
+  const queryClient = useQueryClient()
   const submitMutation = useMutation({
     mutationFn: async (input: {
       answers: { questionId: number; answer: number; isCorrect: boolean }[]
@@ -29,6 +30,21 @@ export function useQuizSubmit(slug: string) {
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal menyimpan kuis")
       return body.data
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["quiz-status", slug] })
+      const previousStatus = queryClient.getQueryData(["quiz-status", slug])
+      queryClient.setQueryData(["quiz-status", slug], { hasAttempt: true })
+      return { previousStatus }
+    },
+    onError: (_err, _input, context) => {
+      if (context?.previousStatus) {
+        queryClient.setQueryData(["quiz-status", slug], context.previousStatus)
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["quiz-status", slug] })
+      queryClient.invalidateQueries({ queryKey: ["quiz-result", slug] })
     },
   })
   const router = useRouter()
