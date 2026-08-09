@@ -162,7 +162,18 @@ export function validateSection(
         let isCorrect = false
 
         // Special handling for coordinate formulas (e.g. (-x, y), (x+a, y+b), (2h-x, y))
-        const allExpectedAnswers = [u.answer, ...(u.acceptAnswers ?? [])]
+        // Include original answer, accepted alternatives, and their negated forms (multiply both sides by -1)
+        const originalAnswers = [u.answer, ...(u.acceptAnswers ?? [])]
+        const negatedAnswers = originalAnswers.map((ans) => {
+          const parts = ans.split('=')
+          if (parts.length === 2) {
+            const left = parts[0].trim()
+            const right = parts[1].trim()
+            return `-${left} = -${right}`
+          }
+          return ans
+        })
+        const allExpectedAnswers = [...originalAnswers, ...negatedAnswers]
         const expectedIsCoordinate = allExpectedAnswers.some(isCoordinatePair)
 
         if (expectedIsCoordinate) {
@@ -174,21 +185,19 @@ export function validateSection(
           })
         }
 
-        // 1. Check requiredKeywords if not matched by coordinate equivalence
+        // 1. If requiredKeywords are defined, treat each group as an alternative (OR). The answer is correct if any group matches.
         if (!isCorrect && u.requiredKeywords && u.requiredKeywords.length > 0) {
           const isCoordinateFormula = u.requiredKeywords.some((group) =>
-            group.some((kw) => /^-?[xy]$/.test(kw.trim()) || /^2[a-z]-x$/i.test(kw.trim()) || /^2[a-z]-y$/i.test(kw.trim()))
+            group.some((kw) => /^-?[xy]$/i.test(kw.trim()) || /^2[a-z]-x$/i.test(kw.trim()) || /^2[a-z]-y$/i.test(kw.trim()))
           )
           const hasCommaIfRequired = !isCoordinateFormula || userLower.includes(",")
-
           isCorrect =
             hasCommaIfRequired &&
-            u.requiredKeywords.every((group) =>
+            u.requiredKeywords.some((group) =>
               group.some((kw) => {
                 const normKw = normalize(kw)
-                // Check direct substring, token boundary match, or normalized coordinate match
                 if (userLower.includes(normKw)) return true
-                if (normKw.length <= 2 && new RegExp(`(?:^|[^a-z0-9])${normKw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')}(?:$|[^a-z0-9])`, 'i').test(userLower)) return true
+                if (normKw.length <= 2 && new RegExp(`(?:^|[^a-z0-9])${normKw.replace(/[\-\[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}(?:$|[^a-z0-9])`, "i").test(userLower)) return true
                 return false
               })
             )
