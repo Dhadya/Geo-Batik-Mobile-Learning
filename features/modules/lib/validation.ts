@@ -130,18 +130,23 @@ export function validateSection(
 
         // Normalize simple linear algebraic expressions (e.g., "2h-y", "-y+2h", "2*h - y", "a+x", "x+a")
         const normalizeExpression = (expr: string) => {
-          const s = expr.replace(/\s+/g, "").replace(/\*/g, "")
+          const s = expr.replace(/\s+/g, "").replace(/\*/g, "");
+
           // Canonicalize common coordinate formula expressions
-          if (s === "2h-y" || s === "-y+2h" || s === "2h+(-y)") return "2h-y"
-          if (s === "2h-x" || s === "-x+2h" || s === "2h+(-x)") return "2h-x"
-          if (s === "2k-y" || s === "-y+2k" || s === "2k+(-y)") return "2k-y"
-          if (s === "2k-x" || s === "-x+2k" || s === "2k+(-x)") return "2k-x"
-          if (s === "x+a" || s === "a+x") return "x+a"
-          if (s === "y+b" || s === "b+y") return "y+b"
-          if (s === "x-a" || s === "-a+x") return "x-a"
-          if (s === "y-b" || s === "-b+y") return "y-b"
-          return s
-        }
+          if (s === "2h-y" || s === "-y+2h" || s === "2h+(-y)") return "2h-y";
+          if (s === "2h-x" || s === "-x+2h" || s === "2h+(-x)") return "2h-x";
+          if (s === "2k-y" || s === "-y+2k" || s === "2k+(-y)") return "2k-y";
+          if (s === "2k-x" || s === "-x+2k" || s === "2k+(-x)") return "2k-x";
+          if (s === "x+a" || s === "a+x") return "x+a";
+          if (s === "y+b" || s === "b+y") return "y+b";
+          if (s === "x-a" || s === "-a+x") return "x-a";
+          if (s === "y-b" || s === "-b+y") return "y-b";
+          
+          // Reject repeated variable inputs like "xx" or "yy"
+          if (/^([a-z])\1+$/i.test(s)) return `invalid_${s}`;
+
+          return s;
+        };
 
         // Standardize coordinate format for flexible comparison, e.g. "(-x, y)" vs "-x, y" vs "( -x , y )"
         const normalizeCoordinate = (str: string) => {
@@ -185,26 +190,57 @@ export function validateSection(
           })
         }
 
-        // 1. If requiredKeywords are defined, treat each group as an alternative (OR). The answer is correct if any group matches.
+        // 1. If requiredKeywords are defined, treat each group as a required set (AND). The answer is correct only if all groups match.
         if (!isCorrect && u.requiredKeywords && u.requiredKeywords.length > 0) {
           const isCoordinateFormula = u.requiredKeywords.some((group) =>
-            group.some((kw) => /^-?[xy]$/i.test(kw.trim()) || /^2[a-z]-x$/i.test(kw.trim()) || /^2[a-z]-y$/i.test(kw.trim()))
+            group.some(
+              (kw) =>
+                /^-?[xy]$/i.test(kw.trim()) ||
+                /^2[a-z]-x$/i.test(kw.trim()) ||
+                /^2[a-z]-y$/i.test(kw.trim())
+            )
           )
           const hasCommaIfRequired = !isCoordinateFormula || userLower.includes(",")
-          isCorrect =
+          
+          let matchesAllGroups =
             hasCommaIfRequired &&
-            u.requiredKeywords.some((group) =>
+            u.requiredKeywords.every((group) =>
               group.some((kw) => {
                 const normKw = normalize(kw)
-                if (userLower.includes(normKw)) return true
-                if (normKw.length <= 2 && new RegExp(`(?:^|[^a-z0-9])${normKw.replace(/[\-\[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}(?:$|[^a-z0-9])`, "i").test(userLower)) return true
-                return false
+                if (normKw.length <= 2) {
+                  return new RegExp(
+                    `(?:^|[^a-z0-9])${normKw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}(?:$|[^a-z0-9])`,
+                    "i"
+                  ).test(userLower)
+                }
+                return userLower.includes(normKw)
               })
             )
-        }
 
-        // 2. Fallback to exact / partial / automatic clause matching (skip for coordinate formula items to enforce strict requiredKeywords and exact coordinate matching)
-        if (!isCorrect && !expectedIsCoordinate) {
+          // If it's a coordinate pair formula (e.g. requiredKeywords = [["-y"], ["-x"]]), enforce the component sequence order
+          if (matchesAllGroups && isCoordinateFormula && userLower.includes(",")) {
+            const parts = userLower.split(",").map((p) => p.trim())
+            if (parts.length === 2 && u.requiredKeywords.length === 2) {
+              const firstGroupMatches = u.requiredKeywords[0].some((kw) => {
+                const normKw = normalize(kw)
+                return normKw.length <= 2
+                  ? new RegExp(`(?:^|[^a-z0-9])${normKw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}(?:$|[^a-z0-9])`, "i").test(parts[0])
+                  : parts[0].includes(normKw)
+              })
+              const secondGroupMatches = u.requiredKeywords[1].some((kw) => {
+                const normKw = normalize(kw)
+                return normKw.length <= 2
+                  ? new RegExp(`(?:^|[^a-z0-9])${normKw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}(?:$|[^a-z0-9])`, "i").test(parts[1])
+                  : parts[1].includes(normKw)
+              })
+              matchesAllGroups = firstGroupMatches && secondGroupMatches
+            }
+          }
+
+          isCorrect = matchesAllGroups
+        }
+        // 2. Fallback to exact / partial / automatic clause matching (skip for coordinate formula or requiredKeywords items to enforce strict rules)
+        if (!isCorrect && !expectedIsCoordinate && (!u.requiredKeywords || u.requiredKeywords.length === 0)) {
           isCorrect = allExpectedAnswers.some((expected) => {
             const expLower = normalize(expected)
             if (userLower === expLower) return true

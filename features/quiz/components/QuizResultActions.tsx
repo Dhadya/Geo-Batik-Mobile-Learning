@@ -10,9 +10,15 @@ export function QuizResultActions({ slug }: { slug: string }) {
   const router = useRouter()
   const resetAnswers = useQuizStore((s) => s.resetAnswers)
 
-  const handleCobaLagi = () => {
+  const handleNext = () => {
     resetAnswers()
-    router.push(`/modul/${slug}/kuis`)
+    // Determine next route based on current quiz slug
+    const nextRoute = slug === "translasi"
+      ? "/modul/refleksi"
+      : slug === "refleksi"
+        ? "/menu"
+        : `/modul/${slug}`
+    router.push(nextRoute)
   }
 
   return (
@@ -31,10 +37,10 @@ export function QuizResultActions({ slug }: { slug: string }) {
         variant="default"
         size="lg"
         className="px-8 py-4 text-lg font-black uppercase gap-2"
-        onClick={handleCobaLagi}
+        onClick={handleNext}
       >
-        Coba Lagi
-        <MaterialIcon className="size-6" name="refresh" />
+        {slug === "refleksi" ? "Ke Menu" : "Modul Selanjutnya"}
+        <MaterialIcon className="size-6" name="arrow_forward" />
       </Button>
     </div>
   )

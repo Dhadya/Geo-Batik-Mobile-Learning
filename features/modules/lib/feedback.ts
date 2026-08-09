@@ -257,6 +257,9 @@ function buildMatriksFeedback(
  * bullet listing every affected point.
  * Answered-but-wrong uraian items are skipped by default because Gemini judges them server-side;
  * pass `includeAnsweredUraian` (client fallback, no AI) to include their authored hints/explanations.
+ *
+ * When called with attempt 2 (pembahasan), also builds correct-item bullets and emits a §WRONG§ /
+ * §CORRECT§ structured block so the popover can render them in separate groups.
  */
 export function buildDeterministicFeedback(
   context: FeedbackContext,
@@ -266,7 +269,9 @@ export function buildDeterministicFeedback(
   if (local.isCorrect) {
     return "Semua jawaban sudah tepat. Pertahankan pemahamanmu."
   }
-  const lines: string[] = []
+
+  const wrongLines: string[] = []
+  const correctLines: string[] = []
 
   const seen = new Set<string>()
   const koordinatGroups = new Map<string, { points: KoordinatPoint[]; firstIdx: number }>()
@@ -276,6 +281,17 @@ export function buildDeterministicFeedback(
   for (let idx = 0; idx < context.items.length; idx++) {
     const item = context.items[idx]
     const wrong = Object.keys(local.errors).some((k) => k.startsWith(`${item.id}_`))
+
+    // --- Correct items (attempt 2 only: build pembahasan bullet) ---
+    if (!wrong && context.attempt === 2) {
+      const bullet = buildItemFeedback(item, context.answers, 2)
+      if (bullet && !seen.has(bullet)) {
+        seen.add(bullet)
+        correctLines.push(bullet)
+      }
+      continue
+    }
+
     if (!wrong) continue
     if (!includeAnsweredUraian && item.type === "uraian" && hasAnswerText(context.answers, item.id)) continue
 
@@ -317,32 +333,45 @@ export function buildDeterministicFeedback(
     for (const [gKey, g] of koordinatGroups) {
       if (!emittedGroups.has(gKey) && g.firstIdx < idx) {
         emittedGroups.add(gKey)
-        lines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
+        wrongLines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
       }
     }
     for (const [gKey, g] of matriksGroups) {
       if (!emittedGroups.has(gKey) && g.firstIdx < idx) {
         emittedGroups.add(gKey)
-        lines.push(buildMatriksFeedback(g.points, context.attempt))
+        wrongLines.push(buildMatriksFeedback(g.points, context.attempt))
       }
     }
 
-    lines.push(bullet)
+    wrongLines.push(bullet)
   }
 
   // Emit any remaining groups that weren't emitted yet (at the end)
   for (const [gKey, g] of koordinatGroups) {
     if (!emittedGroups.has(gKey)) {
-      lines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
+      wrongLines.push(buildKoordinatFeedback(g.points, context.module, context.tab, context.attempt))
     }
   }
   for (const [gKey, g] of matriksGroups) {
     if (!emittedGroups.has(gKey)) {
-      lines.push(buildMatriksFeedback(g.points, context.attempt))
+      wrongLines.push(buildMatriksFeedback(g.points, context.attempt))
     }
   }
 
-  return lines.join("\n")
+  // attempt 1 (hint): no correct-item section — just the wrong bullets
+  if (context.attempt === 1) {
+    return wrongLines.join("\n")
+  }
+
+  // attempt 2 (pembahasan): if all wrong (correctLines is empty)
+  if (correctLines.length === 0) {
+    return `${FEEDBACK_SECTION_DELIMITER.WRONG}Pembahasan:\n${wrongLines.join("\n")}`
+  }
+
+  // attempt 2 (pembahasan): mixed (some wrong, some correct)
+  const wrongBlock = `${FEEDBACK_SECTION_DELIMITER.WRONG}Ada jawaban yang kurang tepat.\nPembahasan:\n${wrongLines.join("\n")}`
+  const correctBlock = `${FEEDBACK_SECTION_DELIMITER.CORRECT}Jawaban lainnya sudah tepat.\nPembahasan:\n${correctLines.join("\n")}`
+  return `${wrongBlock}\n\n${correctBlock}`
 }
 
 /** Prepend deterministic hints to AI feedback without duplicating content. */
@@ -357,6 +386,16 @@ export function localScore(local: ValidationResult): number {
   return Math.round((local.correctCount / local.totalItems) * 100)
 }
 
+/**
+ * Delimiter used to split the feedback string into correct/wrong sections.
+ * §CORRECT§ opens a correct-answers block; §WRONG§ opens a wrong-answers block.
+ * Plain feedback strings (legacy / pure AI) contain neither and are rendered as-is.
+ */
+export const FEEDBACK_SECTION_DELIMITER = {
+  CORRECT: "§CORRECT§",
+  WRONG: "§WRONG§",
+} as const
+
 /** Build review feedback for a fully correct submission — shows each item's explanation. */
 export function feedbackForCorrect(
   sectionType: string,
@@ -369,8 +408,7 @@ export function feedbackForCorrect(
     const bullet = buildItemFeedback(item, answers, 2)
     if (bullet) explanations.push(bullet)
   }
-  if (explanations.length === 0) {
-    return `Semua jawaban pada bagian ${label} sudah tepat. Pertahankan pemahamanmu.`
-  }
-  return `Semua jawaban pada bagian ${label} sudah tepat.\n\nPembahasan:\n${explanations.join("\n")}`
+  const header = `Semua jawaban pada bagian ${label} sudah tepat.`
+  if (explanations.length === 0) return header
+  return `${FEEDBACK_SECTION_DELIMITER.CORRECT}${header}\n\nPembahasan:\n${explanations.join("\n")}`
 }

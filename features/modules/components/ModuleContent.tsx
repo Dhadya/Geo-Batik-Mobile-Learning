@@ -96,12 +96,20 @@ export function ModuleContent({
 
       if (s.sectionType === "cek-pemahaman") {
         try {
-          const parsed = JSON.parse(s.attempt1Answer)
+          const isAttempt2 = !!s.attempt2Answer
+          const rawAnswer = isAttempt2 ? s.attempt2Answer! : s.attempt1Answer
+          const parsed = JSON.parse(rawAnswer)
           if (Array.isArray(parsed.selections)) {
             store.setSelections(slug, decodedTab, parsed.selections)
           }
-          store.setCekPemahamanStatus(slug, decodedTab, narrowSectionStatus(s.status), 1)
+          const status = narrowSectionStatus(s.status)
+          store.setCekPemahamanStatus(slug, decodedTab, status, isAttempt2 ? 2 : 1)
           store.setCekPemahamanScore(slug, decodedTab, finalScore)
+
+          const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
+          if (feedback) {
+            store.setCekPemahamanFeedback(slug, decodedTab, feedback)
+          }
         } catch {
           continue
         }
@@ -123,29 +131,57 @@ export function ModuleContent({
               )
             }
           }
+          const status = narrowSectionStatusWithLock(s.status)
           store.setSectionStatus(
             slug,
             decodedTab,
             sectionKey as "percobaan",
-            narrowSectionStatusWithLock(s.status),
+            status,
             isAttempt2 ? 2 : 1,
           )
-        store.setSectionScore(
-          slug,
-          decodedTab,
-          sectionKey as "percobaan",
-          finalScore,
-        )
-        const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
-        if (feedback) {
-          store.setAIFeedback(
+          store.setSectionScore(
             slug,
             decodedTab,
             sectionKey as "percobaan",
-            feedback,
+            finalScore,
           )
-        }
-        // Don't set isChecked here — let the user check answers again on second attempt
+          const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
+          if (feedback) {
+            store.setAIFeedback(
+              slug,
+              decodedTab,
+              sectionKey as "percobaan",
+              feedback,
+            )
+          }
+
+          // Hydrate isChecked & fieldColors so previous answers show colored inputs & lock buttons correctly
+          const currentTabConfig = getModuleTab(slug, decodedTab)
+          const block = currentTabConfig?.sections?.[sectionKey as keyof typeof currentTabConfig.sections]
+          if (block?.items) {
+            const hasPilihanRefleksi = block.items.some((item) => item.type === "pilihan_refleksi")
+            const evalItems = hasPilihanRefleksi
+              ? block.items.filter((item) => item.type !== "koordinat")
+              : block.items
+            import("../lib/validation").then(({ validateSection }) => {
+              const localRes = validateSection(evalItems, parsed, undefined)
+              store.setSectionFieldColors(
+                slug,
+                decodedTab,
+                sectionKey as "percobaan",
+                localRes.fieldColors,
+              )
+            })
+          }
+
+          if (status === "correct" || status === "wrong_attempt2" || status === "wrong_attempt1") {
+            store.setChecked(
+              slug,
+              decodedTab,
+              sectionKey as "percobaan",
+              true,
+            )
+          }
         } catch {
           continue
         }

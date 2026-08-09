@@ -36,25 +36,16 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const setSelections = useAnswerStore((s) => s.setSelections)
   const hasInput = selections.some((s) => s != null)
 
-  const [attempt, setAttempt] = useState<1 | 2>(() => {
-    if (persistedStatus === "correct" || persistedStatus === "wrong_attempt2") return 2
-    if (persistedStatus === "wrong_attempt1") return 2
-    return persistedAttempt ?? 1
-  })
-  const [isLocked, setIsLocked] = useState(() =>
-    persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
-  )
-  const [showCobaLagi, setShowCobaLagi] = useState(() =>
-    persistedStatus === "wrong_attempt1"
-  )
-  const [isChecked, setIsChecked] = useState(() =>
-    persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
-  )
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(() =>
-    persistedStatus === "correct" ? true
-      : persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2" ? false
-        : null
-  )
+  const attempt = useMemo<1 | 2>(() => {
+    if (persistedStatus === "correct" || persistedStatus === "wrong_attempt2" || persistedStatus === "wrong_attempt1") return 2
+    return (persistedAttempt ?? 1) as 1 | 2
+  }, [persistedStatus, persistedAttempt])
+
+  const isLocked = persistedStatus === "correct" || persistedStatus === "wrong_attempt2"
+  const showCobaLagi = persistedStatus === "wrong_attempt1"
+  const isChecked = persistedStatus === "correct" || persistedStatus === "wrong_attempt2" || persistedStatus === "wrong_attempt1"
+  const isCorrect = persistedStatus === "correct" ? true : (persistedStatus === "wrong_attempt1" || persistedStatus === "wrong_attempt2") ? false : null
+
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -114,11 +105,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
 
       if (isCorrectResult) {
         await submitMutation.mutateAsync({ ...savePayload, status: "correct" })
-        setIsChecked(true)
         setValidationErrors(finalErrors)
-        setIsCorrect(true)
-        setIsLocked(true)
-        setShowCobaLagi(false)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         useAnswerStore.getState().setCekPemahamanFieldColors(slug, tab, result.fieldColors)
@@ -127,22 +114,14 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
         await triggerTabUnlockIfComplete(slug, tab)
       } else if (attempt === 1) {
         await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt1" })
-        setIsChecked(true)
         setValidationErrors(finalErrors)
-        setIsCorrect(false)
-        setShowCobaLagi(true)
-        setAttempt(2)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt1", 2)
         toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
       } else {
         await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt2" })
-        setIsChecked(true)
         setValidationErrors(finalErrors)
-        setIsCorrect(false)
-        setIsLocked(true)
-        setShowCobaLagi(false)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt2", 2)
@@ -255,16 +234,12 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                       ? !!(Number(selections[qi] ?? 0) & (1 << oi))
                       : selections[qi] === oi
 
-                    const isCorrect = isChecked && isSelected
+                    const isCorrect = isChecked
                       ? isMulti
                         ? q.correctIndices?.includes(oi)
-                        : selections[qi] === q.correctIndex
+                        : oi === q.correctIndex
                       : false
-                    const isWrong = isChecked && isSelected
-                      ? isMulti
-                        ? !q.correctIndices?.includes(oi)
-                        : selections[qi] !== q.correctIndex
-                      : false
+                    const isWrong = isChecked && isSelected && !isCorrect
 
                     return (
                       <ModuleAnswerButton
@@ -314,10 +289,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
           attempt={attempt}
           onSubmit={doSubmit}
           onCobaLagi={() => {
-            setIsChecked(false)
-            setIsCorrect(null)
             setValidationErrors({})
-            setShowCobaLagi(false)
             useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "unsubmitted", 2)
           }}
           requireConfirmation={slug === "translasi" && tab === "titik"}

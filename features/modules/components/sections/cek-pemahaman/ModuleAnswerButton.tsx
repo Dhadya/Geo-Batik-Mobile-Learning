@@ -47,8 +47,8 @@ export function ModuleAnswerButton({
 
   return (
     <Button
-      variant={isSelected ? "default" : "outline"}
-      className={`justify-start flex-row items-center gap-2 md:gap-3 p-2 md:p-3 text-left font-semibold text-sm md:text-base relative ${isCorrect ? "border-green-600 bg-green-50" : isWrongAttempt2 ? "border-destructive bg-destructive/5" : isWrong ? "border-orange-500 bg-orange-50" : ""
+      variant={isSelected && !isCorrect && !isWrong ? "default" : "outline"}
+      className={`justify-start flex-row items-center gap-2 md:gap-3 p-2 md:p-3 text-left font-semibold text-sm md:text-base relative ${isCorrect ? "border-green-600 bg-green-50 text-black" : isWrongAttempt2 ? "border-destructive bg-destructive/10 text-black" : isWrong ? "border-orange-500 bg-orange-50 text-black" : ""
         }`}
       onClick={onSelect}
       disabled={disabled}
