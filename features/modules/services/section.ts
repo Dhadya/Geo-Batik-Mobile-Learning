@@ -122,6 +122,18 @@ export async function getSectionProgress(
 
   const rows = await db.query.sectionProgress.findMany({
     where: and(...conditions),
+    columns: {
+      tab: true,
+      sectionType: true,
+      status: true,
+      finalScore: true,
+      attempt1Answer: true,
+      attempt1Feedback: true,
+      attempt1Score: true,
+      attempt2Answer: true,
+      attempt2Feedback: true,
+      completedAt: true,
+    },
   });
 
   return rows.map((r) => ({

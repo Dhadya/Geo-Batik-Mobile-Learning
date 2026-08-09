@@ -29,17 +29,22 @@ export function MatrixExplanationRenderer({
     <div className="flex gap-1.5 md:gap-2">
       <span className="text-base md:text-lg font-black shrink-0 w-3 md:w-4 text-right mt-2">•</span>
       <div className="grow space-y-1.5 md:space-y-2">
-        <div className="flex items-center gap-0.5">
-          <Text as="p" className="text-xs md:text-sm font-medium text-black">
-            Apa arti dari translasi berikut.
-          </Text>
-          <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-          <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
-            <div className="px-1 select-none">2</div>
-            <div className="px-1 select-none">1</div>
-          </div>
-          <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
-        </div>
+        <p className="text-xs md:text-sm font-medium text-black leading-relaxed">
+          Apa arti dari translasi berikut{" "}
+          <span className="inline-flex items-center gap-0.5 mx-0.5 align-middle">
+            <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">
+              (
+            </span>
+            <span className="flex flex-col items-center gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
+              <span className="text-center leading-none select-none">2</span>
+              <span className="text-center leading-none select-none">1</span>
+            </span>
+            <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">
+              )
+            </span>
+          </span>
+          ?
+        </p>
         <Textarea
           value={val}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField("7", "text", e.target.value)}

@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
+import { withRequestLog } from "@/lib/api/logger";
 import { pembahasanSchema } from "@/lib/schemas";
 import { generatePembahasan } from "@/features/modules/services/ai";
 
-/** POST /api/ai/generate-pembahasan — generate AI-powered feedback for a completed quiz. */
-export async function POST(request: NextRequest) {
+/**
+ * POST /api/ai/generate-pembahasan — generate AI-powered feedback for a
+ * completed quiz.
+ */
+export const POST = withRequestLog(async function POST(request: NextRequest) {
   try {
     await requireAuth();
     const body = await request.json();
@@ -19,8 +24,11 @@ export async function POST(request: NextRequest) {
     }
 
     const feedback = await generatePembahasan(parsed.data.questions, parsed.data.answers);
-    return NextResponse.json({ ok: true, data: { feedback } });
+    return NextResponse.json(
+      { ok: true, data: { feedback } },
+      { headers: cacheControl("noStore") },
+    );
   } catch (e) {
     return handleError(e);
   }
-}
+});

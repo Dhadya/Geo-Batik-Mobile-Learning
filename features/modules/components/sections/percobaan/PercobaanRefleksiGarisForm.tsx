@@ -43,9 +43,9 @@ export function PercobaanRefleksiGarisForm({ slug, tab }: PercobaanRefleksiGaris
         <Select
           value={selectedOption}
           onValueChange={(val) => { if (val) setField(String(refleksiItem.id), "selected", val) }}
-          disabled={isChecked}
+          disabled={isChecked || isLocked || showCobaLagi || attempt > 1}
         >
-          <Select.Trigger className={`w-full border-2 shadow-[2px_2px_0_0_black] text-xs md:text-sm font-medium ${fieldColorClasses(fieldColors[`${refleksiItem.id}_selected`])}`}>
+          <Select.Trigger className={`w-full border-2 shadow-[2px_2px_0_0_black] text-xs md:text-sm font-medium ${fieldColorClasses(fieldColors[`${refleksiItem.id}_selected`])}`} disabled={isChecked || isLocked || showCobaLagi || attempt > 1}>
             <Select.Value placeholder="Pilih opsi refleksi" />
           </Select.Trigger>
           <Select.Content>

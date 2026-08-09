@@ -40,9 +40,12 @@ export function SectionSubmitButton({
   requireConfirmation = false,
   isSubmitting = false,
 }: SectionSubmitButtonProps) {
-  const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false)
 
-  const isDisabled = !isChecked ? !isFilled : (isLocked && !showCobaLagi) || isSubmitting
+  // Ensure loading state disables interaction and prevents double submissions
+  const isLoading = isSubmitting
+
+  const isDisabled = isLoading || (!isChecked ? !isFilled : isLocked && !showCobaLagi)
 
   let text: string
   let variantStyle = ""
@@ -61,6 +64,7 @@ export function SectionSubmitButton({
   }
 
   const handleClick = useCallback(() => {
+    if (isLoading) return
     if (!isLocked) {
       if (showCobaLagi) {
         // Coba Lagi — no dialog, directly reset for attempt 2
@@ -72,7 +76,7 @@ export function SectionSubmitButton({
         onSubmit()
       }
     }
-  }, [isLocked, showCobaLagi, requireConfirmation, onSubmit, onCobaLagi])
+  }, [isLoading, isLocked, showCobaLagi, requireConfirmation, onSubmit, onCobaLagi])
 
   const handleConfirm = useCallback(() => {
     onSubmit()

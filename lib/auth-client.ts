@@ -2,15 +2,20 @@ import { createAuthClient } from "better-auth/react";
 
 /**
  * Client-side base URL for BetterAuth.
- * Prefers NEXT_PUBLIC_BETTER_AUTH_URL; otherwise derives the origin from the
- * current window so the OAuth flow always targets the domain the user is on
- * (works on Vercel even if the env var was not baked in at build time).
+ * Prefers NEXT_PUBLIC_BETTER_AUTH_URL unless it is a loopback address baked in
+ * during a production build; otherwise derives the origin from the current
+ * window so the OAuth flow always targets the domain the user is on.
  */
+function isLocalURL(url: string): boolean {
+  return url.includes("localhost") || url.includes("127.0.0.1");
+}
+
 function resolveBaseURL(): string {
-  const configured = process.env.NEXT_PUBLIC_BETTER_AUTH_URL
-  if (configured) return configured
-  if (typeof window !== "undefined") return window.location.origin
-  return "http://localhost:3000"
+  const configured = process.env.NEXT_PUBLIC_BETTER_AUTH_URL?.trim();
+  if (configured && !isLocalURL(configured)) return configured;
+  if (typeof window !== "undefined") return window.location.origin;
+  if (configured) return configured;
+  return "http://localhost:3000";
 }
 
 const baseURL = resolveBaseURL()

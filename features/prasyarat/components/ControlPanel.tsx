@@ -10,8 +10,9 @@ import {
 } from "@/components/retroui/Accordion"
 import { MaterialIcon } from "@/components/common/MaterialIcon"
 import { AxisIcon } from "./AxisIcon"
+import { LineIcon } from "./LineIcon"
 import { toggles, accordionGroups, accordionItemLabels } from "../toggles"
-import { prerequisiteConcepts } from "../data"
+import { prerequisiteConcepts, controlPanelConcepts } from "../data"
 import { ConceptSheet } from "./ConceptSheet"
 import type { GeoGebraToggle } from "../types"
 import type { PrerequisiteConcept } from "../data"
@@ -24,6 +25,8 @@ interface ControlPanelProps {
 function PanelIcon({ icon, className }: { icon: string; className?: string }) {
   if (icon === "axis_horizontal") return <AxisIcon axis="horizontal" className={className} />
   if (icon === "axis_vertical") return <AxisIcon axis="vertical" className={className} />
+  if (icon === "line_garis") return <LineIcon variant="garis" className={className} />
+  if (icon === "line_ruas_garis") return <LineIcon variant="ruas_garis" className={className} />
   return <MaterialIcon name={icon} className={className} />
 }
 
@@ -38,7 +41,8 @@ export function ControlPanel({ activeToggles, onToggle }: ControlPanelProps) {
   function handleToggleClick(toggle: GeoGebraToggle, pressed: boolean) {
     onToggle(toggle)
     if (toggle.conceptKey) {
-      const concept = prerequisiteConcepts.find(c => c.title === toggle.conceptKey)
+      const concept = controlPanelConcepts[toggle.conceptKey]
+        ?? prerequisiteConcepts.find(c => c.title === toggle.conceptKey)
       if (concept) {
         if (pressed) {
           setSheetConcept(concept)

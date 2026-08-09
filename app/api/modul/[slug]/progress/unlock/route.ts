@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
+import { withRequestLog } from "@/lib/api/logger";
 import { unlockNextTab, reconcileAndUnlockNextTab } from "@/features/modules/services/progress";
 import { unlockSchema } from "@/lib/schemas";
 import { getModuleTabs } from "@/features/modules/data";
 import type { ModuleSlug } from "@/features/modules/types";
 
 /** POST /api/modul/[slug]/progress/unlock — unlock the next tab after completing all sections of the current tab. */
-export async function POST(
+export const POST = withRequestLog(async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
@@ -43,8 +45,11 @@ export async function POST(
       parsed.data.sections?.length
         ? await reconcileAndUnlockNextTab(user.id, slug as ModuleSlug, parsed.data.completedTab, parsed.data.sections)
         : await unlockNextTab(user.id, slug as ModuleSlug, parsed.data.completedTab);
-    return NextResponse.json({ ok: true, data: result });
+    return NextResponse.json(
+      { ok: true, data: result },
+      { headers: cacheControl("noStore") },
+    );
   } catch (e) {
     return handleError(e);
   }
-}
+});

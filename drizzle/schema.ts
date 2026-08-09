@@ -7,7 +7,9 @@ import {
   timestamp,
   uniqueIndex,
   index,
+  serial,
 } from "drizzle-orm/pg-core"
+import { desc } from "drizzle-orm"
 
 // ─── BetterAuth Tables ───────────────────────────────────────────────────
 
@@ -35,6 +37,7 @@ export const session = pgTable("session", {
 }, (table) => [
   index("idx_session_user").on(table.userId),
   index("idx_session_token").on(table.token),
+  index("idx_session_expires").on(table.expiresAt),
 ])
 
 export const account = pgTable("account", {
@@ -56,6 +59,7 @@ export const account = pgTable("account", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   index("idx_account_user").on(table.userId),
+  index("idx_account_provider").on(table.providerId, table.providerUserId),
 ])
 
 export const verification = pgTable("verification", {
@@ -149,5 +153,18 @@ export const quizResults = pgTable(
   (table) => [
     index("idx_quiz_results_user").on(table.userId),
     index("idx_quiz_results_module").on(table.module),
+    index("idx_quiz_results_user_module_completed").on(table.userId, table.module, desc(table.completedAt)),
+    index("idx_quiz_results_user_module_attempt").on(table.userId, table.module, table.attemptNumber),
   ],
 )
+
+// AI Feedback Cache
+export const aiFeedbackCache = pgTable("ai_feedback_cache", {
+  id: serial("id").primaryKey(),
+  cacheKey: text("cache_key").notNull().unique(),
+  result: jsonb("result").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("idx_ai_cache_created").on(table.createdAt),
+])
+

@@ -2,7 +2,8 @@
 
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/retroui/Button"
 import { Text } from "@/components/retroui/Text"
 import { Badge } from "@/components/retroui/Badge"
@@ -54,8 +55,9 @@ export function ModuleContent({
   const label = slug === "translasi" ? "Translasi" : "Refleksi"
 
   // Derive MCQ questions from cekPemahaman section (backward compat with AssessmentQuestion)
-  const cekPemahamanQuestions =
-    (tabConfig.sections?.cekPemahaman.items ?? [])
+  // Memoized so the useEffect that uses questions for index lookup doesn't capture a stale reference.
+  const questions = useMemo(() => {
+    const cekPemahamanQuestions = (tabConfig.sections?.cekPemahaman.items ?? [])
       .filter((i): i is PilihanGandaItem => i.type === "pilihan_ganda")
       .map((i) => ({
         id: i.id,
@@ -72,12 +74,9 @@ export function ModuleContent({
         hint: i.hint,
         explanation: i.explanation,
       }))
-
-  // Fallback to legacy assessment prop if no sections defined
-  const questions =
-    cekPemahamanQuestions.length > 0
-      ? cekPemahamanQuestions
-      : tabConfig.assessment
+    // Fallback to legacy assessment prop if no sections defined
+    return cekPemahamanQuestions.length > 0 ? cekPemahamanQuestions : tabConfig.assessment
+  }, [tabConfig])
 
   // Sync server progress into stores via TanStack Query
   const { data: sections } = useSectionProgress(slug, { tab: decodedTab })
@@ -95,15 +94,55 @@ export function ModuleContent({
 
       if (s.sectionType === "cek-pemahaman") {
         try {
-          const parsed = JSON.parse(s.attempt1Answer)
+          const isAttempt2 = !!s.attempt2Answer
+
+          // Guard against optimistic-update flash: the onMutate cache snapshot for attempt 2
+          // has no attempt2Answer yet, so without this guard the effect would hydrate selections
+          // from attempt1Answer, causing a brief flash of the old wrong answer.
+          // If the server data has no attempt2Answer but the store already holds correct or wrong_attempt2
+          // (written moments ago by doSubmit), skip this stale cache entry — the real refetch
+          // will arrive shortly with the correct attempt2Answer.
+          const currentStoreStatus = store.getTabAnswers(slug, decodedTab).cekPemahaman.status
+          if (!isAttempt2 && (currentStoreStatus === "correct" || currentStoreStatus === "wrong_attempt2")) continue
+
+          const rawAnswer = isAttempt2 ? s.attempt2Answer! : s.attempt1Answer
+          const parsed = JSON.parse(rawAnswer)
           if (Array.isArray(parsed.selections)) {
             store.setSelections(slug, decodedTab, parsed.selections)
+          } else if (typeof parsed === "object" && parsed !== null) {
+            // Answer was saved as fields format: { "1": { selected: "0" }, "2": { selected: "1" } }
+            const selMap: Record<number, number> = {}
+            for (const [id, fieldObj] of Object.entries(parsed)) {
+              const selectedVal = (fieldObj as Record<string, string>)?.selected
+              if (selectedVal != null) {
+                const qIdx = questions.findIndex((q) => String(q.id) === id)
+                if (qIdx !== -1) {
+                  selMap[qIdx] = Number(selectedVal)
+                }
+              }
+            }
+            // Build a full array matching the number of questions, filling missing entries with null
+            const fullSelArray: (number | null)[] = new Array(questions.length).fill(null)
+            for (const [idxStr, val] of Object.entries(selMap)) {
+              const idx = Number(idxStr)
+              if (idx >= 0 && idx < fullSelArray.length) {
+                fullSelArray[idx] = val
+              }
+            }
+            store.setSelections(slug, decodedTab, fullSelArray)
           }
-          store.setCekPemahamanStatus(slug, decodedTab, narrowSectionStatus(s.status), 1)
+          const status = narrowSectionStatus(s.status)
+          store.setCekPemahamanStatus(slug, decodedTab, status, isAttempt2 ? 2 : 1)
           store.setCekPemahamanScore(slug, decodedTab, finalScore)
+
+          const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
+          if (feedback) {
+            store.setCekPemahamanFeedback(slug, decodedTab, feedback)
+          }
         } catch {
           continue
         }
+
       } else {
         try {
           const isAttempt2 = !!s.attempt2Answer
@@ -122,35 +161,63 @@ export function ModuleContent({
               )
             }
           }
+          const status = narrowSectionStatusWithLock(s.status)
           store.setSectionStatus(
             slug,
             decodedTab,
             sectionKey as "percobaan",
-            narrowSectionStatusWithLock(s.status),
+            status,
             isAttempt2 ? 2 : 1,
           )
-        store.setSectionScore(
-          slug,
-          decodedTab,
-          sectionKey as "percobaan",
-          finalScore,
-        )
-        const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
-        if (feedback) {
-          store.setAIFeedback(
+          store.setSectionScore(
             slug,
             decodedTab,
             sectionKey as "percobaan",
-            feedback,
+            finalScore,
           )
-        }
-        // Don't set isChecked here — let the user check answers again on second attempt
+          const feedback = isAttempt2 ? s.attempt2Feedback : s.attempt1Feedback
+          if (feedback) {
+            store.setAIFeedback(
+              slug,
+              decodedTab,
+              sectionKey as "percobaan",
+              feedback,
+            )
+          }
+
+          // Hydrate isChecked & fieldColors so previous answers show colored inputs & lock buttons correctly
+          const currentTabConfig = getModuleTab(slug, decodedTab)
+          const block = currentTabConfig?.sections?.[sectionKey as keyof typeof currentTabConfig.sections]
+          if (block?.items) {
+            const hasPilihanRefleksi = block.items.some((item) => item.type === "pilihan_refleksi")
+            const evalItems = hasPilihanRefleksi
+              ? block.items.filter((item) => item.type !== "koordinat")
+              : block.items
+            import("../lib/validation").then(({ validateSection }) => {
+              const localRes = validateSection(evalItems, parsed, undefined)
+              store.setSectionFieldColors(
+                slug,
+                decodedTab,
+                sectionKey as "percobaan",
+                localRes.fieldColors,
+              )
+            })
+          }
+
+          if (status === "correct" || status === "wrong_attempt2" || status === "wrong_attempt1") {
+            store.setChecked(
+              slug,
+              decodedTab,
+              sectionKey as "percobaan",
+              true,
+            )
+          }
         } catch {
           continue
         }
       }
     }
-  }, [sections, slug, decodedTab])
+  }, [sections, slug, decodedTab, questions])
 
   // Mount-time self-heal: if the client store says this tab is complete but the server
   // hasn't unlocked the next one yet (e.g. a persist failed mid-flow), reconcile + unlock.
@@ -161,7 +228,28 @@ export function ModuleContent({
     import("../lib/progressSync").then(({ triggerTabUnlockIfComplete }) =>
       triggerTabUnlockIfComplete(slug, decodedTab),
     )
-  }, [sections, slug, decodedTab])
+  }, [sections, slug, decodedTab, tabConfig])
+
+  // Prefetch the next tab's section progress so navigating forward is instant
+  const queryClient = useQueryClient()
+  const currentTabIndex = tabs.findIndex((t) => t.value === decodedTab)
+  const nextTabValue = tabs[currentTabIndex + 1]?.value
+  useEffect(() => {
+    if (!nextTabValue) return
+    queryClient.prefetchQuery({
+      queryKey: ["section-progress", slug, nextTabValue, undefined],
+      queryFn: async () => {
+        const response = await fetch(
+          `/api/modul/${slug}/section?tab=${encodeURIComponent(nextTabValue)}`,
+          { cache: "no-store" },
+        )
+        const body = await response.json()
+        if (!body.ok) return []
+        return body.data?.sections ?? []
+      },
+      staleTime: 30 * 1000,
+    })
+  }, [slug, nextTabValue, queryClient])
 
   // Calculate section progress for this tab
   const tabAnswers = useAnswerStore(

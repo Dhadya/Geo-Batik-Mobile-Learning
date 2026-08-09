@@ -22,6 +22,30 @@ export interface ValidationResult {
   totalItems: number
 }
 
+/** Normalize a string for lenient comparison: lowercase, collapse whitespace, remove spaces around operators/symbols. */
+const normalizeText = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/\s*([,();:=+*/\-])\s*/g, "$1")
+    .trim()
+
+/** Check whether a student answer merely echoes the question text instead of answering it. */
+function echoesQuestion(question: string | undefined, answer: string): boolean {
+  const q = normalizeText(question ?? "")
+  const a = normalizeText(answer)
+  if (q.length < 4 || a.length < 4) return false
+  // Answer pasted the whole question (possibly with a trailing sentence appended).
+  if (a === q || a.includes(q)) return true
+  // Both are short: if the majority of the question tokens appear in the answer
+  // and the answer is not notably longer, it is likely a reworded echo.
+  const qTokens = q.split(" ")
+  const aTokens = a.split(" ")
+  const overlap = qTokens.filter((t) => aTokens.includes(t)).length
+  const similarLength = aTokens.length >= qTokens.length * 0.6 && aTokens.length <= qTokens.length * 1.6
+  return similarLength && overlap >= Math.max(2, Math.ceil(qTokens.length * 0.7))
+}
+
 /** Validate all items in a section against stored answers. */
 export function validateSection(
   items: SectionItem[],
@@ -75,8 +99,8 @@ export function validateSection(
           const bOk = bVal.toLowerCase() === "b"
           fieldColors[`${item.id}_a_val`] = aOk ? "green" : "red"
           fieldColors[`${item.id}_b_val`] = bOk ? "green" : "red"
-          if (!aOk) errors[`${item.id}_a_val`] = aVal ? "Komponen a belum sesuai, isi dengan variabel a" : "Komponen a belum diisi"
-          if (!bOk) errors[`${item.id}_b_val`] = bVal ? "Komponen b belum sesuai, isi dengan variabel b" : "Komponen b belum diisi"
+          if (!aOk) errors[`${item.id}_a_val`] = aVal ? "Komponen a belum sesuai, isi dengan variabel" : "Komponen a belum diisi"
+          if (!bOk) errors[`${item.id}_b_val`] = bVal ? "Komponen b belum sesuai, isi dengan variabel" : "Komponen b belum diisi"
           if (aOk && bOk) correctCount++
           break
         }
@@ -86,28 +110,164 @@ export function validateSection(
           errors[`${item.id}_text`] = "Jawaban belum diisi"
           break
         }
-        /** Normalize whitespace: trim and collapse spaces around commas/parentheses. */
-        const normalize = (s: string) => s.toLowerCase().replace(/\s*,\s*/g, ",").replace(/\s*\(\s*/g, "(").replace(/\s*\)\s*/g, ")").trim()
+        /** Normalize string for comparison: trim, lower case, collapse all whitespace, and remove spaces around operators/symbols. */
+        const normalize = (s: string) =>
+          s
+            .toLowerCase()
+            .replace(/\s+/g, " ")
+            .replace(/\s*([,();:=+*/\-])\s*/g, "$1")
+            .trim()
         const userLower = normalize(userAns)
-        const allExpected = [u.answer, ...(u.acceptAnswers ?? [])]
-        const isCorrect = allExpected.some((expected) => {
-          const expLower = normalize(expected)
-          if (userLower === expLower) return true
-          if (userLower.includes(expLower)) return true
-          // Only allow expected-contains-user when the user answer is substantial (>= 50% of expected length)
-          // to prevent partial fragments like ", y" matching "(2h - x, y)".
-          if (expLower.includes(userLower) && userLower.length >= expLower.length * 0.5) return true
-          // Keyword matching: split expected into meaningful clauses, check user answer covers most keywords
-          const clauses = expLower.split(/[,.;:!?]+/).map((c) => c.trim()).filter((c) => c.length > 3)
-          if (clauses.length === 0) return false
-          const matchedClauses = clauses.filter((clause) => {
-            const keywords = clause.split(/\s+/).filter((w) => w.length > 2)
-            if (keywords.length === 0) return false
-            const matched = keywords.filter((kw) => userLower.includes(kw))
-            return matched.length >= Math.ceil(keywords.length * 0.4)
-          })
-          return matchedClauses.length >= Math.ceil(clauses.length * 0.4)
+
+        // Helper to extract formula/coordinate elements stripped of outer parentheses
+        const cleanFormula = (str: string) => str.replace(/^\((.*)\)$/, "$1").trim()
+
+        // Check if string contains coordinate-like pair or formula
+        const isCoordinatePair = (str: string) => {
+          const inner = cleanFormula(str)
+          return inner.includes(",")
+        }
+
+        // Normalize simple linear algebraic expressions (e.g., "2h-y", "-y+2h", "2*h - y", "a+x", "x+a")
+        const normalizeExpression = (expr: string) => {
+          const s = expr.replace(/\s+/g, "").replace(/\*/g, "");
+
+          // Canonicalize common coordinate formula expressions
+          if (s === "2h-y" || s === "-y+2h" || s === "2h+(-y)") return "2h-y";
+          if (s === "2h-x" || s === "-x+2h" || s === "2h+(-x)") return "2h-x";
+          if (s === "2k-y" || s === "-y+2k" || s === "2k+(-y)") return "2k-y";
+          if (s === "2k-x" || s === "-x+2k" || s === "2k+(-x)") return "2k-x";
+          if (s === "x+a" || s === "a+x") return "x+a";
+          if (s === "y+b" || s === "b+y") return "y+b";
+          if (s === "x-a" || s === "-a+x") return "x-a";
+          if (s === "y-b" || s === "-b+y") return "y-b";
+          
+          // Reject repeated variable inputs like "xx" or "yy", concatenated variables like "ya" or "yb" (without operator), or invalid operator syntax like "-y-", "--y", "x++"
+          if (
+            /^([a-z])\1+$/i.test(s) ||
+            /^[a-z]{2,}$/i.test(s) ||
+            /^-[a-z]{2,}$/i.test(s) ||
+            /[-+]{2,}/.test(s) ||
+            /^-[a-z]-$/i.test(s) ||
+            /[a-z]-$/i.test(s)
+          ) {
+            return `invalid_${s}`;
+          }
+
+          return s;
+        };
+
+        // Standardize coordinate format for flexible comparison, e.g. "(-x, y)" vs "-x, y" vs "( -x , y )"
+        const normalizeCoordinate = (str: string) => {
+          const cleaned = cleanFormula(normalize(str))
+          if (!cleaned.includes(",")) return normalizeExpression(cleaned)
+          const parts = cleaned.split(",").map((p) => normalizeExpression(p))
+          return `(${parts.join(",")})`
+        }
+
+        // A student answer that merely repeats the question is NOT a correct answer
+        if (echoesQuestion(u.question, userAns)) {
+          fieldColors[`${item.id}_text`] = "red"
+          errors[`${item.id}_text`] =
+            "Jawaban hanya mengulang kata-kata dari pertanyaan. Tuliskan simpulanmu dengan kalimat yang menjelaskan konsep."
+          break
+        }
+
+        let isCorrect = false
+
+        // Special handling for coordinate formulas (e.g. (-x, y), (x+a, y+b), (2h-x, y))
+        // Include original answer, accepted alternatives, and their negated forms (multiply both sides by -1)
+        const originalAnswers = [u.answer, ...(u.acceptAnswers ?? [])]
+        const negatedAnswers = originalAnswers.map((ans) => {
+          const parts = ans.split('=')
+          if (parts.length === 2) {
+            const left = parts[0].trim()
+            const right = parts[1].trim()
+            return `-${left} = -${right}`
+          }
+          return ans
         })
+        const allExpectedAnswers = [...originalAnswers, ...negatedAnswers]
+        const expectedIsCoordinate = allExpectedAnswers.some(isCoordinatePair)
+
+        if (expectedIsCoordinate) {
+          const userNormCoord = normalizeCoordinate(userAns)
+          isCorrect = allExpectedAnswers.some((exp) => {
+            if (!isCoordinatePair(exp)) return false
+            const expNormCoord = normalizeCoordinate(exp)
+            return userNormCoord === expNormCoord
+          })
+        }
+
+        // 1. If requiredKeywords are defined, treat each group as a required set (AND). The answer is correct only if all groups match.
+        if (!isCorrect && u.requiredKeywords && u.requiredKeywords.length > 0) {
+          const isCoordinateFormula = u.requiredKeywords.some((group) =>
+            group.some(
+              (kw) =>
+                /^-?[xy]$/i.test(kw.trim()) ||
+                /^2[a-z]-x$/i.test(kw.trim()) ||
+                /^2[a-z]-y$/i.test(kw.trim())
+            )
+          )
+          const hasCommaIfRequired = !isCoordinateFormula || userLower.includes(",")
+          
+          let matchesAllGroups =
+            hasCommaIfRequired &&
+            u.requiredKeywords.every((group) =>
+              group.some((kw) => {
+                const normKw = normalize(kw)
+                if (normKw.length <= 2) {
+                  return new RegExp(
+                    `(?:^|[^a-z0-9])${normKw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}(?:$|[^a-z0-9])`,
+                    "i"
+                  ).test(userLower)
+                }
+                return userLower.includes(normKw)
+              })
+            )
+
+          // If it's a coordinate pair formula (e.g. requiredKeywords = [["-y"], ["-x"]]), enforce the component sequence order
+          if (matchesAllGroups && isCoordinateFormula && userLower.includes(",")) {
+            const parts = userLower.split(",").map((p) => p.trim())
+            if (parts.length === 2 && u.requiredKeywords.length === 2) {
+              const firstGroupMatches = u.requiredKeywords[0].some((kw) => {
+                const normKw = normalize(kw)
+                return normKw.length <= 2
+                  ? new RegExp(`(?:^|[^a-z0-9])${normKw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}(?:$|[^a-z0-9])`, "i").test(parts[0])
+                  : parts[0].includes(normKw)
+              })
+              const secondGroupMatches = u.requiredKeywords[1].some((kw) => {
+                const normKw = normalize(kw)
+                return normKw.length <= 2
+                  ? new RegExp(`(?:^|[^a-z0-9])${normKw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}(?:$|[^a-z0-9])`, "i").test(parts[1])
+                  : parts[1].includes(normKw)
+              })
+              matchesAllGroups = firstGroupMatches && secondGroupMatches
+            }
+          }
+
+          isCorrect = matchesAllGroups
+        }
+        // 2. Fallback to exact / partial / automatic clause matching (skip for coordinate formula or requiredKeywords items to enforce strict rules)
+        if (!isCorrect && !expectedIsCoordinate && (!u.requiredKeywords || u.requiredKeywords.length === 0)) {
+          isCorrect = allExpectedAnswers.some((expected) => {
+            const expLower = normalize(expected)
+            if (userLower === expLower) return true
+            if (userLower.includes(expLower)) return true
+            if (expLower.includes(userLower) && userLower.length >= expLower.length * 0.5) return true
+
+            // Keyword matching: split expected into meaningful clauses, check user answer covers most keywords
+            const clauses = expLower.split(/[,.;:!?]+/).map((c) => c.trim()).filter((c) => c.length > 3)
+            if (clauses.length === 0) return false
+            const matchedClauses = clauses.filter((clause) => {
+              const keywords = clause.split(/\s+/).filter((w) => w.length > 2)
+              if (keywords.length === 0) return false
+              const matched = keywords.filter((kw) => userLower.includes(kw))
+              return matched.length >= Math.ceil(keywords.length * 0.4)
+            })
+            return matchedClauses.length >= Math.ceil(clauses.length * 0.4)
+          })
+        }
         fieldColors[`${item.id}_text`] = isCorrect ? "green" : "red"
         if (!isCorrect) {
           errors[`${item.id}_text`] = "Jawaban uraian kurang tepat, coba periksa langkah penyelesaian dan pastikan sesuai dengan format yang diminta"
@@ -227,7 +387,6 @@ export function validateSection(
           if (!ok) {
             errors[`${item.id}_checklist`] = "Ada jawaban yang belum sesuai, perhatikan setiap pernyataan dengan cermat dan bandingkan dengan hasil pengamatan"
             allCorrect = false
-            break
           }
         }
         if (allCorrect) correctCount++
