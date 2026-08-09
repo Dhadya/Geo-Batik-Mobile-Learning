@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
 import { getLatestQuizResult, getAllQuizResults } from "@/features/modules/services/quiz";
 import type { ModuleSlug } from "@/features/modules/types";
 
@@ -22,11 +23,7 @@ export async function GET(
 
     return NextResponse.json(
       { ok: true, data: { result: latest, allResults: all, finalResult } },
-      {
-        headers: {
-          "cache-control": "no-store",
-        },
-      },
+      { headers: cacheControl("private") },
     );
   } catch (e) {
     return handleError(e);

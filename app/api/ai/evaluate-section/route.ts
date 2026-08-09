@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
 import { evaluateSectionSchema } from "@/lib/schemas";
 import { evaluateSection, type EvaluateSectionInput } from "@/features/modules/services/ai";
 
@@ -29,7 +30,10 @@ export async function POST(request: NextRequest) {
         `score=${result.score} isCorrect=${result.isCorrect}`,
         `items=${parsed.data.items?.length ?? 0} answerKeys=${Object.keys(parsed.data.answers ?? {}).length}`,
       );
-      return NextResponse.json({ ok: true, data: result });
+      return NextResponse.json(
+        { ok: true, data: result },
+        { headers: cacheControl("noStore") },
+      );
     } finally {
       clearTimeout(timeoutId);
     }

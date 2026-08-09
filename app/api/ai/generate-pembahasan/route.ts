@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
 import { pembahasanSchema } from "@/lib/schemas";
 import { generatePembahasan } from "@/features/modules/services/ai";
 
@@ -19,7 +20,10 @@ export async function POST(request: NextRequest) {
     }
 
     const feedback = await generatePembahasan(parsed.data.questions, parsed.data.answers);
-    return NextResponse.json({ ok: true, data: { feedback } });
+    return NextResponse.json(
+      { ok: true, data: { feedback } },
+      { headers: cacheControl("noStore") },
+    );
   } catch (e) {
     return handleError(e);
   }

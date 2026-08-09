@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
 import { getDb } from "@/lib/db";
 import { sectionProgress, quizResults, tabProgress } from "@/drizzle/schema";
 import { eq, and } from "drizzle-orm";
@@ -43,7 +44,10 @@ export async function DELETE(
         eq(quizResults.module, moduleSlug),
       ));
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json(
+      { ok: true },
+      { headers: cacheControl("noStore") },
+    );
   } catch (e) {
     return handleError(e);
   }

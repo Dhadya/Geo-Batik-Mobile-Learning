@@ -1,22 +1,16 @@
-import { headers } from "next/headers"
-import { auth } from "@/lib/auth"
-import { getTabProgress } from "@/features/modules/services/progress"
-import { ModuleContent } from "@/features/modules"
+import { ModuleContent, MODULE_TABS } from "@/features/modules"
+
+/** Prerenders every known slug/tab combination so module content is served static/CDN. */
+export function generateStaticParams(): { slug: string; tab: string }[] {
+  return Object.entries(MODULE_TABS).flatMap(([slug, tabs]) =>
+    tabs.map((tab) => ({ slug, tab: tab.value })),
+  )
+}
 
 export default async function ModulTabPage(props: {
   params: Promise<{ slug: string; tab: string }>
 }) {
   const { slug, tab } = await props.params
-
-  // Seed tab progress for authenticated users (no redirect — locked tabs show LockOverlay in ModuleContent)
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (session?.user) {
-    try {
-      await getTabProgress(session.user.id, slug as "translasi" | "refleksi")
-    } catch {
-      // DB unavailable — ModuleContent will use client-side fallback (first tab unlocked)
-    }
-  }
 
   return <ModuleContent slug={slug} tab={tab} />
 }

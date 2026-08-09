@@ -11,28 +11,12 @@
  * Server-only (Layer 3) — never imported by client components.
  */
 
-import { Redis } from "@upstash/redis";
+import { getRedis } from "@/lib/cache";
 
 /** Maximum concurrent in-flight Gemini calls across all instances. */
 const MAX_INFLIGHT = 10;
 
 const SEMAPHORE_KEY = "gemini:inflight";
-
-/** Lazily created Redis client — null when env vars are absent. */
-let _redis: Redis | null = null;
-
-/**
- * Returns the Upstash Redis client, or null if the env vars are not set.
- * Uses a lazy singleton so module-level imports never throw.
- */
-function getRedis(): Redis | null {
-  if (_redis) return _redis;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null;
-  _redis = new Redis({ url, token });
-  return _redis;
-}
 
 /**
  * Returns the current 60-second window bucket (Unix minutes).

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
 import { saveSectionAttempt, getSectionProgress } from "@/features/modules/services/section";
 import { saveSectionSchema } from "@/lib/schemas";
 import type { ModuleSlug } from "@/features/modules/types";
@@ -46,7 +47,7 @@ export async function POST(
       `sectionType=${parsed.data.sectionType} attempt=${parsed.data.attempt}`,
       `status=${parsed.data.status} score=${parsed.data.score}`,
     );
-    return NextResponse.json({ ok: true, data: result }, { status: 200 });
+    return NextResponse.json({ ok: true, data: result }, { status: 200, headers: cacheControl("noStore") });
   } catch (e) {
     return handleError(e);
   }
@@ -76,7 +77,7 @@ export async function GET(
       `count=${sections.length}`,
       sections.map((s) => `${s.sectionType}[${s.tab}]:${s.status}`).join(" "),
     );
-    return NextResponse.json({ ok: true, data: { sections } });
+    return NextResponse.json({ ok: true, data: { sections } }, { headers: cacheControl("private") });
   } catch (e) {
     return handleError(e);
   }

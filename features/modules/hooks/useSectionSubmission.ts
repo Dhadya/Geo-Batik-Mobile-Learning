@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { FieldColor } from "@/features/modules/lib/validation"
 
 /** Payload for saving a section attempt. */
@@ -38,6 +38,7 @@ export interface SectionProgressEntry {
 
 /** Mutates a section attempt submission. */
 export function useSubmitSection(slug: string) {
+  const queryClient = useQueryClient()
   return useMutation<SaveSectionResult, Error, SaveSectionInput>({
     mutationFn: async (input) => {
       const response = await fetch(`/api/modul/${slug}/section`, {
@@ -48,6 +49,10 @@ export function useSubmitSection(slug: string) {
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal menyimpan")
       return body.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["section-progress", slug] })
+      queryClient.invalidateQueries({ queryKey: ["tab-progress", slug] })
     },
   })
 }

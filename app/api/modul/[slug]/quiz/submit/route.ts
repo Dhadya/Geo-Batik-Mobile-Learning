@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
+import { cacheControl } from "@/lib/api/cache-control";
 import { submitQuizSchema, saveQuizResult } from "@/features/modules/services/quiz";
 import type { ModuleSlug } from "@/features/modules/types";
 
@@ -33,7 +34,10 @@ export async function POST(
     }
 
     const result = await saveQuizResult(user.id, slug as ModuleSlug, parsed.data);
-    return NextResponse.json({ ok: true, data: result });
+    return NextResponse.json(
+      { ok: true, data: result },
+      { headers: cacheControl("noStore") },
+    );
   } catch (e) {
     return handleError(e);
   }
