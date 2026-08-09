@@ -103,5 +103,6 @@ export function useSectionProgress(
       return body.data?.sections ?? []
     },
     enabled: slug.length > 0,
+    staleTime: 30000,
   })
 }

@@ -20,6 +20,7 @@ export function useTabProgress(slug: string) {
       return body.data.tabs
     },
     enabled: slug.length > 0,
+    staleTime: 30000,
   })
 }
 

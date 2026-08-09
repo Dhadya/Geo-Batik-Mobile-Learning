@@ -22,6 +22,30 @@ export interface ValidationResult {
   totalItems: number
 }
 
+/** Normalize a string for lenient comparison: lowercase, collapse whitespace, remove spaces around operators/symbols. */
+const normalizeText = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/\s*([,();:=+*/\-])\s*/g, "$1")
+    .trim()
+
+/** Check whether a student answer merely echoes the question text instead of answering it. */
+function echoesQuestion(question: string | undefined, answer: string): boolean {
+  const q = normalizeText(question ?? "")
+  const a = normalizeText(answer)
+  if (q.length < 4 || a.length < 4) return false
+  // Answer pasted the whole question (possibly with a trailing sentence appended).
+  if (a === q || a.includes(q)) return true
+  // Both are short: if the majority of the question tokens appear in the answer
+  // and the answer is not notably longer, it is likely a reworded echo.
+  const qTokens = q.split(" ")
+  const aTokens = a.split(" ")
+  const overlap = qTokens.filter((t) => aTokens.includes(t)).length
+  const similarLength = aTokens.length >= qTokens.length * 0.6 && aTokens.length <= qTokens.length * 1.6
+  return similarLength && overlap >= Math.max(2, Math.ceil(qTokens.length * 0.7))
+}
+
 /** Validate all items in a section against stored answers. */
 export function validateSection(
   items: SectionItem[],
@@ -75,8 +99,8 @@ export function validateSection(
           const bOk = bVal.toLowerCase() === "b"
           fieldColors[`${item.id}_a_val`] = aOk ? "green" : "red"
           fieldColors[`${item.id}_b_val`] = bOk ? "green" : "red"
-          if (!aOk) errors[`${item.id}_a_val`] = aVal ? "Komponen a belum sesuai, isi dengan variabel a" : "Komponen a belum diisi"
-          if (!bOk) errors[`${item.id}_b_val`] = bVal ? "Komponen b belum sesuai, isi dengan variabel b" : "Komponen b belum diisi"
+          if (!aOk) errors[`${item.id}_a_val`] = aVal ? "Komponen a belum sesuai, isi dengan variabel" : "Komponen a belum diisi"
+          if (!bOk) errors[`${item.id}_b_val`] = bVal ? "Komponen b belum sesuai, isi dengan variabel" : "Komponen b belum diisi"
           if (aOk && bOk) correctCount++
           break
         }
@@ -94,6 +118,15 @@ export function validateSection(
             .replace(/\s*([,();:=+*/\-])\s*/g, "$1")
             .trim()
         const userLower = normalize(userAns)
+        // A student answer that merely repeats the question is NOT a correct
+        // answer — it shows the concept was not understood. Mark it wrong so the
+        // deterministic path and the AI judge it consistently.
+        if (echoesQuestion(u.question, userAns)) {
+          fieldColors[`${item.id}_text`] = "red"
+          errors[`${item.id}_text`] =
+            "Jawaban hanya mengulang kata-kata dari pertanyaan. Tuliskan simpulanmu dengan kalimat yang menjelaskan konsep."
+          break
+        }
         // 1. If requiredKeywords is defined, check every group (AND logic between groups, OR logic within each group)
         let isCorrect = false
         if (u.requiredKeywords && u.requiredKeywords.length > 0) {

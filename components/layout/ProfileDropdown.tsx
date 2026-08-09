@@ -18,6 +18,7 @@ export function ProfileDropdown() {
   const { data: session, isPending } = authClient.useSession()
   const [open, setOpen] = useState(false)
   const [imgFailed, setImgFailed] = useState(false)
+  const [isSigningOut, setIsSigningOut] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Close dropdown on outside click
@@ -31,15 +32,22 @@ export function ProfileDropdown() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  // Handle sign-out — clear session, query cache, and all persisted state, then redirect
+  // Handle sign-out — clear all client state then redirect regardless of signOut result
   async function handleSignOut() {
-    getQueryClient().clear()
-    useAnswerStore.getState().resetAll()
-    useQuizStore.getState().resetAnswers()
-    useTabProgressStore.getState().resetAll()
-    useObservationStore.getState().resetAll()
-    await signOut()
-    router.push("/login")
+    if (isSigningOut) return
+    setIsSigningOut(true)
+    try {
+      getQueryClient().clear()
+      useAnswerStore.getState().resetAll()
+      useQuizStore.getState().resetAnswers()
+      useTabProgressStore.getState().resetAll()
+      useObservationStore.getState().resetAll()
+      await signOut()
+    } catch (e) {
+      console.error("[ProfileDropdown] signOut error", e)
+    } finally {
+      router.push("/login")
+    }
   }
 
   // Skeleton while session is loading
@@ -104,10 +112,11 @@ export function ProfileDropdown() {
             <Button
               variant="ghost"
               onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold uppercase text-destructive hover:bg-destructive/10"
+              disabled={isSigningOut}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold uppercase text-destructive hover:bg-destructive/10 disabled:opacity-50"
             >
               <LogOut className="size-4" />
-              Keluar
+              {isSigningOut ? "Keluar..." : "Keluar"}
             </Button>
           </div>
         </div>
