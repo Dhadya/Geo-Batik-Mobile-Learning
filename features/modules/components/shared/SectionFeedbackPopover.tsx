@@ -32,18 +32,18 @@ export function SectionFeedbackPopover({
     if (!raw) return null
     const parts = raw.split("•").filter(Boolean)
     if (parts.length <= 1) {
-      return <span className="text-black text-xs md:text-sm">{raw}</span>
+      return <span className="text-black text-xs md:text-sm whitespace-pre-line">{raw}</span>
     }
     return (
-      <span className="text-black text-xs md:text-sm leading-relaxed">
+      <span className="text-black text-xs md:text-sm leading-relaxed block">
         {parts.map((part, i) => {
-          const trimmed = part.trim().replace(/\n/g, " ").replace(/\s+/g, " ")
+          const trimmed = part.trim()
           if (!trimmed) return null
           return (
             <span key={i} className="block mt-2 first:mt-0">
               <span className="inline-flex items-start gap-2">
                 <span className="shrink-0">{"\u2022"}</span>
-                <span>{trimmed}</span>
+                <span className="whitespace-pre-line">{trimmed}</span>
               </span>
             </span>
           )

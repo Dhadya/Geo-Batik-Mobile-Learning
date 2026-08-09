@@ -118,33 +118,90 @@ export function validateSection(
             .replace(/\s*([,();:=+*/\-])\s*/g, "$1")
             .trim()
         const userLower = normalize(userAns)
-        // A student answer that merely repeats the question is NOT a correct
-        // answer — it shows the concept was not understood. Mark it wrong so the
-        // deterministic path and the AI judge it consistently.
+
+        // Helper to extract formula/coordinate elements stripped of outer parentheses
+        const cleanFormula = (str: string) => str.replace(/^\((.*)\)$/, "$1").trim()
+
+        // Check if string contains coordinate-like pair or formula
+        const isCoordinatePair = (str: string) => {
+          const inner = cleanFormula(str)
+          return inner.includes(",")
+        }
+
+        // Normalize simple linear algebraic expressions (e.g., "2h-y", "-y+2h", "2*h - y", "a+x", "x+a")
+        const normalizeExpression = (expr: string) => {
+          const s = expr.replace(/\s+/g, "").replace(/\*/g, "")
+          // Canonicalize common coordinate formula expressions
+          if (s === "2h-y" || s === "-y+2h" || s === "2h+(-y)") return "2h-y"
+          if (s === "2h-x" || s === "-x+2h" || s === "2h+(-x)") return "2h-x"
+          if (s === "2k-y" || s === "-y+2k" || s === "2k+(-y)") return "2k-y"
+          if (s === "2k-x" || s === "-x+2k" || s === "2k+(-x)") return "2k-x"
+          if (s === "x+a" || s === "a+x") return "x+a"
+          if (s === "y+b" || s === "b+y") return "y+b"
+          if (s === "x-a" || s === "-a+x") return "x-a"
+          if (s === "y-b" || s === "-b+y") return "y-b"
+          return s
+        }
+
+        // Standardize coordinate format for flexible comparison, e.g. "(-x, y)" vs "-x, y" vs "( -x , y )"
+        const normalizeCoordinate = (str: string) => {
+          const cleaned = cleanFormula(normalize(str))
+          if (!cleaned.includes(",")) return normalizeExpression(cleaned)
+          const parts = cleaned.split(",").map((p) => normalizeExpression(p))
+          return `(${parts.join(",")})`
+        }
+
+        // A student answer that merely repeats the question is NOT a correct answer
         if (echoesQuestion(u.question, userAns)) {
           fieldColors[`${item.id}_text`] = "red"
           errors[`${item.id}_text`] =
             "Jawaban hanya mengulang kata-kata dari pertanyaan. Tuliskan simpulanmu dengan kalimat yang menjelaskan konsep."
           break
         }
-        // 1. If requiredKeywords is defined, check every group (AND logic between groups, OR logic within each group)
+
         let isCorrect = false
-        if (u.requiredKeywords && u.requiredKeywords.length > 0) {
-          isCorrect = u.requiredKeywords.every((group) =>
-            group.some((kw) => userLower.includes(normalize(kw)))
-          )
+
+        // Special handling for coordinate formulas (e.g. (-x, y), (x+a, y+b), (2h-x, y))
+        const allExpectedAnswers = [u.answer, ...(u.acceptAnswers ?? [])]
+        const expectedIsCoordinate = allExpectedAnswers.some(isCoordinatePair)
+
+        if (expectedIsCoordinate) {
+          const userNormCoord = normalizeCoordinate(userAns)
+          isCorrect = allExpectedAnswers.some((exp) => {
+            if (!isCoordinatePair(exp)) return false
+            const expNormCoord = normalizeCoordinate(exp)
+            return userNormCoord === expNormCoord
+          })
         }
 
-        // 2. Fallback to exact / partial / automatic clause matching if requiredKeywords not provided or not matched
-        if (!isCorrect) {
-          const allExpected = [u.answer, ...(u.acceptAnswers ?? [])]
-          isCorrect = allExpected.some((expected) => {
+        // 1. Check requiredKeywords if not matched by coordinate equivalence
+        if (!isCorrect && u.requiredKeywords && u.requiredKeywords.length > 0) {
+          const isCoordinateFormula = u.requiredKeywords.some((group) =>
+            group.some((kw) => /^-?[xy]$/.test(kw.trim()) || /^2[a-z]-x$/i.test(kw.trim()) || /^2[a-z]-y$/i.test(kw.trim()))
+          )
+          const hasCommaIfRequired = !isCoordinateFormula || userLower.includes(",")
+
+          isCorrect =
+            hasCommaIfRequired &&
+            u.requiredKeywords.every((group) =>
+              group.some((kw) => {
+                const normKw = normalize(kw)
+                // Check direct substring, token boundary match, or normalized coordinate match
+                if (userLower.includes(normKw)) return true
+                if (normKw.length <= 2 && new RegExp(`(?:^|[^a-z0-9])${normKw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')}(?:$|[^a-z0-9])`, 'i').test(userLower)) return true
+                return false
+              })
+            )
+        }
+
+        // 2. Fallback to exact / partial / automatic clause matching (skip for coordinate formula items to enforce strict requiredKeywords and exact coordinate matching)
+        if (!isCorrect && !expectedIsCoordinate) {
+          isCorrect = allExpectedAnswers.some((expected) => {
             const expLower = normalize(expected)
             if (userLower === expLower) return true
             if (userLower.includes(expLower)) return true
-            // Only allow expected-contains-user when the user answer is substantial (>= 50% of expected length)
-            // to prevent partial fragments like ", y" matching "(2h - x, y)".
             if (expLower.includes(userLower) && userLower.length >= expLower.length * 0.5) return true
+
             // Keyword matching: split expected into meaningful clauses, check user answer covers most keywords
             const clauses = expLower.split(/[,.;:!?]+/).map((c) => c.trim()).filter((c) => c.length > 3)
             if (clauses.length === 0) return false
@@ -276,7 +333,6 @@ export function validateSection(
           if (!ok) {
             errors[`${item.id}_checklist`] = "Ada jawaban yang belum sesuai, perhatikan setiap pernyataan dengan cermat dan bandingkan dengan hasil pengamatan"
             allCorrect = false
-            break
           }
         }
         if (allCorrect) correctCount++

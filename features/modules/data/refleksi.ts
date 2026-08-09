@@ -899,7 +899,7 @@ export const refleksiTabs: ModuleTab[] = [
               requiredKeywords: [
                 ["x"],
                 ["2h - y", "2h-y"],
-              ],
+              ], 
               hint: "Garis y=h adalah garis horizontal. Titik asal dan bayangannya berjarak sama dari garis tersebut, sehingga koordinat y bergeser sejauh 2 kali selisih y terhadap h, sedangkan koordinat x tetap.",
               explanation:
                 "Refleksi terhadap garis horizontal y=h menjaga jarak titik terhadap garis tersebut. Koordinat y berubah menjadi y' = h + (h - y) = 2h - y, sedangkan koordinat x tetap. Jadi bayangannya adalah (x, 2h - y).",

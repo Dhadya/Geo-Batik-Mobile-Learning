@@ -187,6 +187,12 @@ function koordinatGroupKey(
  * penyimpulan) — they direct the student back to the GeoGebra observation. Explanations
  * give the specific bayangan result for each affected point without restating the formula.
  */
+/** Helper to extract coordinate part from label (e.g. "B(-4, 3)" -> "(-4, 3)" or "(-4, 3)" -> "(-4, 3)"). */
+function stripLabel(label: string): string {
+  const match = label.match(/\([^)]+\)/)
+  return match ? match[0] : label
+}
+
 function buildKoordinatFeedback(
   points: KoordinatPoint[],
   slug: string,
@@ -194,26 +200,30 @@ function buildKoordinatFeedback(
   attempt: 1 | 2,
 ): string {
   const isHint = attempt === 1
-  const listed = joinList(points.map((p) => p.label))
   const axis = REFLECTION_LABELS[tab] ?? tab
 
   if (isHint) {
-    const authored = points.find((p) => p.hint)?.hint
-    if (authored) return toBullets(authored)
-    if (slug === "refleksi") {
-      return `• Amati kembali pada GeoGebra posisi titik ${listed} dan bayangannya terhadap ${axis}. Bandingkan koordinat titik awal dengan bayangannya, lalu tentukan koordinat bayangan yang benar.`
-    }
-    const vektor = points[0]?.bayanganText ?? "yang diberikan"
-    return `• Amati kembali pada GeoGebra arah dan besar pergeseran titik ${listed} oleh vektor ${vektor}. Perhatikan bagaimana koordinat x dan y berubah, lalu tentukan koordinat bayangan yang benar.`
+    // Generate individual hint bullets for every wrong point
+    return points
+      .map((p) => {
+        if (p.hint) return toBullets(p.hint)
+        const pointLabel = stripLabel(p.label)
+        if (slug === "refleksi") {
+          return `• Perhatikan kembali pada GeoGebra posisi titik ${pointLabel} dan bayangannya terhadap ${axis}. Bandingkan jarak titik awal ke garis dan koordinat bayangannya, lalu tentukan koordinat bayangan yang benar.`
+        }
+        const vektor = p.bayanganText ?? "yang diberikan"
+        return `• Perhatikan kembali pada GeoGebra arah dan besar pergeseran titik ${pointLabel} oleh vektor ${vektor}. Perhatikan bagaimana koordinat x dan y berubah, lalu tentukan koordinat bayangan yang benar.`
+      })
+      .join("\n")
   }
 
+  const listed = joinList(points.map((p) => stripLabel(p.label)))
+  const hasilLines = points.map((p) => `  ${stripLabel(p.label)} → (${p.bayangan.x}, ${p.bayangan.y})`).join("\n")
   if (slug === "refleksi") {
-    const hasil = points.map((p) => `${p.label} → (${p.bayangan.x}, ${p.bayangan.y})`).join("; ")
-    return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} direfleksikan terhadap ${axis}, sehingga bayangannya: ${hasil}.`
+    return `• Perhatikan kembali hasil pengamatan pada GeoGebra:\n  titik ${listed} direfleksikan terhadap ${axis}, sehingga bayangannya:\n${hasilLines}`
   }
   const vektor = points[0]?.bayanganText ?? "yang diberikan"
-  const hasil = points.map((p) => `${p.label} → (${p.bayangan.x}, ${p.bayangan.y})`).join("; ")
-  return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} digeser sejauh ${vektor}, sehingga bayangannya: ${hasil}.`
+  return `• Perhatikan kembali hasil pengamatan pada GeoGebra:\n  titik ${listed} digeser sejauh ${vektor}, sehingga bayangannya:\n${hasilLines}`
 }
 
 /**
@@ -225,13 +235,20 @@ function buildMatriksFeedback(
   attempt: 1 | 2,
 ): string {
   const isHint = attempt === 1
-  const listed = joinList(points.map((p) => p.label))
 
   if (isHint) {
-    return `• Perhatikan kembali pada GeoGebra bagaimana titik ${listed} bergeser oleh vektor translasi yang sama. Amati besar pergeseran mendatar dan tegaknya, lalu tentukan nilai translasinya.`
+    return points
+      .map((p) => {
+        if (p.hint) return toBullets(p.hint)
+        const pointLabel = stripLabel(p.label)
+        return `• Perhatikan kembali pada GeoGebra bagaimana titik ${pointLabel} bergeser oleh vektor translasi. Amati besar pergeseran mendatar dan tegaknya, lalu tentukan nilai translasinya.`
+      })
+      .join("\n")
   }
-  const hasil = points.map((p) => `${p.label} → T${p.bayangan}`).join("; ")
-  return `• Perhatikan kembali hasil pengamatan pada GeoGebra: titik ${listed} ditranslasikan, sehingga hasilnya: ${hasil}.`
+
+  const listed = joinList(points.map((p) => stripLabel(p.label)))
+  const hasilLines = points.map((p) => `  ${stripLabel(p.label)} → T${p.bayangan}`).join("\n")
+  return `• Perhatikan kembali hasil pengamatan pada GeoGebra:\n  titik ${listed} ditranslasikan, sehingga hasilnya:\n${hasilLines}`
 }
 
 /**
