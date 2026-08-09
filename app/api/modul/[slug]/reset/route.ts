@@ -1,15 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
 import { cacheControl } from "@/lib/api/cache-control";
+import { withRequestLog } from "@/lib/api/logger";
 import { getDb } from "@/lib/db";
 import { sectionProgress, quizResults, tabProgress } from "@/drizzle/schema";
 import { eq, and } from "drizzle-orm";
 import type { ModuleSlug } from "@/features/modules/types";
 
 /** DELETE /api/modul/[slug]/reset — dev-only: deletes all DB records for the module (section_progress, tab_progress, quiz_results). */
-export async function DELETE(
-  _request: Request,
+export const DELETE = withRequestLog(async function DELETE(
+  _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
@@ -51,4 +52,4 @@ export async function DELETE(
   } catch (e) {
     return handleError(e);
   }
-}
+});

@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
 import { cacheControl } from "@/lib/api/cache-control";
+import { withRequestLog } from "@/lib/api/logger";
 import { getTabProgress } from "@/features/modules/services/progress";
 import type { ModuleSlug } from "@/features/modules/types";
 
 /** GET /api/modul/[slug]/progress — fetch all tab unlock/completion state for the module. */
-export async function GET(
+export const GET = withRequestLog(async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
@@ -19,4 +20,4 @@ export async function GET(
   } catch (e) {
     return handleError(e);
   }
-}
+});

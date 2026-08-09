@@ -10,6 +10,7 @@ import { validateSection, type ValidationResult } from "../lib/validation";
 import { buildDeterministicFeedback, feedbackForCorrect, localScore, mergeFeedback } from "../lib/feedback";
 import type { SectionItem } from "@/features/modules/types";
 import { getCachedEvaluation, setCachedEvaluation, cacheKeyFor } from "./aiCache";
+import { getOrSet } from "@/lib/cache";
 import {
   pickKeyIndex,
   markKeyUsed,
@@ -437,7 +438,13 @@ export async function evaluateSection(
   }
 
   const cacheKey = cacheKeyFor(input);
-  const cached = await getCachedEvaluation(cacheKey);
+  // Hot layer: Redis read-through in front of the DB cache. DB remains the source
+  // of truth; getOrSet degrades to a direct DB read when Redis is unavailable.
+  const cached = await getOrSet(
+    `ai:cache:${cacheKey}`,
+    () => getCachedEvaluation(cacheKey),
+    6 * 3600,
+  );
   if (cached) {
     console.log(`[ai.evaluate] ${input.module}/${input.tab}/${input.sectionType} attempt=${input.attempt} cache hit`);
     return cached;

@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth-utils";
 import { handleError } from "@/lib/api/errors";
 import { cacheControl } from "@/lib/api/cache-control";
+import { withRequestLog } from "@/lib/api/logger";
 import { saveSectionAttempt, getSectionProgress } from "@/features/modules/services/section";
 import { saveSectionSchema } from "@/lib/schemas";
 import type { ModuleSlug } from "@/features/modules/types";
 
 /** POST /api/modul/[slug]/section — save a student's section attempt (percobaan/pengamatan/penyimpulan/cek-pemahaman). */
-export async function POST(
+export const POST = withRequestLog(async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
@@ -51,10 +52,10 @@ export async function POST(
   } catch (e) {
     return handleError(e);
   }
-}
+});
 
 /** GET /api/modul/[slug]/section — fetch section progress, optionally filtered by tab and/or sectionType query params. */
-export async function GET(
+export const GET = withRequestLog(async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
@@ -81,4 +82,4 @@ export async function GET(
   } catch (e) {
     return handleError(e);
   }
-}
+});

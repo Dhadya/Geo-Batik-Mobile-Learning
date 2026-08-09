@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto"
 import { getDb } from "@/lib/db"
 import { aiFeedbackCache } from "@/drizzle/schema"
-import { eq } from "drizzle-orm"
+import { eq, lt } from "drizzle-orm"
 import type { EvaluateSectionInput, EvaluateSectionOutput } from "./ai"
 
 export function cacheKeyFor(input: EvaluateSectionInput): string {
@@ -34,4 +34,21 @@ export async function setCachedEvaluation(key: string, result: EvaluateSectionOu
   } catch (e) {
     console.error("[aiCache] Error setting cache:", e)
   }
+}
+
+/**
+ * Deletes cached evaluations older than `olderThanDays` days.
+ * Used by a scheduled cron job to keep the table from growing unbounded.
+ *
+ * @param olderThanDays - Minimum age in days; rows created before this are removed.
+ * @returns The number of deleted rows.
+ */
+export async function deleteExpiredCache(olderThanDays: number): Promise<number> {
+  const db = getDb()
+  const cutoff = new Date(Date.now() - olderThanDays * 24 * 60 * 60 * 1000)
+  const result = await db
+    .delete(aiFeedbackCache)
+    .where(lt(aiFeedbackCache.createdAt, cutoff))
+    .returning({ id: aiFeedbackCache.id })
+  return result.length
 }

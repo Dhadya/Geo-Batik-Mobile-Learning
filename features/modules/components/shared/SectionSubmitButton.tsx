@@ -42,7 +42,7 @@ export function SectionSubmitButton({
 }: SectionSubmitButtonProps) {
   const [open, setOpen] = useState(false)
 
-  const isDisabled = !isChecked ? !isFilled : (isLocked && !showCobaLagi) || isSubmitting
+  const isDisabled = isSubmitting || (!isChecked ? !isFilled : isLocked && !showCobaLagi)
 
   let text: string
   let variantStyle = ""
