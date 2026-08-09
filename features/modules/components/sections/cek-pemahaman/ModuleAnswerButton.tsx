@@ -17,6 +17,8 @@ interface ModuleAnswerButtonProps {
   isCorrect: boolean
   /** Whether this option is marked wrong (show red/orange). */
   isWrong: boolean
+  /** Whether this option is checked (locked in). */
+  isChecked?: boolean
   /** Called when the button is clicked. */
   onSelect: () => void
   /** Render option text as a coordinate matrix (a/b stacked). */
@@ -36,6 +38,7 @@ export function ModuleAnswerButton({
   isSelected,
   isCorrect,
   isWrong,
+  isChecked,
   onSelect,
   matrix,
   disabled,
@@ -45,13 +48,12 @@ export function ModuleAnswerButton({
   const parsed = matrix ? text.match(/\(([^,]+),\s*([^)]+)\)/) : null
   const isWrongAttempt2 = isWrong && attempt === 2
 
+  const isInteractive = !disabled && !isChecked
   return (
     <Button
       variant={isSelected && !isCorrect && !isWrong ? "default" : "outline"}
-      className={`justify-start flex-row items-center gap-2 md:gap-3 p-2 md:p-3 text-left font-semibold text-sm md:text-base relative ${isCorrect ? "border-green-600 bg-green-50 text-black" : isWrongAttempt2 ? "border-destructive bg-destructive/10 text-black" : isWrong ? "border-orange-500 bg-orange-50 text-black" : ""
-        }`}
-      onClick={onSelect}
-      disabled={disabled}
+      className={`justify-start flex-row items-center gap-2 md:gap-3 p-2 md:p-3 text-left font-semibold text-sm md:text-base relative ${isCorrect ? "border-green-600 bg-green-50 text-black" : isWrongAttempt2 ? "border-destructive bg-destructive/10 text-black" : isWrong ? "border-orange-500 bg-orange-50 text-black" : ""} ${isInteractive ? "cursor-pointer" : "cursor-default"}`}
+      onClick={isInteractive ? onSelect : undefined}
     >
       <span
         className={`w-5 h-5 md:w-7 md:h-7 border-2 border-black flex items-center justify-center text-[10px] md:text-sm shrink-0 ${isCorrect ? "bg-secondary text-white" : isWrongAttempt2 ? "bg-destructive text-white" : isWrong ? "bg-orange-500 text-white" : "bg-foreground text-background"
@@ -66,7 +68,7 @@ export function ModuleAnswerButton({
             alt={text}
             width={100}
             height={100}
-            className="w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] md:w-[200px] md:h-[200px] object-contain"
+            className="w-35 h-35 sm:w-40 sm:h-40 md:w-50 md:h-50 object-contain"
           />
         </div>
       ) : parsed ? (

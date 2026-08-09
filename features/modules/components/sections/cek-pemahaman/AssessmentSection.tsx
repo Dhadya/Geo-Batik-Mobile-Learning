@@ -37,7 +37,10 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
   const hasInput = selections.some((s) => s != null)
 
   const attempt = useMemo<1 | 2>(() => {
-    if (persistedStatus === "correct" || persistedStatus === "wrong_attempt2" || persistedStatus === "wrong_attempt1") return 2
+    // wrong_attempt1 → show orange styling (attempt 1 colour)
+    // wrong_attempt2 → show red styling (attempt 2 colour)
+    if (persistedStatus === "wrong_attempt1") return 1
+    if (persistedStatus === "wrong_attempt2") return 2
     return (persistedAttempt ?? 1) as 1 | 2
   }, [persistedStatus, persistedAttempt])
 
@@ -104,27 +107,33 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
       }
 
       if (isCorrectResult) {
-        await submitMutation.mutateAsync({ ...savePayload, status: "correct" })
-        setValidationErrors(finalErrors)
+        // Write final status to store BEFORE mutateAsync so the optimistic-update
+        // guard in ModuleContent sees the correct status when onMutate fires.
+        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "correct", attempt)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         useAnswerStore.getState().setCekPemahamanFieldColors(slug, tab, result.fieldColors)
-        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "correct", attempt)
+        await submitMutation.mutateAsync({ ...savePayload, status: "correct" })
+        setValidationErrors(finalErrors)
         toast.success("Jawaban kamu benar, selamat!")
         await triggerTabUnlockIfComplete(slug, tab)
       } else if (attempt === 1) {
+        // wrong attempt 1: status → wrong_attempt1 BEFORE mutateAsync
+        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt1", 2)
+        useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
+        useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
         await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt1" })
         setValidationErrors(finalErrors)
-        useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
-        useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
-        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt1", 2)
         toast.error("Jawaban kamu kurang tepat, tersisa satu kesempatan lagi")
       } else {
-        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt2" })
-        setValidationErrors(finalErrors)
+        // wrong attempt 2: status → wrong_attempt2 BEFORE mutateAsync so the guard in
+        // ModuleContent skips the optimistic cache snapshot (which has no attempt2Answer),
+        // preventing a flash of the attempt-1 selections before the real refetch arrives.
+        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt2", 2)
         useAnswerStore.getState().setCekPemahamanFeedback(slug, tab, result.feedback)
         useAnswerStore.getState().setCekPemahamanScore(slug, tab, result.score)
-        useAnswerStore.getState().setCekPemahamanStatus(slug, tab, "wrong_attempt2", 2)
+        await submitMutation.mutateAsync({ ...savePayload, status: "wrong_attempt2" })
+        setValidationErrors(finalErrors)
         toast.error("Jawaban kamu masih kurang tepat, kesempatan habis")
         await triggerTabUnlockIfComplete(slug, tab)
       }
@@ -234,7 +243,7 @@ export function AssessmentSection({ slug, tab, questions }: AssessmentSectionPro
                       ? !!(Number(selections[qi] ?? 0) & (1 << oi))
                       : selections[qi] === oi
 
-                    const isCorrect = isChecked
+                    const isCorrect = isChecked && isSelected
                       ? isMulti
                         ? q.correctIndices?.includes(oi)
                         : oi === q.correctIndex

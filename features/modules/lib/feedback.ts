@@ -49,7 +49,8 @@ function hasAnswerText(
  * Build a single feedback bullet for one wrong item, matching AI feedback rules:
  * hints (attempt 1) never reveal the answer, pembahasan (attempt 2) gives the
  * correct result and how to obtain it, options are shown as A/B/C/D.
- * Koordinat items are handled by buildKoordinatFeedback (grouped per concept).
+ * Koordinat items are handled by buildKoordinatFeedback (grouped per concept) when wrong;
+ * this case covers correct koordinat items shown in the attempt-2 pembahasan block.
  */
 export function buildItemFeedback(
   item: SectionItem,
@@ -67,6 +68,18 @@ export function buildItemFeedback(
       return item.explanation
         ? toBullets(item.explanation)
         : `• Titik ${item.label} ditranslasikan ke ${item.targetBayangan}, sehingga nilai translasinya T(${item.answer.a}, ${item.answer.b}).`
+    }
+    case "koordinat": {
+      // Wrong koordinat items are grouped via buildKoordinatFeedback; this handles correct
+      // koordinat items that appear in the attempt-2 pembahasan block.
+      if (isHint) {
+        return item.hint
+          ? toBullets(item.hint)
+          : `• Perhatikan kembali pada GeoGebra arah dan besar pergeseran titik ${item.label}. Tentukan koordinat bayangan yang benar.`
+      }
+      return item.explanation
+        ? toBullets(item.explanation)
+        : `• Titik ${item.label} digeser${item.bayangan ? ` oleh ${item.bayangan}` : ""}, sehingga bayangannya (${item.answer.x}, ${item.answer.y}).`
     }
     case "pilihan_ganda": {
       if (isHint) {
@@ -150,6 +163,7 @@ export function buildItemFeedback(
       return ""
   }
 }
+
 
 /** A single wrong koordinat item collected into a concept group. */
 interface KoordinatPoint {

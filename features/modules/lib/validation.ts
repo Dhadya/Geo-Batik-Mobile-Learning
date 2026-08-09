@@ -142,8 +142,17 @@ export function validateSection(
           if (s === "x-a" || s === "-a+x") return "x-a";
           if (s === "y-b" || s === "-b+y") return "y-b";
           
-          // Reject repeated variable inputs like "xx" or "yy"
-          if (/^([a-z])\1+$/i.test(s)) return `invalid_${s}`;
+          // Reject repeated variable inputs like "xx" or "yy", concatenated variables like "ya" or "yb" (without operator), or invalid operator syntax like "-y-", "--y", "x++"
+          if (
+            /^([a-z])\1+$/i.test(s) ||
+            /^[a-z]{2,}$/i.test(s) ||
+            /^-[a-z]{2,}$/i.test(s) ||
+            /[-+]{2,}/.test(s) ||
+            /^-[a-z]-$/i.test(s) ||
+            /[a-z]-$/i.test(s)
+          ) {
+            return `invalid_${s}`;
+          }
 
           return s;
         };

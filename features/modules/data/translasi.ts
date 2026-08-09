@@ -315,8 +315,7 @@ export const translasiTabs: ModuleTab[] = [
             question: "Apakah bangun yang ditranslasikan pasti berubah posisi?",
             answer: "Belum pasti, semua bangun yang ditranslasikan biasanya berubah posisi, tetapi jika nilai translasinya (0, 0) bangun tidak berubah posisi.",
             requiredKeywords: [
-              ["belum", "tidak", "belum pasti", "belum tentu"],
-              ["0"],
+              ["belum", "tidak", "belum pasti", "belum tentu", "tidak pasti", "tidak tentu"],
             ],
             hint: "Perhatikan nilai translasi yang membuat bangun tetap pada tempatnya. Geseran sejauh apa yang membuat semua titik sudut kembali ke posisi semula?",
             explanation:
