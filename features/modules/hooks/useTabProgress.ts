@@ -14,7 +14,7 @@ export function useTabProgress(slug: string) {
   return useQuery<TabProgressEntry[]>({
     queryKey: ["tab-progress", slug],
     queryFn: async () => {
-      const response = await fetch(`/api/modul/${slug}/progress`)
+      const response = await fetch(`/api/modul/${slug}/progress`, { cache: "no-store" })
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal memuat progres tab")
       return body.data.tabs

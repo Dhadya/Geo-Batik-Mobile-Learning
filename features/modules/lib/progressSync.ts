@@ -12,7 +12,7 @@ const MODUL_API = "/api/modul"
  */
 export async function syncTabProgress(slug: string): Promise<TabProgressEntry[] | null> {
   try {
-    const res = await fetch(`${MODUL_API}/${slug}/progress`)
+    const res = await fetch(`${MODUL_API}/${slug}/progress`, { cache: "no-store" })
     if (!res.ok) return null
     const json = await res.json()
     if (!json.ok) return null
@@ -95,6 +95,7 @@ export async function triggerTabUnlockIfComplete(slug: string, tab: string): Pro
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ completedTab: tab, sections: claims }),
+      cache: "no-store",
     })
     const json = await res.json()
     if (!json.ok) {

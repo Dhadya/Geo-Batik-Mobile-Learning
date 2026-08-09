@@ -175,6 +175,7 @@ export function ModuleContent({
       queryFn: async () => {
         const response = await fetch(
           `/api/modul/${slug}/section?tab=${encodeURIComponent(nextTabValue)}`,
+          { cache: "no-store" },
         )
         const body = await response.json()
         if (!body.ok) return []

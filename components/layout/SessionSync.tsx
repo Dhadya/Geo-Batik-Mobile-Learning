@@ -1,19 +1,44 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { authClient } from "@/lib/auth-client"
+import { getQueryClient } from "@/lib/query/client"
 import { setGlobalUserId } from "@/lib/user-scoped-storage"
+import { useAnswerStore } from "@/features/modules/store/answerStore"
+import { useTabProgressStore } from "@/features/modules/store/tabProgressStore"
+import { useObservationStore } from "@/features/modules/store/observationStore"
+import { useQuizStore } from "@/features/quiz"
 
 /**
  * Syncs the BetterAuth session userId to the user-scoped storage module.
  * Must be rendered inside the root layout (client component) so that
  * Zustand stores can namespace localStorage keys by userId.
+ *
+ * On userId change, clears all TanStack Query cache and resets in-memory
+ * stores so the new user starts with a clean slate.
  */
 export function SessionSync() {
   const { data: session } = authClient.useSession()
+  const prevUserId = useRef<string | null>(null)
 
   useEffect(() => {
-    setGlobalUserId(session?.user?.id ?? null)
+    const newUserId = session?.user?.id ?? null
+    const oldUserId = prevUserId.current
+
+    if (oldUserId !== newUserId) {
+      // Clear TanStack Query cache so no stale data leaks between users
+      getQueryClient().clear()
+
+      // Reset all in-memory stores
+      useAnswerStore.getState().resetAll()
+      useQuizStore.getState().resetAnswers()
+      useTabProgressStore.getState().resetAll()
+      useObservationStore.getState().resetAll()
+
+      prevUserId.current = newUserId
+    }
+
+    setGlobalUserId(newUserId)
   }, [session?.user?.id])
 
   // Cross-tab synchronization: when another tab writes to localStorage,

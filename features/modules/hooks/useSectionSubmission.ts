@@ -97,7 +97,7 @@ export function useSectionProgress(
   return useQuery<SectionProgressEntry[]>({
     queryKey: ["section-progress", slug, options?.tab, options?.sectionType],
     queryFn: async () => {
-      const response = await fetch(`/api/modul/${slug}/section${qs ? `?${qs}` : ""}`)
+      const response = await fetch(`/api/modul/${slug}/section${qs ? `?${qs}` : ""}`, { cache: "no-store" })
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal memuat progres")
       return body.data?.sections ?? []
