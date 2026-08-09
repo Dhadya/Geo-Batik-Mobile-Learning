@@ -61,6 +61,14 @@ export async function getLatestQuizResult(userId: string, module: ModuleSlug) {
       eq(quizResults.module, module),
     ),
     orderBy: [desc(quizResults.completedAt)],
+    columns: {
+      id: true,
+      attemptNumber: true,
+      packageId: true,
+      totalScore: true,
+      answers: true,
+      completedAt: true,
+    },
   });
 
   if (!row) return null;
@@ -100,6 +108,14 @@ export async function getAllQuizResults(userId: string, module: ModuleSlug) {
       eq(quizResults.module, module),
     ),
     orderBy: [quizResults.attemptNumber],
+    columns: {
+      id: true,
+      attemptNumber: true,
+      packageId: true,
+      totalScore: true,
+      answers: true,
+      completedAt: true,
+    },
   });
 
   return rows.map((r) => ({
