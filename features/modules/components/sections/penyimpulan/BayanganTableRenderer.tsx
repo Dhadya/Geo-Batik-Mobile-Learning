@@ -48,20 +48,22 @@ export function BayanganTableRenderer({
             </Text>
           </div>
         ) : (
-          <div className="flex items-center gap-0.5">
-            <Text as="p" className="text-xs md:text-sm font-medium text-black">
-              Jika titik awal (<span className="italic">x, y</span>) ditranslasikan oleh
-            </Text>
-            <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">(</span>
-            <div className="flex flex-col gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
-              <div className="px-1 select-none italic">a</div>
-              <div className="px-1 select-none italic">b</div>
-            </div>
-            <span className="text-2xl md:text-3xl font-light select-none inline-block scale-y-[1.7] origin-center">)</span>
-            <Text as="p" className="text-xs md:text-sm font-medium text-black">
-              , tentukan titik bayangannya dengan mengisi tabel berikut.
-            </Text>
-          </div>
+          <p className="text-xs md:text-sm font-medium text-black leading-relaxed">
+            Jika titik awal (<span className="italic">x, y</span>) ditranslasikan oleh{" "}
+            <span className="inline-flex items-center gap-0.5 mx-0.5 align-middle">
+              <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">
+                (
+              </span>
+              <span className="flex flex-col items-center gap-0.5 md:gap-1 text-xs md:text-sm font-black text-black">
+                <span className="text-center leading-none select-none italic">a</span>
+                <span className="text-center leading-none select-none italic">b</span>
+              </span>
+              <span className="text-xl md:text-2xl font-light select-none inline-block scale-y-[1.5] origin-center">
+                )
+              </span>
+            </span>
+            , tentukan titik bayangannya dengan mengisi tabel berikut.
+          </p>
         )}
         <div className="border-4 border-black overflow-hidden bg-background">
           <div className="grid grid-cols-3 bg-muted border-b-4 border-black text-center text-[10px] md:text-sm font-black p-1.5 md:p-2">

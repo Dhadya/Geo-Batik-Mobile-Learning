@@ -94,6 +94,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap sumbu x, tentukan titik bayangannya dengan mengisi tabel berikut.",
               answer: "(x, -y)",
+              requiredKeywords: [
+                ["x"],
+                ["-y"],
+              ],
               hint: "Refleksi terhadap sumbu x membalikkan posisi titik terhadap sumbu mendatar. Koordinat yang tegak lurus sumbu x (yaitu koordinat y) berubah tanda, sedangkan koordinat x tetap.",
               explanation:
                 "Refleksi terhadap sumbu x membalikkan titik terhadap sumbu mendatar sehingga koordinat x tetap dan koordinat y berubah tanda. Jadi titik (x, y) direfleksikan terhadap sumbu x menghasilkan bayangan (x, -y).",
@@ -220,6 +224,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap sumbu y, tentukan titik bayangannya dengan mengisi tabel berikut.",
               answer: "(-x, y)",
+              requiredKeywords: [
+                ["-x"],
+                ["y"],
+              ],
               hint: "Refleksi terhadap sumbu y membalikkan posisi titik terhadap sumbu tegak. Koordinat yang tegak lurus sumbu y (yaitu koordinat x) berubah tanda, sedangkan koordinat y tetap.",
               explanation:
                 "Refleksi terhadap sumbu y membalikkan titik terhadap sumbu tegak sehingga koordinat y tetap dan koordinat x berubah tanda. Jadi titik (x, y) direfleksikan terhadap sumbu y menghasilkan bayangan (-x, y).",
@@ -346,6 +354,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap titik (0,0), tentukan titik bayangannya dengan mengisi tabel berikut.",
               answer: "(-x, -y)",
+              requiredKeywords: [
+                ["-x"],
+                ["-y"],
+              ],
               hint: "Refleksi terhadap titik asal (0,0) memindahkan titik ke posisi yang berlawanan arah dari titik asal. Kedua koordinat berubah tanda.",
               explanation:
                 "Refleksi terhadap titik (0,0) membalikkan titik melewati titik asal sehingga kedua koordinat berubah tanda. Jadi titik (x, y) direfleksikan terhadap titik (0,0) menghasilkan bayangan (-x, -y).",
@@ -472,6 +484,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap garis x=y, tentukan titik bayangannya dengan mengisi tabel berikut.",
               answer: "(y, x)",
+              requiredKeywords: [
+                ["y"],
+                ["x"],
+              ],
               hint: "Garis x=y adalah garis diagonal yang membagi kuadran I dan III. Perhatikan bagaimana koordinat x dan y saling bertukar posisi setelah direfleksikan.",
               explanation:
                 "Refleksi terhadap garis x=y menukar kedudukan koordinat x dan y. Jadi titik (x, y) direfleksikan terhadap garis x=y menghasilkan bayangan (y, x).",
@@ -598,6 +614,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap garis x=-y, tentukan titik bayangannya dengan mengisi tabel berikut.",
               answer: "(-y, -x)",
+              requiredKeywords: [
+                ["-y"],
+                ["-x"],
+              ],
               hint: "Garis x=-y adalah garis diagonal yang membagi kuadran II dan IV. Koordinat x dan y bertukar posisi dan keduanya berubah tanda.",
               explanation:
                 "Refleksi terhadap garis x=-y menukar kedudukan koordinat x dan y sekaligus mengubah tanda keduanya. Jadi titik (x, y) direfleksikan terhadap garis x=-y menghasilkan bayangan (-y, -x).",
@@ -735,6 +755,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap garis x=h, tentukan titik bayangannya dengan mengisi tabel berikut.",
               answer: "(2h - x, y)",
+              requiredKeywords: [
+                ["2h - x", "2h-x"],
+                ["y"],
+              ],
               hint: "Garis x=h adalah garis vertikal. Titik asal dan bayangannya berjarak sama dari garis tersebut, sehingga koordinat x bergeser sejauh 2 kali selisih x terhadap h, sedangkan koordinat y tetap.",
               explanation:
                 "Refleksi terhadap garis vertikal x=h menjaga jarak titik terhadap garis tersebut. Koordinat x berubah menjadi x' = h + (h - x) = 2h - x, sedangkan koordinat y tetap. Jadi bayangannya adalah (2h - x, y).",
@@ -872,6 +896,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Amati percobaanmu. Jika titik awal (x, y) direfleksikan terhadap garis y=h, tentukan titik bayangannya dengan mengisi tabel berikut.",
               answer: "(x, 2h - y)",
+              requiredKeywords: [
+                ["x"],
+                ["2h - y", "2h-y"],
+              ],
               hint: "Garis y=h adalah garis horizontal. Titik asal dan bayangannya berjarak sama dari garis tersebut, sehingga koordinat y bergeser sejauh 2 kali selisih y terhadap h, sedangkan koordinat x tetap.",
               explanation:
                 "Refleksi terhadap garis horizontal y=h menjaga jarak titik terhadap garis tersebut. Koordinat y berubah menjadi y' = h + (h - y) = 2h - y, sedangkan koordinat x tetap. Jadi bayangannya adalah (x, 2h - y).",
@@ -1194,6 +1222,10 @@ export const refleksiTabs: ModuleTab[] = [
               type: "uraian",
               question: "Mengapa cukup mencerminkan dua titik ujung untuk menentukan garis refleksi?",
               answer: "Karena untuk mengetahui ruas garis harus mengetahui 2 titik ujung ruas garis tersebut",
+              requiredKeywords: [
+                ["2", "dua"],
+                ["titik"],
+              ],
               hint: "Sebuah ruas garis dibentuk oleh dua titik ujung. Jika kedua ujungnya sudah diketahui bayangannya, maka ruas garis bayangan dapat langsung digambar.",
               explanation:
                 "Sebuah ruas garis ditentukan sepenuhnya oleh dua titik ujungnya. Dengan mencerminkan kedua titik ujung tersebut, koordinat bayangannya diketahui, sehingga ruas garis hasil refleksi dapat ditentukan dengan menghubungkan kedua titik bayangan tersebut.",

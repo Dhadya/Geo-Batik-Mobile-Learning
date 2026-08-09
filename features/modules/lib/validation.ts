@@ -86,28 +86,44 @@ export function validateSection(
           errors[`${item.id}_text`] = "Jawaban belum diisi"
           break
         }
-        /** Normalize whitespace: trim and collapse spaces around commas/parentheses. */
-        const normalize = (s: string) => s.toLowerCase().replace(/\s*,\s*/g, ",").replace(/\s*\(\s*/g, "(").replace(/\s*\)\s*/g, ")").trim()
+        /** Normalize string for comparison: trim, lower case, collapse all whitespace, and remove spaces around operators/symbols. */
+        const normalize = (s: string) =>
+          s
+            .toLowerCase()
+            .replace(/\s+/g, " ")
+            .replace(/\s*([,();:=+*/\-])\s*/g, "$1")
+            .trim()
         const userLower = normalize(userAns)
-        const allExpected = [u.answer, ...(u.acceptAnswers ?? [])]
-        const isCorrect = allExpected.some((expected) => {
-          const expLower = normalize(expected)
-          if (userLower === expLower) return true
-          if (userLower.includes(expLower)) return true
-          // Only allow expected-contains-user when the user answer is substantial (>= 50% of expected length)
-          // to prevent partial fragments like ", y" matching "(2h - x, y)".
-          if (expLower.includes(userLower) && userLower.length >= expLower.length * 0.5) return true
-          // Keyword matching: split expected into meaningful clauses, check user answer covers most keywords
-          const clauses = expLower.split(/[,.;:!?]+/).map((c) => c.trim()).filter((c) => c.length > 3)
-          if (clauses.length === 0) return false
-          const matchedClauses = clauses.filter((clause) => {
-            const keywords = clause.split(/\s+/).filter((w) => w.length > 2)
-            if (keywords.length === 0) return false
-            const matched = keywords.filter((kw) => userLower.includes(kw))
-            return matched.length >= Math.ceil(keywords.length * 0.4)
+        // 1. If requiredKeywords is defined, check every group (AND logic between groups, OR logic within each group)
+        let isCorrect = false
+        if (u.requiredKeywords && u.requiredKeywords.length > 0) {
+          isCorrect = u.requiredKeywords.every((group) =>
+            group.some((kw) => userLower.includes(normalize(kw)))
+          )
+        }
+
+        // 2. Fallback to exact / partial / automatic clause matching if requiredKeywords not provided or not matched
+        if (!isCorrect) {
+          const allExpected = [u.answer, ...(u.acceptAnswers ?? [])]
+          isCorrect = allExpected.some((expected) => {
+            const expLower = normalize(expected)
+            if (userLower === expLower) return true
+            if (userLower.includes(expLower)) return true
+            // Only allow expected-contains-user when the user answer is substantial (>= 50% of expected length)
+            // to prevent partial fragments like ", y" matching "(2h - x, y)".
+            if (expLower.includes(userLower) && userLower.length >= expLower.length * 0.5) return true
+            // Keyword matching: split expected into meaningful clauses, check user answer covers most keywords
+            const clauses = expLower.split(/[,.;:!?]+/).map((c) => c.trim()).filter((c) => c.length > 3)
+            if (clauses.length === 0) return false
+            const matchedClauses = clauses.filter((clause) => {
+              const keywords = clause.split(/\s+/).filter((w) => w.length > 2)
+              if (keywords.length === 0) return false
+              const matched = keywords.filter((kw) => userLower.includes(kw))
+              return matched.length >= Math.ceil(keywords.length * 0.4)
+            })
+            return matchedClauses.length >= Math.ceil(clauses.length * 0.4)
           })
-          return matchedClauses.length >= Math.ceil(clauses.length * 0.4)
-        })
+        }
         fieldColors[`${item.id}_text`] = isCorrect ? "green" : "red"
         if (!isCorrect) {
           errors[`${item.id}_text`] = "Jawaban uraian kurang tepat, coba periksa langkah penyelesaian dan pastikan sesuai dengan format yang diminta"
