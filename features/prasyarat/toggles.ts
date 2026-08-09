@@ -5,13 +5,13 @@ export const toggles: GeoGebraToggle[] = [
   { label: "Sumbu X", icon: "axis_horizontal", objects: ["i"], conceptKey: "Sumbu x" },
   { label: "Sumbu Y", icon: "axis_vertical", objects: ["j"], conceptKey: "Sumbu y" },
   { label: "Kuadran", icon: "grid_view", objects: ["t"], conceptKey: "Kuadran" },
-  { label: "K1", icon: "grid_view", objects: ["e"], conceptKey: "K1" },
-  { label: "K2", icon: "grid_view", objects: ["k"], conceptKey: "K2" },
-  { label: "K3", icon: "grid_view", objects: ["l"], conceptKey: "K3" },
-  { label: "K4", icon: "grid_view", objects: ["n"], conceptKey: "K4" },
+  { label: "K1", icon: "grid_view", objects: ["e"], conceptKey: "Kuadran I" },
+  { label: "K2", icon: "grid_view", objects: ["k"], conceptKey: "Kuadran II" },
+  { label: "K3", icon: "grid_view", objects: ["l"], conceptKey: "Kuadran III" },
+  { label: "K4", icon: "grid_view", objects: ["n"], conceptKey: "Kuadran IV" },
   { label: "Titik", icon: "ads_click", objects: ["o"], conceptKey: "Titik" },
-  { label: "Garis", icon: "show_chart", objects: ["p"], conceptKey: "Garis" },
-  { label: "Ruas Garis", icon: "horizontal_rule", objects: ["q"], conceptKey: "Ruas Garis" },
+  { label: "Garis", icon: "line_garis", objects: ["p"], conceptKey: "Garis" },
+  { label: "Ruas Garis", icon: "line_ruas_garis", objects: ["q"], conceptKey: "Ruas Garis" },
   { label: "Bidang", icon: "view_compact", objects: ["r"], conceptKey: "Bidang" },
   { label: "Bangun", icon: "category", objects: ["s"], conceptKey: "Bangun Datar" },
 ]
@@ -22,8 +22,8 @@ export const accordionGroups: {
   items: readonly string[]
   description?: string
 }[] = [
-  { label: "Kuadran", icon: "grid_view", items: ["K1", "K2", "K3", "K4"], description: "Daerah yang terbagi karena perpotongan sumbu x dan sumbu y." },
-  { label: "Garis", icon: "show_chart", items: ["Garis", "Ruas Garis"] },
+  { label: "Kuadran", icon: "grid_view", items: ["K1", "K2", "K3", "K4"], description: "Sumbu x dan sumbu y membagi bidang koordinat menjadi empat bagian yang disebut kuadran. Kuadran diberi nomor I, II, III, dan IV dengan arah berlawanan jarum jam." },
+  { label: "Garis", icon: "line_garis", items: ["Garis", "Ruas Garis"] },
   { label: "Bidang", icon: "view_compact", items: ["Bidang", "Bangun"] },
 ]
 
