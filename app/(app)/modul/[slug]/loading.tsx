@@ -23,13 +23,13 @@ export default function ModulTabLoading() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6 items-start">
         {/* Left column — interactive workspace + conclusion (8/12) */}
         <div className="lg:col-span-8 flex flex-col gap-3 md:gap-6">
-          <Skeleton className="h-[300px] md:h-[600px] w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
-          <Skeleton className="h-24 md:h-32 w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
+          <Skeleton className="h-75 md:h-150 w-full border-4 border-black shadow-4 shadow-black" />
+          <Skeleton className="h-24 md:h-32 w-full border-4 border-black shadow-4 shadow-black" />
         </div>
 
         {/* Right column — observation panel (4/12, sticky) */}
         <div className="lg:col-span-4 lg:sticky lg:top-24 lg:self-start">
-          <Skeleton className="h-[400px] md:h-[500px] w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
+          <Skeleton className="h-100 md:h-125 w-full border-4 border-black shadow-4 shadow-black" />
         </div>
       </div>
 
