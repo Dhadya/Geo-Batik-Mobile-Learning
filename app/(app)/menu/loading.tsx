@@ -11,8 +11,8 @@ export default function MenuLoading() {
 
       {/* ModuleGrid — 2-col grid of tall bento cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-        <Skeleton className="min-h-[450px] md:min-h-[550px] w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
-        <Skeleton className="min-h-[450px] md:min-h-[550px] w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
+        <Skeleton className="min-h-112.5 md:min-h-137.5 w-full border-4 border-black shadow-4 shadow-black" />
+        <Skeleton className="min-h-112.5 md:min-h-137.5 w-full border-4 border-black shadow-4 shadow-black" />
       </div>
 
       {/* BackLink — centered pill */}

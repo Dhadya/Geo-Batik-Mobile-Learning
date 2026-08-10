@@ -27,7 +27,7 @@ export default function PrasyaratLoading() {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 md:gap-8">
-          <Skeleton className="aspect-[3/2] xl:col-span-3 w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
+          <Skeleton className="aspect-3/2 xl:col-span-3 w-full border-4 border-black shadow-[4px_4px_0_0_black]" />
           <div className="xl:col-span-1 space-y-4 border-4 border-black shadow-[4px_4px_0_0_black] p-4 md:p-6">
             <Skeleton className="h-6 w-36 border-2 border-black" />
             <Skeleton className="h-4 w-full border-2 border-black" />

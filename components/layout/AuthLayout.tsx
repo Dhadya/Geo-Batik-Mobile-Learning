@@ -16,9 +16,9 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
       {/* Batik watermark background pattern */}
       <div className="absolute inset-0 z-0 batik-watermark pointer-events-none" />
       {/* Decorative circle — top-left */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 opacity-10 rotate-12 border-[16px] border-black rounded-full pointer-events-none" />
+      <div className="absolute -top-24 -left-24 w-96 h-96 opacity-10 rotate-12 border-16 border-black rounded-full pointer-events-none" />
       {/* Decorative circle — bottom-right */}
-      <div className="absolute -bottom-48 -right-48 w-[600px] h-[600px] opacity-5 border-[32px] border-black rounded-full pointer-events-none" />
+      <div className="absolute -bottom-48 -right-48 w-150 h-150 opacity-5 border-32 border-black rounded-full pointer-events-none" />
 
       {/* Main card container */}
       <main className="relative z-10 w-full max-w-md">
