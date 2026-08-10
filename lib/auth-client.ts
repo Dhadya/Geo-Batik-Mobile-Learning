@@ -11,11 +11,15 @@ function isLocalURL(url: string): boolean {
 }
 
 function resolveBaseURL(): string {
-  const configured = process.env.NEXT_PUBLIC_BETTER_AUTH_URL?.trim();
-  if (configured && !isLocalURL(configured)) return configured;
-  if (typeof window !== "undefined") return window.location.origin;
-  if (configured) return configured;
-  return "http://localhost:3000";
+  if (typeof window !== "undefined") {
+    // In browser, prefer window.location.origin unless NEXT_PUBLIC_BETTER_AUTH_URL is explicitly set to a production domain
+    const configured = process.env.NEXT_PUBLIC_BETTER_AUTH_URL?.trim()
+    if (configured && !isLocalURL(configured)) return configured
+    return window.location.origin
+  }
+  const configured = process.env.NEXT_PUBLIC_BETTER_AUTH_URL?.trim()
+  if (configured && !isLocalURL(configured)) return configured
+  return "http://localhost:3000"
 }
 
 const baseURL = resolveBaseURL()

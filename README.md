@@ -2,72 +2,89 @@
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat-square) ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?style=flat-square) ![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square) ![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?style=flat-square) ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 
-> **Geometric transformation meets Nusantara Batik heritage.**  
-> An interactive learning medium for Grade IX SMP students that teaches translation and reflection through visual exploration of Indonesian Batik motifs, with AI-powered per-section feedback and sequential mastery-based progression.
+> **An interactive learning medium for Grade IX SMP students.**
+> GEMATRI teaches geometric transformations — translation (translasi) and reflection (refleksi) — through structured learning modules, AI-powered per-section feedback, mastery-based tab unlocking, and a module-level quiz.
 
 ---
 
 ## Why GEMATRI?
 
-**Geometric transformations are inherently abstract.** Students struggle to visualize how points, lines, and shapes move across a coordinate plane. GEMATRI bridges that gap by embedding mathematical concepts within the rich geometric patterns of Indonesian Batik — turning abstract formulas into something tangible, cultural, and engaging.
+**Geometric transformations are inherently abstract.** Students struggle to visualize how points, lines, and shapes move across a coordinate plane. GEMATRI makes the concepts concrete with interactive visualizations, guided experiments, and immediate AI feedback at every step.
 
-**Built for pedagogy, not just technology.** Every interaction follows the van Hiele theory of geometric reasoning, scaffolding students from visual recognition (level 0) through analysis (level 1) to informal deduction (level 2). A sequential locking system ensures mastery at each step before progression.
+**Built for pedagogy, not just technology.** Every interaction follows the van Hiele theory of geometric reasoning, scaffolding students from visual recognition (level 0) through analysis (level 1) to informal deduction (level 2). A sequential tab-locking system ensures mastery at each step before progression, and a module quiz verifies overall understanding.
 
 ---
 
 ## Key Features
 
-### Sequential Module Learning
-
-Each module tab must be completed in order. Every section within a tab (Percobaan, Pengamatan, Penyimpulan, Cek Pemahaman) requires submission before the next unlocks:
-
-```
-Tab 1 (Titik)  →  Submit all sections  →  Tab 2 (Garis) unlocks
-Tab 2 (Garis)  →  Submit all sections  →  Tab 3 (Bangun) unlocks
-...            →  All tabs complete     →  Quiz unlocks
-```
-
 ### Learning Modules
 
-| Module        | Tabs                                          |
-| ------------- | --------------------------------------------- |
-| **Translasi** | Titik, Garis, Bangun                          |
-| **Refleksi**  | Sumbu-X, Sumbu-Y, O(0,0), y=x, y=-x, x=h, y=k |
+| Module        | Tabs                                                                                           |
+| ------------- | ---------------------------------------------------------------------------------------------- |
+| **Translasi** | Titik, Garis, Bangun                                                                           |
+| **Refleksi**  | Sumbu-X, Sumbu-Y, Titik (0,0), Garis x=y, Garis x=-y, Garis x=h, Garis y=h, Bangun, Ruas Garis |
 
-Each tab follows an inquiry-based flow:
+Each tab follows an inquiry-based flow of sections:
 
-1. **Kanvas Interaktif** — Experiment with GeoGebra-powered visualizations
-2. **Percobaan** — Guided experiment with AI-checked submission
-3. **Pengamatan** — Record observations with AI-checked submission
-4. **Penyimpulan** — Draw conclusions with AI-checked submission
-5. **Cek Pemahaman** — Verify understanding with AI-checked submission
+1. **Pengamatan** — Record observations from the visualization
+2. **Percobaan** — Guided experiment on the interactive GeoGebra canvas
+3. **Penyimpulan** — Draw conclusions from the observed patterns
+4. **Cek Pemahaman** — Verify understanding with a quick check
+
+### Sequential Tab Unlocking
+
+Tabs are **locked by default** — only the first tab starts unlocked. A tab becomes complete only when **every section reaches a terminal status** (correct on attempt 1, or wrong_attempt2 after both attempts):
+
+```
+Tab 1  →  Submit all sections  →  Tab 2 unlocks
+Tab 2  →  Submit all sections  →  Tab 3 unlocks
+...    →  All tabs complete    →  Module quiz unlocks
+```
+
+- The client updates the UI **optimistically**, then the server verifies and persists via `POST /api/modul/[slug]/progress/unlock`
+- The server **reconciles** any missing section rows from the client's terminal claims (self-healing) and re-validates inside a transaction
+- A server-side **auto-unlock safety net** re-checks incomplete tabs on every progress fetch, so progress always converges even if a client request fails
+- **Cross-module gating**: the Refleksi module stays locked until the Translasi quiz has at least one attempt
 
 ### Two-Attempt AI Feedback System
 
-Section exercises (pengamatan, percobaan, penyimpulan, cek pemahaman) follow a structured two-attempt flow:
+Every section exercise follows a structured two-attempt flow:
 
-- **Attempt 1 (Correct)** → Full AI explanation, section marked complete
-- **Attempt 1 (Wrong)** → AI hint (no answer revealed), "Coba Lagi" button appears
-- **Attempt 2 (Wrong)** → Detailed AI feedback with answer key, input permanently locked
-- **Scoring** → 0–100 per section based on question type (MC, essay, numeric, all-correct)
+- **Attempt 1 (correct)** → Full AI explanation; section marked complete
+- **Attempt 1 (wrong)** → AI hint (no answer revealed); "Coba Lagi" button appears
+- **Attempt 2 (wrong)** → Detailed AI feedback with the answer key; input permanently locked
 
-The **quiz** (module-level evaluation) uses a single-attempt per-question flow: students select answers and submit all at once with "Selesai". Correctness is calculated locally from the answer key. Pembahasan is shown only in the result page as a static explanation.
+Evaluation is **hybrid**:
 
-### Question Bank
+- Structured items (matriks, koordinat, pilihan ganda, memasangkan, urutkan, pilihan refleksi, checklist) are validated **deterministically** with per-field correctness
+- Uraian (essay) answers are judged by **Gemini AI**; the Penyimpulan section always consults Gemini because free-text mathematical reasoning can't be reliably keyword-matched
+- AI responses are cached (DB + Redis read-through) and validated against the answer key before affecting the verdict
+- Production resilience: multi-key rotation, per-key cool-down, concurrency slotting, daily RPD tracking, and retry with exponential backoff on 429s
 
-- All questions created **manually** by the research team — no AI-generated content
-- Single question type: Pilihan Ganda (MCQ) with inline vector notation via `questionMatrix`/`questionSuffix`
-- **Randomized package system** — each student gets assigned Paket 1 (questions 1–10) or Paket 2 (questions 11–20) on first quiz entry, persisted across sessions
-- Module quizzes are separate from pre-test/post-test evaluation instruments
+### Scoring
 
-### Lab Batik (Creative Sandbox)
+| Scope      | Method                                                                                          | Student Display       |
+| ---------- | ----------------------------------------------------------------------------------------------- | --------------------- |
+| Section    | 0–100 — deterministic correct/total; uraian graded by AI; Penyimpulan AI score is authoritative | Color indicator       |
+| Quiz (MCQ) | (Correct answers / Total questions) × 100                                                       | Color indicator + raw |
 
-Free-form creative workspace where students:
+**Scores are shown as color indicators** — never raw numbers on section exercises:
 
-- Place Batik motif stamps on a Cartesian grid
-- Apply transformations (translate, reflect, clone)
-- Choose from authentic Batik colors
-- Save creations and export as PNG
+- **Gray** → Belum Dinilai
+- **Red** (0–30) → Perlu Perbaikan
+- **Orange** (31–70) → Cukup
+- **Green** (71–100) → Baik
+
+### Module Quiz
+
+A module-level MCQ evaluation that unlocks after every tab is completed:
+
+- **10 questions per package** — each student is randomly assigned Paket 1 (questions 1–10) or Paket 2 (questions 11–20) on first entry, persisted across sessions
+- **Single attempt per question** — answers are collected question-by-question, then submitted all at once with "Selesai"
+- Correctness is computed locally against the answer key; results are persisted server-side in `quiz_results` with a server-computed attempt number
+- The **first attempt counts as the final score**; subsequent attempts are for practice
+- The **result page** shows the score plus per-question **pembahasan** — static explanations by default, with optional AI enrichment (`AI_PEMBAHASAN_ENABLED=true`)
+- A **history panel** on the quiz intro page lists past attempts with links to each detail view
 
 ---
 
@@ -78,12 +95,14 @@ Free-form creative workspace where students:
 | **Framework** | Next.js 16 (App Router)  | SSR, API routes, file-based routing                      |
 | **Language**  | TypeScript (strict)      | Type safety across the stack                             |
 | **Styling**   | Tailwind CSS v4          | Utility-first, design tokens                             |
+| **UI**        | shadcn + RetroUI         | Custom NeoBrutalism primitives                           |
 | **Database**  | Supabase (PostgreSQL)    | Persistence, RLS, real-time                              |
-| **ORM**       | Drizzle                  | Type-safe, lightweight, fast migrations                  |
+| **ORM**       | Drizzle                  | Type-safe, lightweight                                   |
 | **State**     | Zustand + TanStack Query | Client state (Zustand) + server caching (TanStack Query) |
 | **Auth**      | BetterAuth               | Self-hosted, session-based, OAuth-ready                  |
-| **Viz**       | GeoGebra Web API         | Interactive geometry applets                             |
-| **AI**        | Gemini API               | Per-section answer evaluation                            |
+| **AI**        | Gemini API               | Uraian grading, feedback, optional quiz pembahasan       |
+| **Cache**     | Redis (Upstash)          | AI result cache + hot progress cache layer               |
+| **Viz**       | GeoGebra Web API         | Interactive geometry applets (prasyarat + module tabs)   |
 | **Deploy**    | Vercel                   | Edge network, serverless                                 |
 
 ---
@@ -92,56 +111,63 @@ Free-form creative workspace where students:
 
 ```
 app/
-├── (app)/                 # App shell (header + nav)
-│   ├── menu/              # Main menu — 3-card nav grid
-│   ├── prasyarat/         # Prerequisite material
-│   ├── lab/               # Lab Batik creative sandbox
+├── (app)/                 # App shell (Navbar + content)
+│   ├── menu/              # Main menu — module card grid (Translasi, Refleksi)
+│   ├── prasyarat/         # Prerequisite material (coordinates, canvas, video)
 │   ├── apersepsi/[slug]/  # Module intro (translasi | refleksi)
 │   └── modul/[slug]/      # Learning modules
-│       ├── [tab]/page.tsx # Per-tab sections with submit/AI feedback
-│       └── kuis/          # Quiz flow (questions → results)
+│       ├── layout.tsx     # Tab navigation + progress sync + lock guards
+│       ├── [tab]/page.tsx # Per-tab sections with submit / AI feedback
+│       └── kuis/          # Quiz flow
+│           ├── page.tsx   # Quiz intro (rules, history, start)
+│           ├── [nomor]/   # Per-question (1–10) with prev/next + Selesai
+│           └── hasil/     # Score + per-question pembahasan
 ├── (auth)/                # Login & register flows (no app shell)
 ├── (landing)/             # Brand hero landing page (no app shell)
-├── api/auth/[...all]/     # BetterAuth handler
+├── api/                   # Route handlers
+│   ├── modul/[slug]/      # progress, progress/unlock, section, reset, quiz/{submit,status,result}
+│   ├── ai/                # evaluate-section, generate-pembahasan, status
+│   ├── cron/ai-cache-cleanup/  # AI cache TTL cleanup job
+│   ├── health/            # Infrastructure health probe
+│   └── auth/[...all]/     # BetterAuth handler
 ├── providers.tsx          # QueryClientProvider + other providers
 ├── layout.tsx             # Root layout — font + globals
 └── globals.css            # Nusantara Rebel palette + utilities
 
 features/                  # Feature-based modular architecture
 ├── auth/                  # LoginForm, RegisterForm, AuthFormField, hooks
-├── menu/                  # ModuleCard, LabCard, MenuHeader, data
+├── menu/                  # ModuleCard, ModuleGrid, MenuHeader, data
 ├── modules/               # Core learning engine
-│   ├── components/        # ConclusionArea, AssessmentSection, etc.
+│   ├── components/        # Section forms, AssessmentSection, LockOverlay, RefleksiLockGuard
 │   ├── hooks/             # TanStack Query hooks (useSectionSubmission, useTabProgress, useEvaluateSection)
-│   ├── data/              # Shared constants (moduleConfig.ts)
-│   ├── lib/               # Client-side utils (shuffle.ts)
-│   ├── services/          # Layer 2 — async service functions
+│   ├── data/              # Module tab configs (translasi.ts, refleksi.ts, moduleConfig.ts)
+│   ├── lib/               # progressSync, evaluateSection, feedback, validation, scoreColors
+│   ├── services/          # Layer 2 — progress.ts, quiz.ts, ai.ts, aiCache.ts
 │   └── index.ts           # Barrel exports
-├── quiz/                  # Quiz engine
-│   ├── components/        # QuizResult, QuizNavigation, etc.
-│   ├── hooks/             # TanStack Query hooks (useSubmitQuiz, useQuizResult, useEvaluateQuiz)
-│   ├── data/              # Question bank (translasi.ts, refleksi.ts)
+├── quiz/                  # Quiz feature
+│   ├── components/        # QuizResult, QuizNavigation, ScoreGauge, etc.
+│   ├── hooks/             # useSubmitQuiz, useQuizResult, useQuizStatus, useQuiz, useQuizPembahasan
+│   ├── data/              # Question bank (translasi.ts, refleksi.ts, 2 packages each)
+│   ├── store.ts           # Zustand quiz store (user-scoped persistence)
 │   └── index.ts           # Barrel exports
 ├── prasyarat/             # Prerequisite canvas + controls
-└── lab/                   # Lab Batik canvas + tools
+└── apersepsi/             # Module intro content
 
 components/                # Shared React components
-├── retroui/               # NeoBrutalism primitives (Button, Card, Skeleton, Sonner, etc.)
-├── batik/                 # KawungStamp, BatikWatermark
-├── common/                # AmbientCircles, MaterialIcon
-└── layout/                # AuthLayout, LandingFooter, ProfileDropdown
+├── retroui/               # NeoBrutalism primitives (Button, Card, Text, Skeleton, etc.)
+├── common/                # MaterialIcon, AmbientCircles
+└── layout/                # NavbarClient, LandingFooter, ProfileDropdown, AuthLayout
 
 lib/                       # Auth, DB, utility clients
-├── query/                 # TanStack Query setup
-│   └── client.ts          # Singleton QueryClient factory
-├── api/                   # Layer 1 primitives (AppError, requireAuth)
-├── supabase/              # Supabase client (client, server, middleware)
-├── auth.ts                # BetterAuth server config
-├── auth-client.ts         # BetterAuth browser client
-├── db.ts                  # Drizzle + getDb() lazy accessor
-├── utils.ts               # Utility functions
-├── validate-redirect.ts   # Redirect URL validation
-└── validators.ts          # Form validation
+├── query/                 # TanStack Query singleton QueryClient
+├── api/                   # Layer 1 primitives (AppError, handleError, requireAuth, logger)
+├── rate-limit/            # Gemini key coordinator (rotation, cooldown, quotas)
+├── supabase/              # Supabase client (client, server)
+├── auth.ts / auth-client.ts   # BetterAuth server + browser config
+├── db.ts                  # Drizzle + lazy getDb() accessor
+├── cache.ts               # Redis read-through cache helper
+├── user-scoped-storage.ts # Per-user localStorage persistence
+└── schemas.ts             # Zod validation schemas (section, unlock, quiz, AI)
 
 drizzle/                   # Database schema (Drizzle ORM)
 supabase/                  # Database migrations
@@ -151,13 +177,14 @@ supabase/                  # Database migrations
 
 ## Design
 
-**Nusantara Rebel** — where Indonesian heritage meets NeoBrutalism.
+**Nusantara Rebel** — heritage-inspired NeoBrutalism.
 
 - 4px solid black borders on everything
 - Hard drop shadows (no blur, no fade)
-- Square elements, uppercase typography
+- Square elements, `font-black uppercase` typography
 - Space Grotesk throughout
-- Color palette rooted in Batik dyes (Sogan Kuning, Merah Gentongan, etc.)
+- Material Symbols for icons (lucide-react only as fallback)
+- Semantic Tailwind tokens (`bg-primary`, `text-foreground`, `border-border`) — never raw hex
 
 Full reference: [StyleGuide.md](./StyleGuide.md) | [DESIGN.md](./DESIGN.md)
 
@@ -171,7 +198,7 @@ Full reference: [StyleGuide.md](./StyleGuide.md) | [DESIGN.md](./DESIGN.md)
 - npm / bun
 - Supabase project (or local instance)
 - BetterAuth credentials
-- (Optional) Gemini API key for AI feedback features
+- Gemini API key (for AI feedback features)
 
 ### Installation
 
@@ -198,6 +225,7 @@ npm run dev
 npm run dev          # Start dev server
 npm run build        # Production build
 npm run lint         # Run ESLint
+npm run test         # Run Vitest tests
 npm run db:studio    # Open Drizzle Studio
 npm run db:generate  # Generate migration
 npm run db:migrate   # Apply migration
@@ -207,44 +235,36 @@ npm run db:migrate   # Apply migration
 
 ## Architecture Highlights
 
-### Inquiry-Based Learning Flow
+### 3-Layer API Architecture
 
 ```
-Each section follows the submit + AI evaluation flow:
+Layer 1 — Route Handler (app/api/.../route.ts)
+  Parse request → Zod validate → call service → respond
+  Error: catch → handleError()
 
-  ■ Percobaan    → Interact with canvas → Submit → AI feedback
-  ■ Pengamatan   → Record observations  → Submit → AI feedback
-  ■ Penyimpulan  → Draw conclusions     → Submit → AI feedback
-  ■ Cek Paham    → Quick check          → Submit → AI feedback
+Layer 2 — Service (features/*/services/*.ts)
+  Plain async functions — NO Next.js imports
+  Business logic + AppError throws; calls getDb() lazily
 
-  2 attempts per section. Input locks after attempt 2.
-  All progress persisted to database per section.
+Layer 3 — Database (lib/db.ts + drizzle/schema)
+  Lazy getDb() singleton — never at module level
+  Drizzle ORM
 ```
 
 ### Data Fetching (TanStack Query)
 
 All API calls go through typed TanStack Query hooks co-located with their feature in `features/*/hooks/`. No raw `fetch()` or `useEffect`-based data loading in components. Singleton `QueryClient` at `lib/query/client.ts`, provided via `app/providers.tsx`.
 
-### Tab Locking System
+### Tab Unlock Flow
 
-Tabs are locked by default. Unlock conditions are validated both client-side (UI) and server-side (route protection + database checks). Each tab tracks which sections have been submitted, scored, and completed.
+1. Client submits the last terminal section → `triggerTabUnlockIfComplete` builds the section claims from the answer store
+2. The store **optimistically** marks the tab completed and unlocks the next
+3. `POST /api/modul/[slug]/progress/unlock` — the server reconciles missing section rows from the claims, validates all expected sections are terminal, then flips `completed` + `unlocked` in one transaction (idempotent, duplicate-concurrent-call safe)
+4. On rejection the optimistic update rolls back; the server-side auto-unlock on the next progress fetch converges the state
 
 ### Data Persistence
 
-Every answer, score, and feedback entry across all attempts is stored in the `section_progress` table, enabling detailed progress tracking.
-
-### Scoring
-
-| Scope        | Method                                                            | Student Display       |
-| ------------ | ----------------------------------------------------------------- | --------------------- |
-| Quiz (MCQ)   | (Correct answers / Total questions) × 100                         | Score color indicator |
-| Section (AI) | AI returns 0–100 per attempt; best attempt counts as `finalScore` | Score color indicator |
-
-**Score Color Indicators** (never shown as raw numbers — only colored dots):
-
-- **Red** (0–30) → Perlu Perbaikan
-- **Orange** (31–70) → Cukup
-- **Green** (71–100) → Baik
+Every answer, per-field correctness, score, feedback, and status across all attempts is stored in the `section_progress` table, enabling detailed progress tracking and tab unlock validation.
 
 ---
 
@@ -254,6 +274,7 @@ Every answer, score, and feedback entry across all attempts is stored in the `se
 - [PRD.md](./PRD.md) — Product Requirements Document v1 (archived)
 - [StyleGuide.md](./StyleGuide.md) — Design system reference
 - [DESIGN.md](./DESIGN.md) — Color palette & tokens
+- [AGENTS.md](./AGENTS.md) — Project conventions & architecture rules
 
 ---
 

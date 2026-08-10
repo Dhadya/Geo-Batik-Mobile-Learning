@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { LogOut, ChevronDown } from "lucide-react"
 import { Button } from "@/components/retroui/Button"
 import { authClient, signOut } from "@/lib/auth-client"
@@ -14,7 +13,6 @@ import { useQuizStore } from "@/features/quiz"
 
 /* Profile dropdown — shows user name/email avatar button, expands to reveal sign-out. */
 export function ProfileDropdown() {
-  const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
   const [open, setOpen] = useState(false)
   const [imgFailed, setImgFailed] = useState(false)
@@ -32,7 +30,7 @@ export function ProfileDropdown() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  // Handle sign-out — clear all client state then redirect regardless of signOut result
+  // Handle sign-out — clear all client state then redirect to /logout page for full cookie cleanup
   async function handleSignOut() {
     if (isSigningOut) return
     setIsSigningOut(true)
@@ -42,11 +40,19 @@ export function ProfileDropdown() {
       useQuizStore.getState().resetAnswers()
       useTabProgressStore.getState().resetAll()
       useObservationStore.getState().resetAll()
-      await signOut()
+      await signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            window.location.href = "/login"
+          },
+          onError: () => {
+            window.location.href = "/logout"
+          },
+        },
+      })
     } catch (e) {
       console.error("[ProfileDropdown] signOut error", e)
-    } finally {
-      router.push("/login")
+      window.location.href = "/logout"
     }
   }
 
@@ -100,7 +106,7 @@ export function ProfileDropdown() {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute left-0 right-0 lg:left-auto lg:right-0 top-full mt-2 w-full lg:w-64 border-4 border-black bg-card shadow-lg z-[10001]">
+        <div className="absolute left-0 right-0 lg:left-auto lg:right-0 top-full mt-2 w-full lg:w-64 border-4 border-black bg-card shadow-lg z-10001">
           {/* User info header */}
           <div className="px-4 py-3 border-b-4 border-black">
             <p className="text-sm font-black uppercase truncate">{user.name || "Pengguna"}</p>
