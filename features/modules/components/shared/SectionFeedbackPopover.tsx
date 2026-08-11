@@ -122,7 +122,7 @@ export function SectionFeedbackPopover({
                   return (
                     <span key={i} className="block">
                       {i > 0 && (
-                        <span className="block border-t-2 border-black mb-3" />
+                        <span className="block border-t border-black mb-3" />
                       )}
                       {sec.heading && (
                         <span className="block mb-1.5 text-xs md:text-sm text-black">

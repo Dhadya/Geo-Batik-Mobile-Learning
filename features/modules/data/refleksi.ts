@@ -1069,7 +1069,7 @@ export const refleksiTabs: ModuleTab[] = [
               multiSelect: true,
               correctIndex: 0,
               correctIndices: [1, 2, 3, 4],
-              hint: "Refleksi menghasilkan bayangan yang kongruen dengan bangun asal tetapi dicerminkan (seperti pantulan di cermin), bukan sekadar digeser. Jarak setiap titik ke cermin sama dengan jarak bayangannya ke cermin. Periksa setiap gambar apakah menampilkan pencerminan.",
+              hint: "Refleksi menghasilkan bayangan yang kongruen dengan bangun asal tetapi direfleksikan (seperti pantulan di cermin), bukan sekadar dipindahkan. Jarak setiap titik ke cermin sama dengan jarak bayangannya ke cermin. Periksa setiap gambar apakah menampilkan pencerminan.",
               explanation:
                 "Gambar yang menunjukkan refleksi adalah gambar b, c, d, dan e, karena bangun bayangannya kongruen dan dibalik seolah-olah dipantulkan oleh cermin. Gambar a hanya menggeser bangun, sehingga bukan refleksi.",
             },

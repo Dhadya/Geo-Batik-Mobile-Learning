@@ -383,7 +383,12 @@ export function buildDeterministicFeedback(
     return `${FEEDBACK_SECTION_DELIMITER.WRONG}Pembahasan:\n${wrongLines.join("\n")}`
   }
 
-  // attempt 2 (pembahasan): mixed (some wrong, some correct)
+  // Penyimpulan shows one complete explanation; other sections retain separate groups.
+  if (context.sectionType === "penyimpulan") {
+    const mergedLines = [...wrongLines, ...correctLines]
+    return `${FEEDBACK_SECTION_DELIMITER.WRONG}Pembahasan:\n${mergedLines.join("\n")}`
+  }
+
   const wrongBlock = `${FEEDBACK_SECTION_DELIMITER.WRONG}Ada jawaban yang kurang tepat.\nPembahasan:\n${wrongLines.join("\n")}`
   const correctBlock = `${FEEDBACK_SECTION_DELIMITER.CORRECT}Jawaban lainnya sudah tepat.\nPembahasan:\n${correctLines.join("\n")}`
   return `${wrongBlock}\n\n${correctBlock}`
