@@ -32,7 +32,10 @@ export async function persistSectionAttempt(data: {
     })
 
     if (!response.ok) {
-      if (response.status === 401) { handleAuthError(new Error("UNAUTHORIZED")); return }
+      if (response.status === 401 || response.status === 404) {
+        handleAuthError(new Error("UNAUTHORIZED"))
+        return
+      }
       const json = await response.json().catch(() => null)
       const code = json?.error?.code
       if (response.status === 409 || code === "SECTION_ALREADY_COMPLETED") return

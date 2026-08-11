@@ -67,7 +67,7 @@ export function buildItemFeedback(
       }
       return item.explanation
         ? toBullets(item.explanation)
-        : `• Titik ${item.label} ditranslasikan ke ${item.targetBayangan}, sehingga nilai translasinya T(${item.answer.a}, ${item.answer.b}).`
+        : `• ${item.label} → T(${item.answer.a}, ${item.answer.b}) → ${item.targetBayangan}`
     }
     case "koordinat": {
       // Wrong koordinat items are grouped via buildKoordinatFeedback; this handles correct
@@ -178,6 +178,7 @@ interface KoordinatPoint {
 interface MatriksPoint {
   label: string
   bayangan: string
+  answer: { a: number; b: number }
   hint?: string
   explanation?: string
 }
@@ -261,7 +262,7 @@ function buildMatriksFeedback(
   }
 
   const listed = joinList(points.map((p) => stripLabel(p.label)))
-  const hasilLines = points.map((p) => `  ${stripLabel(p.label)} → T${p.bayangan}`).join("\n")
+  const hasilLines = points.map((p) => `  ${stripLabel(p.label)} → T(${p.answer.a}, ${p.answer.b}) → ${p.bayangan}`).join("\n")
   return `• Perhatikan kembali hasil pengamatan pada GeoGebra:\n  titik ${listed} ditranslasikan, sehingga hasilnya:\n${hasilLines}`
 }
 
@@ -327,10 +328,10 @@ export function buildDeterministicFeedback(
       const key = `matriks:${item.targetBayangan}:${context.attempt}`
       const existing = matriksGroups.get(key)
       if (existing) {
-        existing.points.push({ label: item.label, bayangan: item.targetBayangan, hint: item.hint, explanation: item.explanation })
+        existing.points.push({ label: item.label, bayangan: item.targetBayangan, answer: item.answer, hint: item.hint, explanation: item.explanation })
       } else {
         matriksGroups.set(key, {
-          points: [{ label: item.label, bayangan: item.targetBayangan, hint: item.hint, explanation: item.explanation }],
+          points: [{ label: item.label, bayangan: item.targetBayangan, answer: item.answer, hint: item.hint, explanation: item.explanation }],
           firstIdx: idx,
         })
       }
@@ -382,7 +383,12 @@ export function buildDeterministicFeedback(
     return `${FEEDBACK_SECTION_DELIMITER.WRONG}Pembahasan:\n${wrongLines.join("\n")}`
   }
 
-  // attempt 2 (pembahasan): mixed (some wrong, some correct)
+  // Penyimpulan shows one complete explanation; other sections retain separate groups.
+  if (context.sectionType === "penyimpulan") {
+    const mergedLines = [...wrongLines, ...correctLines]
+    return `${FEEDBACK_SECTION_DELIMITER.WRONG}Pembahasan:\n${mergedLines.join("\n")}`
+  }
+
   const wrongBlock = `${FEEDBACK_SECTION_DELIMITER.WRONG}Ada jawaban yang kurang tepat.\nPembahasan:\n${wrongLines.join("\n")}`
   const correctBlock = `${FEEDBACK_SECTION_DELIMITER.CORRECT}Jawaban lainnya sudah tepat.\nPembahasan:\n${correctLines.join("\n")}`
   return `${wrongBlock}\n\n${correctBlock}`

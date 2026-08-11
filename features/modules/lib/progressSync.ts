@@ -13,6 +13,10 @@ const MODUL_API = "/api/modul"
 export async function syncTabProgress(slug: string): Promise<TabProgressEntry[] | null> {
   try {
     const res = await fetch(`${MODUL_API}/${slug}/progress`, { cache: "no-store" })
+    if (res.status === 401 || res.status === 404) {
+      window.location.href = "/login"
+      return null
+    }
     if (!res.ok) return null
     const json = await res.json()
     if (!json.ok) return null
@@ -97,6 +101,11 @@ async function _triggerTabUnlockIfComplete(slug: string, tab: string): Promise<v
       body: JSON.stringify({ completedTab: tab, sections: claims }),
       cache: "no-store",
     })
+
+    if (res.status === 401 || res.status === 404) {
+      window.location.href = "/login"
+      return
+    }
 
     // Non-JSON bodies (e.g. an HTML error/redirect page) must not crash the sync flow —
     // treat them as a rejected unlock and roll back the optimistic update.

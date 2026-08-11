@@ -199,8 +199,10 @@ export function validateSection(
           })
         }
 
-        // 1. If requiredKeywords are defined, treat each group as a required set (AND). The answer is correct only if all groups match.
-        if (!isCorrect && u.requiredKeywords && u.requiredKeywords.length > 0) {
+        // 1. If requiredKeywords are defined, treat each group as a required set (AND).
+        // Coordinate formulas are already compared component-by-component above, so do
+        // not fall back to substring matching where "y" could incorrectly match "-y".
+        if (!isCorrect && !expectedIsCoordinate && u.requiredKeywords && u.requiredKeywords.length > 0) {
           const isCoordinateFormula = u.requiredKeywords.some((group) =>
             group.some(
               (kw) =>
