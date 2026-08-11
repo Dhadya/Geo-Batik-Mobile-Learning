@@ -15,7 +15,6 @@ import { ConclusionArea } from "./sections/penyimpulan/ConclusionArea"
 import { AssessmentSection } from "./sections/cek-pemahaman/AssessmentSection"
 import { ModuleTabNav } from "./navigation/ModuleTabNav"
 import { ForwardButton } from "./navigation/ForwardButton"
-import { ResetButton } from "./shared/ResetButton"
 import { LockOverlay } from "./LockOverlay"
 import { getModuleTabs, getModuleTab, getSectionsForTab } from "../data"
 import { useSectionProgress } from "../hooks/useSectionSubmission"
@@ -317,59 +316,56 @@ export function ModuleContent({
 
         {/* Main 2-column layout: workspace + observation panel */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-6 items-start">
-        {/* Left column — GeoGebra canvas + conclusion formula (desktop only) */}
-        <div className="lg:col-span-8 flex flex-col gap-3 md:gap-6">
-          <InteractiveWorkspace materialId={tabConfig.materialId} />
-          {/* Penyimpulan: hidden on mobile (shown below grid), visible on lg+ */}
-          {!(slug === "refleksi" && decodedTab === "bangun") && (
-            <div className="hidden lg:block">
-              <ConclusionArea slug={slug} tab={decodedTab} />
-            </div>
-          )}
+          {/* Left column — GeoGebra canvas + conclusion formula (desktop only) */}
+          <div className="lg:col-span-8 flex flex-col gap-3 md:gap-6">
+            <InteractiveWorkspace materialId={tabConfig.materialId} />
+            {/* Penyimpulan: hidden on mobile (shown below grid), visible on lg+ */}
+            {!(slug === "refleksi" && decodedTab === "bangun") && (
+              <div className="hidden lg:block">
+                <ConclusionArea slug={slug} tab={decodedTab} />
+              </div>
+            )}
+          </div>
+          {/* Right column — observation/pengamatan panel: sticky on lg+ */}
+          <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24 lg:self-start">
+            <ObservationPanel slug={slug} tab={decodedTab} />
+          </div>
         </div>
-        {/* Right column — observation/pengamatan panel: sticky on lg+ */}
-        <div className="lg:col-span-4 flex flex-col lg:sticky lg:top-24 lg:self-start">
-          <ObservationPanel slug={slug} tab={decodedTab} />
-        </div>
-      </div>
 
-      {/* Penyimpulan: shown on mobile below observation panel, hidden on lg+ (rendered inside left col) */}
-      {!(slug === "refleksi" && decodedTab === "bangun") && (
-        <div className="mt-4 md:mt-6 lg:hidden">
-          <ConclusionArea slug={slug} tab={decodedTab} />
-        </div>
-      )}
+        {/* Penyimpulan: shown on mobile below observation panel, hidden on lg+ (rendered inside left col) */}
+        {!(slug === "refleksi" && decodedTab === "bangun") && (
+          <div className="mt-4 md:mt-6 lg:hidden">
+            <ConclusionArea slug={slug} tab={decodedTab} />
+          </div>
+        )}
 
-      {/* Assessment section with multiple choice questions */}
-      <AssessmentSection
-        slug={slug}
-        tab={decodedTab}
-        questions={questions}
-      />
-
-      {/* Navigation buttons — back to apersepsi or forward to next tab / quiz */}
-      <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
-        <Link href={`/apersepsi/${slug}`}>
-          <Button
-            variant="outline"
-            size="lg"
-            className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
-          >
-            <MaterialIcon className="size-4 md:size-6" name="arrow_back" />
-            KEMBALI
-          </Button>
-        </Link>
-        <ForwardButton
+        {/* Assessment section with multiple choice questions */}
+        <AssessmentSection
           slug={slug}
           tab={decodedTab}
-          tabs={tabs}
-          incompleteSections={incompleteSections}
+          questions={questions}
         />
-      </div>
 
-      {/* Reset FAB */}
-      <ResetButton slug={slug} />
-      </div>{/* end relative container */}
+        {/* Navigation buttons — back to apersepsi or forward to next tab / quiz */}
+        <div className="flex justify-center gap-3 md:gap-4 pt-3 md:pt-4">
+          <Link href={`/apersepsi/${slug}`}>
+            <Button
+              variant="outline"
+              size="lg"
+              className="px-4 md:px-8 py-3 md:py-4 text-sm md:text-lg font-black uppercase gap-1.5 md:gap-2"
+            >
+              <MaterialIcon className="size-4 md:size-6" name="arrow_back" />
+              KEMBALI
+            </Button>
+          </Link>
+          <ForwardButton
+            slug={slug}
+            tab={decodedTab}
+            tabs={tabs}
+            incompleteSections={incompleteSections}
+          />
+        </div>
+      </div>
     </div>
   )
 }

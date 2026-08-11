@@ -43,6 +43,10 @@ export function useSubmitQuiz(slug: string) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify(input),
       })
+      if (response.status === 401 || response.status === 404) {
+        window.location.href = "/login"
+        throw new Error("Sesi berakhir, silakan masuk kembali")
+      }
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal menyimpan kuis")
       return body.data

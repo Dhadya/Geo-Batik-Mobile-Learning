@@ -26,10 +26,7 @@ export function SessionSync() {
     const oldUserId = prevUserId.current
 
     if (oldUserId !== newUserId) {
-      // Clear TanStack Query cache so no stale data leaks between users
       getQueryClient().clear()
-
-      // Reset all in-memory stores
       useAnswerStore.getState().resetAll()
       useQuizStore.getState().resetAnswers()
       useTabProgressStore.getState().resetAll()

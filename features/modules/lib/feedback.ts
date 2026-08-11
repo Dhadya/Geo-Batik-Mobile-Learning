@@ -67,7 +67,7 @@ export function buildItemFeedback(
       }
       return item.explanation
         ? toBullets(item.explanation)
-        : `• Titik ${item.label} ditranslasikan ke ${item.targetBayangan}, sehingga nilai translasinya T(${item.answer.a}, ${item.answer.b}).`
+        : `• ${item.label} → T(${item.answer.a}, ${item.answer.b}) → ${item.targetBayangan}`
     }
     case "koordinat": {
       // Wrong koordinat items are grouped via buildKoordinatFeedback; this handles correct
@@ -178,6 +178,7 @@ interface KoordinatPoint {
 interface MatriksPoint {
   label: string
   bayangan: string
+  answer: { a: number; b: number }
   hint?: string
   explanation?: string
 }
@@ -261,7 +262,7 @@ function buildMatriksFeedback(
   }
 
   const listed = joinList(points.map((p) => stripLabel(p.label)))
-  const hasilLines = points.map((p) => `  ${stripLabel(p.label)} → T${p.bayangan}`).join("\n")
+  const hasilLines = points.map((p) => `  ${stripLabel(p.label)} → T(${p.answer.a}, ${p.answer.b}) → ${p.bayangan}`).join("\n")
   return `• Perhatikan kembali hasil pengamatan pada GeoGebra:\n  titik ${listed} ditranslasikan, sehingga hasilnya:\n${hasilLines}`
 }
 
@@ -327,10 +328,10 @@ export function buildDeterministicFeedback(
       const key = `matriks:${item.targetBayangan}:${context.attempt}`
       const existing = matriksGroups.get(key)
       if (existing) {
-        existing.points.push({ label: item.label, bayangan: item.targetBayangan, hint: item.hint, explanation: item.explanation })
+        existing.points.push({ label: item.label, bayangan: item.targetBayangan, answer: item.answer, hint: item.hint, explanation: item.explanation })
       } else {
         matriksGroups.set(key, {
-          points: [{ label: item.label, bayangan: item.targetBayangan, hint: item.hint, explanation: item.explanation }],
+          points: [{ label: item.label, bayangan: item.targetBayangan, answer: item.answer, hint: item.hint, explanation: item.explanation }],
           firstIdx: idx,
         })
       }

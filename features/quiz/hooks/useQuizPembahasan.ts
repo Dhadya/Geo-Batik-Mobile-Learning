@@ -25,6 +25,10 @@ export function useQuizPembahasan(
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ questions, answers }),
       })
+      if (response.status === 401 || response.status === 404) {
+        window.location.href = "/login"
+        throw new Error("Sesi berakhir, silakan masuk kembali")
+      }
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal memuat pembahasan")
       const feedbackMap: Record<number, string> = {}

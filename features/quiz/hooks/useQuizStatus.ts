@@ -8,6 +8,10 @@ export function useQuizStatus(slug: string) {
     queryKey: ["quiz-status", slug],
     queryFn: async () => {
       const response = await fetch(`/api/modul/${slug}/quiz/status`, { cache: "no-store" })
+      if (response.status === 401 || response.status === 404) {
+        window.location.href = "/login"
+        throw new Error("Sesi berakhir, silakan masuk kembali")
+      }
       const body = await response.json()
       if (!body.ok) throw new Error(body.error?.message ?? "Gagal memuat status kuis")
       return body.data
